@@ -21,15 +21,29 @@ export function nudgeFits (reportedOffset: number, baseline: number, step: numbe
     Math.abs((reportedOffset + step) - baseline) <= NUDGE_CAP + TOLERANCE
 }
 
-export function readBaseline (database: unknown, key: string): number | null | undefined {
-  let value: unknown = database
-  for (const part of key.split('.')) {
-    if (!value || typeof value !== 'object' || !(part in value)) return undefined
-    value = (value as Record<string, unknown>)[part]
-  }
-  return typeof value === 'number' && Number.isFinite(value) ? value : null
+export interface NudgeEntry {
+  baseline: number
+  start_time: number
+  filename: string
+  expected?: number
+  pending?: { created: number; from: number }
+}
+
+export function readNudgeEntry (value: unknown): NudgeEntry | null | undefined {
+  if (value === undefined) return undefined
+  if (!value || typeof value !== 'object') return null
+  const entry = value as Partial<NudgeEntry>
+  if (!Number.isFinite(entry.baseline) || !Number.isFinite(entry.start_time) || typeof entry.filename !== 'string') return null
+  if (entry.expected !== undefined && !Number.isFinite(entry.expected)) return null
+  if (entry.pending !== undefined && (!entry.pending || !Number.isFinite(entry.pending.created) || !Number.isFinite(entry.pending.from))) return null
+  return entry as NudgeEntry
+}
+
+export function expectedCaughtUp (reported: number, expected: number, from: number): boolean {
+  if (![reported, expected, from].every(Number.isFinite)) return false
+  return expected >= from ? reported >= expected - TOLERANCE : reported <= expected + TOLERANCE
 }
 
 export function databasePart (value: string): string {
-  return encodeURIComponent(value).replaceAll('.', '%2E')
+  return encodeURIComponent(value).split('.').join('%2E')
 }

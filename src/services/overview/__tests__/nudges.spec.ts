@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { firstLayerAllowed, nudgeBudget, nudgeFits, readBaseline } from '../nudges'
+import { firstLayerAllowed, nudgeBudget, nudgeFits, readNudgeEntry } from '../nudges'
 
 it('allows only real M1 layers 1–3 with fresh printing, connection, homing and control', () => {
   const current = { m1: true, layer: 1, printing: true, ready: true, homed: true, waiting: false, identity: 'printer/job' }
@@ -18,8 +18,8 @@ it('derives the shared total and cap from printer truth relative to the saved ba
   expect(nudgeFits(NaN, 0, 0.01)).toBe(false)
 })
 
-it('reads only finite baselines at the exact shared database key', () => {
-  expect(readBaseline({ firstLayerNudges: { printer: { job: 0.02 } } }, 'firstLayerNudges.printer.job')).toBe(0.02)
-  expect(readBaseline({ firstLayerNudges: { printer: { job: '0.02' } } }, 'firstLayerNudges.printer.job')).toBeNull()
-  expect(readBaseline({}, 'firstLayerNudges.printer.job')).toBeUndefined()
+it('validates structured shared entries', () => {
+  expect(readNudgeEntry({ baseline: 0.02, start_time: 10, filename: 'x' })?.baseline).toBe(0.02)
+  expect(readNudgeEntry({ baseline: '0.02', start_time: 10, filename: 'x' })).toBeNull()
+  expect(readNudgeEntry(undefined)).toBeUndefined()
 })

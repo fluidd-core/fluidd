@@ -48,7 +48,8 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 import { httpClientActions } from '@/api/httpClientActions'
-import { databasePart, firstLayerAllowed, nudgeBudget, nudgeFits, readBaseline } from '@/services/overview/nudges'
+import { databasePart, expectedCaughtUp, firstLayerAllowed, nudgeBudget, nudgeFits, readNudgeEntry } from '@/services/overview/nudges'
+import type { NudgeEntry } from '@/services/overview/nudges'
 import type { HistoryItem } from '@/store/history/types'
 @Component
 export default class FirstLayerNudges extends Mixins(OverviewMixin) {
@@ -59,25 +60,30 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
   get managedPrinter () { return isManagedApiUrl(this.$store.state.config.apiUrl) && printerTransportBinding.remote ? cloudState.printers.find(p => p.id === cloudState.activePrinterId) : undefined }
   get knownM1 (): boolean { return ['M1', 'Muon3D M1'].includes(this.managedPrinter?.model ?? '') }
   get identity (): string {
-    const job = this.$store.state.history?.jobs?.find((j: HistoryItem) => j.status === 'in_progress' && j.filename === this.jobFile && !j.end_time)
+    const job = this.currentJob
     return this.managedPrinter && job?.job_id ? `${this.managedPrinter.id}/${job.job_id}` : ''
   }
+
+  get currentJob (): HistoryItem | undefined { return this.$store.state.history?.jobs?.find((j: HistoryItem) => j.status === 'in_progress' && j.filename === this.jobFile && !j.end_time) }
 
   get context (): string { return `${this.panelTarget}|${this.identity}` }
   get databaseKey (): string {
     const [printerId = '', jobId = ''] = this.identity.split('/')
     return `firstLayerNudges.${databasePart(printerId)}.${databasePart(jobId)}`
   }
+
   get earlyLayer (): boolean { const layer = this.printStats.info?.current_layer; return Number.isInteger(layer) && layer >= 1 && layer <= 3 }
   get reportedOffset (): number {
     const origin = this.$store.state.printer.printer.gcode_move?.homing_origin
     return Array.isArray(origin) && origin.length >= 3 && typeof origin[2] === 'number' && Number.isFinite(origin[2]) ? origin[2] : NaN
   }
+
   get budget () { return this.baseline === null ? null : nudgeBudget(this.reportedOffset, this.baseline) }
   get lockingAvailable (): boolean { return typeof navigator.locks?.request === 'function' }
   get canNudge (): boolean {
     return !this.pending && this.allowedNow
   }
+
   get allowedNow (): boolean {
     return this.lockingAvailable && this.captured === this.context && firstLayerAllowed({ m1: this.knownM1, identity: this.identity, layer: this.printStats.info?.current_layer ?? NaN, printing: this.printerPrinting && !this.printerPaused && this.$store.state.printer.printer.pause_resume?.is_paused !== true, ready: this.controlReady && !!this.$store.getters['printer/getAvailableCommands']?.SET_GCODE_OFFSET, homed: this.isHomed('Z'), waiting: this.hasWait(this.$waits.onZAdjust) })
   }
@@ -85,21 +91,36 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
   canMove (by: number): boolean { return Number.isFinite(this.reportedOffset) && (this.baseline === null || nudgeFits(this.reportedOffset, this.baseline, by)) }
 
   @Watch('context', { immediate: true })
-  bind () { this.captured = this.context; this.baseline = null; this.refusal = ''; void this.refreshBaseline() }
+  bind () { this.captured = this.context; this.baseline = null; this.refusal = ''; this.refreshBaseline() }
 
-  async readSharedBaseline (): Promise<number | null | undefined> {
-    const response = await httpClientActions.serverDatabaseItemGet<unknown>('fluidd')
-    return readBaseline(response.data.result.value, this.databaseKey)
+  async readSharedEntry (): Promise<NudgeEntry | null | undefined> {
+    const response = await httpClientActions.serverDatabaseItemGet<unknown>('fluidd', { params: { key: this.databaseKey } })
+    return readNudgeEntry(response.data.result.value)
+  }
+
+  entryMatches (entry: NudgeEntry): boolean {
+    return entry.start_time === this.currentJob?.start_time && entry.filename === this.currentJob?.filename
+  }
+
+  async pruneAndWrite (entry: NudgeEntry): Promise<void> {
+    const printerKey = this.databaseKey.split('.').slice(0, 2).join('.')
+    const response = await httpClientActions.serverDatabaseItemGet<Record<string, unknown>>('fluidd', { params: { key: printerKey } })
+    const active = new Set((this.$store.state.history?.jobs ?? []).filter((job: HistoryItem) => job.status === 'in_progress' && !job.end_time).map((job: HistoryItem) => databasePart(String(job.job_id))))
+    for (const jobId of Object.keys(response.data.result.value ?? {})) {
+      if (!active.has(jobId)) await httpClientActions.serverDatabaseItemDelete('fluidd', `${printerKey}.${jobId}`)
+    }
+    await httpClientActions.serverDatabaseItemPost('fluidd', this.databaseKey, entry)
   }
 
   async refreshBaseline () {
     if (!this.identity) return
     const context = this.context
     try {
-      const baseline = await this.readSharedBaseline()
-      if (context === this.context && typeof baseline === 'number') this.baseline = baseline
+      const entry = await this.readSharedEntry()
+      if (context === this.context && entry && this.entryMatches(entry)) this.baseline = entry.baseline
     } catch { /* A send will retry and show an explicit refusal. */ }
   }
+
   async nudge (by: number) {
     if (!this.canNudge || ![-0.01, 0.01].includes(by)) return
     const context = this.context
@@ -109,23 +130,42 @@ export default class FirstLayerNudges extends Mixins(OverviewMixin) {
       const before = this.reportedOffset
       if (!Number.isFinite(before)) { this.refusal = 'No adjustment sent. The printer Z offset is unknown.'; return }
       try {
-        let baseline = await this.readSharedBaseline()
-        if (baseline === null) {
+        let entry = await this.readSharedEntry()
+        if (entry === null) {
           this.refusal = 'No adjustment sent. The shared baseline is unknown.'; return
         }
-        if (baseline === undefined) {
-          await httpClientActions.serverDatabaseItemPost('fluidd', this.databaseKey, before)
-          baseline = await this.readSharedBaseline()
-          if (typeof baseline !== 'number' || Math.abs(baseline - before) > 1e-8) {
+        if (entry === undefined) {
+          const job = this.currentJob
+          if (!job || !Number.isFinite(job.start_time)) { this.refusal = 'No adjustment sent. The print identity is unknown.'; return }
+          await this.pruneAndWrite({ baseline: before, start_time: job.start_time, filename: job.filename })
+          entry = await this.readSharedEntry()
+          if (!entry || !this.entryMatches(entry) || Math.abs(entry.baseline - before) > 1e-8) {
             this.refusal = 'No adjustment sent. The shared baseline did not agree after saving.'; return
           }
         }
-        this.baseline = baseline
+        if (!this.entryMatches(entry)) { this.refusal = 'No adjustment sent. The shared baseline belongs to a different print.'; return }
+        this.baseline = entry.baseline
         // Database I/O and Web Locks can wait. Recheck authority, print context,
         // pending adjustment, current printer offset and cap immediately before send.
         if (context !== this.context || !this.allowedNow) return
-        if (!nudgeFits(this.reportedOffset, baseline, by)) {
+        if (entry.pending && entry.expected !== undefined && !expectedCaughtUp(this.reportedOffset, entry.expected, entry.pending.from)) {
+          this.refusal = `No adjustment sent. A shared nudge is still awaiting printer confirmation${Date.now() - entry.pending.created > 5000 ? ' and timed out' : ''}.`; return
+        }
+        if (entry.pending) {
+          entry = { ...entry, expected: this.reportedOffset }
+          delete entry.pending
+          await this.pruneAndWrite(entry)
+          if (context !== this.context || !this.allowedNow) return
+        }
+        const effectiveOffset = entry.expected === undefined ? this.reportedOffset : Math.abs(entry.expected - entry.baseline) > Math.abs(this.reportedOffset - entry.baseline) ? entry.expected : this.reportedOffset
+        if (!nudgeFits(effectiveOffset, entry.baseline, by)) {
           this.refusal = 'No adjustment sent. The shared 0.10 mm allowance would be exceeded.'; return
+        }
+        const reserved: NudgeEntry = { ...entry, expected: this.reportedOffset + by, pending: { created: Date.now(), from: this.reportedOffset } }
+        await this.pruneAndWrite(reserved)
+        const confirmed = await this.readSharedEntry()
+        if (context !== this.context || !this.allowedNow || !confirmed || !this.entryMatches(confirmed) || confirmed.expected !== reserved.expected || confirmed.pending?.created !== reserved.pending?.created) {
+          this.refusal = 'No adjustment sent. The shared nudge reservation was not confirmed.'; return
         }
       } catch {
         this.refusal = 'No adjustment sent. The shared nudge database is unavailable.'; return

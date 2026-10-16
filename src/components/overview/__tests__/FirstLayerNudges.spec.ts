@@ -7,7 +7,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 
 const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn() }))
-const http = vi.hoisted(() => ({ serverDatabaseItemGet: vi.fn(), serverDatabaseItemPost: vi.fn() }))
+const http = vi.hoisted(() => ({ serverDatabaseItemGet: vi.fn(), serverDatabaseItemPost: vi.fn(), serverDatabaseItemDelete: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
 vi.mock('@/api/httpClientActions', () => ({ httpClientActions: http }))
 
@@ -22,7 +22,7 @@ function atPath (key: string, value: unknown) {
 
 beforeEach(() => {
   database = {}
-  http.serverDatabaseItemGet.mockImplementation(async () => ({ data: { result: { value: structuredClone(database) } } }))
+  http.serverDatabaseItemGet.mockImplementation(async (_namespace: string, options: any) => ({ data: { result: { value: structuredClone(options.params.key.split('.').reduce((v: any, p: string) => v?.[p], database)) } } }))
   http.serverDatabaseItemPost.mockImplementation(async (_namespace: string, key: string, value: unknown) => { atPath(key, value) })
   Object.defineProperty(navigator, 'locks', { configurable: true, value: { request: (_key: string, callback: () => void) => Promise.resolve(callback()) } })
 })
@@ -35,7 +35,7 @@ afterEach(() => {
 function show () {
   const store = panelStore()
   store.state.config.apiUrl = 'https://muon-cloud.invalid'
-  Vue.set(store.state, 'history', { jobs: [{ job_id: 'run-1', filename: 'part.gcode', status: 'in_progress', end_time: null }] })
+  Vue.set(store.state, 'history', { jobs: [{ job_id: 'run-1', filename: 'part.gcode', start_time: 100, status: 'in_progress', end_time: null }] })
   Vue.set(store.state.printer.printer, 'print_stats', { filename: 'part.gcode', info: { current_layer: 1 } })
   Vue.set(store.state.printer.printer.gcode_move, 'homing_origin', [0, 0, 0, 0])
   store.getters['printer/getPrinterState'] = 'printing'
@@ -66,6 +66,51 @@ it('uses one Moonraker allowance across two devices and opposite directions rest
   one.wrapper.destroy(); two.wrapper.destroy()
 })
 
+it('blocks another device until the printer reports the pending expected offset', async () => {
+  const one = show(); const two = show()
+  await one.vm.nudge(0.01)
+  await two.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).toHaveBeenCalledTimes(1)
+  one.wrapper.destroy(); two.wrapper.destroy()
+})
+
+it('refuses a reused job id with different history identity', async () => {
+  database = { firstLayerNudges: { p: { 'run-1': { baseline: 0, start_time: 99, filename: 'part.gcode' } } } }
+  const device = show(); await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  device.wrapper.destroy()
+})
+
+it.each(['layer', 'role', 'pause'])('rechecks %s changed during the database await', async (change) => {
+  const device = show()
+  http.serverDatabaseItemGet.mockImplementation(async () => {
+    if (change === 'layer') device.store.state.printer.printer.print_stats.info.current_layer = 4
+    if (change === 'role') cloudState.printers[0].role = 'viewer'
+    if (change === 'pause') Vue.set(device.store.state.printer.printer, 'pause_resume', { is_paused: true })
+    return { data: { result: { value: undefined } } }
+  })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  device.wrapper.destroy()
+})
+
+it('refuses when context changes while waiting for the lock', async () => {
+  const device = show()
+  Object.defineProperty(navigator, 'locks', { configurable: true, value: { request: async (_k: string, cb: () => void) => { device.store.state.printer.printer.print_stats.filename = 'other.gcode'; return cb() } } })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  device.wrapper.destroy()
+})
+
+it('refuses when the shared lock is unavailable', async () => {
+  const device = show()
+  Object.defineProperty(navigator, 'locks', { configurable: true, value: { request: async () => { throw new Error('no lock') } } })
+  await device.vm.nudge(0.01)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  expect(device.vm.refusal).toContain('could not be locked')
+  device.wrapper.destroy()
+})
+
 it('uses an externally changed printer offset and displays printer-derived total and room', async () => {
   const device = show(); await nudgeAndReport(device, 0.01)
   device.store.state.printer.printer.gcode_move.homing_origin.splice(2, 1, 0.09)
@@ -79,7 +124,7 @@ it('uses an externally changed printer offset and displays printer-derived total
 })
 
 it.each([
-  ['unknown offset', (device: ReturnType<typeof show>) => device.store.state.printer.printer.gcode_move.homing_origin = []],
+  ['unknown offset', (device: ReturnType<typeof show>) => { device.store.state.printer.printer.gcode_move.homing_origin = [] }],
   ['unknown baseline', () => { database = { firstLayerNudges: { p: { 'run-1': 'bad' } } } }],
   ['unavailable database', () => http.serverDatabaseItemGet.mockRejectedValue(new Error('offline'))],
   ['disagreeing read-back', () => http.serverDatabaseItemPost.mockImplementation(async () => atPath('firstLayerNudges.p.run-1', 9))]
