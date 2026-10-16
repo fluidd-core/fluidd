@@ -4,7 +4,7 @@ export function retainedSamples (payload: Record<string, Record<string, unknown[
   const entries = Object.entries(payload ?? {}).filter(([, fields]) => Array.isArray(fields?.temperatures))
   const count = Math.min(Math.max(0, Math.floor(retention)), Math.max(0, ...entries.map(([, fields]) => fields.temperatures.length)))
   return Array.from({ length: count }, (_, i) => {
-    const point: ChartPoint = { date: new Date(now - (count - i) * 1000) }
+    const point: ChartPoint = { date: new Date(now - (count - 1 - i) * 1000) }
     for (const [key, fields] of entries) {
       for (const [field, suffix] of [['temperatures', ''], ['targets', 'Target'], ['powers', 'Power'], ['speeds', 'Speed']]) {
         if (field === 'targets' && /^(temperature_probe|temperature_sensor)/.test(key)) continue
@@ -15,6 +15,30 @@ export function retainedSamples (payload: Record<string, Record<string, unknown[
     }
     return point
   })
+}
+
+export interface MissingInterval { from: number; to: number }
+
+/** Missing one-second sample spans, unioned conservatively across the displayed series. */
+export function missingIntervals (points: ChartPoint[], keys: string[], from: number, to: number): MissingInterval[] {
+  if (to <= from || !keys.length) return [{ from, to }].filter(gap => gap.to > gap.from)
+  const coverage = keys.map(key => points
+    .filter(point => typeof point[key] === 'number' && Number.isFinite(point[key]))
+    .map(point => ({ from: Math.max(from, point.date.getTime() - 500), to: Math.min(to, point.date.getTime() + 500) }))
+    .filter(span => span.to > span.from))
+  const boundaries = [...new Set([from, to, ...coverage.flatMap(series => series.flatMap(span => [span.from, span.to]))])].sort((a, b) => a - b)
+  const gaps: MissingInterval[] = []
+  for (let i = 0; i < boundaries.length - 1; i++) {
+    const start = boundaries[i]
+    const end = boundaries[i + 1]
+    const midpoint = start + (end - start) / 2
+    if (coverage.some(series => !series.some(span => midpoint >= span.from && midpoint < span.to))) {
+      const previous = gaps.at(-1)
+      if (previous?.to === start) previous.to = end
+      else gaps.push({ from: start, to: end })
+    }
+  }
+  return gaps
 }
 
 export function sampleAt (points: ChartPoint[], at: number): ChartPoint | null {

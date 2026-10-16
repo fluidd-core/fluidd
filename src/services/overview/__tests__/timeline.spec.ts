@@ -1,12 +1,24 @@
 import { expect, it } from 'vitest'
-import { retainedSamples, sampleAt, observedEvents, historyPath } from '../timeline'
+import { retainedSamples, sampleAt, observedEvents, historyPath, missingIntervals } from '../timeline'
 import type { ChartPoint } from '../model'
 
 it('uses only actual retained samples and aligns uneven sensor arrays at their newest end', () => {
   const points = retainedSamples({ extruder: { temperatures: [210, 211, null] }, heater_bed: { temperatures: [55, 56] } }, 10000, 1200)
-  expect(points.map(p => [p.date.getTime(), p.extruder, p.heater_bed])).toEqual([[7000, 210, undefined], [8000, 211, 55], [9000, undefined, 56]])
+  expect(points.map(p => [p.date.getTime(), p.extruder, p.heater_bed])).toEqual([[8000, 210, undefined], [9000, 211, 55], [10000, undefined, 56]])
   expect(sampleAt(points, 2000)).toBe(null)
-  expect(sampleAt(points, 8000)?.extruder).toBe(211)
+  expect(sampleAt(points, 9000)?.extruder).toBe(211)
+})
+
+it('reports every missing interval across displayed series', () => {
+  const points: ChartPoint[] = [
+    { date: new Date(1000), extruder: 200, heater_bed: 55 },
+    { date: new Date(2000), extruder: 201 },
+    { date: new Date(3000), extruder: 202, heater_bed: 56 },
+    { date: new Date(7000), extruder: 203, heater_bed: 57 }
+  ]
+  expect(missingIntervals(points, ['extruder', 'heater_bed'], 0, 8000)).toEqual([
+    { from: 0, to: 500 }, { from: 1500, to: 2500 }, { from: 3500, to: 6500 }, { from: 7500, to: 8000 }
+  ])
 })
 
 it('breaks drawn history at missing values and reconnect gaps rather than interpolating', () => {

@@ -467,6 +467,7 @@ export const SocketActions = {
     baseEmit(
       'server.temperature_store', {
         dispatch: 'charts/initTempStore',
+        captureContext: true,
         params: {
           include_monitors: true
         }

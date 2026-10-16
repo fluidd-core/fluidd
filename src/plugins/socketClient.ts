@@ -295,7 +295,7 @@ export class WebSocketClient {
 
       Object.defineProperty(result, '__request__', { enumerable: false, value: request })
       consola.debug(`${this.logPrefix} Response:`, result)
-      if (request.dispatch && this.store) this.store.dispatch(request.dispatch, result)
+      if (request.dispatch && this.store) this.store.dispatch(request.dispatch, request.requestContext ? { payload: result, requestContext: request.requestContext } : result)
       if (request.commit && this.store) this.store.commit(request.commit, result)
     } else if (d.params && d.params[0]) {
       const [params, eventtime] = d.params
@@ -434,6 +434,7 @@ export class WebSocketClient {
         request.params = options.params
       }
       if (options && options.dispatch) request.dispatch = options.dispatch
+      if (options?.captureContext && this.store) request.requestContext = { apiUrl: this.store.state.config.apiUrl, connectionId: this.store.state.socket.connectionId }
       if (options && options.commit) request.commit = options.commit
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
@@ -478,6 +479,7 @@ export interface NotifyOptions {
   dispatch?: string;
   commit?: string;
   wait?: string;
+  captureContext?: boolean;
 }
 
 interface Request {
@@ -487,6 +489,7 @@ interface Request {
   commit?: string;
   params?: any;
   wait?: string;
+  requestContext?: { apiUrl: string; connectionId: string | null };
 }
 
 interface SocketRequest {

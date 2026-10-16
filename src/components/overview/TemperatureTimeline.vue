@@ -65,9 +65,17 @@
     </label>
     <div
       class="temperature-timeline__track"
-      aria-hidden="true"
+      role="list"
+      aria-label="Recorded temperature availability"
     >
-      <i :style="{ width: `${gapPercent}%` }" /><span>gap</span>
+      <i
+        v-for="(gap, index) in gaps"
+        :key="index"
+        data-gap
+        role="listitem"
+        :aria-label="`Temperature samples missing from ${time(gap.from)} to ${time(gap.to)}`"
+        :style="gapStyle(gap)"
+      />
     </div>
     <div
       class="temperature-timeline__readout"
@@ -119,7 +127,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { ChartPoint } from '@/services/overview/model'
-import { historyPath, sampleAt } from '@/services/overview/timeline'
+import { historyPath, missingIntervals, sampleAt, type MissingInterval } from '@/services/overview/timeline'
 @Component
 export default class TemperatureTimeline extends Vue {
   @Prop({ type: Array, required: true }) readonly points!: ChartPoint[]
@@ -139,7 +147,7 @@ export default class TemperatureTimeline extends Vue {
   get at (): number { return Math.max(this.from, Math.min(this.now, this.cursor ?? this.points.at(-1)?.date.getTime() ?? this.now)) }
   get sample (): ChartPoint | null { return sampleAt(this.points, this.at) }
   get visibleMarkers () { return this.events.filter(event => event.at >= this.plotFrom && event.at <= this.plotTo) }
-  get gapPercent (): number { return this.oldest === null ? 100 : Math.max(0, Math.min(100, (this.oldest - this.from) / Math.max(1, this.now - this.from) * 100)) }
+  get gaps (): MissingInterval[] { return missingIntervals(this.points, this.sensors.map(sensor => sensor.key), this.from, this.now) }
   get maximum (): number {
     let max = 100
     for (const p of this.points) {
@@ -159,6 +167,7 @@ export default class TemperatureTimeline extends Vue {
   path (name: string): string { return historyPath(this.points, name, this.plotFrom, this.plotTo, 600, v => 160 - v / this.maximum * 160) }
   degrees (value: number | Date): string { return typeof value === 'number' && Number.isFinite(value) ? `${value.toFixed(2).replace(/0$/, '')}°` : 'unrecorded' }
   xAt (at: number): number { return Math.max(0, Math.min(600, (at - this.plotFrom) / Math.max(1, this.plotTo - this.plotFrom) * 600)) }
+  gapStyle (gap: MissingInterval) { const duration = Math.max(1, this.now - this.from); return { left: `${(gap.from - this.from) / duration * 100}%`, width: `${(gap.to - gap.from) / duration * 100}%` } }
   time (at: number): string { return new Date(at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }
   pick (at: number) { this.cursor = Math.max(this.from, Math.min(this.now, at)) }
   pickInput (event: Event) { if (event.target instanceof HTMLInputElement) this.selectTime(Number(event.target.value)) }
@@ -183,7 +192,6 @@ export default class TemperatureTimeline extends Vue {
 .temperature-timeline__readout, .temperature-timeline__events { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0; }
 .temperature-timeline__readout { font-variant-numeric: tabular-nums; }
 .temperature-timeline__track { height: 8px; position: relative; background: var(--m3d-success); border-radius: 4px; overflow: hidden; }
-.temperature-timeline__track i { display: block; height: 100%; background: repeating-linear-gradient(45deg, var(--m3d-surface-2) 0 4px, var(--m3d-border) 4px 8px); }
-.temperature-timeline__track span { position: absolute; visibility: hidden; }
+.temperature-timeline__track i { display: block; position: absolute; height: 100%; background: repeating-linear-gradient(45deg, var(--m3d-surface-2) 0 4px, var(--m3d-border) 4px 8px); }
 .temperature-timeline p { margin: 8px 0; color: var(--m3d-text-subtle); font-size: 12px; }
 </style>

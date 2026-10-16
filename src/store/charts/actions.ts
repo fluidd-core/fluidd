@@ -18,9 +18,12 @@ export const actions: ActionTree<ChartState, RootState> = {
    * Loads stored server data for the past 20 minutes.
    */
   async initTempStore ({ commit, rootGetters, rootState }, payload) {
+    const response = payload?.requestContext ? payload.payload : payload
+    const context = payload?.requestContext as { apiUrl?: string; connectionId?: string | null } | undefined
+    if (context && (context.apiUrl !== rootState.config.apiUrl || context.connectionId !== rootState.socket.connectionId)) return
     // Moonraker supplies ordered one-second arrays, not absolute timestamps.
     // Anchor approximately at receipt; never pad a short history with readings.
-    const sensors = Object.fromEntries(Object.entries(payload ?? {}).filter(([key]) => !!rootState.printer.printer[key]))
+    const sensors = Object.fromEntries(Object.entries(response ?? {}).filter(([key]) => !!rootState.printer.printer[key]))
     commit('setChartStore', retainedSamples(sensors as Record<string, Record<string, unknown[]>>, Date.now(), rootGetters['charts/getChartRetention']))
   },
 
