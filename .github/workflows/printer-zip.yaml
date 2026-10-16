@@ -1,0 +1,128 @@
+name: Build immutable MuonOS printer zip
+
+on:
+  workflow_dispatch:
+    inputs:
+      develop_sha:
+        description: Full 40-character commit SHA from the develop branch
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Check, build, release, and verify
+    runs-on: ${{ vars.LINUX_RUNS_ON }}
+    env:
+      NODE_OPTIONS: --experimental-websocket
+      GH_TOKEN: ${{ github.token }}
+      SHA: ${{ inputs.develop_sha }}
+
+    steps:
+      - name: Checkout workflow revision
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate develop commit and check it out
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "develop_sha must be a full, lowercase 40-character commit SHA" >&2
+            exit 1
+          fi
+          git fetch --no-tags origin develop
+          git cat-file -e "${SHA}^{commit}"
+          git merge-base --is-ancestor "$SHA" origin/develop || {
+            echo "$SHA is not an ancestor of origin/develop" >&2
+            exit 1
+          }
+          git checkout --detach "$SHA"
+          test "$(git rev-parse HEAD)" = "$SHA"
+
+      - name: Refuse an existing tag or release
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="muonos-${SHA::7}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists; immutable releases cannot be replaced" >&2
+            exit 1
+          fi
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; immutable releases cannot be replaced" >&2
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint -- --no-fix
+
+      - name: Run type check
+        run: npm run type-check
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run circular references check
+        run: npm run circular-check
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Check the setup page budget
+        run: npm run check:setup-budget
+
+      - name: Zip build output and write checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          zip -r ../fluidd.zip .
+          cd ..
+          sha256sum fluidd.zip > fluidd.zip.sha256
+
+      - name: Create new prerelease
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="muonos-${SHA::7}"
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$SHA" \
+            --title "MuonOS printer build ${SHA::7}" \
+            --notes "Printer build from develop commit $SHA
+
+          Workflow run: $RUN_URL" \
+            --prerelease \
+            fluidd.zip fluidd.zip.sha256
+
+      - name: Download release assets and verify bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="muonos-${SHA::7}"
+          BUILT_SHA256="$(sha256sum fluidd.zip | cut -d' ' -f1)"
+          BUILT_SIZE="$(stat --format='%s' fluidd.zip)"
+          mkdir release-download
+          gh release download "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir release-download \
+            --pattern 'fluidd.zip' \
+            --pattern 'fluidd.zip.sha256'
+          cd release-download
+          sha256sum --check fluidd.zip.sha256
+          test "$(sha256sum fluidd.zip | cut -d' ' -f1)" = "$BUILT_SHA256"
+          test "$(stat --format='%s' fluidd.zip)" = "$BUILT_SIZE"
