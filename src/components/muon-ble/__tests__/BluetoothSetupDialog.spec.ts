@@ -94,22 +94,27 @@ describe('setup over Bluetooth from the hosted page', () => {
   })
 
   it("hangs up when they don't match, and offers the printer's own Wi-Fi", async () => {
-    const s = session()
-    const wrapper = mount(async () => s.result)
-    await flush(wrapper)
-    const reads = s.requests.length
-    await (wrapper.vm as any).theyDiffer()
-    await wrapper.vm.$nextTick()
-    expect(s.close).toHaveBeenCalled()
-    expect(tid(wrapper, 'setup-ble-mismatch').text()).toContain("That wasn't your printer")
-    await new Promise(resolve => setTimeout(resolve, 2500))
-    // Nothing more after hanging up.
-    expect(s.requests.length).toBe(reads)
-    ;(wrapper.vm as any).phase = 'hotspot'
-    await wrapper.vm.$nextTick()
-    expect(tid(wrapper, 'setup-ble-hotspot').text()).toContain('Muon-walnut-8987')
-    expect(tid(wrapper, 'setup-ble-hotspot').text()).toContain('http://10.42.0.1/setup')
-    wrapper.destroy()
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      const s = session()
+      const wrapper = mount(async () => s.result)
+      await flush(wrapper)
+      const reads = s.requests.length
+      await (wrapper.vm as any).theyDiffer()
+      await wrapper.vm.$nextTick()
+      expect(s.close).toHaveBeenCalled()
+      expect(tid(wrapper, 'setup-ble-mismatch').text()).toContain("That wasn't your printer")
+      await vi.advanceTimersByTimeAsync(2500)
+      // Nothing more after hanging up.
+      expect(s.requests.length).toBe(reads)
+      ;(wrapper.vm as any).phase = 'hotspot'
+      await wrapper.vm.$nextTick()
+      expect(tid(wrapper, 'setup-ble-hotspot').text()).toContain('Muon-walnut-8987')
+      expect(tid(wrapper, 'setup-ble-hotspot').text()).toContain('http://10.42.0.1/setup')
+      wrapper.destroy()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it.each([
