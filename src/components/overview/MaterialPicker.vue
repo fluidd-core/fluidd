@@ -22,7 +22,7 @@
       >
         <span
           class="matp__swatch"
-          :style="{ background: loadedMaterial ? loadedMaterial.colour : 'transparent' }"
+          :style="{ background: shown && shown.colour ? shown.colour : 'transparent' }"
         />
         {{ chipText }}
         <frame-icon
@@ -51,10 +51,10 @@
         </span>
         <span class="ov-tile__value">
           <span
-            v-if="loadedMaterial"
+            v-if="shown && shown.colour"
             class="matp__swatch"
-            :style="{ background: loadedMaterial.colour }"
-          />{{ loadedMaterial ? loadedMaterial.name : 'Not set' }}
+            :style="{ background: shown.colour }"
+          />{{ shown ? shown.name : 'Not set' }}
         </span>
         <span class="ov-tile__sub">{{ subtitle }}</span>
       </button>
@@ -225,8 +225,17 @@ export default class MaterialPicker extends Mixins(ControlMixin) {
 
   colours = FILAMENT_COLOURS
 
+  /** What the tile names: what's loaded, else what the print running was sliced for. */
+  get shown (): { name: string, colour: string | null } | null {
+    return this.loadedMaterial ?? this.printingWith
+  }
+
   get subtitle (): string {
     const m = this.loadedMaterial
+    if (!m && this.printingWith) {
+      const colour = this.printingWith.colour ? colourName(this.printingWith.colour) : ''
+      return [colour, 'From the file printing. Tap to say what\'s loaded'].filter(Boolean).join(' · ')
+    }
     if (!m) return 'Tap to say what\'s loaded'
     return [this.loadedColour ? this.loadedColourName : '', this.temps(m)].filter(Boolean).join(' · ')
   }
@@ -237,6 +246,7 @@ export default class MaterialPicker extends Mixins(ControlMixin) {
 
   get chipText (): string {
     const m = this.loadedMaterial
+    if (!m && this.printingWith) return `${this.printingWith.name} (from the file)`
     if (!m) return 'Say what\'s loaded'
     return this.loadedColour ? `${m.name} · ${this.loadedColourName}` : m.name
   }

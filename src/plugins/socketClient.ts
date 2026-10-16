@@ -47,6 +47,12 @@ export class WebSocketClient {
   private retryAction: (() => void) | null = null
   /** When the waiting retry runs (Date.now() ms), or null when none is waiting. */
   private retryAt: number | null = null
+  /**
+   * Counts every connect, close and adopted socket. A connect still waiting
+   * for its token when another printer's socket was adopted or Fluidd closed
+   * the connection must not open a socket to its old address afterwards.
+   */
+  private attempt = 0
 
   constructor (options: SocketPluginOptions) {
     this.url = options.url
@@ -121,6 +127,7 @@ export class WebSocketClient {
   }
 
   close () {
+    this.attempt++
     this.cancelRetry()
     clearTimeout(this.pingTimeout)
     clearTimeout(this.deadTimeout)
@@ -134,12 +141,16 @@ export class WebSocketClient {
 
   async connect (url?: string) {
     if (url) this.url = url
+    const attempt = ++this.attempt
+    const target = this.url
     this.cache = null
     this.closing = false
     this.cancelRetry()
 
     try {
       const response = await httpClientActions.accessOneshotTokenGet({ timeout: TOKEN_TIMEOUT_MS })
+      // Fluidd moved on while the token came: another printer, or closed.
+      if (attempt !== this.attempt || target !== this.url) return
 
       const token = response.data.result
 
@@ -147,6 +158,7 @@ export class WebSocketClient {
       if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
       this.bindConnection(new WebSocket(`${this.url}?token=${token}`))
     } catch (error: unknown) {
+      if (attempt !== this.attempt) return
       // Bad. If this is a 401, then don't retry. Otherwise do.
       if (
         !axios.isAxiosError(error) ||
@@ -165,6 +177,7 @@ export class WebSocketClient {
     connection: PrinterSocket,
     reconnect?: () => Promise<PrinterSocket>
   ) {
+    this.attempt++
     this.closing = false
     this.cancelRetry()
     this.bindConnection(connection, reconnect ?? null)
@@ -172,6 +185,7 @@ export class WebSocketClient {
 
   /** Ends an adopted session without allowing its close event to reconnect. */
   releaseTransportSocket (closeConnection = true) {
+    this.attempt++
     this.cancelRetry()
     const connection = this.connection
     this.connection = null

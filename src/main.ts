@@ -66,7 +66,10 @@ if (startupState.cachedShown) document.getElementById(LOADER_ID)?.classList.add(
 
 // The first frame's two pages' chunks, fetched in parallel with appInit;
 // the warm load would otherwise wait for the router to resolve the route.
-if (!NO_PREFETCH_PATHS.test(window.location.pathname)) {
+// Not on a load that leaves at once for the console's silent sign-in: there
+// they only queued ahead of /authorize on HTTP/1.1 (14 Oct 2026).
+const prefetchFirstPages = () => {
+  if (NO_PREFETCH_PATHS.test(window.location.pathname)) return
   import('@/views/Printers.vue').catch(() => {})
   import('@/views/Overview.vue').catch(() => {})
 }
@@ -140,6 +143,7 @@ if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
   // back with a code; if not, it comes back signed out and shows "Sign in".
   startCentralSignIn({ silent: true }).catch((e) => consola.debug('Could not start the central sign-in', e))
 } else {
+  prefetchFirstPages()
   appInit()
     .then(async (config: InitConfig) => {
       consola.debug('Loaded App Configuration', config)

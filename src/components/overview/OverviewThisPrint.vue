@@ -78,6 +78,7 @@ export default class OverviewThisPrint extends Mixins(OverviewMixin) {
     if (this.pro) {
       if (this.layer && this.layers) facts.push({ label: 'Layer', value: `${this.layer} / ${this.layers} · Z ${this.position[2].toFixed(2)}` })
       if (this.filamentFact) facts.push({ label: 'Filament', value: this.filamentFact })
+      facts.push({ label: 'Spool', value: this.spoolFact })
       const motion = this.$store.state.printer.printer.motion_report ?? {}
       if (typeof motion.live_velocity === 'number') facts.push({ label: 'Speed now', value: `${Math.round(motion.live_velocity)} mm/s` })
       if (typeof motion.live_extruder_velocity === 'number') {
@@ -90,6 +91,7 @@ export default class OverviewThisPrint extends Mixins(OverviewMixin) {
     }
     if (this.layerFact) facts.push({ label: 'Layer', value: this.layerFact })
     if (this.filamentFact) facts.push({ label: 'Filament', value: this.filamentFact })
+    facts.push({ label: 'Spool', value: this.spoolFact })
     if (this.runningFor) facts.push({ label: 'Running for', value: this.runningFor })
     if (this.slicerSaid) facts.push({ label: 'Slicer said', value: this.slicerSaid })
     return facts
