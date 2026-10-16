@@ -22,23 +22,27 @@ export interface MissingInterval { from: number; to: number }
 /** Missing one-second sample spans, unioned conservatively across the displayed series. */
 export function missingIntervals (points: ChartPoint[], keys: string[], from: number, to: number): MissingInterval[] {
   if (to <= from || !keys.length) return [{ from, to }].filter(gap => gap.to > gap.from)
-  const coverage = keys.map(key => points
-    .filter(point => typeof point[key] === 'number' && Number.isFinite(point[key]))
-    .map(point => ({ from: Math.max(from, point.date.getTime() - 500), to: Math.min(to, point.date.getTime() + 500) }))
-    .filter(span => span.to > span.from))
-  const boundaries = [...new Set([from, to, ...coverage.flatMap(series => series.flatMap(span => [span.from, span.to]))])].sort((a, b) => a - b)
+  const sorted = points.filter(point => Number.isFinite(point.date.getTime())).sort((a, b) => a.date.getTime() - b.date.getTime())
   const gaps: MissingInterval[] = []
-  for (let i = 0; i < boundaries.length - 1; i++) {
-    const start = boundaries[i]
-    const end = boundaries[i + 1]
-    const midpoint = start + (end - start) / 2
-    if (coverage.some(series => !series.some(span => midpoint >= span.from && midpoint < span.to))) {
-      const previous = gaps.at(-1)
-      if (previous?.to === start) previous.to = end
-      else gaps.push({ from: start, to: end })
+  for (const key of keys) {
+    const samples = sorted.filter(point => typeof point[key] === 'number' && Number.isFinite(point[key]))
+    let coveredTo = from
+    for (let i = 0; i < samples.length; i++) {
+      const at = samples[i].date.getTime()
+      const coveredFrom = Math.max(from, at - 500)
+      if (coveredFrom > coveredTo) gaps.push({ from: coveredTo, to: coveredFrom })
+      // The newest real reading remains the displayed live value until now.
+      coveredTo = Math.max(coveredTo, Math.min(to, i === samples.length - 1 ? to : at + 500))
     }
+    if (coveredTo < to) gaps.push({ from: coveredTo, to })
   }
-  return gaps
+  gaps.sort((a, b) => a.from - b.from || a.to - b.to)
+  return gaps.reduce<MissingInterval[]>((merged, gap) => {
+    const previous = merged.at(-1)
+    if (previous && gap.from <= previous.to) previous.to = Math.max(previous.to, gap.to)
+    else merged.push({ ...gap })
+    return merged
+  }, [])
 }
 
 export function sampleAt (points: ChartPoint[], at: number): ChartPoint | null {

@@ -17,7 +17,7 @@ it('reports every missing interval across displayed series', () => {
     { date: new Date(7000), extruder: 203, heater_bed: 57 }
   ]
   expect(missingIntervals(points, ['extruder', 'heater_bed'], 0, 8000)).toEqual([
-    { from: 0, to: 500 }, { from: 1500, to: 2500 }, { from: 3500, to: 6500 }, { from: 7500, to: 8000 }
+    { from: 0, to: 500 }, { from: 1500, to: 2500 }, { from: 3500, to: 6500 }
   ])
 })
 

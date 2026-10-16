@@ -45,7 +45,8 @@ it('shows the graph around older retained history selected with the phone time c
 it('renders an accessible track segment for a gap in the middle of history', () => {
   const wrapper = mount(TemperatureTimeline, { propsData: { points: [{ date: new Date(1000), extruder: 200 }, { date: new Date(2000), extruder: 201 }, { date: new Date(6000), extruder: 202 }], sensors: [{ key: 'extruder', label: 'Nozzle', color: '#ff8c42' }], now: 7000, start: 0 } })
   const gaps = wrapper.findAll('[data-gap]')
-  expect(gaps.length).toBeGreaterThanOrEqual(3)
+  expect((wrapper.vm as any).gaps).toEqual([{ from: 0, to: 500 }, { from: 2500, to: 5500 }])
+  expect(gaps.length).toBe(2)
   expect(gaps.wrappers.some(gap => gap.attributes('aria-label')?.includes('missing'))).toBe(true)
   wrapper.destroy()
 })

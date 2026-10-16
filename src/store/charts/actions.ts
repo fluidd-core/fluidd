@@ -5,6 +5,7 @@ import type { ChartState } from './types'
 import { retainedSamples } from '@/services/overview/timeline'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
+import { cloudState } from '@/services/muon-cloud/state'
 
 export const actions: ActionTree<ChartState, RootState> = {
   /**
@@ -19,8 +20,8 @@ export const actions: ActionTree<ChartState, RootState> = {
    */
   async initTempStore ({ commit, rootGetters, rootState }, payload) {
     const response = payload?.requestContext ? payload.payload : payload
-    const context = payload?.requestContext as { apiUrl?: string; connectionId?: string | null } | undefined
-    if (context && (context.apiUrl !== rootState.config.apiUrl || context.connectionId !== rootState.socket.connectionId)) return
+    const context = payload?.requestContext as { apiUrl?: string; connectionId?: string | null, printerId?: string | null } | undefined
+    if (context && (context.apiUrl !== rootState.config.apiUrl || context.connectionId !== rootState.socket.connectionId || context.printerId !== cloudState.activePrinterId)) return
     // Moonraker supplies ordered one-second arrays, not absolute timestamps.
     // Anchor approximately at receipt; never pad a short history with readings.
     const sensors = Object.fromEntries(Object.entries(response ?? {}).filter(([key]) => !!rootState.printer.printer[key]))
