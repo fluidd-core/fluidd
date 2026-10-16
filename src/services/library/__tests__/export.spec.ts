@@ -35,6 +35,12 @@ describe('Library export transport', () => {
     signedIn(); vi.stubGlobal('showSaveFilePicker', undefined); vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response(archive().slice(0, 1024))))
     await expect(exportLibrary(new AbortController().signal)).rejects.toThrow('incomplete')
   })
+  it('rejects a full-sized archive whose tar trailer is not zero-filled', async () => {
+    signedIn(); vi.stubGlobal('showSaveFilePicker', undefined)
+    const bytes = archive(); bytes[1024] = 1
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response(bytes)))
+    await expect(exportLibrary(new AbortController().signal)).rejects.toThrow('incomplete')
+  })
   it.each([[401, 'session ended'], [404, 'No Library archive'], [409, 'Library changed'], [429, 'Too many archive requests']])('gives HTTP %i its own useful message', async (status, message) => {
     signedIn(); vi.stubGlobal('showSaveFilePicker', undefined); vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response('{}', { status })))
     await expect(exportLibrary(new AbortController().signal)).rejects.toThrow(message); if (status === 401) expect(assertion.drop).toHaveBeenCalledOnce()
