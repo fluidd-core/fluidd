@@ -21,6 +21,7 @@ describe('getStartingLocale', () => {
   it.each([
     [['zh-CN', 'en-US'], 'zh-CN'],
     [['zh-HK'], 'zh-HK'],
+    [['pt-BR'], 'pt-BR'],
     [['de'], 'de'],
     [['fr-CA'], 'fr']
   ])('matches the full locale code before the language (%j)', (languages, expected) => {
@@ -30,7 +31,7 @@ describe('getStartingLocale', () => {
   })
 
   it('falls back to the language when the full code is unsupported', () => {
-    setNavigatorLanguages(['pt-BR'])
+    setNavigatorLanguages(['pt-PT'])
 
     expect(getStartingLocale()).toBe('pt')
   })
@@ -42,7 +43,7 @@ describe('getStartingLocale', () => {
   })
 
   it.each([
-    [['pt_BR'], 'pt'],
+    [['pt_BR'], 'pt-BR'],
     [['zh_CN'], 'zh-CN']
   ])('takes the underscore form of a locale code (%j)', (languages, expected) => {
     setNavigatorLanguages(languages)
