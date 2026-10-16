@@ -56,6 +56,29 @@ class PrinterZipWorkflowTest(unittest.TestCase):
         self.assertNotIn("docker", self.workflow.lower())
         self.assertNotIn("FLUIDD_PAUSE_PUBLISH", self.workflow)
 
+    def test_write_token_is_available_only_to_gh_steps(self) -> None:
+        workflow_preamble, jobs = self.workflow.split("\njobs:\n", maxsplit=1)
+        job_preamble, steps = jobs.split("\n    steps:\n", maxsplit=1)
+        for env_scope in (workflow_preamble, job_preamble):
+            self.assertNotRegex(env_scope, r"(?m)^\s+GH_TOKEN:")
+            self.assertNotIn("github.token", env_scope)
+
+        step_blocks = re.split(r"(?m)(?=^      - name: )", steps)
+        named_steps = [step for step in step_blocks if step.startswith("      - name: ")]
+        checkout_step = next(
+            step for step in named_steps if "uses: actions/checkout@v4" in step
+        )
+        self.assertIn("persist-credentials: false", checkout_step)
+        gh_steps = [step for step in named_steps if re.search(r"\bgh release ", step)]
+        self.assertEqual(3, len(gh_steps))
+        for step in named_steps:
+            has_token = "GH_TOKEN: ${{ github.token }}" in step
+            self.assertEqual(step in gh_steps, has_token)
+
+    def test_release_notes_workflow_run_has_no_indentation(self) -> None:
+        self.assertIn('printf -v RELEASE_NOTES', self.workflow)
+        self.assertIn('--notes "$RELEASE_NOTES"', self.workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
