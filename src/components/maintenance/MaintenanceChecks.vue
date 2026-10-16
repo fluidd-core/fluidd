@@ -78,7 +78,7 @@
         Nozzle
       </h3>
       <p class="mcheck__desc">
-        Printing hours on this printer, not the age of a replacement nozzle. Check the nozzle if prints start to string or look thin.
+        Total printing hours on this printer. Check the nozzle if prints start to string or look thin.
       </p>
       <span class="mcheck__status">Nothing to do · {{ printHours === null ? 'Hours unavailable' : `${printHours} h printed` }}</span>
     </div>

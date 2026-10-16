@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import { reportedNumber } from '@/services/maintenance/model'
 
 @Component
 export default class MaintenanceResult extends Vue {
@@ -33,8 +34,9 @@ export default class MaintenanceResult extends Vue {
       const name = probe?.name ?? 'stepper_z'
       const key = probe ? 'z_offset' : 'position_endstop'
       const raw = pending[name]?.[key] ?? settings[name]?.[key]
-      return raw !== undefined && Number.isFinite(Number(raw))
-        ? [{ label: probe ? 'Probe Z offset' : 'Z endstop', source: pending[name]?.[key] !== undefined ? 'awaiting save' : 'printer.cfg', value: `${Number(raw).toFixed(3)} mm` }]
+      const value = reportedNumber(raw)
+      return value !== null
+        ? [{ label: probe ? 'Probe Z offset' : 'Z endstop', source: pending[name]?.[key] !== undefined ? 'awaiting save' : 'printer.cfg', value: `${value.toFixed(3)} mm` }]
         : []
     }
     return Object.keys({ ...settings, ...pending })
@@ -42,7 +44,7 @@ export default class MaintenanceResult extends Vue {
       .flatMap(name => {
         const values = { ...settings[name], ...pending[name] }
         const keys = ['pid_kp', 'pid_ki', 'pid_kd', 'heater_power', 'block_heat_capacity']
-        const result = keys.filter(k => values[k] !== undefined && Number.isFinite(Number(values[k])))
+        const result = keys.filter(k => reportedNumber(values[k]) !== null)
           .map(k => `${({ pid_kp: 'Kp', pid_ki: 'Ki', pid_kd: 'Kd', heater_power: 'Power W', block_heat_capacity: 'Heat capacity J/K' } as Record<string, string>)[k]} ${Number(values[k])}`)
         return result.length ? [{ label: name === 'extruder' ? 'Nozzle' : name === 'heater_bed' ? 'Bed' : name.replace('heater_generic ', ''), source: pending[name] ? 'awaiting save' : 'printer.cfg', value: result.join(' · ') }] : []
       })
