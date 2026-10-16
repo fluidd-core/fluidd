@@ -15,9 +15,9 @@ export class AdminError extends Error {
 }
 const MODELS = 'https://models.muon3d.com'
 
-export function adminAvailable (page = window.location.href, console = cloudBaseUrl()): boolean {
+export function adminAvailable (page = window.location.href, console = cloudBaseUrl(), framed = window.top !== window.self): boolean {
   const origin = new URL(page).origin
-  return ['https://control.muon3d.com', 'https://app.muon3d.com'].includes(origin) && console === origin
+  return !framed && ['https://control.muon3d.com', 'https://app.muon3d.com'].includes(origin) && console === origin
 }
 
 async function send<T> (origin: string, path: string, token: string, body: unknown): Promise<T> {

@@ -53,6 +53,7 @@ describe('staff requests', () => {
     for (const page of ['http://m1.local/admin', 'https://library.muon3d.com/admin', 'https://slicer.muon3d.com/admin']) {
       expect(adminAvailable(page, 'https://control.muon3d.com')).toBe(false)
     }
+    expect(adminAvailable('https://control.muon3d.com/admin', 'https://control.muon3d.com', true)).toBe(false)
   })
   it('keeps exact lookup and reason out of the URL and does not broaden results', async () => {
     const fetch = vi.fn().mockResolvedValue(response({ account: null, staff_expires_at: 300 }))
