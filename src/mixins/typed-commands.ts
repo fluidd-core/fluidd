@@ -12,7 +12,7 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
   commandRefusal = ''
 
   get commandTarget (): string {
-    return `${this.$store.state.config.apiUrl}|${cloudState.activePrinterId ?? ''}|${this.$route?.params?.printer ?? ''}`
+    return `${this.$store.state.config.apiUrl}|${cloudState.activePrinterId ?? ''}|${this.$route?.params?.printer ?? ''}|${cloudState.account?.id ?? ''}`
   }
 
   get commandControlAvailable (): boolean {
