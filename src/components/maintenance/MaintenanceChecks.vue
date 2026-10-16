@@ -98,8 +98,7 @@
       {{ checksBlocked }}
     </p>
 
-    <manual-probe-dialog
-      v-if="manualProbeDialogOpen"
+    <manual-probe-recovery
       v-model="manualProbeDialogOpen"
     />
   </control-card>
