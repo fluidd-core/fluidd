@@ -269,9 +269,10 @@ editing `src/locales` will not change them.
 
 `src/plugins/vuetify.ts` maps each Fluidd locale code onto the matching Vuetify
 one and loads it when the language changes. Most codes match one-to-one; the
-exceptions are `zh-CN`, `zh-HK` and `pt_BR`, which map onto Vuetify's `zh-Hans`,
-`zh-Hant` and `pt`. A code left out of that map falls back to English, which is
-what happens for Tamil — Vuetify has no `ta` translation.
+exceptions are `zh-CN` (onto Vuetify's `zh-Hans`), `zh-HK` and `zh-TW` (both
+Traditional Chinese, onto `zh-Hant`), and `pt-BR` (onto `pt`). A code left out of
+that map falls back to English, which is what happens for Tamil — Vuetify has no
+`ta` translation.
 
 Adding a language therefore needs an entry in that map alongside the one in
 `SupportedLocales` (`src/globals.ts`), unless Vuetify has no translation for it.
