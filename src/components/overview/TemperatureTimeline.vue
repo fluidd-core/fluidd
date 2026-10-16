@@ -161,10 +161,11 @@ export default class TemperatureTimeline extends Vue {
   get readings () {
     const sample = this.sample
     if (!sample) return []
-    return this.sensors.map(sensor => ({ key: sensor.key, text: `${sensor.label} ${this.degrees(sample[sensor.key])}${typeof sample[sensor.key + 'Target'] === 'number' ? ` · target ${this.degrees(sample[sensor.key + 'Target'])}` : ''}` }))
+    return this.sensors.map(sensor => ({ key: sensor.key, text: `${sensor.label} ${this.degrees(sample[sensor.key])}${this.isReading(sample[sensor.key + 'Target']) ? ` · target ${this.degrees(sample[sensor.key + 'Target'])}` : ''}` }))
   }
 
   path (name: string): string { return historyPath(this.points, name, this.plotFrom, this.plotTo, 600, v => 160 - v / this.maximum * 160) }
+  isReading (value: number | Date): value is number { return typeof value === 'number' && Number.isFinite(value) }
   degrees (value: number | Date): string { return typeof value === 'number' && Number.isFinite(value) ? `${value.toFixed(2).replace(/0$/, '')}°` : 'unrecorded' }
   xAt (at: number): number { return Math.max(0, Math.min(600, (at - this.plotFrom) / Math.max(1, this.plotTo - this.plotFrom) * 600)) }
   gapStyle (gap: MissingInterval) { const duration = Math.max(1, this.now - this.from); return { left: `${(gap.from - this.from) / duration * 100}%`, width: `${(gap.to - gap.from) / duration * 100}%` } }

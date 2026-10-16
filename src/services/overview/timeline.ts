@@ -57,7 +57,10 @@ export function historyPath (points: ChartPoint[], key: string, from: number, to
     const at = p.date.getTime()
     const value = p[key]
     if (!Number.isFinite(at) || at < from || at > to || typeof value !== 'number' || !Number.isFinite(value)) { previous = null; continue }
-    path.push(`${previous === null || at < previous || at - previous > 2500 ? 'M' : 'L'}${((at - from) / Math.max(1, to - from) * width).toFixed(1)} ${y(value).toFixed(1)}`)
+    const pointX = (at - from) / Math.max(1, to - from) * width
+    const pointY = y(value)
+    if (!Number.isFinite(pointX) || !Number.isFinite(pointY)) { previous = null; continue }
+    path.push(`${previous === null || at < previous || at - previous > 2500 ? 'M' : 'L'}${pointX.toFixed(1)} ${pointY.toFixed(1)}`)
     previous = at
   }
   return path.join(' ')
