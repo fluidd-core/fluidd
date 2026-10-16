@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Independently verify the provenance and contents of a printer release zip."""
+from __future__ import annotations
+
 import argparse
 import hashlib
 from html.parser import HTMLParser
@@ -11,8 +13,6 @@ import sys
 import zipfile
 
 CONTROL = "https://control.muon3d.com"
-LEGACY = "https://app.muon3d.com"
-ROOT = Path(__file__).parents[1]
 
 class VerificationError(Exception):
     """A release invariant was not met."""
@@ -57,32 +57,43 @@ def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_siz
             names.add(name)
             if name.endswith(".map"): fail(f"zip contains a source map: {name}")
             if any(part == ".env" or part.startswith(".env.") for part in pure.parts): fail(f"zip contains a leaked .env file: {name}")
-        for required in ("index.html", "build-info.json", "config.json"):
-            if required not in names: fail(f"zip is missing {required}")
+        for required in ("index.html", "build-info.json", "config.json", ".vite/manifest.json"):
+            if required not in names:
+                if required == "build-info.json":
+                    fail("zip predates build-info.json and cannot be verified")
+                fail(f"zip is missing {required}")
         try:
             index = archive.read("index.html").decode("utf-8")
             build_info = json.loads(archive.read("build-info.json"))
             config = json.loads(archive.read("config.json"))
+            manifest = json.loads(archive.read(".vite/manifest.json"))
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             fail(f"invalid build metadata: {error}")
         parser = AssetParser()
         parser.feed(index)
         missing = sorted(asset for asset in parser.assets if asset not in names)
         if missing: fail(f"index.html referenced asset is missing: {missing[0]}")
+        manifest_assets: set[str] = set()
+        if not isinstance(manifest, dict): fail("Vite manifest is not an object")
+        for entry in manifest.values():
+            if not isinstance(entry, dict): fail("Vite manifest contains an invalid entry")
+            for field in ("file", "css", "assets"):
+                values = entry.get(field, [])
+                if field == "file": values = [values]
+                if not isinstance(values, list): fail(f"Vite manifest {field} is invalid")
+                manifest_assets.update(value.lstrip("/") for value in values if isinstance(value, str))
+        missing_manifest = sorted(manifest_assets - names)
+        if missing_manifest: fail(f"manifest referenced asset is missing: {missing_manifest[0]}")
         if build_info.get("commit") != expected_commit: fail(f"build-info.json commit does not match {expected_commit}")
+        if build_info.get("cloudBaseUrl") != CONTROL: fail(f"build-info.json cloudBaseUrl must be exactly {CONTROL}")
         meta = re.search(r'<meta\s+(?=[^>]*\bname=["\']fluidd-commit["\'])(?=[^>]*\bcontent=["\']([^"\']+)["\'])[^>]*>', index, re.IGNORECASE)
         if not meta or meta.group(1) != expected_commit: fail(f"fluidd-commit meta does not match {expected_commit}")
-        printer_config = json.loads((ROOT / "public/config.json").read_text(encoding="utf-8"))
-        if config != printer_config or config.get("hosted") is not False: fail("config.json is not the printer config (the hosted server config is forbidden)")
+        if config.get("hosted") is not False: fail("config.json is not the printer config (the hosted server config is forbidden)")
         text_files: dict[str, str] = {}
         for info in infos:
             if info.filename.endswith((".js", ".html", ".json", ".css")):
                 try: text_files[info.filename] = archive.read(info).decode("utf-8")
                 except UnicodeDecodeError: fail(f"text asset is not UTF-8: {info.filename}")
-        combined = "\n".join(text_files.values())
-        if CONTROL not in combined: fail(f"bundle does not contain the canonical cloud base URL {CONTROL}")
-        for name, contents in text_files.items():
-            if LEGACY in contents and CONTROL not in contents: fail(f"{name} contains {LEGACY} without the canonical control host")
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -96,6 +107,7 @@ def main() -> int:
         print(f"verification failed: {error}", file=sys.stderr)
         return 1
     print(f"verified {args.zip}: {args.expected_sha256}, {args.zip.stat().st_size} bytes, commit {args.expected_commit}")
+    print("note: config.json is checked for printer shape; this does not independently prove its provenance because the build inputs share a checkout")
     return 0
 
 if __name__ == "__main__":

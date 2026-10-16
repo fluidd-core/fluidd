@@ -27,6 +27,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Preserve verifier from workflow revision
+        shell: bash
+        run: cp tools/verify-printer-zip.py "$RUNNER_TEMP/verify-printer-zip.py"
+
       - name: Validate develop commit and check it out
         shell: bash
         run: |
@@ -82,7 +86,9 @@ jobs:
         run: npm run circular-check
 
       - name: Build production bundle
-        run: npm run build
+        run: |
+          CI=1 npm run build
+          CI=1 npm run build
 
       - name: Check the setup page budget
         run: npm run check:setup-budget
@@ -95,6 +101,15 @@ jobs:
           zip -r ../fluidd.zip .
           cd ..
           sha256sum fluidd.zip > fluidd.zip.sha256
+
+      - name: Verify local printer zip
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILT_SHA256="$(sha256sum fluidd.zip | cut -d' ' -f1)"
+          BUILT_SIZE="$(stat --format='%s' fluidd.zip)"
+          python3 "$RUNNER_TEMP/verify-printer-zip.py" fluidd.zip \
+            "$BUILT_SHA256" "$SHA" --expected-size "$BUILT_SIZE"
 
       - name: Create new prerelease
         env:
@@ -131,5 +146,12 @@ jobs:
           (cd release-download && sha256sum --check fluidd.zip.sha256)
           test "$(sha256sum release-download/fluidd.zip | cut -d' ' -f1)" = "$BUILT_SHA256"
           test "$(stat --format='%s' release-download/fluidd.zip)" = "$BUILT_SIZE"
-          python3 tools/verify-printer-zip.py release-download/fluidd.zip \
+
+      - name: Verify downloaded printer zip
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILT_SHA256="$(sha256sum fluidd.zip | cut -d' ' -f1)"
+          BUILT_SIZE="$(stat --format='%s' fluidd.zip)"
+          python3 "$RUNNER_TEMP/verify-printer-zip.py" release-download/fluidd.zip \
             "$BUILT_SHA256" "$SHA" --expected-size "$BUILT_SIZE"

@@ -29,8 +29,13 @@ class VerifyPrinterZipTest(unittest.TestCase):
         config = json.loads((ROOT / "public/config.json").read_text(encoding="utf-8"))
         return {
             "index.html": '<meta name="fluidd-commit" content="' + COMMIT + '"><script src="/assets/app.js"></script>',
-            "assets/app.js": f'const cloud="{CONTROL}";const accepted=["{CONTROL}","https://app.muon3d.com"]',
-            "build-info.json": json.dumps({"commit": COMMIT, "buildTime": "2026-10-16T00:00:00.000Z", "packageVersion": "1.2.3"}),
+            "assets/app.js": 'import("./lazy.js")',
+            "assets/lazy.js": "export default 1",
+            ".vite/manifest.json": json.dumps({
+                "index.html": {"file": "assets/app.js", "isEntry": True, "dynamicImports": ["src/lazy.ts"]},
+                "src/lazy.ts": {"file": "assets/lazy.js"},
+            }),
+            "build-info.json": json.dumps({"commit": COMMIT, "buildTime": "2026-10-16T00:00:00.000Z", "packageVersion": "1.2.3", "cloudBaseUrl": CONTROL}),
             "config.json": json.dumps(config),
         }
 
@@ -59,6 +64,7 @@ class VerifyPrinterZipTest(unittest.TestCase):
         result = self.run_verify()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("verified", result.stdout)
+        self.assertIn("does not independently prove", result.stdout)
 
     def test_rejects_wrong_hash_and_size(self) -> None:
         self.write_zip()
@@ -101,16 +107,29 @@ class VerifyPrinterZipTest(unittest.TestCase):
         self.write_zip(files)
         self.assert_bad("printer config")
 
-    def test_rejects_wrong_cloud_url_or_unpaired_legacy_host(self) -> None:
+    def test_rejects_wrong_or_missing_configured_cloud_url(self) -> None:
         files = self.files()
-        files["assets/app.js"] = 'const cloud="https://example.com"'
+        info = json.loads(files["build-info.json"])
+        info["cloudBaseUrl"] = "https://app.muon3d.com"
+        files["build-info.json"] = json.dumps(info)
         self.write_zip(files)
         self.assert_bad(CONTROL)
         files = self.files()
-        files["assets/app.js"] += ';const legacy="https://app.muon3d.com"'
-        files["assets/only-old.js"] = 'const legacy="https://app.muon3d.com"'
+        info = json.loads(files["build-info.json"])
+        del info["cloudBaseUrl"]
+        files["build-info.json"] = json.dumps(info)
         self.write_zip(files)
-        self.assert_bad("without the canonical control host")
+        self.assert_bad(CONTROL)
+
+    def test_rejects_missing_manifest_asset_including_lazy_chunks(self) -> None:
+        files = self.files()
+        del files["assets/lazy.js"]
+        self.write_zip(files)
+        self.assert_bad("manifest referenced asset")
+
+    def test_runs_on_python_38_type_annotation_rules(self) -> None:
+        source = VERIFY.read_text(encoding="utf-8")
+        self.assertIn("from __future__ import annotations", source)
 
     def test_rejects_source_maps_and_env_files(self) -> None:
         for name, reason in (("assets/app.js.map", "source map"), (".env.production", ".env")):

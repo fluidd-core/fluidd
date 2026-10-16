@@ -50,8 +50,15 @@ class PrinterZipWorkflowTest(unittest.TestCase):
         self.assertIn("tools/verify-printer-zip.py", self.workflow)
         self.assertRegex(
             self.workflow,
-            r'tools/verify-printer-zip\.py\s+release-download/fluidd\.zip\s+\\\s+"\$BUILT_SHA256"\s+"\$SHA"\s+--expected-size\s+"\$BUILT_SIZE"',
+            r'\$RUNNER_TEMP/verify-printer-zip\.py"\s+release-download/fluidd\.zip\s+\\\s+"\$BUILT_SHA256"\s+"\$SHA"\s+--expected-size\s+"\$BUILT_SIZE"',
         )
+        local_verify = self.workflow.index("Verify local printer zip")
+        release = self.workflow.index("Create new prerelease")
+        remote_verify = self.workflow.index("Verify downloaded printer zip")
+        self.assertLess(local_verify, release)
+        self.assertGreater(remote_verify, release)
+        self.assertIn('cp tools/verify-printer-zip.py "$RUNNER_TEMP/verify-printer-zip.py"', self.workflow)
+        self.assertEqual(2, self.workflow.count('python3 "$RUNNER_TEMP/verify-printer-zip.py"'))
         self.assertNotIn("--clobber", self.workflow)
         self.assertNotRegex(self.workflow, r"\b(gh release delete|git push .*--delete)\b")
 
@@ -80,6 +87,13 @@ class PrinterZipWorkflowTest(unittest.TestCase):
         for step in named_steps:
             has_token = "GH_TOKEN: ${{ github.token }}" in step
             self.assertEqual(step in gh_steps, has_token)
+
+        verifier_steps = [step for step in named_steps if 'python3 "$RUNNER_TEMP/verify-printer-zip.py"' in step]
+        self.assertEqual(2, len(verifier_steps))
+        self.assertTrue(all("GH_TOKEN" not in step for step in verifier_steps))
+
+    def test_clean_ci_checkout_is_built_twice(self) -> None:
+        self.assertEqual(2, self.workflow.count("CI=1 npm run build"))
 
     def test_release_notes_workflow_run_has_no_indentation(self) -> None:
         self.assertIn('printf -v RELEASE_NOTES', self.workflow)

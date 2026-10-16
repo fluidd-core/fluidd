@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { version } from './package.json'
 
-import type { Plugin } from 'vite'
+import { loadEnv, type Plugin } from 'vite'
 
 const fullCommit = () => {
   const fromEnvironment = process.env.FLUIDD_BUILD_COMMIT
@@ -17,8 +17,9 @@ const fullCommit = () => {
   if (process.env.CI) {
     const dirty = child_process.execFileSync(
       'git', ['status', '--porcelain', '--untracked-files=no'], { encoding: 'utf8' }
-    ).trim()
-    if (dirty) throw new Error('Refusing to build from a dirty tree in CI')
+    ).trimEnd()
+    const unexpected = dirty.split('\n').filter(line => line && line.slice(3) !== 'components.d.ts')
+    if (unexpected.length) throw new Error('Refusing to build from a dirty tree in CI')
   }
   return commit
 }
@@ -31,12 +32,14 @@ const writeJson = (filename: string, value: unknown) => fs.promises.writeFile(
 const vitePluginInjectVersion = (): Plugin => {
   let commit = ''
   let buildTime = ''
+  let cloudBaseUrl = ''
 
   return {
     name: 'version',
-    config: () => {
+    config: (_, { mode }) => {
       commit = fullCommit()
       buildTime = new Date().toISOString()
+      cloudBaseUrl = loadEnv(mode, __dirname, 'VUE_').VUE_MUON_CLOUD_URL || ''
       return {
         define: {
           'import.meta.env.VERSION': JSON.stringify(version),
@@ -63,7 +66,8 @@ const vitePluginInjectVersion = (): Plugin => {
         writeJson('build-info.json', {
           commit,
           buildTime,
-          packageVersion: version
+          packageVersion: version,
+          cloudBaseUrl
         })
       ])
     }

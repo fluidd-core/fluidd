@@ -1,5 +1,15 @@
 # Fluidd
 
+## Printer release verification
+
+The manual printer-zip workflow records the exact build commit and configured
+cloud base URL in `build-info.json`, then verifies the local archive before
+publishing and the downloaded release asset afterward. The verifier accounts
+for every output named by Vite's manifest, including lazy chunks. It checks
+that `config.json` has printer shape (`hosted: false`), but it cannot
+independently prove that configuration's provenance by comparing it with the
+same checkout that produced the build.
+
 Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
 
 ![Fluidd](/docs/assets/images/preview_sliced.png "Fluidd")

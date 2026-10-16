@@ -192,6 +192,11 @@ export default defineConfig(async ({ command, mode }) => {
   // still load /assets/…, not /boxwood-367a/assets/….
   base: '/',
 
+  build: {
+    // Printer release verification uses this to account for entry and lazy chunks.
+    manifest: true
+  },
+
   server: {
     hmr: !testing,
     host: '0.0.0.0',
