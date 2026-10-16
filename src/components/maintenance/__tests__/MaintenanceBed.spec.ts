@@ -20,7 +20,7 @@ function show (managed = false) {
   printerTransportBinding.remote = managed
   cloudState.activePrinterId = managed ? 'stable-one' : null
   Vue.set(store.state.printer.printer, 'bed_mesh', { probed_matrix: [[-0.12, 0.04], [0.02, 0.15]], profile_name: 'default' })
-  for (const [key, value] of Object.entries({ 'mesh/getSupportsBedMesh': true, 'printer/getHomedAxes': () => true, 'server/componentSupport': () => false })) Vue.set(store.getters, key, value)
+  for (const [key, value] of Object.entries({ 'mesh/getSupportsBedMesh': true, 'printer/getHomedAxes': (): boolean => true, 'server/componentSupport': (): boolean => false })) Vue.set(store.getters, key, value)
   const wrapper = mount(MaintenanceMesh, { mocks: { $store: store, $waits: {}, $route: { params: { printer: 'mock' } } }, stubs: { ...panelStubs, 'router-link': { props: ['to'], template: '<a :href="to"><slot /></a>' } } })
   return { wrapper, store }
 }
