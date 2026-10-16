@@ -99,3 +99,15 @@ it('discards a completed ceremony after leaving the account page', async () => {
   const confirming = (w.vm.reauthOn as any).passkey(); w.destroy(); done(); await confirming
   expect(await result).toBeNull(); expect(act).toHaveBeenCalledTimes(1)
 })
+
+it('discards a completed ceremony after the account session changes', async () => {
+  localStorage.setItem('muon.cloud.token', 'first-session')
+  let done!:()=>void
+  vi.mocked(confirmation.confirmAccount).mockImplementationOnce(() => new Promise<void>(resolve => { done = resolve }))
+  const w = mount(Page); const act = vi.fn().mockRejectedValueOnce(refused()).mockResolvedValueOnce('must not run')
+  const result = w.vm.withReauth(act); await new Promise(resolve => setTimeout(resolve))
+  const confirming = (w.vm.reauthOn as any).passkey()
+  localStorage.setItem('muon.cloud.token', 'next-session'); done(); await confirming
+  expect(await result).toBeNull(); expect(act).toHaveBeenCalledTimes(1)
+  w.destroy(); localStorage.clear()
+})
