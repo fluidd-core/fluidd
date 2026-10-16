@@ -12,6 +12,18 @@ const settle = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(
 const detail: api.CaseDetail = { id: 'case-1', share_id: 'share-1', title: 'Chosen title', owner: 'owner', kind: 'report', state: 'hidden', version: 3, assignee: 'jack', at: 1, hidden_by: 'staff-a', events: [{ id: 1, actor: 'staff-a', kind: 'report', text: '<script>unsafe()</script>', at: 1 }] }
 afterEach(() => { vi.clearAllMocks() })
 describe('moderation review', () => {
+  it('requires intentional source review before public approval', async () => {
+    const publication = { licence: 'CC0-1.0', credit: null, manifest: 'a'.repeat(64), files: [{ id: 'file-1', role: 'project', size_bytes: 3, sha256: 'b'.repeat(64), format: '3mf', encoding: 'identity' }], reviewed_by: null, reviewed_version: null }
+    vi.mocked(api.staffCommand).mockResolvedValueOnce({ cases: [detail] }).mockResolvedValueOnce({ case: { ...detail, kind: 'publication', state: 'open', publication } } as any)
+    const w = mount(AdminModeration, { propsData: { section: 'queue', actor: 'staff-a' } })
+    await w.get('textarea').setValue('Review case 1042'); await w.get('form').trigger('submit'); await settle()
+    await w.findAll('article button').at(0).trigger('click'); await settle()
+    expect(w.text()).toContain('Source review')
+    const approve = w.findAll('button').wrappers.find(b => b.text().startsWith('Approve'))!
+    expect(approve.attributes('disabled')).toBeDefined()
+    expect(w.findAll('button').wrappers.some(b => b.text().includes('Fetch source'))).toBe(true)
+    w.destroy()
+  })
   it('reads a case with its server version, escapes evidence and refuses self-restoration', async () => {
     vi.mocked(api.staffCommand).mockResolvedValueOnce({ cases: [detail] }).mockResolvedValueOnce({ case: detail })
     const w = mount(AdminModeration, { propsData: { section: 'queue', actor: 'staff-a' } })

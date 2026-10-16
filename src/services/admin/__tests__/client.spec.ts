@@ -1,5 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
-import { adminAvailable, confirmStaff, lookupAccount, readAudit, staffCommand } from '../client'
+import { adminAvailable, confirmStaff, lookupAccount, readAudit, staffCommand, sourceBlob } from '../client'
+import { webcrypto } from 'node:crypto'
 import { TOKEN_KEY } from '@/services/muon-cloud/api'
 
 const response = (value: unknown, status = 200) => ({ ok: status === 200, status, text: async () => JSON.stringify(value) })
@@ -10,6 +11,14 @@ beforeEach(() => {
 afterEach(() => { localStorage.clear(); vi.unstubAllGlobals() })
 
 describe('staff requests', () => {
+  it('refuses changed source bytes and case manifests before a download is exposed', async () => {
+    vi.stubGlobal('crypto', webcrypto)
+    const file = { id: 'fixture', role: 'project', format: '3mf', encoding: 'identity', size_bytes: 3, sha256: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad' }
+    const source = { file, manifest: 'case-snapshot', bytes: 'YWJj' }
+    expect((await sourceBlob(source, file, 'case-snapshot')).size).toBe(3)
+    await expect(sourceBlob({ ...source, bytes: 'YmFk' }, file, 'case-snapshot')).rejects.toThrow('did not match')
+    await expect(sourceBlob(source, file, 'changed-case')).rejects.toThrow('changed')
+  })
   it('never automatically retries a mutation and keeps console authority on its origin', async () => {
     const fetch = vi.fn().mockResolvedValueOnce(response({ ceremony_id: 'once', options: { publicKey: { challenge: 'YQ' } }, expires_at: Date.now() / 1000 + 60 }))
       .mockResolvedValueOnce(response({ ok: true })).mockResolvedValueOnce(response({ actor: 'staff', staff_expires_at: Date.now() / 1000 + 120 }))
