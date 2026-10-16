@@ -43,3 +43,12 @@ npm run lint
 ```
 
 The suite enforces hosted-origin and framed-context refusal; fresh passkey confirmation for each staff mutation; origin-bound broker calls; no automatic mutation replay after a 401 or uncertain response; and no staff lookup, reason, proof or result in URLs or storage. Complete real-service membership removal, logout, WebAuthn cancellation/expiry, conflicting decisions, evidence digest, and models/console outage acceptance before lifting the publish hold.
+
+## Release holds and limits that still apply
+
+- Deploy console #37 (grouped devices and mandatory 14-day grace) before Control #80 consumes it.
+- Staff writes are never retried automatically, including after a 401. An unreadable or network reply means the outcome is uncertain: review the case, account and audit before deciding again.
+- Restoring hidden content needs a different staff member from the one who hid it, no active hold, and an elapsed counter-notice wait. Weekday targets skip weekends only, so staff must check holidays.
+- Source files over 8 MiB stay pending. Downloading or hashing a file does not make an archive safe or strip its metadata. Check file privacy before any public release.
+- An offline models read proof stays valid for at most two minutes after staff removal or logout. An admitted staff command can still commit within ten seconds. Neither is instant cancellation; Jack reviews both bounds before release.
+- Real staff IDs, the staff file, keys and the broker pairing are configured only in a separate, authorised release.
