@@ -1,16 +1,22 @@
 # Fluidd
 
+Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
+
 ## Printer release verification
 
 The manual printer-zip workflow records the exact build commit and configured
 cloud base URL in `build-info.json`, then verifies the local archive before
 publishing and the downloaded release asset afterward. The verifier accounts
-for every output named by Vite's manifest, including lazy chunks. It checks
-that `config.json` has printer shape (`hosted: false`), but it cannot
-independently prove that configuration's provenance by comparing it with the
-same checkout that produced the build.
+for every output named by Vite's manifest, including lazy chunks, and checks
+discoverable PWA precache and worker references. The manifest is compressed in
+ZIP metadata rather than shipped in the served tree. We cannot inspect the M1
+nginx configuration from this repository, so this assumes MuonOS extracts only
+ZIP file entries and ignores ZIP comments. Monaco, PWA, or `?worker` bundles
+that leave no discoverable URL are explicitly reported as unchecked.
 
-Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
+The commit and `cloudBaseUrl` are reported by the build itself and are not
+checked against compiled code. `config.json` is checked only for
+`hosted: false`; its provenance is not independently proven.
 
 ![Fluidd](/docs/assets/images/preview_sliced.png "Fluidd")
 

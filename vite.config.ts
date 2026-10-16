@@ -193,8 +193,9 @@ export default defineConfig(async ({ command, mode }) => {
   base: '/',
 
   build: {
-    // Printer release verification uses this to account for entry and lazy chunks.
-    manifest: true
+    // Only the printer release job needs this inventory. Hosted builds must not
+    // expose source paths through a publicly served .vite/manifest.json.
+    manifest: process.env.PRINTER_ZIP_VERIFY === '1'
   },
 
   server: {

@@ -2,6 +2,7 @@
 """Unit tests for verify-printer-zip.py, using deliberately tiny archives."""
 
 import hashlib
+import base64
 import json
 from pathlib import Path
 import stat
@@ -9,6 +10,7 @@ import subprocess
 import tempfile
 import unittest
 import zipfile
+import zlib
 
 
 ROOT = Path(__file__).parents[1]
@@ -41,10 +43,14 @@ class VerifyPrinterZipTest(unittest.TestCase):
 
     def write_zip(self, files: dict[str, str] | None = None, special: zipfile.ZipInfo | None = None) -> None:
         with zipfile.ZipFile(self.zip_path, "w") as archive:
-            for name, contents in (files or self.files()).items():
+            archive_files = (files or self.files()).copy()
+            manifest = archive_files.pop(".vite/manifest.json", None)
+            for name, contents in archive_files.items():
                 archive.writestr(name, contents)
             if special:
                 archive.writestr(special, "target")
+            if manifest is not None:
+                archive.comment = b"fluidd-vite-manifest-v1:" + base64.b64encode(zlib.compress(manifest.encode()))
 
     def run_verify(self, *, sha: str | None = None, commit: str = COMMIT, size: int | None = None) -> subprocess.CompletedProcess[str]:
         digest = sha or hashlib.sha256(self.zip_path.read_bytes()).hexdigest()
@@ -65,6 +71,36 @@ class VerifyPrinterZipTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("verified", result.stdout)
         self.assertIn("does not independently prove", result.stdout)
+        self.assertIn("reported by the build itself", result.stdout)
+        self.assertIn("config.json is checked only for hosted:false", result.stdout)
+
+    def test_rejects_zip_that_predates_build_info(self) -> None:
+        files = self.files()
+        del files["build-info.json"]
+        self.write_zip(files)
+        self.assert_bad("zip predates build-info.json and cannot be verified")
+
+    def test_rejects_empty_or_ambiguous_entry_manifest(self) -> None:
+        for manifest in ({}, {
+            "index.html": {"file": "assets/app.js", "isEntry": True},
+            "other.html": {"file": "assets/lazy.js", "isEntry": True},
+        }, {"index.html": {"file": "assets/app.js"}}):
+            files = self.files()
+            files[".vite/manifest.json"] = json.dumps(manifest)
+            self.write_zip(files)
+            self.assert_bad("exactly one isEntry entry for index.html")
+
+    def test_rejects_missing_worker_referenced_by_a_chunk(self) -> None:
+        files = self.files()
+        files["assets/app.js"] += ';new Worker(new URL("./gcode.worker-deadbeef.js",import.meta.url))'
+        self.write_zip(files)
+        self.assert_bad("referenced asset is missing: assets/gcode.worker-deadbeef.js")
+
+    def test_rejects_missing_workbox_precache_asset(self) -> None:
+        files = self.files()
+        files["sw.js"] = 'self.__WB_MANIFEST=[{url:"assets/precache-deadbeef.js",revision:null}]'
+        self.write_zip(files)
+        self.assert_bad("referenced asset is missing: assets/precache-deadbeef.js")
 
     def test_rejects_wrong_hash_and_size(self) -> None:
         self.write_zip()

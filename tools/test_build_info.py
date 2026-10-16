@@ -27,6 +27,11 @@ class BuildInfoTest(unittest.TestCase):
         self.assertIn("components.d.ts", plugin)
         self.assertIn(".trimEnd()", plugin)
 
+    def test_vite_manifest_is_opt_in_for_printer_verification(self) -> None:
+        config = (ROOT / "vite.config.ts").read_text(encoding="utf-8")
+        self.assertIn("process.env.PRINTER_ZIP_VERIFY === '1'", config)
+        self.assertNotIn("manifest: true", config)
+
 
 if __name__ == "__main__":
     unittest.main()

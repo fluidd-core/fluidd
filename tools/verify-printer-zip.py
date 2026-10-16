@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-"""Independently verify the provenance and contents of a printer release zip."""
+"""Verify archive integrity and references reported by a printer build.
+
+The archive's build-info.json and HTML report the commit, and build-info.json
+reports cloudBaseUrl; these claims are compared with expected values but are
+not checked against compiled code. config.json is checked only for hosted:false.
+"""
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 from html.parser import HTMLParser
 import json
@@ -11,8 +17,13 @@ import re
 import stat
 import sys
 import zipfile
+import zlib
 
 CONTROL = "https://control.muon3d.com"
+MANIFEST_COMMENT = b"fluidd-vite-manifest-v1:"
+ASSET_REFERENCE = re.compile(
+    r'''(?:["'])(?P<path>(?:/|\.\./|\./)?(?:assets/)?[A-Za-z0-9_./-]+\.(?:js|css|wasm|woff2?|ttf|png|svg|ico))(?:(?:\?[^"']*)?)["']'''
+)
 
 class VerificationError(Exception):
     """A release invariant was not met."""
@@ -31,7 +42,7 @@ class AssetParser(HTMLParser):
 def fail(message: str) -> None:
     raise VerificationError(message)
 
-def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_size: int | None) -> None:
+def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_size: int | None) -> list[str]:
     if not re.fullmatch(r"[0-9a-f]{64}", expected_sha): fail("expected SHA256 must be 64 lowercase hexadecimal characters")
     if not re.fullmatch(r"[0-9a-f]{40}", expected_commit): fail("expected commit must be a full lowercase 40-character SHA")
     if not zip_path.is_file(): fail(f"zip does not exist: {zip_path}")
@@ -57,7 +68,7 @@ def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_siz
             names.add(name)
             if name.endswith(".map"): fail(f"zip contains a source map: {name}")
             if any(part == ".env" or part.startswith(".env.") for part in pure.parts): fail(f"zip contains a leaked .env file: {name}")
-        for required in ("index.html", "build-info.json", "config.json", ".vite/manifest.json"):
+        for required in ("index.html", "build-info.json", "config.json"):
             if required not in names:
                 if required == "build-info.json":
                     fail("zip predates build-info.json and cannot be verified")
@@ -66,8 +77,12 @@ def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_siz
             index = archive.read("index.html").decode("utf-8")
             build_info = json.loads(archive.read("build-info.json"))
             config = json.loads(archive.read("config.json"))
-            manifest = json.loads(archive.read(".vite/manifest.json"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            if not archive.comment.startswith(MANIFEST_COMMENT):
+                fail("zip is missing its non-served Vite verification manifest")
+            manifest = json.loads(zlib.decompress(base64.b64decode(
+                archive.comment[len(MANIFEST_COMMENT):], validate=True
+            )))
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError, zlib.error) as error:
             fail(f"invalid build metadata: {error}")
         parser = AssetParser()
         parser.feed(index)
@@ -75,6 +90,8 @@ def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_siz
         if missing: fail(f"index.html referenced asset is missing: {missing[0]}")
         manifest_assets: set[str] = set()
         if not isinstance(manifest, dict): fail("Vite manifest is not an object")
+        entries = [key for key, value in manifest.items() if isinstance(value, dict) and value.get("isEntry") is True]
+        if entries != ["index.html"]: fail("Vite manifest must have exactly one isEntry entry for index.html")
         for entry in manifest.values():
             if not isinstance(entry, dict): fail("Vite manifest contains an invalid entry")
             for field in ("file", "css", "assets"):
@@ -94,6 +111,36 @@ def verify(zip_path: Path, expected_sha: str, expected_commit: str, expected_siz
             if info.filename.endswith((".js", ".html", ".json", ".css")):
                 try: text_files[info.filename] = archive.read(info).decode("utf-8")
                 except UnicodeDecodeError: fail(f"text asset is not UTF-8: {info.filename}")
+        discovered: set[str] = set()
+        for source_name, contents in text_files.items():
+            source_dir = PurePosixPath(source_name).parent
+            for match in ASSET_REFERENCE.finditer(contents):
+                raw = match.group("path")
+                if raw.startswith("/"):
+                    resolved = raw.lstrip("/")
+                elif raw.startswith(("./", "../")):
+                    resolved = str(source_dir.joinpath(raw))
+                    parts: list[str] = []
+                    for part in PurePosixPath(resolved).parts:
+                        if part == ".." and parts: parts.pop()
+                        elif part not in (".", ".."): parts.append(part)
+                    resolved = "/".join(parts)
+                else:
+                    resolved = raw
+                # Workbox's generated service worker is an explicit inventory.
+                # In application chunks, only worker URLs are in scope here;
+                # arbitrary asset-like strings can be runtime fallback names.
+                is_worker = "worker" in PurePosixPath(resolved).name.lower()
+                if resolved.startswith("assets/") and (source_name == "sw.js" or is_worker):
+                    discovered.add(resolved)
+        missing_discovered = sorted(discovered - names)
+        if missing_discovered: fail(f"referenced asset is missing: {missing_discovered[0]}")
+
+        checked = []
+        checked.append("PWA sw.js precache references" if "sw.js" in names else "PWA sw.js (unchecked: not present)")
+        worker_references = sorted(name for name in discovered if "worker" in PurePosixPath(name).name.lower())
+        checked.append("worker URLs referenced from chunks" if worker_references else "worker bundles (unchecked: no URL discoverable)")
+        return checked
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -102,12 +149,13 @@ def main() -> int:
     parser.add_argument("expected_commit")
     parser.add_argument("--expected-size", type=int)
     args = parser.parse_args()
-    try: verify(args.zip, args.expected_sha256, args.expected_commit, args.expected_size)
+    try: checked = verify(args.zip, args.expected_sha256, args.expected_commit, args.expected_size)
     except (VerificationError, OSError, zipfile.BadZipFile) as error:
         print(f"verification failed: {error}", file=sys.stderr)
         return 1
-    print(f"verified {args.zip}: {args.expected_sha256}, {args.zip.stat().st_size} bytes, commit {args.expected_commit}")
-    print("note: config.json is checked for printer shape; this does not independently prove its provenance because the build inputs share a checkout")
+    print(f"verified {args.zip}: {args.expected_sha256}, {args.zip.stat().st_size} bytes, reported commit {args.expected_commit}")
+    print("checked: " + "; ".join(checked))
+    print("limitations: cloudBaseUrl and the commit are reported by the build itself, not checked against compiled code; config.json is checked only for hosted:false and does not independently prove provenance")
     return 0
 
 if __name__ == "__main__":

@@ -29,7 +29,9 @@ jobs:
 
       - name: Preserve verifier from workflow revision
         shell: bash
-        run: cp tools/verify-printer-zip.py "$RUNNER_TEMP/verify-printer-zip.py"
+        run: |
+          cp tools/verify-printer-zip.py "$RUNNER_TEMP/verify-printer-zip.py"
+          cp tools/embed-printer-manifest.py "$RUNNER_TEMP/embed-printer-manifest.py"
 
       - name: Validate develop commit and check it out
         shell: bash
@@ -86,6 +88,8 @@ jobs:
         run: npm run circular-check
 
       - name: Build production bundle
+        env:
+          PRINTER_ZIP_VERIFY: '1'
         run: |
           CI=1 npm run build
           CI=1 npm run build
@@ -97,9 +101,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test -s dist/.vite/manifest.json
+          cp dist/.vite/manifest.json "$RUNNER_TEMP/vite-manifest.json"
+          rm -rf dist/.vite
           cd dist
           zip -r ../fluidd.zip .
           cd ..
+          python3 "$RUNNER_TEMP/embed-printer-manifest.py" fluidd.zip "$RUNNER_TEMP/vite-manifest.json"
           sha256sum fluidd.zip > fluidd.zip.sha256
 
       - name: Verify local printer zip

@@ -34,6 +34,10 @@ class PrinterZipWorkflowTest(unittest.TestCase):
             "zip -r ../fluidd.zip .",
         ):
             self.assertIn(command, self.workflow)
+        self.assertIn("PRINTER_ZIP_VERIFY: '1'", self.workflow)
+        self.assertIn("test -s dist/.vite/manifest.json", self.workflow)
+        self.assertIn("rm -rf dist/.vite", self.workflow)
+        self.assertIn('python3 "$RUNNER_TEMP/embed-printer-manifest.py"', self.workflow)
 
     def test_release_is_new_immutable_and_verified(self) -> None:
         self.assertIn("muonos-${SHA::7}", self.workflow)
