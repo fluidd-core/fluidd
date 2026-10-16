@@ -22,7 +22,7 @@
           type="checkbox"
           :checked="selected.includes(card.id)"
           :disabled="!!unavailable[card.id] && !selected.includes(card.id)"
-          @change="toggle(card.id, $event.target.checked)"
+          @change="toggleEvent(card.id, $event)"
         >
         {{ card.title }}
         <small>{{ unavailable[card.id] || card.needs }}</small>
@@ -71,6 +71,10 @@ export default class OverviewCards extends Vue {
   toggle (id: string, on: boolean) {
     if (this.unavailable[id] && on) return
     this.$emit('input', on ? cardLayout([...this.selected, id]) : this.selected.filter(c => c !== id))
+  }
+
+  toggleEvent (id: string, event: Event) {
+    if (event.target instanceof HTMLInputElement) this.toggle(id, event.target.checked)
   }
 
   move (id: string, by: number) { this.$emit('input', moveCard(this.selected, id, by)) }
