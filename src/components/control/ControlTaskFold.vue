@@ -31,7 +31,7 @@
         <slot />
       </task-fold>
       <p
-        v-if="open || choice"
+        v-if="showUnsavedNote && (open || choice)"
         class="control-fold__note"
       >
         These choices last for this visit.
@@ -54,6 +54,7 @@ export default class ControlTaskFold extends Vue {
   @Prop({ type: String, required: true }) readonly title!: string
   @Prop({ type: String, required: true }) readonly summary!: string
   @Prop({ type: Boolean }) readonly choice?: boolean
+  @Prop({ type: Boolean, default: true }) readonly showUnsavedNote!: boolean
   open = false
   choose (value: boolean) { this.open = value }
 
