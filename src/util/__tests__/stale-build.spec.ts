@@ -57,9 +57,16 @@ describe('reloadForNewBuild', () => {
     expect(reloadForNewBuild('/a', later)).toBe(true)
   })
 
-  it('still reloads when storage is unavailable', () => {
+  it('does not reload when it has no storage to remember the reload in', () => {
     const d = { ...deps(), storage: null }
-    expect(reloadForNewBuild('/a', d)).toBe(true)
-    expect(d.assign).toHaveBeenCalledWith('/a')
+    expect(reloadForNewBuild('/a', d)).toBe(false)
+    expect(d.assign).not.toHaveBeenCalled()
+  })
+
+  it('does not reload when storage refuses the write', () => {
+    const d = deps()
+    d.storage = { getItem: () => null, setItem: () => { throw new Error('QuotaExceededError') } }
+    expect(reloadForNewBuild('/a', d)).toBe(false)
+    expect(d.assign).not.toHaveBeenCalled()
   })
 })

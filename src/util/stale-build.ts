@@ -29,7 +29,7 @@ export interface ReloadDeps {
 
 const browserDeps = (): ReloadDeps => {
   let storage: ReloadDeps['storage'] = null
-  try { storage = window.sessionStorage } catch { /* blocked storage: no guard, still one reload per load */ }
+  try { storage = window.sessionStorage } catch { /* blocked: reloadForNewBuild then declines */ }
   return {
     now: () => Date.now(),
     storage,
@@ -38,13 +38,22 @@ const browserDeps = (): ReloadDeps => {
   }
 }
 
-/** Loads the page afresh, at `target` when known. False when it already did so moments ago. */
+/**
+ * Loads the page afresh, at `target` when known. False when it already did so
+ * moments ago, or when it has nowhere to record that it did: without the
+ * record, a chunk that is really missing (an offline service worker's cached
+ * shell, say) would reload the page forever, which is worse than one failed
+ * navigation.
+ */
 export function reloadForNewBuild (target?: string, deps: ReloadDeps = browserDeps()): boolean {
+  if (!deps.storage) return false
   try {
-    const last = Number(deps.storage?.getItem(RELOADED_AT_KEY) ?? 0)
+    const last = Number(deps.storage.getItem(RELOADED_AT_KEY) ?? 0)
     if (deps.now() - last < WINDOW_MS) return false
-    deps.storage?.setItem(RELOADED_AT_KEY, String(deps.now()))
-  } catch { /* storage refused: reload anyway */ }
+    deps.storage.setItem(RELOADED_AT_KEY, String(deps.now()))
+  } catch {
+    return false
+  }
   if (target) deps.assign(target)
   else deps.reload()
   return true
