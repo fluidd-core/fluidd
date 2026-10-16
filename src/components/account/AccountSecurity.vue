@@ -364,18 +364,6 @@
       <p class="m3-dlg__text">
         Changing it signs you out everywhere else.
       </p>
-      <label
-        v-if="hasPassword"
-        class="m3-field"
-      >
-        <span class="m3-field__label">Current password</span>
-        <span class="m3-field__box"><input
-          v-model="form.current"
-          type="password"
-          autocomplete="current-password"
-          aria-label="Current password"
-        ></span>
-      </label>
       <label class="m3-field">
         <span class="m3-field__label">New password</span>
         <span class="m3-field__box"><input
@@ -385,19 +373,6 @@
           aria-label="New password"
         ></span>
         <span class="m3-dlg__note">At least 8 characters.</span>
-      </label>
-      <label
-        v-if="twoStep"
-        class="m3-field"
-      >
-        <span class="m3-field__label">Code from your authenticator app</span>
-        <span class="m3-field__box m3-field__box--mono"><input
-          v-model="form.code"
-          inputmode="numeric"
-          autocomplete="one-time-code"
-          aria-label="Code from your authenticator app"
-          @keydown.enter="changePassword"
-        ></span>
       </label>
       <p
         v-if="dialogError"
@@ -416,7 +391,7 @@
         <button
           type="button"
           class="cbtn cbtn--primary"
-          :disabled="form.next.length < 8 || (hasPassword && !form.current) || (twoStep && !form.code) || busy"
+          :disabled="form.next.length < 8 || busy"
           @click="changePassword"
         >
           {{ hasPassword ? 'Change password' : 'Set password' }}
@@ -797,9 +772,12 @@ export default class AccountSecurity extends Mixins(AccountReauthMixin) {
   }
 
   async changePassword () {
-    const reauth = { password: this.hasPassword ? this.form.current : undefined, code: this.twoStep ? this.form.code.trim() : undefined }
-    const done = await this.run(() => accountApi.changePassword(this.form.next, reauth), true)
-    if (done) {
+    const next = this.form.next
+    let changed = false
+    await this.run(async () => {
+      changed = (await this.withReauth(r => accountApi.changePassword(next, r), { action: 'Change password' })) !== null
+    }, true)
+    if (changed) {
       this.dialog = ''
       this.message = 'Your password is changed. Every other device is signed out.'
       this.refresh()
