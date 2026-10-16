@@ -509,7 +509,7 @@ declare module 'vue-router' {
     frame?: 'printer'
     /**
      * Another app framed here (Slice, later Design), which has no mode: Control's Pro switch is not offered on it
-     * (services/pro-mode.ts hasProSwitch, KAN-550).
+     * Embedded Slice deliberately has no Control layout mode (KAN-550).
      */
     noMode?: boolean
   }

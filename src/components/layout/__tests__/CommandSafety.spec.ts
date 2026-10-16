@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { shallowMount } from '@vue/test-utils'
 import CommandBar from '../CommandBar.vue'
 import { SocketActions } from '@/api/socketActions'
-import { setProMode } from '@/services/pro-mode'
 import { cloudState } from '@/services/muon-cloud/state'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 
@@ -15,7 +14,7 @@ vi.mock('@/services/slicer-bridge/slicerUrl', () => ({ slicerPresence: { state: 
 
 function show () {
   return shallowMount(CommandBar, {
-    computed: { isMobileViewport: () => false, sectionContext: () => ({ pro: false, foreign: false, camera: null }) },
+    computed: { isMobileViewport: () => false, sectionContext: () => ({ foreign: false, camera: null }) },
     mocks: {
       $store: {
         state: { printer: { printer: { configfile: { settings: { 'filament_switch_sensor loader': { insert_gcode: 'LOAD' } } } } }, config: { apiUrl: 'http://hazel.local', uiSettings: { general: { enableKeyboardShortcuts: true } } } },
@@ -33,7 +32,7 @@ function show () {
 
 afterEach(() => {
   vi.clearAllMocks()
-  setProMode(false)
+  localStorage.setItem('muon3d.pro', '0')
   cloudState.activePrinterId = null
   cloudState.printers = []
   printerTransportBinding.remote = false
@@ -41,7 +40,7 @@ afterEach(() => {
 
 describe('palette command safety', () => {
   it('sends typed G-code with Pro off exactly once', async () => {
-    setProMode(false)
+    localStorage.setItem('muon3d.pro', '0')
     const wrapper = show()
     await wrapper.setData({ open: true, query: '> M105' })
     await (wrapper.vm as CommandBar).runAt(0)
@@ -52,7 +51,7 @@ describe('palette command safety', () => {
   })
 
   it('keeps a refused batch open and editable with a visible explanation', async () => {
-    setProMode(true)
+    localStorage.setItem('muon3d.pro', '1')
     const wrapper = show()
     const query = '> M105\nSET_FILAMENT_SENSOR SENSOR=loader ENABLE=0'
     await wrapper.setData({ open: true, query })
@@ -65,7 +64,7 @@ describe('palette command safety', () => {
   })
 
   it.each(['restart-klipper', 'firmware-restart'])('offers and confirms %s in a Klipper error with Pro off', async id => {
-    setProMode(false)
+    localStorage.setItem('muon3d.pro', '0')
     const wrapper = show()
     wrapper.vm.$store.getters['printer/getKlippyReady'] = false
     wrapper.vm.$store.getters['printer/getKlippyConnected'] = false
@@ -81,7 +80,7 @@ describe('palette command safety', () => {
   })
 
   it.each(['printing', 'paused', 'busy'])('hides restarts and refuses a stale action while %s', async state => {
-    setProMode(true)
+    localStorage.setItem('muon3d.pro', '1')
     const wrapper = show()
     const stale = (wrapper.vm as CommandBar).doCommands.find(c => c.id === 'restart-klipper')!
     wrapper.vm.$store.getters['printer/getPrinterState'] = state
@@ -93,7 +92,7 @@ describe('palette command safety', () => {
   })
 
   it.each(['cancel', 'printing', 'disconnect', 'viewer', 'printer-switch', 'route-switch'])('refuses after confirmation changes: %s', async change => {
-    setProMode(true)
+    localStorage.setItem('muon3d.pro', '1')
     const wrapper = show()
     wrapper.vm.$confirm = vi.fn().mockImplementation(async () => {
       if (change === 'printing') wrapper.vm.$store.getters['printer/getPrinterState'] = 'printing'

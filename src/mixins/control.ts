@@ -2,7 +2,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import TypedCommandsMixin from './typed-commands'
 import { cloudState } from '@/services/muon-cloud/state'
 import ToolheadMixin from './toolhead'
-import { proMode } from '@/services/pro-mode'
 import type { TemperaturePreset } from '@/store/config/types'
 import type { Fan, Heater, Led, OutputPin, Sensor } from '@/store/printer/types'
 import {
@@ -63,10 +62,6 @@ export default class ControlMixin extends Mixins(TypedCommandsMixin, ToolheadMix
   get controlLock (): string {
     if (!this.commandControlAvailable) return 'Connect to a printer you can control first.'
     return this.controlReady ? '' : this.notReadyReason
-  }
-
-  get pro (): boolean {
-    return proMode.on
   }
 
   /** Printing or paused: moves, extrusion and motors are left alone. */

@@ -2,7 +2,6 @@ import { shallowMount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import JobsTable from '../JobsTable.vue'
 import { SocketActions } from '@/api/socketActions'
-import { setProMode } from '@/services/pro-mode'
 
 const folder = { type: 'directory', name: 'parts', dirname: 'parts', modified: 1, size: 0 }
 const file = (filename: string, path = '', printed = false) => ({
@@ -52,10 +51,10 @@ describe('JobsTable one layout', () => {
     if (!globalThis.CSS.escape) globalThis.CSS.escape = (value: string) => value
     Element.prototype.scrollIntoView = vi.fn()
   })
-  afterEach(() => { setProMode(false); vi.restoreAllMocks() })
+  afterEach(() => { localStorage.setItem('muon3d.pro', '0'); vi.restoreAllMocks() })
 
   it.each([false, true])('renders every view independently of legacy Pro=%s', pro => {
-    setProMode(pro)
+    localStorage.setItem('muon3d.pro', pro ? '1' : '0')
     for (const view of ['pictures', 'list', 'table'] as const) {
       const wrapper = mountTable(view)
       expect(wrapper.classes()).toContain(`jt--${view}`)

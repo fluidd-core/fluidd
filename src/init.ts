@@ -15,6 +15,7 @@ import { setAuxApiBasePath } from './aux_api/useAuxApi'
 import { resetSetupState } from './services/muon-setup/state'
 import { isManagedApiUrl } from './services/muon-cloud/origin'
 import { activeSlug, correctAddress, isActiveSlug, learnActiveIdentity } from './services/printer-pages'
+import { retireProStorage } from './services/retired-storage'
 
 // Load API configuration
 /**
@@ -238,6 +239,7 @@ export interface AppInitOptions {
 }
 
 export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig, options: AppInitOptions = {}): Promise<InitConfig> => {
+  retireProStorage()
   const isCurrent = options.isCurrent ?? (() => true)
 
   // Reset the store to its default state.

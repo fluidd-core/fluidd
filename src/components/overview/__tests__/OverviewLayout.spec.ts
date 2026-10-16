@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import { mount } from '@vue/test-utils'
 import { afterEach, expect, it, vi } from 'vitest'
 import Overview from '@/views/Overview.vue'
-import { proMode } from '@/services/pro-mode'
 import OverviewCards from '../OverviewCards.vue'
 import { ControlPreferenceStore } from '@/services/control/preferences'
 import { cloudState } from '@/services/muon-cloud/state'
@@ -11,7 +10,7 @@ import { printerTransportBinding } from '@/services/managed-session/httpTranspor
 
 const socket = vi.hoisted(() => ({ printerPrintPause: vi.fn(), printerPrintCancel: vi.fn(), printerPrintStart: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
-afterEach(() => { proMode.on = false; vi.clearAllMocks(); cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false; localStorage.clear() })
+afterEach(() => { localStorage.setItem('muon3d.pro', '0'); vi.clearAllMocks(); cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false; localStorage.clear() })
 it('keeps print actions fixed with either old mode value and rechecks the target after Stop confirmation', async () => {
   let confirm!: (value: boolean) => void
   const state = Vue.observable<any>({ config: { apiUrl: 'http://mock.local', uiSettings: { general: {} } }, printer: { printer: { print_stats: { filename: 'part.gcode' } } } })
@@ -20,7 +19,7 @@ it('keeps print actions fixed with either old mode value and rechecks the target
   expect(wrapper.find('[data-tid="overview-pause"]').exists()).toBe(true)
   await wrapper.find('[data-tid="overview-pause"]').trigger('click')
   expect(socket.printerPrintPause).toHaveBeenCalledTimes(1)
-  proMode.on = true
+  localStorage.setItem('muon3d.pro', '1')
   await Vue.nextTick()
   expect(wrapper.find('[data-tid="overview-pause"]').exists()).toBe(true)
   await wrapper.find('[data-tid="overview-stop"]').trigger('click')

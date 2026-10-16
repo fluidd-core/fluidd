@@ -3,7 +3,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { SocketActions } from '@/api/socketActions'
-import { proMode } from '@/services/pro-mode'
 import GeneralSettings from '../GeneralSettings.vue'
 import ThemeSettings from '../ThemeSettings.vue'
 import SoftwareSettings from '../SoftwareSettings.vue'
@@ -14,7 +13,7 @@ vi.mock('@/services/updates/watch', () => ({
 }))
 vi.mock('@/services/dev-mode/state', () => ({ devModeState: {}, refreshDevMode: vi.fn() }))
 
-afterEach(() => { proMode.on = false })
+afterEach(() => { localStorage.setItem('muon3d.pro', '0') })
 
 const commonStubs = {
   'v-text-field': true,
@@ -24,7 +23,7 @@ const commonStubs = {
 }
 
 function general (pro: boolean) {
-  proMode.on = pro
+  localStorage.setItem('muon3d.pro', pro ? '1' : '0')
   return shallowMount(GeneralSettings, {
     stubs: commonStubs,
     mocks: { $t: (key: string) => key, $rules: { required: true, lengthGreaterThanOrEqual: () => true }, $globals: { APP_NAME: 'Control' } },
@@ -55,7 +54,7 @@ function general (pro: boolean) {
 
 describe('Settings in one layout', () => {
   it.each([false, true])('shows the same Settings sections when legacy Pro is %s', pro => {
-    proMode.on = pro
+    localStorage.setItem('muon3d.pro', pro ? '1' : '0')
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = new VueRouter({ mode: 'abstract', routes: [{ path: '/settings', name: 'Settings', component: Settings }] })
@@ -91,7 +90,7 @@ describe('Settings in one layout', () => {
   })
 
   it.each([false, true])('shows community themes when legacy Pro is %s', pro => {
-    proMode.on = pro
+    localStorage.setItem('muon3d.pro', pro ? '1' : '0')
     const wrapper = shallowMount(ThemeSettings, {
       stubs: { ...commonStubs, 'seg-picker': true, 'app-color-picker': true },
       mocks: { $t: (key: string) => key },
@@ -102,7 +101,7 @@ describe('Settings in one layout', () => {
   })
 
   it.each([false, true])('puts Other software in a closed task fold when legacy Pro is %s', async pro => {
-    proMode.on = pro
+    localStorage.setItem('muon3d.pro', pro ? '1' : '0')
     const wrapper = shallowMount(SoftwareSettings, {
       stubs: { 'toggle-switch': true, 'router-link': true },
       computed: {

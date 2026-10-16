@@ -2,14 +2,13 @@ import { mount } from '@vue/test-utils'
 import { afterEach, expect, it, vi } from 'vitest'
 import ControlMove from '../ControlMove.vue'
 import { panelStore, panelStubs, waits } from './panel-fixture'
-import { proMode } from '@/services/pro-mode'
 
 const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
-afterEach(() => { socket.printerGcodeScript.mockClear(); proMode.on = false })
+afterEach(() => { socket.printerGcodeScript.mockClear(); localStorage.setItem('muon3d.pro', '0') })
 
 it.each([false, true])('opens Go to with limits and uses the configured speed on phone=%s', async phone => {
-  proMode.on = false
+  localStorage.setItem('muon3d.pro', '0')
   const store = panelStore()
   const wrapper = mount(ControlMove, { propsData: { phone }, mocks: { $store: store, $waits: waits }, stubs: panelStubs })
   const door = wrapper.find('[data-tid="move-position"]')

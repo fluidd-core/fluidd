@@ -19,7 +19,7 @@
     </div>
     <p
       v-if="partFan"
-      class="fans-pro__none"
+      class="fans__none"
     >
       Auto follows the next fan command in the print; On and Off set it now.
     </p>
@@ -51,7 +51,7 @@
         > · {{ automaticLabel(fan) }}</span></span>
         <range-slider
           v-if="isSettable(fan)"
-          class="fans-pro__slider"
+          class="fans__slider"
           :value="fanValue(fan)"
           :label="fan.prettyName"
           :disabled="!controlReady"
@@ -65,7 +65,7 @@
       >
         <span class="crow__name">Lights brightness</span>
         <range-slider
-          class="fans-pro__slider"
+          class="fans__slider"
           :value="lightsValue"
           label="Lights brightness"
           :disabled="!controlReady"
@@ -164,21 +164,21 @@ export default class ControlFans extends Mixins(ControlMixin) {
   }
 
   .fans-simple__rows > .crow + .crow,
-  .fans-pro > .crow + .crow {
+  .fans > .crow + .crow {
     border-top: 1px solid var(--m3d-border);
   }
 
-  .fans-pro__slider {
+  .fans__slider {
     flex: 0 1 180px;
     margin-left: auto;
   }
 
-  .fans-pro .crow__value {
+  .fans .crow__value {
     min-width: 44px;
     text-align: right;
   }
 
-  .fans-pro__none {
+  .fans__none {
     margin: 0;
     color: var(--m3d-text-muted);
     font-size: 13px;

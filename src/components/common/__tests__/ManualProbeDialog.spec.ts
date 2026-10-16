@@ -2,7 +2,6 @@ import Vue from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, expect, it, vi } from 'vitest'
 import ManualProbeDialog from '../ManualProbeDialog.vue'
-import { proMode } from '@/services/pro-mode'
 import { cloudState } from '@/services/muon-cloud/state'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 
@@ -37,10 +36,10 @@ function show (role?: 'operator' | 'viewer') {
   })
   return { wrapper, state, getters, route, vm: wrapper.vm as any }
 }
-afterEach(() => { socket.printerGcodeScript.mockClear(); proMode.on = false; cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false })
+afterEach(() => { socket.printerGcodeScript.mockClear(); localStorage.setItem('muon3d.pro', '0'); cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false })
 
 it('opens Finer steps with the reported tried range without a mode', async () => {
-  proMode.on = false
+  localStorage.setItem('muon3d.pro', '0')
   const { wrapper } = show()
   expect(wrapper.text()).toContain('tried 1.900 to 2.100')
   const fold = wrapper.find('[data-tid="manual-probe-finer"]')

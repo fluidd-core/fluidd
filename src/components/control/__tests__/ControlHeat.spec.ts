@@ -2,14 +2,13 @@ import { mount } from '@vue/test-utils'
 import { afterEach, expect, it, vi } from 'vitest'
 import ControlHeat from '../ControlHeat.vue'
 import { panelStore, panelStubs, waits } from './panel-fixture'
-import { proMode } from '@/services/pro-mode'
 
 const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
-afterEach(() => { socket.printerGcodeScript.mockClear(); proMode.on = false })
+afterEach(() => { socket.printerGcodeScript.mockClear(); localStorage.setItem('muon3d.pro', '0') })
 
 it.each([false, true])('offers exact heat targets beside nudges on phone=%s with mode off', async phone => {
-  proMode.on = false
+  localStorage.setItem('muon3d.pro', '0')
   const store = panelStore()
   store.getters['printer/getAllFans'] = [{ key: 'temperature_fan drivers', name: 'drivers', prettyName: 'Motor drivers', type: 'temperature_fan', temperature: 41 }]
   const wrapper = mount(ControlHeat, { propsData: { phone }, mocks: { $store: store, $waits: waits }, stubs: panelStubs })

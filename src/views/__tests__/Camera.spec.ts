@@ -1,7 +1,6 @@
 import { shallowMount, type Wrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
 import Camera, { redactCameraUrl } from '../Camera.vue'
-import { setProMode } from '@/services/pro-mode'
 import type { WebcamConfig } from '@/store/webcams/types'
 
 const front: WebcamConfig = {
@@ -50,15 +49,14 @@ function mountCamera (cameras: WebcamConfig[], cameraId = cameras[0]?.uid): Wrap
   })
 }
 
-afterEach(() => setProMode(false))
+afterEach(() => localStorage.setItem('muon3d.pro', '0'))
 
 describe('Camera stream details', () => {
   for (const legacyPro of [false, true]) {
     it(`makes details reachable when legacy Pro is ${legacyPro}`, async () => {
-      setProMode(legacyPro)
+      localStorage.setItem('muon3d.pro', legacyPro ? '1' : '0')
       const wrapper = mountCamera([front])
       const button = wrapper.get('[data-tid="camera-details-trigger"]')
-      expect(wrapper.get('[data-tid="camera-stage"]').classes()).not.toContain('camera-stage--pro')
       expect(wrapper.text()).not.toContain('Pro shows')
       expect(button.attributes('aria-expanded')).toBe('false')
       expect(button.attributes('aria-controls')).toBe('camera-details')
