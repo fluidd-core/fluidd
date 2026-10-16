@@ -89,6 +89,39 @@ describe('JobsTable one layout', () => {
     expect(vm.files.map((job: any) => job.filename)).toEqual(['new.gcode'])
   })
 
+  it('announces the keyboard cursor through a stable active row id', async () => {
+    const wrapper = mountTable()
+    const vm = wrapper.vm as any
+    vm.cursor = 'root.gcode'
+    await wrapper.vm.$nextTick()
+
+    const grid = wrapper.get('[role="grid"]')
+    const row = wrapper.get('[data-key="root.gcode"]')
+    expect(row.attributes('id')).toBe('jobs-row-root.gcode')
+    expect(row.attributes('aria-rowindex')).toBe('3')
+    expect(grid.attributes('aria-activedescendant')).toBe(row.attributes('id'))
+    expect(grid.attributes('aria-describedby')).toBe('jobs-table-hint')
+  })
+
+  it('uses focusable native checkboxes and supports keyboard selection', async () => {
+    const wrapper = mountTable()
+    const vm = wrapper.vm as any
+    const boxes = wrapper.findAll('input[type="checkbox"]')
+    expect(boxes.length).toBe(3)
+
+    await boxes.at(1).trigger('click')
+    expect(vm.selected).toEqual(['parts'])
+
+    vm.cursor = 'root.gcode'
+    await wrapper.vm.$nextTick()
+    await wrapper.get('[role="grid"]').trigger('keydown', { key: ' ' })
+    expect(vm.selected).toEqual(['parts', 'root.gcode'])
+
+    await boxes.at(0).trigger('click')
+    expect(vm.selected).toEqual([])
+    expect(wrapper.get('#jobs-table-hint').text()).toContain('Space selects')
+  })
+
   it('refuses bulk queueing for viewers and disconnected printers', async () => {
     const queue = vi.spyOn(SocketActions, 'serverJobQueuePostJob').mockImplementation(vi.fn() as any)
     const wrapper = mountTable('table', false)
