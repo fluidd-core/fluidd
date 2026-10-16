@@ -224,16 +224,20 @@ export default class Overview extends Mixins(OverviewMixin, BrowserMixin) {
     const commands = Object.keys(this.$store.getters['printer/getAvailableCommands'] ?? {})
     const capabilities: OverviewCapabilities = {
       temperatures: !!(this.heaters.length || (this.$store.getters['printer/getSensors'] ?? []).length),
-      control: this.controlReady,
+      // Availability follows authority, not a transient Klipper state. The
+      // controls themselves keep enforcing readiness when a command is sent.
+      control: this.commandControlAvailable,
       queue: components.includes('job_queue'),
       camera: !!this.cameras.length,
       macros: Object.keys(printer).some(key => key.startsWith('gcode_macro ')),
-      nativeConnection: this.apiConnected && !printerTransportBinding.remote,
+      // The lazy Console route and Tools navigation support managed printers;
+      // typed commands inside it independently enforce role and connection.
+      console: true,
       bedMesh: !!printer.bed_mesh,
       calibration: commands.some(command => /CALIBRATE|TUNE/.test(command)),
       diagnostics: !!this.$store.state.config.uiSettings.general.enableDiagnostics && !!this.diagnosticCharts.length,
       objects: !!printer.exclude_object,
-      filament: !!this.loadedMaterial || !!this.printingWith || components.includes('spoolman')
+      filament: this.savesMaterial || this.materialChoices.length > 0 || !!this.loadedMaterial || !!this.printingWith || components.includes('spoolman')
     }
     const result: Record<string, string> = {}
     for (const card of overviewCards) {

@@ -1,6 +1,6 @@
 export interface OverviewCapabilities {
   temperatures: boolean; control: boolean; queue: boolean; camera: boolean;
-  macros: boolean; nativeConnection: boolean; bedMesh: boolean; calibration: boolean;
+  macros: boolean; console: boolean; bedMesh: boolean; calibration: boolean;
   diagnostics: boolean; objects: boolean; filament: boolean;
 }
 type OverviewCapability = keyof OverviewCapabilities
@@ -12,7 +12,7 @@ export const overviewCards: OverviewCard[] = [
   { id: 'live-tune', title: 'Live tune', size: 'normal', needs: 'printer control', when: 'always', capability: 'control', unavailable: 'Connect to a printer you can control first.' },
   { id: 'camera', title: 'Camera', size: 'normal', needs: 'configured camera', when: 'always', capability: 'camera', unavailable: 'No camera is configured.' },
   { id: 'macros', title: 'Macros', size: 'normal', needs: 'gcode macros', when: 'always', capability: 'macros', unavailable: 'This printer does not provide any G-code macros.' },
-  { id: 'console', title: 'Console', size: 'wide', needs: 'native Moonraker connection', when: 'always', capability: 'nativeConnection', unavailable: 'Console needs a direct Moonraker connection.' },
+  { id: 'console', title: 'Console', size: 'wide', needs: 'printer console', when: 'always', capability: 'console', unavailable: 'Console is not available for this printer.' },
   { id: 'bed', title: 'Bed', size: 'normal', needs: 'bed_mesh', when: 'always', capability: 'bedMesh', unavailable: 'This printer does not report bed_mesh.' },
   { id: 'checks', title: 'Checks', size: 'normal', needs: 'calibration commands', when: 'always', capability: 'calibration', unavailable: 'No calibration commands are reported.' },
   { id: 'chart', title: 'Chart', size: 'wide', needs: 'diagnostics recording and a configured chart', when: 'always', capability: 'diagnostics', unavailable: 'Turn on Diagnostics and configure a chart first.' },

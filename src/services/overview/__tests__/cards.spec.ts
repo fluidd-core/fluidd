@@ -12,9 +12,17 @@ it('keeps fixed printer, print and actions outside the optional layout and reset
 
 it('gives every optional card one capability decision and a plain refusal', () => {
   const supported: OverviewCapabilities = {
-    temperatures: true, control: true, queue: true, camera: true, macros: true,
-    nativeConnection: true, bedMesh: true, calibration: true, diagnostics: true,
-    objects: true, filament: true
+    temperatures: true,
+    control: true,
+    queue: true,
+    camera: true,
+    macros: true,
+    console: true,
+    bedMesh: true,
+    calibration: true,
+    diagnostics: true,
+    objects: true,
+    filament: true
   }
   for (const card of overviewCards) {
     expect(cardUnavailable(card.id, supported), card.id).toBeUndefined()
