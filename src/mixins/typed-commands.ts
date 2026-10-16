@@ -31,12 +31,12 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
     return ''
   }
 
-  async confirmCommandRestart (): Promise<boolean> {
+  async confirmCommandRestart (kind: 'restart' | 'save' = 'restart'): Promise<boolean> {
     this.commandRefusal = this.restartRefusal
     if (this.commandRefusal) return false
     const target = this.commandTarget
-    const ok = await this.$confirm('Klipper reloads its settings. The printer must be idle before it can restart.', {
-      title: 'Restart Klipper?', buttonTrueText: 'Restart', buttonFalseText: 'Keep running', danger: true
+    const ok = await this.$confirm(kind === 'save' ? 'Saving keeps the new results in printer.cfg. Klipper restarts to use them. The printer must be idle.' : 'Klipper reloads its settings. The printer must be idle before it can restart.', {
+      title: kind === 'save' ? 'Save the results?' : 'Restart Klipper?', buttonTrueText: kind === 'save' ? 'Save and restart Klipper' : 'Restart', buttonFalseText: 'Keep running', danger: true
     })
     if (!ok) return false
     this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer changed. Try again.' : this.restartRefusal
