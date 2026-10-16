@@ -96,10 +96,17 @@ function changedResults (before: CheckEvidence, after: CheckEvidence): Array<[st
   const changed: Array<[string, string]> = []
   for (const [section, values] of Object.entries(after.pending ?? {})) {
     for (const [key, value] of Object.entries(values ?? {})) {
-      if (before.pending?.[section]?.[key] !== value) changed.push([section, key])
+      if (before.pending?.[section]?.[key] !== value && reportedNumber(value) !== null) changed.push([section, key])
     }
   }
   return changed
+}
+
+/** Empty, missing or malformed reports are not measurements of zero. */
+export function reportedNumber (value: unknown): number | null {
+  if (typeof value !== 'number' && (typeof value !== 'string' || !value.trim())) return null
+  const number = Number(value)
+  return Number.isFinite(number) ? number : null
 }
 
 /**
@@ -108,7 +115,15 @@ function changedResults (before: CheckEvidence, after: CheckEvidence): Array<[st
  * or one that errors, changes neither, so it doesn't count as run.
  */
 export function checkProduced (id: CheckId, before: CheckEvidence, after: CheckEvidence): boolean {
-  if (id === 'bedMesh') return after.mesh !== before.mesh && after.mesh !== '' && after.mesh !== '[]'
+  if (id === 'bedMesh') {
+    if (after.mesh === before.mesh) return false
+    try {
+      const grid: unknown = JSON.parse(after.mesh)
+      if (!Array.isArray(grid) || !grid.length || !Array.isArray(grid[0]) || !grid[0].length) return false
+      const columns = grid[0].length
+      return grid.every(row => Array.isArray(row) && row.length === columns && row.every(value => typeof value === 'number' && Number.isFinite(value)))
+    } catch { return false }
+  }
   const changed = changedResults(before, after)
   if (id === 'pid') return changed.some(([, key]) => key === 'pid_kp')
   if (id === 'shaper') return changed.some(([section, key]) => section === 'input_shaper' && key.startsWith('shaper_freq'))
