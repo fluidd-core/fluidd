@@ -13,7 +13,9 @@ it('separates staff restoration from deletion cancellation and sends the read ve
   expect(w.text()).toContain('cancel deletion')
   await w.get('textarea').setValue('Review case 1042')
   const restore = w.findAll('button').wrappers.find(b => b.text().startsWith('Restore'))!
-  await restore.trigger('click'); await settle()
+  await restore.trigger('click')
+  expect(w.get('[role=dialog]').attributes('aria-labelledby')).toBe('account-action-title')
+  await w.get('[data-tid=account-action-confirm]').trigger('click'); await settle()
   expect(api.staffCommand).toHaveBeenCalledWith(expect.objectContaining({ action: 'restore-account', version: 4, target: 'target' }), true, expect.any(Function))
   expect(w.emitted('spent')?.length).toBe(1)
   w.destroy()

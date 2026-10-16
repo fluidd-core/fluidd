@@ -63,11 +63,12 @@
           <h2>Confirm staff access</h2>
           <p>Use your passkey to look up accounts and read the audit log. Only staff accounts have access.</p>
           <button
+            ref="confirmOpener"
             type="button"
             class="cbtn cbtn--primary"
             data-tid="admin-confirm"
             :disabled="busy"
-            @click="confirm"
+            @click="openConfirm"
           >
             {{ busy ? 'Waiting for your passkey…' : 'Confirm with passkey' }}
           </button>
@@ -158,6 +159,7 @@
               :account="account"
               @spent="spent"
               @expired="lock"
+              @refresh="read(false)"
             />
           </section>
           <section
@@ -188,6 +190,43 @@
         </template>
       </div>
     </main>
+    <div
+      v-if="confirmOpen"
+      class="admin-dialog-backdrop"
+      @mousedown.self="cancelConfirm"
+    >
+      <section
+        ref="confirmDialog"
+        class="admin-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="staff-confirm-title"
+        tabindex="-1"
+        @keydown="trapDialog"
+      >
+        <h2 id="staff-confirm-title">
+          Confirm staff access
+        </h2>
+        <p>Your browser will ask for your passkey. You can cancel without opening staff access.</p>
+        <div class="admin-dialog-actions">
+          <button
+            type="button"
+            class="cbtn"
+            @click="cancelConfirm"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--primary"
+            data-tid="admin-passkey-continue"
+            @click="confirm"
+          >
+            Continue with passkey
+          </button>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -208,6 +247,7 @@ export default class Admin extends Vue {
   reason = ''
   message = ''
   busy = false
+  confirmOpen = false
   expires = 0
   account: AdminAccount | null = null
   entries: AuditEntry[] = []
@@ -226,25 +266,52 @@ export default class Admin extends Vue {
   beforeDestroy () { clearInterval(this.timer); document.removeEventListener('visibilitychange', this.hidden); this.lock() }
   hidden () { if (document.hidden) this.lock() }
   clearResults () { this.revision++; this.account = null; this.entries = []; this.next = null; this.message = ''; this.busy = false }
-  lock () { this.clearResults(); this.expires = 0; this.query = ''; this.reason = ''; this.busy = false; this.message = 'Confirm staff access to continue.' }
+  lock () { this.clearResults(); this.confirmOpen = false; this.expires = 0; this.query = ''; this.reason = ''; this.busy = false; this.message = 'Confirm staff access to continue.' }
   spent (message: string) { this.lock(); this.message = message }
   changeSection (section: string) { this.clearResults(); this.section = section }
   date (seconds: number): string { return new Date(seconds * 1000).toLocaleString() }
   failure (error: unknown) {
     if (error instanceof AdminError && error.expired) this.lock()
     this.message = error instanceof DOMException && error.name === 'NotAllowedError'
-      ? 'Confirmation cancelled. No staff access was opened.'
-      : error instanceof Error ? error.message : 'Staff tools could not be reached. Try again.'
+      ? 'Passkey confirmation was cancelled or expired. No staff access was opened.'
+      : error instanceof DOMException && (error.name === 'NotSupportedError' || error.name === 'SecurityError')
+        ? 'Passkeys are unavailable in this browser. No staff access was opened.'
+        : error instanceof Error ? error.message : 'Staff tools could not be reached. Try again.'
+  }
+
+  openConfirm () {
+    this.confirmOpen = true
+    this.$nextTick(() => (this.$refs.confirmDialog as HTMLElement)?.focus())
+  }
+
+  cancelConfirm () {
+    this.confirmOpen = false
+    this.message = 'Passkey confirmation cancelled. No staff access was opened.'
+    this.$nextTick(() => (this.$refs.confirmOpener as HTMLElement)?.focus())
+  }
+
+  trapDialog (event: KeyboardEvent) {
+    if (event.key === 'Escape') { event.preventDefault(); this.cancelConfirm(); return }
+    if (event.key !== 'Tab') return
+    const dialog = this.$refs.confirmDialog as HTMLElement
+    const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled])'))
+    if (!controls.length) return
+    const first = controls[0]; const last = controls[controls.length - 1]
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
   }
 
   async confirm () {
+    this.confirmOpen = false
     const revision = ++this.revision
-    this.busy = true; this.message = ''
+    this.busy = true; this.message = 'Waiting for your passkey…'
     try {
       const result = await confirmStaff()
       if (revision !== this.revision || result.staff_expires_at * 1000 <= Date.now()) return
       this.expires = result.staff_expires_at; this.token = storedToken(); this.actor = result.actor
-    } catch (error) { if (revision === this.revision) this.failure(error) } finally { if (revision === this.revision) this.busy = false }
+    } catch (error) { if (revision === this.revision) this.failure(error) } finally {
+      if (revision === this.revision) this.busy = false
+      this.$nextTick(() => (this.$refs.confirmOpener as HTMLElement)?.focus())
+    }
   }
 
   async read (older: boolean) {
@@ -252,7 +319,7 @@ export default class Admin extends Vue {
     const revision = ++this.revision
     const token = storedToken()
     if (!older) { this.account = null; this.entries = []; this.next = null }
-    this.busy = true; this.message = ''
+    this.busy = true; this.message = 'Loading…'
     try {
       const result = this.section === 'accounts' ? await lookupAccount(this.query, this.reason) : await readAudit(this.source, older ? this.next : null, this.reason)
       if (revision !== this.revision || Date.now() >= this.expires * 1000 || storedToken() !== token) return
@@ -285,5 +352,8 @@ h1 { font-size: 28px; font-weight: 500; letter-spacing: -.6px; } h2 { font-size:
 label { display: block; margin-bottom: 8px; font-weight: 500; } input, textarea, select { display: block; width: 100%; padding: 10px 12px; margin-bottom: 20px; border: 1px solid var(--m3d-border); border-radius: 4px; background: var(--m3d-inset); color: var(--m3d-text); } textarea { min-height: 80px; }
 dl { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 12px; } dt { color: var(--m3d-text-muted); } dd { margin: 0; overflow-wrap: anywhere; }
 .admin-scroll { overflow-x: auto; } table { width: 100%; border-collapse: collapse; } th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--m3d-border); overflow-wrap: anywhere; } th { font-size: 11px; color: var(--m3d-text-muted); } :focus-visible { outline: 2px solid var(--m3d-accent); outline-offset: 2px; }
+.admin-dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .6); }
+.admin-dialog { width: min(440px, 100%); padding: 24px; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); color: var(--m3d-text); }
+.admin-dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 @media (max-width: 800px) { .admin-page { display: block; } .admin-nav { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--m3d-border); padding: 8px 12px; } .admin-label { display: none; } .admin-pane { padding: 24px 16px; } .admin-card { padding: 20px; } .admin-heading { flex-wrap: wrap; } dl { grid-template-columns: minmax(0, 1fr); gap: 4px; } dd { margin-bottom: 12px; } }
 </style>

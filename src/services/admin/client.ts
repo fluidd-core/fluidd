@@ -111,7 +111,7 @@ export async function staffCommand (command: StaffCommand, account = false, curr
     return await consoleRequest<CommandResult>(account ? '/v1/admin/accounts/action' : '/v1/admin/community', command, false)
   } catch (error) {
     if (error instanceof AdminError && error.status === 409) throw new AdminError('This changed while you were reviewing it. Reload before deciding again.', 409)
-    if (error instanceof AdminError && (error.status === 0 || error.status < 300 || error.status >= 500)) throw new AdminError('The outcome is uncertain. Reload the case and audit before deciding again.', error.status)
+    if (error instanceof AdminError && (error.status === 0 || error.status < 300 || error.status >= 500)) throw new AdminError('The outcome is uncertain. It may have saved. Refresh the case and audit before deciding again.', error.status)
     throw error
   }
 }
