@@ -33,3 +33,27 @@ declare namespace Moonraker.Analysis {
     bypassed: boolean;
   }
 }
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.analysis.status': {
+      params: undefined,
+      result: Analysis.StatusResponse
+    },
+    'server.analysis.estimate': {
+      params: {
+        filename: string,
+        estimator_config?: string
+      },
+      result: Analysis.EstimateResponse
+    },
+    'server.analysis.process': {
+      params: {
+        filename: string,
+        estimator_config?: string,
+        force?: boolean
+      },
+      result: Analysis.ProcessResponse
+    }
+  }
+}

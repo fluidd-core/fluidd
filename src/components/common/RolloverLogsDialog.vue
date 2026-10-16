@@ -46,7 +46,7 @@ export default class RolloverLogsDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
   open?: boolean
 
-  application = ''
+  application: '' | Moonraker.Server.LogsRolloverApplication = ''
 
   mounted () {
     if (

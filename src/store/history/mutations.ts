@@ -18,6 +18,10 @@ export const mutations = {
     state.job_totals = payload.job_totals
   },
 
+  setResetHistoryTotals (state) {
+    state.job_totals = createState().job_totals
+  },
+
   /**
    * Applies history list
    */

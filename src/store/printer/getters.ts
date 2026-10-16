@@ -519,18 +519,35 @@ export const getters = {
   getRunoutSensors: (state): RunoutSensor[] => {
     return Object.keys(state.printer)
       .filter(key => (
+        key === 'hall_filament_width_sensor' ||
         key.startsWith('filament_switch_sensor ') ||
         key.startsWith('filament_motion_sensor ')
       ))
-      .map(key => {
+      .map((key): RunoutSensor | null => {
+        const sensor = state.printer[key]
+
+        if (sensor?.filament_detected == null) {
+          return null
+        }
+
         const name = key.trim().split(/\s+/).pop() || ''
 
+        const diameter = (
+          'is_active' in sensor &&
+          sensor.is_active &&
+          'Diameter' in sensor
+        )
+          ? sensor.Diameter
+          : undefined
+
         return {
-          ...state.printer[key],
+          ...sensor,
           name,
           prettyName: Vue.$filters.prettyCase(name),
+          diameter
         }
       })
+      .filter(sensor => sensor !== null)
   },
 
   getEndstops: (state): Endstop[] => {
@@ -870,6 +887,7 @@ export const getters = {
       si7013: 'htu21d',
       si7020: 'htu21d',
       si7021: 'htu21d',
+      temperature_combined: 'temperature_combined',
     } as const
 
     if (isKeyOf(sensorType, supportedSensors)) {

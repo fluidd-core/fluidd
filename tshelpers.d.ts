@@ -11,4 +11,9 @@ declare namespace TSHelpers {
         : T
 
   type ValueTypesOf<T> = NonNullable<T[keyof T]>
+
+  // foo_bar_baz -> fooBarBaz
+  type SnakeToCamelCase<S extends string> = S extends `${infer Head}_${infer Tail}`
+    ? `${Head}${Capitalize<SnakeToCamelCase<Tail>>}`
+    : S
 }

@@ -114,6 +114,7 @@ export interface Sensor extends Partial<Klipper.TemperatureSensorState>, Partial
 export interface RunoutSensor extends Partial<Klipper.FilamentSwitchSensorState>, Partial<Klipper.FilamentMotionSensorState> {
   name: string;
   prettyName: string;
+  diameter?: number;
 }
 
 export interface Endstop {

@@ -4,6 +4,11 @@ declare namespace Moonraker.History {
     auxiliary_totals: AuxiliaryTotal[];
   }
 
+  export interface ResetTotalsResponse {
+    last_totals: JobTotals;
+    last_auxiliary_totals?: AuxiliaryTotal[];
+  }
+
   export interface ListResponse {
     count: number;
     jobs: Job[];
@@ -33,10 +38,15 @@ declare namespace Moonraker.History {
     total: number;
   }
 
+  export interface ChangedEvent {
+    action: 'added' | 'finished';
+    job: Job;
+  }
+
   export interface Job {
     job_id: string;
     exists: boolean;
-    end_time: string | null;
+    end_time: number | null;
     filament_used: number;
     filename: string;
     metadata?: Moonraker.Files.Metadata;
@@ -54,5 +64,42 @@ declare namespace Moonraker.History {
     value: unknown;
     description: string;
     units: string | null;
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.history.list': {
+      params: {
+        limit?: number,
+        start?: number,
+        since?: number,
+        before?: number,
+        order?: 'asc' | 'desc'
+      },
+      result: History.ListResponse
+    },
+    'server.history.get_job': {
+      params: {
+        uid: string
+      },
+      result: History.JobResponse
+    },
+    'server.history.delete_job': {
+      params: { uid: string } | { all: true },
+      result: History.DeleteJobResponse
+    },
+    'server.history.totals': {
+      params: undefined,
+      result: History.TotalsResponse
+    },
+    'server.history.reset_totals': {
+      params: undefined,
+      result: History.ResetTotalsResponse
+    }
+  }
+
+  export interface Notifications {
+    notify_history_changed: [History.ChangedEvent]
   }
 }

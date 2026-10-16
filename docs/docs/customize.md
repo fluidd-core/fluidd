@@ -41,7 +41,7 @@ dark and light mode without using a preset.
 
 ### Custom Themes
 
-Fluidd supports custom stylesheets, background images, and logos. All custom
+Fluidd supports custom stylesheets and background images. All custom
 theming is configured through a `.fluidd-theme` folder within your printer's
 configuration directory.
 
@@ -55,12 +55,6 @@ Currently, the following file extensions are supported:
 - `.jpeg`
 - `.png`
 - `.gif`
-
-#### Custom Logo
-
-To replace the Fluidd logo in the sidebar, upload a `logo.svg` or `logo.png`
-file to the `.fluidd-theme` folder in your configuration directory. The logo
-will appear in the application bar after reloading Fluidd.
 
 #### Custom Styling
 

@@ -28,9 +28,9 @@ export const actions = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit, dispatch }, payload: ObjectWithRequest<Moonraker.Files.GetDirectoryResponse>) {
+  async onServerFilesGetDirectory ({ commit, dispatch }, payload: ObjectWithRequest<'server.files.get_directory'>) {
     const { disk_usage, files, dirs } = payload
-    const { path } = payload.__request__.params ?? {}
+    const path = payload.__request__.params?.path ?? 'gcodes'
     const [root] = path.split('/', 1)
 
     const filteredDirs = dirs
@@ -60,8 +60,8 @@ export const actions = {
     commit('setServerFilesRoots', [...payload])
   },
 
-  async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<Moonraker.Files.ListRootResponse>) {
-    const { root } = payload.__request__.params ?? {}
+  async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<'server.files.list'>) {
+    const root = payload.__request__.params?.root ?? 'gcodes'
 
     commit('setServerFilesListRoot', { root, files: [...payload] })
   },
@@ -91,12 +91,6 @@ export const actions = {
    * Automated notifications from moonraker.
    */
 
-  // Old notifications for backwards compat
-  async notifyCopyItem ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyCreateFile', payload) },
-  async notifyMoveItem ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyMoveFile', payload) },
-  async notifyUploadFile ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyCreateFile', payload) },
-
-  // New notifications
   async notifyRootUpdate ({ commit }, payload: Moonraker.Files.ChangeResponse) {
     const root = payload.item.root
 

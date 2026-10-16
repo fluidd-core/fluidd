@@ -8,7 +8,12 @@ export const createState = (): ServerState => {
       klippy_state: 'disconnected',
       components: [],
       registered_directories: [],
-      warnings: []
+      warnings: [],
+      websocket_count: 0,
+      moonraker_version: '',
+      missing_klippy_requirements: [],
+      api_version: [],
+      api_version_string: ''
     },
     system_info: null,
     peripherals: {

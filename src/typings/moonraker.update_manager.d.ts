@@ -1,9 +1,9 @@
 declare namespace Moonraker.UpdateManager {
   export interface StatusResponse {
     busy: boolean;
-    github_rate_limit: number;
-    github_requests_remaining: number;
-    github_limit_reset_time: number;
+    github_rate_limit: number | null;
+    github_requests_remaining: number | null;
+    github_limit_reset_time: number | null;
     version_info: VersionInfo;
   }
 
@@ -81,6 +81,7 @@ declare namespace Moonraker.UpdateManager {
 
   export interface Python {
     configured_type: 'python';
+    detected_type: 'python_package';
     name?: string;
     channel: 'stable' | 'beta' | 'dev';
     channel_invalid: boolean;
@@ -96,16 +97,69 @@ declare namespace Moonraker.UpdateManager {
     remote_hash: string;
     is_valid: boolean;
     is_dirty: boolean;
+    pristine: boolean;
     changelog_url: string;
     anomalies: string[];
     warnings: string[];
     info_tags: string[];
   }
 
-  export interface UpdateResponse {
+  export interface UpdateResponseEvent {
     application: string;
     proc_id: number;
     message: string;
-    complete?: boolean;
+    complete: boolean;
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.update.status': {
+      params: {
+        refresh?: boolean
+      },
+      result: UpdateManager.StatusResponse
+    },
+    'machine.update.refresh': {
+      params: {
+        name?: string
+      },
+      result: UpdateManager.StatusResponse
+    },
+    'machine.update.recover': {
+      params: {
+        name: string,
+        hard?: boolean,
+        update_deps?: boolean
+      },
+      result: OkResponse
+    },
+    'machine.update.moonraker': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.update.klipper': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.update.client': {
+      params: {
+        name?: string
+      },
+      result: OkResponse
+    },
+    'machine.update.system': {
+      params: undefined,
+      result: OkResponse
+    },
+    'machine.update.full': {
+      params: undefined,
+      result: OkResponse
+    }
+  }
+
+  export interface Notifications {
+    notify_update_response: [UpdateManager.UpdateResponseEvent],
+    notify_update_refreshed: [UpdateManager.StatusResponse]
   }
 }

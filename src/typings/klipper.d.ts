@@ -345,6 +345,9 @@ declare namespace Klipper {
     is_active: boolean;
     Diameter: number;
     Raw: number;
+    enabled?: boolean;
+    filament_detected?: boolean;
+    flow_compensation_enabled?: boolean;
   }
 
   export interface ExtruderState {
@@ -402,6 +405,7 @@ declare namespace Klipper {
     last_stats?: Record<string, number>;
     app?: string;
     non_critical_disconnected?: boolean;
+    mcu_kconfig?: string | null;
   }
 
   export interface MotionReportState {
@@ -511,9 +515,12 @@ declare namespace Klipper {
     temperature: number | null;
   }
 
+  export type DualCarriageMode = 'INACTIVE' | 'PRIMARY' | 'COPY' | 'MIRROR'
+
   export interface DualCarriageState {
-    carriage_0: 'INACTIVE' | 'ACTIVE';
-    carriage_1: 'INACTIVE' | 'ACTIVE' | 'COPY' | 'MIRROR';
+    carriages?: Record<string, DualCarriageMode>;
+    carriage_0?: 'INACTIVE' | 'PRIMARY';
+    carriage_1?: DualCarriageMode;
   }
 
   export interface VirtualSdcardState {
@@ -1051,7 +1058,7 @@ declare namespace Klipper {
     smooth_time: number;
     heater_pin: string;
     pwm_cycle_time: number;
-    control: 'watermark' | 'pid' | 'pid-v' | 'mpc';
+    control: 'watermark' | 'pid' | 'pid_v' | 'dual_loop_pid' | 'mpc';
     max_delta?: number;
     pid_kp?: number;
     pid_ki?: number;

@@ -41,6 +41,40 @@ describe('buildThermalHistoryBuffer', () => {
     expect(Array.from(source.extruder)).toEqual([10, 20, 30, 40])
   })
 
+  it('leaves null samples as gaps (NaN), not 0', () => {
+    const buffer = buildThermalHistoryBuffer(
+      { extruder: { temperatures: [10, null, 30] } },
+      ['extruder'],
+      3,
+      END
+    )
+
+    expect(Array.from(chartBufferSource(buffer).extruder)).toEqual([10, Number.NaN, 30])
+  })
+
+  it('fills the lead-in with the oldest non-null reading', () => {
+    const buffer = buildThermalHistoryBuffer(
+      { extruder: { temperatures: [null, null, 30] } },
+      ['extruder'],
+      5,
+      END
+    )
+
+    expect(Array.from(chartBufferSource(buffer).extruder))
+      .toEqual([30, 30, Number.NaN, Number.NaN, 30])
+  })
+
+  it('leaves the lead-in as a gap when every sample is null', () => {
+    const buffer = buildThermalHistoryBuffer(
+      { extruder: { temperatures: [null, null] } },
+      ['extruder'],
+      3,
+      END
+    )
+
+    expect(Array.from(chartBufferSource(buffer).extruder).every(Number.isNaN)).toBe(true)
+  })
+
   it('keeps the newest samples when history exceeds retention', () => {
     const buffer = buildThermalHistoryBuffer(
       { extruder: { temperatures: series(10, i => i) } },

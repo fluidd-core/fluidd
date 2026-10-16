@@ -103,12 +103,41 @@ declare namespace Moonraker.Timelapse {
     pixelformat: string;
   }
 
-  export interface NewFrameResponse {
+  export interface NewFrameEvent {
     action: 'newframe';
     status?: 'error';
     frame: string;
     framefile: string;
   }
 
-  export type Event = NewFrameResponse | RenderResponse
+  export type Event = NewFrameEvent | RenderResponse
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'machine.timelapse.post_settings': {
+      params: Partial<Timelapse.WriteableSettings>,
+      result: Timelapse.SettingsResponse
+    },
+    'machine.timelapse.saveframes': {
+      params: undefined,
+      result: Timelapse.SaveFramesResponse
+    },
+    'machine.timelapse.render': {
+      params: undefined,
+      result: Timelapse.RenderResponse
+    },
+    'machine.timelapse.get_settings': {
+      params: undefined,
+      result: Timelapse.SettingsResponse
+    },
+    'machine.timelapse.lastframeinfo': {
+      params: undefined,
+      result: Timelapse.LastFrameInfoResponse
+    }
+  }
+
+  export interface Notifications {
+    notify_timelapse_event: [Timelapse.Event]
+  }
 }

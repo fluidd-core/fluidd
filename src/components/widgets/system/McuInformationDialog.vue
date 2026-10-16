@@ -37,6 +37,17 @@
           </tbody>
         </v-simple-table>
       </v-card>
+
+      <v-card
+        v-if="kconfig"
+        flat
+      >
+        <v-card-title>{{ $t('app.system_info.label.build_configuration') }}</v-card-title>
+
+        <v-card-text>
+          <pre>{{ kconfig }}</pre>
+        </v-card-text>
+      </v-card>
     </v-card-text>
   </app-dialog>
 </template>
@@ -52,5 +63,9 @@ export default class McuInformationDialog extends Vue {
 
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
+
+  get kconfig (): string | null {
+    return this.mcu.mcu_kconfig?.trim() || null
+  }
 }
 </script>

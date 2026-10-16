@@ -1,6 +1,10 @@
 declare namespace Moonraker.Spoolman {
   export interface SpoolIdResponse {
-    spool_id: number
+    spool_id: number | null
+  }
+
+  export interface StatusChangedEvent {
+    spoolman_connected: boolean;
   }
 
   export interface ProxyResponseV2Success<T> {
@@ -93,5 +97,35 @@ declare namespace Moonraker.Spoolman {
     empty_spool_weight?: number;
     external_id?: string;
     extra?: Record<string, unknown>;
+  }
+}
+
+declare namespace Moonraker {
+  export interface Methods {
+    'server.spoolman.get_spool_id': {
+      params: undefined,
+      result: Spoolman.SpoolIdResponse
+    },
+    'server.spoolman.post_spool_id': {
+      params: {
+        spool_id?: number
+      },
+      result: Spoolman.SpoolIdResponse
+    },
+    'server.spoolman.proxy': {
+      params: {
+        request_method: string,
+        path: string,
+        query?: string,
+        body?: unknown,
+        use_v2_response?: boolean
+      },
+      result: Spoolman.ProxyResponse<unknown>
+    }
+  }
+
+  export interface Notifications {
+    notify_active_spool_set: [Spoolman.SpoolIdResponse],
+    notify_spoolman_status_changed: [Spoolman.StatusChangedEvent]
   }
 }

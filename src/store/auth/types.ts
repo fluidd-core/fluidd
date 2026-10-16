@@ -6,6 +6,5 @@ export interface AuthState {
 
 export interface AppUser {
   username: string;
-  source: string;
-  created_on?: number;
+  source: Moonraker.Authorization.Source;
 }

@@ -39,7 +39,7 @@ export const actions = {
     }
   },
 
-  async onJobQueueChanged ({ commit, dispatch }, payload: Moonraker.JobQueue.JobQueueChangedResponse) {
+  async onJobQueueChanged ({ commit, dispatch }, payload: Moonraker.JobQueue.ChangedEvent) {
     if (payload) {
       const { queue_state, updated_queue } = payload
 

@@ -4,6 +4,20 @@ import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogButton, Pro
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { takeRightWhile } from 'lodash-es'
+import { TinyColor } from '@ctrl/tinycolor'
+
+// Any color TinyColor can parse is used as such, anything else is kept as a theme color name
+const parsePromptButtonColor = (color?: string) => {
+  if (!color) {
+    return undefined
+  }
+
+  const tinyColor = new TinyColor(color)
+
+  return tinyColor.isValid
+    ? tinyColor.toHexString()
+    : color
+}
 
 export const actions = {
   /**
@@ -111,6 +125,7 @@ export const actions = {
 
     if (parsedMessage) {
       const [, type, param] = parsedMessage
+      const { id } = payload
 
       switch (type) {
         case 'begin':
@@ -120,6 +135,7 @@ export const actions = {
         case 'text': {
           const item: PromptDialogItemText = {
             type: 'text',
+            id,
             text: param
           }
 
@@ -127,14 +143,23 @@ export const actions = {
           break
         }
 
+        case 'button_group_start':
+          commit('setPromptDialogButtonGroupStart')
+          break
+
+        case 'button_group_end':
+          commit('setPromptDialogButtonGroupEnd', id)
+          break
+
         case 'button': {
           const [text, command, color] = param.split('|')
 
           const item: PromptDialogItemButton = {
             type: 'button',
+            id,
             text,
             command,
-            color
+            color: parsePromptButtonColor(color)
           }
 
           commit('setPromptDialogItem', item)
@@ -145,9 +170,10 @@ export const actions = {
           const [text, command, color] = param.split('|')
 
           const item: PromptDialogButton = {
+            id,
             text,
             command,
-            color
+            color: parsePromptButtonColor(color)
           }
 
           commit('setPromptDialogFooterButton', item)

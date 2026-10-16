@@ -29,7 +29,6 @@ export interface AppFile extends Moonraker.Files.File, Pick<Moonraker.Files.Meta
   name: string;
   extension: string;
   path: string;
-  modified: number;
 }
 
 export interface AppFileWithMeta extends AppFile, AppFileMeta {
@@ -45,7 +44,6 @@ export interface AppFileThumbnail extends Moonraker.Files.MetadataThumbnail {
 export interface AppDirectory extends Moonraker.Files.Dir {
   type: 'directory';
   name: string;
-  modified: number;
 }
 
 export interface FilePaths {

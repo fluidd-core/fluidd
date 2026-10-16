@@ -46,7 +46,7 @@ export const actions = {
   /**
    * As updates happen, we get responses here.
    */
-  async onUpdateResponse ({ commit }, payload: Moonraker.UpdateManager.UpdateResponse) {
+  async onUpdateResponse ({ commit }, payload: Moonraker.UpdateManager.UpdateResponseEvent) {
     commit('setUpdateResponse', payload)
   },
 
