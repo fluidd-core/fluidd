@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en-GB" data-theme="dark">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muon3D · Admin design review</title>
+<style>@font-face{font-family:'IBM Plex Sans';font-weight:400;src:url('admin-fonts/ibm-plex-sans-latin-400-normal.woff2')}@font-face{font-family:'IBM Plex Sans';font-weight:500;src:url('admin-fonts/ibm-plex-sans-latin-500-normal.woff2')}@font-face{font-family:'IBM Plex Sans';font-weight:600;src:url('admin-fonts/ibm-plex-sans-latin-600-normal.woff2')}@font-face{font-family:'Krona One';src:url('admin-fonts/krona-one.woff2')}:root {
+  --m3d-font-display: 'Krona One', 'IBM Plex Sans', sans-serif;
+  --m3d-font-sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --m3d-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --m3d-radius-sm: 4px;
+  --m3d-radius-md: 6px;
+  --m3d-radius-pill: 999px;
+
+  --m3d-duration-fast: 120ms;
+  --m3d-duration-base: 180ms;
+  --m3d-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  --m3d-accent: var(--v-primary-base, #80d6d1);
+  --m3d-accent-soft: color-mix(in srgb, var(--m3d-accent) 14%, transparent);
+  --m3d-accent-line: color-mix(in srgb, var(--m3d-accent) 45%, transparent);
+}
+
+:root,
+[data-theme="dark"] {
+  --m3d-bg: #13171a;
+  --m3d-surface: #1a1f22;
+  --m3d-surface-2: #212629;
+  --m3d-inset: #101315;
+  --m3d-raised: #222729;
+  --m3d-border: #2c3337;
+  --m3d-border-strong: #3d464b;
+  --m3d-text: #e8ecee;
+  --m3d-text-muted: #9ea8ae;
+  --m3d-text-subtle: #6f7a80;
+  --m3d-hover: rgb(255 255 255 / 5%);
+  --m3d-success: #5cc98f;
+  --m3d-warning: #e8b04b;
+  --m3d-danger: #f06b61;
+  --m3d-overlay: #050708;
+  --m3d-shadow-float: 0 8px 24px rgb(0 0 0 / 45%), 0 1px 2px rgb(0 0 0 / 40%);
+  /* The live M1's stage, middle out: a dim studio, so the white machine stands out without glaring. */
+  --m3d-stage-hi: #3a4247;
+  --m3d-stage-mid: #283034;
+  --m3d-stage-lo: #1b2023;
+}
+
+[data-theme="light"] {
+  --m3d-bg: #f1f3f4;
+  --m3d-surface: #ffffff;
+  --m3d-surface-2: #f6f8f9;
+  --m3d-inset: #f1f3f4;
+  --m3d-raised: #ffffff;
+  --m3d-border: #dce1e4;
+  --m3d-border-strong: #c2c9cd;
+  --m3d-text: #121719;
+  --m3d-text-muted: #56626a;
+  --m3d-text-subtle: #87929a;
+  --m3d-hover: rgb(0 0 0 / 4%);
+  --m3d-success: #2c8657;
+  --m3d-warning: #a8761e;
+  --m3d-danger: #c23b32;
+  --m3d-overlay: #121719;
+  --m3d-shadow-float: 0 8px 24px rgb(18 23 25 / 14%), 0 1px 2px rgb(18 23 25 / 8%);
+  --m3d-stage-hi: #eceef0;
+  --m3d-stage-mid: #d8dbdf;
+  --m3d-stage-lo: #c4c8cd;
+}
+
+
+:root{--ink:var(--m3d-text);--muted:var(--m3d-text-muted);--line:var(--m3d-border);--accent:var(--m3d-accent);--soft:var(--m3d-surface-2);--paper:var(--m3d-surface);--danger:var(--m3d-danger);color-scheme:dark}
+[data-theme=light]{color-scheme:light;--m3d-accent:#007f78}
+*{box-sizing:border-box}body{margin:0;background:var(--m3d-bg);color:var(--ink);font:14px/1.5 var(--m3d-font-sans);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}button,a,input,select,textarea{outline-offset:4px}:focus-visible{outline:2px solid var(--accent)}
+button{cursor:pointer;border:0;border-radius:999px;background:var(--soft);padding:0 16px;min-height:40px;font-weight:600;white-space:nowrap}button:hover{filter:brightness(1.12)}button:disabled{opacity:.45;cursor:default}.primary{background:var(--accent);color:#00201e}.danger{color:var(--danger)}
+header{height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px;background:var(--paper);border-bottom:1px solid var(--line)}header>div:last-child{display:flex;align-items:center;gap:12px}.brand{font:15px var(--m3d-font-display);letter-spacing:.02em}.tag{margin-left:24px;font:13px var(--m3d-font-sans);color:var(--muted)}
+.shell{display:grid;grid-template-columns:208px minmax(0,1fr);min-height:calc(100vh - 64px)}nav{padding:24px 12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:4px}nav:before{content:'CONTROL / STAFF';padding:0 12px 16px;font-size:10px;letter-spacing:.1em;color:var(--muted)}nav button{border-radius:6px;width:100%;text-align:left;background:transparent;color:var(--muted);padding:10px 12px;font-weight:500;white-space:normal}nav button[aria-current=page]{background:var(--m3d-accent-soft);color:var(--accent)}
+main{padding:32px;max-width:1320px;width:100%;margin:0 auto;min-width:0}h1{font-size:28px;line-height:1.2;letter-spacing:-.6px;font-weight:500;margin:0 0 8px}h2{font-size:16px;font-weight:600;margin:0 0 16px}p{margin:8px 0 18px}.muted,small{color:var(--muted)}.lead{display:flex;justify-content:space-between;align-items:start;gap:20px;margin-bottom:24px}.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:24px;margin-bottom:20px;min-width:0}.row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.row b{display:block;font-weight:500}.row p{margin:4px 0;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+label{display:block;margin:16px 0 8px;font-weight:500}input,select,textarea{border:1px solid var(--line);border-radius:4px;padding:10px 12px;background:var(--m3d-inset);max-width:100%}input,textarea{width:100%}textarea{min-height:85px}.pill{display:inline-block;font-size:11px;border-radius:4px;background:var(--m3d-accent-soft);padding:3px 8px;color:var(--accent);margin-bottom:6px}.warn{color:var(--m3d-warning);background:color-mix(in srgb,var(--m3d-warning) 12%,transparent)}.red{color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent)}
+.timeline{border-left:1px solid var(--line);padding-left:20px}.timeline p{margin:0 0 20px}.timeline small{display:block}.notice{padding:12px 16px;border:1px solid var(--line);border-radius:6px;margin-bottom:24px;color:var(--muted);font-size:12px}.preview{min-height:170px;background:var(--soft);display:grid;place-content:center;border-radius:4px;text-align:center;color:var(--muted)}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:14px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}.scroll{overflow:auto}.screen[hidden]{display:none}
+dialog{color:var(--ink);background:var(--m3d-raised);border:1px solid var(--m3d-border-strong);border-radius:6px;box-shadow:var(--m3d-shadow-float);width:440px;padding:28px;max-width:calc(100vw - 32px)}dialog::backdrop{background:#05070899}#status{min-height:25px;margin-top:18px;color:var(--accent)}.state-list{font-size:12px;margin-top:30px}.screen-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.foot{margin:28px 0 0;font-size:12px;color:var(--muted)}
+@media(max-width:800px){header{height:auto;min-height:64px;padding:12px 16px;flex-wrap:wrap}.brand{font-size:13px}header .muted{display:none}.shell{display:block}nav{border-right:0;border-bottom:1px solid var(--line);padding:8px 12px;flex-direction:row;overflow:auto}nav:before{display:none}nav button{width:auto;white-space:nowrap;padding:10px 12px}main{padding:24px 16px}.grid{grid-template-columns:1fr}.lead{display:block}.tag{display:none}.card{padding:20px}.row{align-items:start;flex-wrap:wrap}h1{font-size:26px}}
+button{max-width:100%;white-space:normal;height:auto;padding-top:10px;padding-bottom:10px}.grid>*,.row>div{min-width:0;overflow-wrap:anywhere}</style>
+<header><div class="brand">MUON3D <span class="tag">Control / Admin</span></div><div><span class="muted">Jack · Staff</span> <button id="theme" aria-label="Switch theme">Light</button><button id="lock">Confirm with passkey</button></div></header>
+<div class="shell"><nav aria-label="Admin">
+<button data-screen="queue" aria-current="page">Review queue <span class="pill">12</span></button>
+<button data-screen="case">Cases</button><button data-screen="accounts">Accounts</button><button data-screen="reservations">Handle reservations</button><button data-screen="audit">Audit log</button>
+</nav><main>
+<div class="notice">Review prototype. All people, counts and cases are fixtures. Actions are previews and save nothing.</div>
+<section class="screen" id="queue">
+<div class="lead"><div><h1>Review queue</h1><p class="muted">Public submissions, reports and appeals. Complaints come to you first.</p></div><button data-preview="Queue refreshed">Refresh</button></div>
+<div class="toolbar"><select aria-label="Queue type"><option>All work</option><option>Public submissions</option><option>Reports</option><option>Appeals</option></select><select aria-label="Assignee"><option>Assigned to Jack</option><option>Assigned to Harry</option><option>All staff</option></select><select aria-label="Priority"><option>Urgent first</option><option>Oldest first</option></select></div>
+<div class="grid"><div class="card"><h2>Needs attention</h2>
+<div class="row"><div><span class="pill red">Urgent · Report</span><b>Unsafe model · Case 1042</b><p>Community item · Assigned to Jack · Received 18 min ago</p><small>Weapon reports: hide within one hour</small></div><button data-open="case">Review case</button></div>
+<div class="row"><div><span class="pill">Public submission</span><b>Desk cable guide</b><p>@maya · Version 3 · CC BY 4.0 · Waiting 2 h</p></div><button data-open="case">Review</button></div>
+<div class="row"><div><span class="pill warn">Appeal</span><b>Copyright decision · Case 1031</b><p>Counter-notice received · Assigned to Jack</p></div><button data-open="case">Open appeal</button></div>
+<div class="row"><div><span class="pill">Restore requested</span><b>Spool holder · Case 1020</b><p>Hidden by Harry · You can be the second reviewer</p></div><button data-open="case">Review restore</button></div></div>
+<aside><div class="card"><h2>Today</h2><div class="row"><span>Public submissions</span><b>8</b></div><div class="row"><span>Open reports</span><b>3</b></div><div class="row"><span>Appeals</span><b>1</b></div></div><div class="card"><h2>How decisions work</h2><p>Keep the reason with the case. A restoration needs someone other than the person who hid it.</p><p class="muted">Escalating a complaint assigns it to Harry. You keep the full case history.</p></div></aside></div></section>
+<section class="screen" id="case" hidden>
+<div class="lead"><div><span class="pill red">Report · Urgent</span><h1>Case 1042</h1><p class="muted">Unsafe model · Assigned to Jack · Open</p></div><button data-action="Escalate complaint to Harry">Escalate to Harry</button></div>
+<div class="grid"><div><div class="card"><h2>Reported content</h2><div class="preview">Content preview withheld in this fixture<br><small>Open evidence intentionally when reviewing a real case</small></div><div class="row"><div><b>Community item · Version 2</b><p>Author: @sample · Public · Submitted 14 October</p></div><button data-open="accounts">View account</button></div><p><b>Report:</b> “This looks unsafe. Please review it.”</p><small>Reporter details are staff-only. Outcome notices do not reveal the reporter to the uploader.</small></div>
+<div class="card"><h2>Decision</h2><label for="reason">Reason</label><textarea id="reason" placeholder="Explain the decision and the evidence you used"></textarea><div class="actions"><button class="danger" data-action="Hide content">Hide content</button><button data-action="Close report with no action">No action needed</button><button data-action="Request an independent restoration review">Request restore</button></div><p class="muted">Actions need a reason and passkey confirmation. Public approval and restoration are separate decisions.</p><button disabled>Approve restore · unavailable to the staff member who hid it</button></div></div>
+<aside><div class="card"><h2>Case history</h2><div class="timeline"><p>Report received<small>Today, 12:10 · Assigned to Jack automatically</small></p><p>Case opened<small>Today, 12:18 · Jack</small></p><p>No decision yet<small>Hide urgent content within one hour of the report</small></p></div></div><div class="card"><h2>Appeals and notices</h2><p>Keep the uploader's response and counter-notice in this case. Copyright waiting periods and deadlines are visible here.</p><button data-preview="Appeal view opened">View correspondence</button></div></aside></div></section>
+<section class="screen" id="accounts" hidden>
+<h1>Accounts</h1><p class="muted">Look up an exact email, account ID or handle. Searches are audited.</p>
+<div class="card"><label for="lookup">Account</label><input id="lookup" value="fixture-account-17"><label for="purpose">Why are you looking this up?</label><input id="purpose" value="Investigating case 1042"><div class="actions"><button class="primary" data-preview="Fixture account found; no live lookup was made">Find account</button></div></div>
+<div class="grid"><div class="card"><h2>Sample person <span class="pill warn">Deletion scheduled</span></h2><p>@sample · fixture-account-17</p><div class="row"><span>Deletion date</span><b>29 October 2026</b></div><div class="row"><span>Account status</span><b>In 14-day grace period</b></div><div class="row"><span>Public content</span><b>Hidden</b></div><p class="muted">This person's account can be kept until its deletion date. There is no immediate-delete action.</p><label for="account-reason">Reason for action</label><textarea id="account-reason" placeholder="Explain the account action"></textarea><div class="actions"><button data-action="Cancel scheduled deletion">Keep account</button><button class="danger" data-action="Suspend account">Suspend account</button><button data-action="Restore a staff-suspended account">Restore account</button></div><p class="muted">Restoring staff suspension does not cancel a person's deletion request. Each is a separate action.</p></div>
+<aside><div class="card"><h2>Account actions</h2><p>Suspension signs out devices and hides community content through the signed lifecycle hooks.</p><p>Printer controls are outside the admin portal.</p><button data-action="Schedule deletion with a 14-day grace period">Schedule deletion · 14 days</button></div><div class="card"><h2>Staff access</h2><p>No staff role on this fixture account.</p><small>Staff membership is provisioned separately. Changing someone's display name cannot grant admin access.</small></div></aside></div></section>
+<section class="screen" id="reservations" hidden>
+<h1>Handle reservations</h1><p class="muted">Protect staff and service names. Reserving a handle never transfers someone's existing handle.</p>
+<div class="grid"><div class="card scroll"><table><thead><tr><th>Pattern</th><th>Reason</th><th>Owner</th><th></th></tr></thead><tbody><tr><td>support</td><td>Service name</td><td>Muon3D</td><td><button data-action="Release support reservation">Release</button></td></tr><tr><td>*official*</td><td>Impersonation protection</td><td>Staff only</td><td><button data-action="Release official reservation">Release</button></td></tr><tr><td>jack</td><td>Reserved for staff claim</td><td>Fixture staff ID</td><td><button data-action="Release jack reservation">Release</button></td></tr></tbody></table></div><div class="card"><h2>Reserve a handle</h2><label for="pattern">Handle or pattern</label><input id="pattern" placeholder="e.g. support"><label for="reserve-reason">Reason</label><textarea id="reserve-reason" placeholder="Why should this be reserved?"></textarea><label for="owner">Account owner (optional)</label><input id="owner" placeholder="Stable account ID"><button class="primary" data-action="Create handle reservation">Reserve</button></div></div></section>
+<section class="screen" id="audit" hidden>
+<h1>Audit log</h1><p class="muted">Who did what, why and when. Entries cannot be edited from this portal.</p><div class="toolbar"><input aria-label="Filter audit" placeholder="Account ID, case ID or request ID" style="max-width:340px"><button data-preview="Fixture audit filters applied">Apply filters</button></div>
+<div class="card scroll"><table><thead><tr><th>Time (UTC)</th><th>Staff</th><th>Action / target</th><th>Reason</th><th>Result</th></tr></thead><tbody><tr><td>15 Oct 12:18</td><td>Jack</td><td>Open case / 1042</td><td>Investigate report</td><td>Read</td></tr><tr><td>15 Oct 11:40</td><td>Harry</td><td>Request restore / 1020</td><td>Evidence corrected</td><td>Awaiting another reviewer</td></tr><tr><td>15 Oct 10:06</td><td>Jack</td><td>Reserve handle / support</td><td>Service name</td><td>Saved · request fixture-28</td></tr></tbody></table></div><button data-preview="No more fixture entries">Load older entries</button></section>
+<details class="state-list"><summary>Review other screen states</summary><div class="screen-tabs"><button data-state="No work waiting. You're up to date.">Empty queue</button><button data-state="Reading the queue…">Loading</button><button data-state="We couldn't read the queue. Try again. No action was saved.">Unavailable</button><button data-state="This changed while you were reviewing it. Reload the case before deciding. No action was saved.">Conflict</button><button data-state="Staff access is required. Return to your account.">No access</button><button data-state="Your staff confirmation expired. Confirm with your passkey to continue.">Expired auth</button></div></details>
+<p id="status" role="status" aria-live="polite"></p><p class="foot">Design proposal · 15 October 2026 · Keyboard accessible · No real account, moderation or printer actions</p>
+</main></div>
+<dialog id="confirm"><h2>Confirm it's you</h2><p id="action-label">Confirm staff access with your passkey.</p><p class="muted">Use your device's passkey prompt. A recent password sign-in alone does not authorise staff actions.</p><label for="confirmation-reason">Reason</label><textarea id="confirmation-reason" placeholder="Required for a real action"></textarea><div class="actions"><button class="primary" id="simulate">Preview passkey confirmation</button><button id="cancel">Cancel</button></div><p class="muted">Prototype only. This does not open a real passkey prompt or save a decision.</p></dialog>
+<script>
+document.querySelector('#theme').onclick=()=>{const light=document.documentElement.dataset.theme!=='light';document.documentElement.dataset.theme=light?'light':'dark';document.querySelector('#theme').textContent=light?'Dark':'Light'};
+const status = document.querySelector('#status'), dialog = document.querySelector('dialog');
+function screen(id){document.querySelectorAll('.screen').forEach(s=>s.hidden=s.id!==id);document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.screen===id?'page':'false'));status.textContent='';document.querySelector('#'+id+' h1').setAttribute('tabindex','-1');document.querySelector('#'+id+' h1').focus({preventScroll:true});window.scrollTo(0,0)}
+document.querySelectorAll('[data-screen],[data-open]').forEach(b=>b.onclick=()=>screen(b.dataset.screen||b.dataset.open));
+document.querySelectorAll('[data-preview]').forEach(b=>b.onclick=()=>status.textContent=b.dataset.preview+'. Fixture preview only; no action was saved.');
+document.querySelectorAll('[data-state]').forEach(b=>b.onclick=()=>status.textContent=b.dataset.state);
+document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{document.querySelector('#action-label').textContent=b.dataset.action;dialog.showModal()});
+document.querySelector('#lock').onclick=()=>{document.querySelector('#action-label').textContent='Confirm staff access with your passkey.';dialog.showModal()};
+document.querySelector('#cancel').onclick=()=>dialog.close();document.querySelector('#simulate').onclick=()=>{dialog.close();status.textContent='Passkey confirmation previewed. No action was saved.'};
+</script>
+</html>

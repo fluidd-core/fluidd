@@ -122,6 +122,7 @@ export default class M3Dialog extends Vue {
   readonly focusTitle!: boolean
 
   uid = ++shown
+  returnFocus: HTMLElement | null = null
 
   get titleId (): string {
     return this.labelId || `m3-dlg-title-${this.uid}`
@@ -133,8 +134,14 @@ export default class M3Dialog extends Vue {
 
   @Watch('value')
   onValue (open: boolean) {
-    if (!open || !this.focusTitle) return
-    this.$nextTick(() => this.focus())
+    if (open) {
+      this.returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      if (this.focusTitle) this.$nextTick(() => this.focus())
+    } else if (this.returnFocus) {
+      const target = this.returnFocus
+      this.returnFocus = null
+      this.$nextTick(() => target.isConnected && target.focus())
+    }
   }
 
   /**
