@@ -12,12 +12,16 @@
     <p class="m3-dlg__text">
       {{ why }}
     </p>
-    <p
+    <button
       v-if="hasPasskey"
-      class="m3-dlg__note"
+      type="button"
+      class="cbtn cbtn--primary"
+      :disabled="busy"
+      data-tid="reauth-passkey"
+      @click="$emit('passkey')"
     >
-      Passkey confirmation: Coming soon. You can still use a fresh sign-in with a passkey.
-    </p>
+      Confirm with passkey
+    </button>
     <template v-if="hasPassword">
       <label class="m3-field">
         <span class="m3-field__label">Password</span>
@@ -28,6 +32,7 @@
             type="password"
             autocomplete="current-password"
             aria-label="Password"
+            :aria-describedby="error ? errorId : undefined"
             data-tid="reauth-password"
             @keydown.enter="submit"
           >
@@ -44,6 +49,7 @@
             inputmode="numeric"
             autocomplete="one-time-code"
             aria-label="Code from your authenticator app"
+            :aria-describedby="error ? errorId : undefined"
             data-tid="reauth-code"
             @keydown.enter="submit"
           >
@@ -52,13 +58,14 @@
       </label>
     </template>
     <p
-      v-else
+      v-else-if="!hasPasskey"
       class="m3-dlg__text"
     >
       This account has no password. Sign out and sign in again, then do this within ten minutes.
     </p>
     <p
       v-if="error"
+      :id="errorId"
       class="m3-dlg__error"
       role="alert"
     >
@@ -134,6 +141,7 @@ export default class ReauthDialog extends Vue {
 
   password = ''
   code = ''
+  readonly errorId = 'reauth-confirmation-error'
 
   @Watch('value')
   onOpen (open: boolean) {

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { codeSignIn, finishSignIn, passwordSignIn, SIGN_IN_DEVICE } from '../sign-in'
+import { codeSignIn, finishSignIn, passwordSignIn, signUp, SIGN_IN_DEVICE } from '../sign-in'
 import { AccountError } from '../client'
 
 const BASE = 'https://control.example.test'
@@ -21,6 +21,13 @@ describe('the console\'s sign-in page', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
     localStorage.clear()
+  })
+
+  it('sends the private declared age only to the console signup route', async () => {
+    fetchMock.mockResolvedValueOnce(answer(200, { token: 'page-session' }))
+    await signUp('new@example.test', 'a long password', 'Ada', 17)
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toMatchObject({ declared_age: 17 })
+    expect(fetchMock.mock.calls[0][0]).toBe(`${BASE}/v1/auth/sign-up`)
   })
 
   it('asks for a session that is not kept, and sends none of its own', async () => {
@@ -61,5 +68,13 @@ describe('the console\'s sign-in page', () => {
       .mockResolvedValueOnce(answer(200, { code: 'h1', url: `${BASE}/handoff?code=h1`, expires_at: 0 }))
       .mockRejectedValueOnce(new TypeError('Failed to fetch'))
     await expect(finishSignIn('page-session', '/authorize?client_id=fluidd')).resolves.toContain('code=h1')
+  })
+
+  it('refuses a handoff URL on an attacker-controlled origin', async () => {
+    fetchMock
+      .mockResolvedValueOnce(answer(200, { code: 'h1', url: 'https://attacker.example/collect?code=h1', expires_at: 0 }))
+      .mockResolvedValueOnce(answer(200, { ok: true }))
+
+    await expect(finishSignIn('page-session', '/authorize?client_id=fluidd')).rejects.toThrow('wrong origin')
   })
 })

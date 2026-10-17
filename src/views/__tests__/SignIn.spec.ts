@@ -8,7 +8,8 @@ const codeSignIn = vi.hoisted(() => vi.fn())
 const passkeySignIn = vi.hoisted(() => vi.fn())
 const forgotPassword = vi.hoisted(() => vi.fn(async () => {}))
 const finishSignIn = vi.hoisted(() => vi.fn(async () => 'https://control.example.test/handoff?code=h1&next=%2Fauthorize'))
-vi.mock('@/services/account/sign-in', () => ({ passwordSignIn, codeSignIn, passkeySignIn, forgotPassword, finishSignIn, signUp: vi.fn() }))
+const signUp = vi.hoisted(() => vi.fn())
+vi.mock('@/services/account/sign-in', () => ({ passwordSignIn, codeSignIn, passkeySignIn, forgotPassword, finishSignIn, signUp }))
 const supported = vi.hoisted(() => ({ yes: true }))
 vi.mock('@/services/account/webauthn', () => ({
   passkeysSupported: () => supported.yes,
@@ -25,7 +26,7 @@ function open () {
       'v-card-subtitle': box,
       'v-card-text': box,
       'v-card-actions': box,
-      'v-alert': box,
+      'v-alert': { template: '<div v-bind="$attrs"><slot /></div>' },
       'v-form': { template: '<form @submit="$emit(`submit`, $event)"><slot /></form>' },
       'v-text-field': { props: ['value'], template: '<label><input :value="value" @input="$emit(`input`, $event.target.value)"></label>' },
       'v-btn': { template: '<button type="button" v-on="$listeners"><slot /></button>' },
@@ -101,5 +102,25 @@ describe('Sign in to Muon3D', () => {
     await settle()
     expect(tid(w, 'sign-in-error').text()).toBe('That email or password is not right.')
     expect(go).not.toHaveBeenCalled()
+  })
+
+  it.each(['', '12', '121', 'not a number', '13.5'])("blocks invalid signup age '%s' with an accessible error", async value => {
+    const { w } = open()
+    ;(w.vm as any).setMode('sign-up'); await w.vm.$nextTick()
+    await typeIn(w, 'sign-up-age', value)
+    await w.find('form').trigger('submit'); await settle()
+    expect(signUp).not.toHaveBeenCalled()
+    expect(tid(w, 'sign-up-age-error').attributes('role')).toBe('alert')
+    expect(tid(w, 'sign-up-age').attributes('aria-describedby')).toContain('sign-up-age-error')
+  })
+
+  it('announces a signup network refusal', async () => {
+    signUp.mockRejectedValueOnce(new Error('The Muon3D service could not be reached.'))
+    const { w } = open()
+    ;(w.vm as any).setMode('sign-up'); await w.vm.$nextTick()
+    await typeIn(w, 'sign-up-age', '18')
+    await w.find('form').trigger('submit'); await settle()
+    expect(tid(w, 'sign-in-error').attributes('aria-live')).toBe('assertive')
+    expect(tid(w, 'sign-in-error').text()).toContain('could not be reached')
   })
 })

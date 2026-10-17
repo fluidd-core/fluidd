@@ -620,6 +620,27 @@ a.acct-tile:hover {
   }
 }
 
+// Account controls keep a visible keyboard location, including links and the
+// plain buttons used by dialogs. Do not rely on a browser's subtle default.
+.acct-section :is(button, a, input):focus-visible,
+.deletion-banner :is(button, a):focus-visible,
+.m3-dlg :is(button, a, input):focus-visible {
+  outline: 2px solid var(--m3d-focus-ring, var(--m3d-accent));
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .acct-radio {
   border-radius: 50%;
 
