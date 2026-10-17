@@ -177,13 +177,14 @@ export function storeRefreshToken (token: string | null) {
  * `POST /token` (RFC 6749, form-encoded). A failure is OAuth's
  * `{error, error_description}`, not the API's sentence shape.
  */
-async function tokenRequest (form: Record<string, string>): Promise<TokenSession> {
+async function tokenRequest (form: Record<string, string>, signal?: AbortSignal): Promise<TokenSession> {
   let response: Response
   try {
     response = await fetch(`${cloudBaseUrl()}/token`, {
       method: 'POST',
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(form).toString()
+      body: new URLSearchParams(form).toString(),
+      signal
     })
   } catch {
     throw new CloudError('The Muon3D service could not be reached.', 0)
@@ -306,8 +307,8 @@ export const cloudApi = {
   getLayout: () => request<{ layout: any }>('GET', '/v1/fleet/layout'),
   putLayout: (layout: unknown) => request<{ ok: boolean }>('PUT', '/v1/fleet/layout', { layout }),
   /** The central login's code exchange (`WEB-12`). */
-  exchangeCode: (code: string, redirectUri: string, verifier: string) =>
-    tokenRequest({ grant_type: 'authorization_code', code, redirect_uri: redirectUri, client_id: CLIENT_ID, code_verifier: verifier }),
+  exchangeCode: (code: string, redirectUri: string, verifier: string, signal?: AbortSignal) =>
+    tokenRequest({ grant_type: 'authorization_code', code, redirect_uri: redirectUri, client_id: CLIENT_ID, code_verifier: verifier }, signal),
   /**
    * A single-use code that opens the console's browser session at
    * `/handoff`. Takes the token of a session that signed in here, which is

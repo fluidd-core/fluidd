@@ -1,6 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import type { Reauth } from '@/services/account/api'
 import { AccountError } from '@/services/account/client'
+import { storedToken } from '@/services/muon-cloud/api'
+import { confirmAccount } from '@/services/account/confirmation'
 import { accountState, describe } from '@/services/account/state'
 
 export interface ReauthAsk {
@@ -21,7 +23,7 @@ interface ReauthDialogState extends Required<ReauthAsk> {
  * Runs a change that may need "Confirm it's you" (KAN-532): first with
  * nothing, since the console lets a sign-in of the last ten minutes through;
  * when it answers `reauth_required`, opens ReauthDialog and runs the change
- * again with the password (and code). The page puts
+ * again with a passkey or the password (and code). The page puts
  * `<reauth-dialog v-bind="reauthProps" v-on="reauthOn" />` in its template.
  */
 @Component
@@ -29,6 +31,9 @@ export default class AccountReauthMixin extends Vue {
   reauthState: ReauthDialogState = { open: false, busy: false, error: '', why: '', action: 'Confirm', danger: false }
   reauthSubmit: ((answer: Reauth) => void) | null = null
   reauthCancel: (() => void) | null = null
+  reauthPasskey: (() => Promise<void>) | null = null
+  reauthAlive = true
+  beforeDestroy () { this.reauthAlive = false; this.reauthCancel?.() }
 
   get reauthProps () {
     const me = accountState.me
@@ -47,6 +52,7 @@ export default class AccountReauthMixin extends Vue {
 
   get reauthOn () {
     return {
+      passkey: () => this.reauthPasskey?.(),
       submit: (answer: Reauth) => this.reauthSubmit?.(answer),
       cancel: () => this.reauthCancel?.(),
       input: (open: boolean) => { if (!open) this.reauthCancel?.() }
@@ -58,30 +64,51 @@ export default class AccountReauthMixin extends Vue {
    * `reauth_required` is thrown as it came.
    */
   async withReauth<T> (act: (answer: Reauth) => Promise<T>, ask: ReauthAsk = {}): Promise<T | null> {
+    const initialToken = storedToken()
+    const initialCurrent = () => this.reauthAlive && storedToken() === initialToken && !document.hidden
+    if (!initialCurrent()) return null
     try {
-      return await act({})
+      const result = await act({})
+      return initialCurrent() ? result : null
     } catch (error) {
       if (!(error instanceof AccountError && error.reauthRequired)) throw error
     }
+    if (!initialCurrent()) return null
     return new Promise<T | null>((resolve) => {
       this.reauthState = { open: true, busy: false, error: '', why: ask.why ?? '', action: ask.action ?? 'Confirm', danger: ask.danger ?? false }
-      this.reauthSubmit = async (answer: Reauth) => {
+      const token = storedToken()
+      let active = true
+      const current = () => active && this.reauthAlive && storedToken() === token && !document.hidden
+      const finish = (result: T | null) => {
+        active = false; this.reauthState.open = false
+        this.reauthSubmit = null; this.reauthPasskey = null; this.reauthCancel = null
+        resolve(result)
+      }
+      const submit = async (answer: Reauth, passkey = false) => {
+        if (this.reauthState.busy) return
+        if (!current()) { finish(null); return }
         this.reauthState.busy = true
         this.reauthState.error = ''
         try {
+          if (passkey) await confirmAccount(current)
+          if (!current()) { finish(null); return }
           const result = await act(answer)
-          this.reauthState.open = false
-          resolve(result)
+          if (current()) finish(result)
+          else finish(null)
         } catch (error) {
-          this.reauthState.error = describe(error)
+          if (!current()) finish(null)
+          else {
+            this.reauthState.error = error instanceof DOMException && error.name === 'NotAllowedError'
+              ? 'Passkey confirmation cancelled. No action was sent.'
+              : describe(error)
+          }
         } finally {
           this.reauthState.busy = false
         }
       }
-      this.reauthCancel = () => {
-        this.reauthState.open = false
-        resolve(null)
-      }
+      this.reauthSubmit = answer => submit(answer)
+      this.reauthPasskey = () => submit({}, true)
+      this.reauthCancel = () => finish(null)
     })
   }
 }

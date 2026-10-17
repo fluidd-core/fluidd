@@ -88,9 +88,9 @@ export async function accountRequest<T> (method: string, path: string, body?: un
   const ownToken = options.token !== undefined
   let token = ownToken ? options.token ?? null : storedToken()
   let response = await send(method, path, body, token)
-  // A central-login access token lasts 15 minutes: refresh once and retry,
-  // only for the stored session (services/muon-cloud/api.ts does the same).
-  if (response.status === 401 && !ownToken && token !== null) {
+  // A central-login access token lasts 15 minutes. Retry reads only: after a
+  // mutation answers 401 its outcome is not safe to infer or repeat.
+  if (response.status === 401 && method === 'GET' && !ownToken && token !== null) {
     const current = storedToken()
     if (current && (current !== token || await refreshSession())) {
       token = storedToken()

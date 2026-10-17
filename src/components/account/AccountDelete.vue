@@ -141,6 +141,11 @@
     >
       <div class="del__steps">
         <span
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+        >Step {{ step }} of 3: {{ stepTitle }}</span>
+        <span
           v-for="(name, i) in ['Check', 'It\'s you', 'Done']"
           :key="name"
           class="del__step"
@@ -184,14 +189,18 @@
 
       <template v-else-if="step === 2">
         <p class="m3-dlg__text">
-          {{ hasPassword ? 'Deleting needs your password, so someone using an unlocked computer can\'t do it.' : 'Deleting needs a fresh sign-in.' }}
+          {{ hasPasskey ? 'Confirm with your passkey to delete in 14 days, or use the other sign-in method below.' : hasPassword ? 'Deleting needs your password, so someone using an unlocked computer can\'t do it.' : 'Deleting needs a fresh sign-in.' }}
         </p>
-        <p
+        <button
           v-if="hasPasskey"
-          class="m3-dlg__note"
+          type="button"
+          class="cbtn cbtn--danger"
+          :disabled="busy"
+          data-tid="delete-passkey"
+          @click="confirmPasskey"
         >
-          Passkey confirmation: Coming soon.
-        </p>
+          Delete in 14 days with passkey
+        </button>
         <template v-if="hasPassword">
           <label class="m3-field">
             <span class="m3-field__label">Password</span>
@@ -200,6 +209,7 @@
               type="password"
               autocomplete="current-password"
               aria-label="Password"
+              :aria-describedby="dialogError ? errorId : undefined"
               data-tid="delete-password"
               @keydown.enter="confirm"
             ></span>
@@ -214,6 +224,7 @@
               inputmode="numeric"
               autocomplete="one-time-code"
               aria-label="Code from your authenticator app"
+              :aria-describedby="dialogError ? errorId : undefined"
               @keydown.enter="confirm"
             ></span>
             <span class="m3-dlg__note">Or use a recovery code.</span>
@@ -228,6 +239,7 @@
         </p>
         <p
           v-if="dialogError"
+          :id="errorId"
           class="m3-dlg__error"
           role="alert"
         >
@@ -315,6 +327,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 import { cloudState } from '@/services/muon-cloud/state'
 import { deletionState } from '@/services/muon-cloud/deletion'
+import { confirmAccount } from '@/services/account/confirmation'
+import { storedToken } from '@/services/muon-cloud/api'
 import { accountApi } from '@/services/account/api'
 import { accountState, describe, loadMe } from '@/services/account/state'
 import { dayText, listText, type AccountSectionId } from '@/services/account/model'
@@ -332,6 +346,9 @@ export default class AccountDelete extends Vue {
   @Prop({ type: Function, required: true })
   readonly linkTo!: (id: AccountSectionId) => string
 
+  alive = true
+  beforeDestroy () { this.alive = false }
+
   dialog = false
   step = 1
   password = ''
@@ -339,6 +356,7 @@ export default class AccountDelete extends Vue {
   busy = false
   error = ''
   dialogError = ''
+  readonly errorId = 'delete-confirmation-error'
   deletedAt: number | null = null
 
   created () {
@@ -453,17 +471,35 @@ export default class AccountDelete extends Vue {
   }
 
   async confirm () {
-    if (!this.grace || this.scheduled || this.busy) return
+    await this.submitDeletion(false)
+  }
+
+  async confirmPasskey () {
+    await this.submitDeletion(true)
+  }
+
+  private async submitDeletion (passkey: boolean) {
+    if (!this.grace || this.scheduled || this.busy || !this.dialog || this.step !== 2 || (passkey && !this.hasPasskey)) return
+    const token = storedToken()
+    const current = () => this.alive && this.dialog && this.step === 2 && storedToken() === token && !document.hidden
+    if (!current()) return
     this.busy = true
     this.dialogError = ''
     try {
-      const reauth = this.hasPassword ? { password: this.password, code: this.twoStep ? this.code.replace(/\s+/g, '') : undefined } : {}
+      if (passkey) await confirmAccount(current)
+      if (!current() || !this.grace || this.scheduled) return
+      const reauth = !passkey && this.hasPassword ? { password: this.password, code: this.twoStep ? this.code.replace(/\s+/g, '') : undefined } : {}
       const answer = await accountApi.deleteAccount(reauth)
+      if (!current()) return
       this.password = ''
       this.deletedAt = answer.delete_after ?? null
       this.step = 3
     } catch (error) {
-      this.dialogError = describe(error)
+      if (current()) {
+        this.dialogError = error instanceof DOMException && error.name === 'NotAllowedError'
+          ? 'Passkey confirmation was cancelled. Your account is unchanged.'
+          : describe(error)
+      }
     } finally {
       this.busy = false
     }
