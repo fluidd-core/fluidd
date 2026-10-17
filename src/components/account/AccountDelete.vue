@@ -105,14 +105,16 @@
           aria-label="Delete"
         >
           <span class="acct-muted del__text">{{ graceLine }}</span>
-          <div>
+          <div
+            v-if="grace && !scheduled"
+          >
             <button
               type="button"
               class="lib-btn lib-btn--dng"
               data-tid="delete-open"
               @click="open"
             >
-              {{ scheduled ? 'Delete now…' : 'Delete account…' }}
+              Delete account…
             </button>
           </div>
         </section>
@@ -139,6 +141,11 @@
     >
       <div class="del__steps">
         <span
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+        >Step {{ step }} of 3: {{ stepTitle }}</span>
+        <span
           v-for="(name, i) in ['Check', 'It\'s you', 'Done']"
           :key="name"
           class="del__step"
@@ -155,7 +162,7 @@
 
       <template v-if="step === 1">
         <p class="m3-dlg__text">
-          {{ grace ? 'In 14 days we delete your account, your Library and who you share with. Until then you can change your mind.' : 'Your account, your Library and who you share with are deleted at once.' }}
+          In 14 days we delete your account, your Library and who you share with. Until then you can change your mind.
         </p>
         <div class="del__keep">
           <frame-icon
@@ -178,47 +185,22 @@
             class="del__green"
           /><span>Your printers keep working on your network</span>
         </div>
-        <div
-          v-if="grace && !scheduled"
-          class="m3-field"
-        >
-          <span class="m3-field__label">When</span>
-          <div class="del__when">
-            <button
-              type="button"
-              class="lib-chip"
-              :class="{ 'lib-chip--on': !now }"
-              :aria-pressed="!now ? 'true' : 'false'"
-              data-tid="delete-later"
-              @click="now = false"
-            >
-              In 14 days
-            </button>
-            <button
-              type="button"
-              class="lib-chip"
-              :class="{ 'lib-chip--on': now }"
-              :aria-pressed="now ? 'true' : 'false'"
-              data-tid="delete-now"
-              @click="now = true"
-            >
-              Now, at once
-            </button>
-          </div>
-          <span class="m3-dlg__note">{{ now ? 'Nothing to change your mind with: it goes as soon as you confirm.' : 'You can sign in and keep it until then.' }}</span>
-        </div>
       </template>
 
       <template v-else-if="step === 2">
         <p class="m3-dlg__text">
-          {{ hasPassword ? 'Deleting needs your password, so someone using an unlocked computer can\'t do it.' : 'Deleting needs a fresh sign-in.' }}
+          {{ hasPasskey ? 'Confirm with your passkey to delete in 14 days, or use the other sign-in method below.' : hasPassword ? 'Deleting needs your password, so someone using an unlocked computer can\'t do it.' : 'Deleting needs a fresh sign-in.' }}
         </p>
-        <p
+        <button
           v-if="hasPasskey"
-          class="m3-dlg__note"
+          type="button"
+          class="cbtn cbtn--danger"
+          :disabled="busy"
+          data-tid="delete-passkey"
+          @click="confirmPasskey"
         >
-          Passkey confirmation: Coming soon.
-        </p>
+          Delete in 14 days with passkey
+        </button>
         <template v-if="hasPassword">
           <label class="m3-field">
             <span class="m3-field__label">Password</span>
@@ -227,6 +209,7 @@
               type="password"
               autocomplete="current-password"
               aria-label="Password"
+              :aria-describedby="dialogError ? errorId : undefined"
               data-tid="delete-password"
               @keydown.enter="confirm"
             ></span>
@@ -241,6 +224,7 @@
               inputmode="numeric"
               autocomplete="one-time-code"
               aria-label="Code from your authenticator app"
+              :aria-describedby="dialogError ? errorId : undefined"
               @keydown.enter="confirm"
             ></span>
             <span class="m3-dlg__note">Or use a recovery code.</span>
@@ -255,6 +239,7 @@
         </p>
         <p
           v-if="dialogError"
+          :id="errorId"
           class="m3-dlg__error"
           role="alert"
         >
@@ -320,7 +305,7 @@
             data-tid="delete-confirm"
             @click="confirm"
           >
-            {{ grace && !now ? 'Delete in 14 days' : 'Delete now' }}
+            Delete in 14 days
           </button>
         </template>
         <button
@@ -342,6 +327,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 import { cloudState } from '@/services/muon-cloud/state'
 import { deletionState } from '@/services/muon-cloud/deletion'
+import { confirmAccount } from '@/services/account/confirmation'
+import { storedToken } from '@/services/muon-cloud/api'
 import { accountApi } from '@/services/account/api'
 import { accountState, describe, loadMe } from '@/services/account/state'
 import { dayText, listText, type AccountSectionId } from '@/services/account/model'
@@ -351,25 +338,25 @@ import { bytesText } from '@/services/library/format'
 
 /**
  * Delete account (the canvas's "Account · Delete account" and its three
- * steps): what goes and what stays, with the real numbers, then check, it's
- * you, done. With the console's 14-day grace period the person can choose
- * to wait (the default) or delete at once, and can keep the account until
- * the day. A console without the grace period deletes at once, and the page
- * says so before anything is asked.
+ * steps): what goes and what stays, then check, it's you, done. The account
+ * can be kept for 14 days. An older console needs an update before deletion.
  */
 @Component({ components: { M3Dialog } })
 export default class AccountDelete extends Vue {
   @Prop({ type: Function, required: true })
   readonly linkTo!: (id: AccountSectionId) => string
 
+  alive = true
+  beforeDestroy () { this.alive = false }
+
   dialog = false
   step = 1
-  now = false
   password = ''
   code = ''
   busy = false
   error = ''
   dialogError = ''
+  readonly errorId = 'delete-confirmation-error'
   deletedAt: number | null = null
 
   created () {
@@ -452,10 +439,10 @@ export default class AccountDelete extends Vue {
   }
 
   get graceLine (): string {
-    if (this.scheduled) return `Deletion is already set for ${this.deleteDay}. Until then you can keep your account, or delete it now.`
+    if (this.scheduled) return `Deletion is set for ${this.deleteDay}. Until then you can keep your account.`
     return this.grace
-      ? 'We wait 14 days before deleting anything, in case this wasn\'t you or you change your mind, unless you choose to delete at once. You\'re signed out everywhere straight away, and nothing of yours is shared from that moment.'
-      : 'Your account is deleted at once, and you\'re signed out everywhere.'
+      ? 'We wait 14 days before deleting anything, in case this wasn\'t you or you change your mind. You\'re signed out everywhere straight away, and nothing of yours is shared from that moment.'
+      : 'Account deletion needs a console update to support the 14-day recovery period.'
   }
 
   get stepTitle (): string {
@@ -468,10 +455,9 @@ export default class AccountDelete extends Vue {
     return dayText(seconds)
   }
 
-  /** While a deletion waits, only "now" is left to choose (the console allows it). */
   open () {
+    if (!this.grace || this.scheduled) return
     this.step = 1
-    this.now = this.scheduled
     this.password = ''
     this.code = ''
     this.dialogError = ''
@@ -485,16 +471,39 @@ export default class AccountDelete extends Vue {
   }
 
   async confirm () {
+    await this.submitDeletion(false)
+  }
+
+  async confirmPasskey () {
+    await this.submitDeletion(true)
+  }
+
+  private async submitDeletion (passkey: boolean) {
+    if (!this.grace || this.scheduled || this.busy || !this.dialog || this.step !== 2 || (passkey && !this.hasPasskey)) return
+    const token = storedToken()
+    const current = () => this.alive && this.dialog && this.step === 2 && storedToken() === token && !document.hidden
+    if (!current()) return
     this.busy = true
     this.dialogError = ''
     try {
-      const reauth = this.hasPassword ? { password: this.password, code: this.twoStep ? this.code.replace(/\s+/g, '') : undefined } : {}
-      const answer = await accountApi.deleteAccount(reauth, this.grace && this.now)
+      if (passkey) await confirmAccount(current)
+      if (!current() || !this.grace || this.scheduled) return
+      const reauth = !passkey && this.hasPassword ? { password: this.password, code: this.twoStep ? this.code.replace(/\s+/g, '') : undefined } : {}
+      const answer = await accountApi.deleteAccount(reauth)
+      if (!current()) return
       this.password = ''
       this.deletedAt = answer.delete_after ?? null
       this.step = 3
     } catch (error) {
-      this.dialogError = describe(error)
+      if (current()) {
+        this.dialogError = error instanceof DOMException && error.name === 'NotAllowedError'
+          ? 'Passkey confirmation was cancelled. Your account is unchanged.'
+          : describe(error)
+      } else if (this.alive && this.dialog && this.step === 2 && storedToken() !== token) {
+        // A passkey prompt can outlive this tab's session. Explain why the
+        // destructive request stopped rather than silently leaving the wizard.
+        this.dialogError = 'The account changed. Open this action again.'
+      }
     } finally {
       this.busy = false
     }
@@ -633,12 +642,6 @@ export default class AccountDelete extends Vue {
       border-color: var(--m3d-success);
       color: var(--m3d-success);
     }
-  }
-
-  .del__when {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
   }
 
   .del__done {
