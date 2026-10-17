@@ -2,8 +2,7 @@
  * Signing out (KAN-532 §2.6): one way in, so the menu, the Account list and
  * the Devices page agree.
  *
- * Where the console serves Fluidd, "Sign out" opens `/sign-out`, which asks
- * "this browser" (the default) or "everywhere". The console's `/logout`
+ * "Sign out" ends this browser's session immediately. The console's `/logout`
  * then ends the browser session and every session issued from it, and comes
  * back to `/`, which goes on to `/signed-out` (`signed-out-note.ts`).
  *
@@ -13,20 +12,15 @@
 import type VueRouter from 'vue-router'
 import { cloudState, signOut } from '@/services/muon-cloud/state'
 import { activationState } from '@/services/muon-cloud/activate'
-import { centralLoginEnabled } from '@/services/muon-cloud/centralLogin'
 import { accountApi } from './api'
 import { isMissing } from './client'
 import { noteSignedOut, type SignedOutScope } from './signed-out-note'
 
 /**
  * "Sign out" from the menu, the Account list or this browser's row in
- * Devices: the sign-out page where the console serves Fluidd, else at once.
+ * Devices: this browser only. Other devices are managed on the Devices page.
  */
 export async function beginSignOut (router?: VueRouter): Promise<void> {
-  if (router && centralLoginEnabled() && cloudState.account) {
-    await router.push('/sign-out').catch(() => {})
-    return
-  }
   await signOutNow('browser', { router })
 }
 

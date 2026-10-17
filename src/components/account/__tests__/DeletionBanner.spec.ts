@@ -29,14 +29,15 @@ describe('the app-wide deletion banner', () => {
     deletionState.deleteAfter = null
   })
 
-  it('keeps the date and both actions visible if keeping the account fails', async () => {
+  it('keeps the date and recovery action visible if keeping the account fails', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ error: 'try again' }), { status: 500 })))
     const w = open()
     expect(w.text()).toContain('15 Jan')
     await w.find('[data-tid="deletion-keep"]').trigger('click')
     await settle()
     expect(deletionState.deleteAfter).toBe(1800000000)
-    expect(w.find('[data-tid="deletion-now"]').exists()).toBe(true)
+    expect(w.find('[data-tid="deletion-now"]').exists()).toBe(false)
+    expect(w.find('[data-tid="deletion-keep"]').exists()).toBe(true)
     expect(w.find('[role="alert"]').text()).toContain('Try again')
     w.destroy()
   })
@@ -51,37 +52,13 @@ describe('the app-wide deletion banner', () => {
     w.destroy()
   })
 
-  it('checks the choice, confirms with password and code, then signs out after immediate deletion', async () => {
-    const sent: any[] = []
-    vi.stubGlobal('fetch', vi.fn(async (_url, options) => {
-      const body = JSON.parse(options.body)
-      sent.push(body)
-      return body.password
-        ? new Response(JSON.stringify({ ok: true, deleted: true }))
-        : new Response(JSON.stringify({ reauth_required: true }), { status: 403 })
-    }))
+  it('offers recovery without a second destructive action or an automatic request', () => {
+    const fetch = vi.fn()
+    vi.stubGlobal('fetch', fetch)
     const w = open()
-    await w.find('[data-tid="deletion-now"]').trigger('click')
-    expect(sent).toHaveLength(0)
-    await w.find('[data-tid="deletion-confirm"]').trigger('click')
-    await settle()
-    await w.find('[data-tid="reauth-password"]').setValue('mock password')
-    await w.find('[data-tid="reauth-code"]').setValue('123 456')
-    await w.find('[data-tid="reauth-submit"]').trigger('click')
-    await settle()
-    expect(sent).toEqual([{ now: true }, { password: 'mock password', code: '123456', now: true }])
-    expect(signOutNow).toHaveBeenCalledWith('deleted')
-    w.destroy()
-  })
-
-  it('leaves the account pending when confirmation is cancelled', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ reauth_required: true }), { status: 403 })))
-    const w = open()
-    await w.find('[data-tid="deletion-now"]').trigger('click')
-    await w.find('[data-tid="deletion-confirm"]').trigger('click')
-    await settle()
-    await w.find('[data-tid="reauth-dialog"] button').trigger('click')
-    await settle()
+    expect(w.findAll('button')).toHaveLength(1)
+    expect(w.find('[data-tid="deletion-keep"]').exists()).toBe(true)
+    expect(fetch).not.toHaveBeenCalled()
     expect(signOutNow).not.toHaveBeenCalled()
     expect(deletionState.deleteAfter).toBe(1800000000)
     w.destroy()
