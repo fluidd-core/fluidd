@@ -38,18 +38,18 @@
         <li class="plan__option">
           <h3>Plus</h3>
           <p>
-            <span aria-label="£7.99 per month"><span aria-hidden="true">£7.99/month</span></span>
+            <span aria-hidden="true">£7.99/month</span><span class="sr-only">£7.99 per month</span>
             or
-            <span aria-label="£79.99 per year"><span aria-hidden="true">£79.99/year</span></span>
+            <span aria-hidden="true">£79.99/year</span><span class="sr-only">£79.99 per year</span>
           </p>
           <p>400 credits per month</p>
         </li>
         <li class="plan__option">
           <h3>Pro</h3>
           <p>
-            <span aria-label="£19.99 per month"><span aria-hidden="true">£19.99/month</span></span>
+            <span aria-hidden="true">£19.99/month</span><span class="sr-only">£19.99 per month</span>
             or
-            <span aria-label="£199.99 per year"><span aria-hidden="true">£199.99/year</span></span>
+            <span aria-hidden="true">£199.99/year</span><span class="sr-only">£199.99 per year</span>
           </p>
           <p>1,200 credits per month</p>
         </li>
@@ -60,9 +60,9 @@
           Credit packs
         </h3>
         <ul class="plan__packs">
-          <li>100 credits for <span aria-label="£2.99"><span aria-hidden="true">£2.99</span></span></li>
-          <li>500 credits for <span aria-label="£12.99"><span aria-hidden="true">£12.99</span></span></li>
-          <li>1,500 credits for <span aria-label="£34.99"><span aria-hidden="true">£34.99</span></span></li>
+          <li>100 credits for <span aria-hidden="true">£2.99</span><span class="sr-only">£2.99</span></li>
+          <li>500 credits for <span aria-hidden="true">£12.99</span><span class="sr-only">£12.99</span></li>
+          <li>1,500 credits for <span aria-hidden="true">£34.99</span><span class="sr-only">£34.99</span></li>
         </ul>
       </section>
       <p>One High detail generation costs 40 credits.</p>
