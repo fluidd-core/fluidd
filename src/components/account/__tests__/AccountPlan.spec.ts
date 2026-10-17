@@ -5,7 +5,9 @@ import AccountPlan from '../AccountPlan.vue'
 describe('Plan pricing', () => {
   it('pins pricing B and every compute allowance exactly', () => {
     const wrapper = mount(AccountPlan)
-    const text = wrapper.text().replace(/\s+/g, ' ').trim()
+    const visibleContent = wrapper.element.cloneNode(true) as HTMLElement
+    visibleContent.querySelectorAll('.sr-only').forEach(node => node.remove())
+    const text = visibleContent.textContent?.replace(/\s+/g, ' ').trim() ?? ''
 
     expect(text).toContain('FreeCurrent plan40 credits per month')
     expect(text).toContain('Plus£7.99/month or £79.99/year400 credits per month')
@@ -35,9 +37,17 @@ describe('Plan pricing', () => {
     expect(wrapper.find('[aria-label="Monthly plans"]').element.tagName).toBe('UL')
     expect(wrapper.findAll('[aria-label="Monthly plans"] > li')).toHaveLength(3)
     expect(wrapper.find('[aria-label="Current plan"]').text()).toBe('Current plan')
-    for (const price of ['£7.99 per month', '£79.99 per year', '£19.99 per month', '£199.99 per year']) {
-      expect(wrapper.find(`[aria-label="${price}"]`).exists()).toBe(true)
-    }
+    const spokenPrices = wrapper.findAll('.sr-only').wrappers.map(node => node.text())
+    expect(spokenPrices).toEqual([
+      '£7.99 per month',
+      '£79.99 per year',
+      '£19.99 per month',
+      '£199.99 per year',
+      '£2.99',
+      '£12.99',
+      '£34.99'
+    ])
+    expect(wrapper.findAll('[aria-label^="£"]')).toHaveLength(0)
     expect(wrapper.text()).toContain("Payments aren't available yet.")
     expect(wrapper.find('button, a').exists()).toBe(false)
     wrapper.destroy()
