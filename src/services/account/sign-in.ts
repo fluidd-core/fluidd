@@ -43,8 +43,8 @@ export async function passkeySignIn (): Promise<string> {
   return answer.token
 }
 
-export async function signUp (email: string, password: string, name: string): Promise<string> {
-  const answer = await accountRequest<SessionAnswer>('POST', '/v1/auth/sign-up', { email, password, name, device: SIGN_IN_DEVICE, refresh: false }, { token: null })
+export async function signUp (email: string, password: string, name: string, declaredAge?: number): Promise<string> {
+  const answer = await accountRequest<SessionAnswer>('POST', '/v1/auth/sign-up', { email, password, name, declared_age: declaredAge, device: SIGN_IN_DEVICE, refresh: false }, { token: null })
   return answer.token
 }
 
