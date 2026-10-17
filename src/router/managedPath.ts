@@ -6,6 +6,7 @@
 // so it shows no printer chrome either, nor do signing out and the pages the
 // console's emails open (KAN-532).
 const MANAGED_CONSOLE_PATHS = new Set<string>([
+  '/admin',
   '/setup',
   '/sign-in',
   '/sign-out',
