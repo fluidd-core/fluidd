@@ -106,8 +106,16 @@
     </section>
 
     <p
-      v-if="announcement"
+      v-if="progress"
       class="acct-note acct-note--info"
+      aria-hidden="true"
+      data-tid="privacy-download-progress"
+    >
+      {{ progress }}
+    </p>
+    <p
+      v-if="announcement"
+      :class="['acct-note', 'acct-note--info', { 'sr-only': progress }]"
       role="status"
       aria-live="polite"
       aria-atomic="true"
@@ -164,6 +172,9 @@ export default class AccountPrivacy extends Mixins(AccountReauthMixin) {
   error = ''
   message = ''
   progress = ''
+  announcedProgress = ''
+  lastAnnouncedPercent = -10
+  lastAnnouncedAt = 0
   libraryDownload: AbortController | null = null
   beforeDestroy () { this.libraryDownload?.abort() }
 
@@ -178,16 +189,24 @@ export default class AccountPrivacy extends Mixins(AccountReauthMixin) {
     return this.rows.length ? [...this.rows, ...LIBRARY_RETENTION] : []
   }
 
-  get announcement () { return this.message || this.progress }
+  get announcement () { return this.message || this.announcedProgress }
 
   async downloadLibrary () {
     if (this.busy) return
-    this.busy = true; this.error = ''; this.message = ''; this.progress = 'Preparing your Library archive…'
+    this.busy = true; this.error = ''; this.message = ''; this.progress = 'Preparing your Library archive…'; this.announcedProgress = this.progress
+    this.lastAnnouncedPercent = 0; this.lastAnnouncedAt = Date.now()
     const controller = new AbortController(); this.libraryDownload = controller
     try {
       const blob = await exportLibrary(controller.signal, (received, total) => {
         const amount = `${(received / 1024 / 1024).toFixed(1)} MiB received`
         this.progress = total ? `Downloading your Library archive: ${amount} of ${(total / 1024 / 1024).toFixed(1)} MiB.` : `Downloading your Library archive: ${amount}.`
+        const percent = total ? Math.min(100, Math.floor(received / total * 100)) : null
+        const now = Date.now()
+        if ((percent !== null && percent - this.lastAnnouncedPercent >= 10) || now - this.lastAnnouncedAt >= 5000) {
+          this.announcedProgress = this.progress
+          if (percent !== null) this.lastAnnouncedPercent = percent
+          this.lastAnnouncedAt = now
+        }
       })
       if (controller.signal.aborted) return
       if (blob) {
@@ -195,10 +214,10 @@ export default class AccountPrivacy extends Mixins(AccountReauthMixin) {
         a.href = url; a.download = 'muon3d-library.tar'; document.body.appendChild(a); a.click(); a.remove()
         setTimeout(() => URL.revokeObjectURL(url), 10_000)
       }
-      this.progress = ''; this.message = 'Your Library archive is ready as muon3d-library.tar.'
+      this.progress = ''; this.announcedProgress = ''; this.message = 'Your Library archive is ready as muon3d-library.tar.'
     } catch (error) {
       if (!controller.signal.aborted) this.error = error instanceof DOMException && error.name === 'AbortError' ? 'Download cancelled. No file was saved.' : describe(error)
-    } finally { this.progress = ''; this.busy = false; this.libraryDownload = null }
+    } finally { this.progress = ''; this.announcedProgress = ''; this.busy = false; this.libraryDownload = null }
   }
 
   async download () {
