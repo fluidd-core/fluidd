@@ -6,11 +6,10 @@
  * console's own origin as the redirect URI, so a Fluidd served by a printer
  * keeps signing in with a password as before.
  *
- * 1. With no session, the page goes top level to `/authorize` with PKCE S256
- *    and `prompt=none`, once per tab. Signed in at the console, it comes
- *    straight back with a code. If not, it comes back with `login_required`,
- *    and Fluidd shows its own "Sign in", which goes to `/authorize` without
- *    `prompt=none`.
+ * 1. With no session, a same-origin fetch follows `/authorize?prompt=none`
+ *    once per tab, alongside app initialization. Its final URL carries a
+ *    code or `login_required`; the fetched HTML is never executed. The
+ *    current document stays visible. Explicit sign-in still navigates.
  * 2. Back at the redirect URI, the `code` is exchanged at `POST /token` with
  *    the verifier. `state` must be the one this tab sent, and `iss` (RFC 9207)
  *    the console's own URL (either of its names, KAN-414), or nothing is
@@ -22,11 +21,13 @@
  * The console's own sign-in page, which `/authorize` sends a browser to with
  * `continue`, is `views/SignIn.vue`; `safeContinue` below is its guard.
  */
-import { CLIENT_ID, cloudBaseUrl, sameConsole, storedToken } from './api'
+import { CLIENT_ID, cloudApi, cloudBaseUrl, sameConsole, storedToken, storeToken, storeRefreshToken } from './api'
 import { challengeFor, newState, newVerifier } from './pkce'
 
 const PENDING_KEY = 'muon.cloud.authorize'
 const SILENT_KEY = 'muon.cloud.silent'
+// Explicit sign-in/out supersedes any asynchronous silent check in flight.
+let signInRevision = 0
 
 /** What a tab remembers across the trip to `/authorize`. */
 interface Pending {
@@ -106,6 +107,7 @@ export async function startCentralSignIn (options: { silent: boolean, returnTo?:
  * `/authorize` URL that goes with them.
  */
 export async function prepareAuthorize (options: { silent: boolean, returnTo?: string }): Promise<string> {
+  signInRevision++
   const verifier = newVerifier()
   const state = newState()
   const pending: Pending = {
@@ -135,7 +137,7 @@ export function isAuthCallback (search: string): boolean {
   return query.has('state') && (query.has('code') || query.has('error'))
 }
 
-/** Whether to try `prompt=none` before anything else loads. */
+/** Whether to try a background `prompt=none` check on this load. */
 export function shouldTrySilentSignIn (location: Pick<Location, 'origin' | 'protocol' | 'hostname' | 'search' | 'pathname'> = window.location): boolean {
   if (!centralLoginEnabled(location)) return false
   if (storedToken()) return false
@@ -147,6 +149,57 @@ export function shouldTrySilentSignIn (location: Pick<Location, 'origin' | 'prot
   // with no session; asking `/authorize` from there would only come back
   // signed out and lose `continue`. Setup never talks to the console.
   return !/^\/(sign-in|setup)(?:\/|$)/.test(location.pathname)
+}
+
+/**
+ * Uses the existing console contract without replacing this document. Only
+ * the console's own origin can use its host-only, HttpOnly, Lax cookie here;
+ * mode=same-origin also refuses a redirect crossing to any other origin.
+ * PKCE/state stay in memory, separate from an explicit sign-in's callback.
+ * A failed/unsupported check leaves the app usable and never navigates.
+ */
+export async function checkCentralSession (): Promise<void> {
+  if (!shouldTrySilentSignIn() || session()?.getItem(PENDING_KEY)) return
+  const revision = ++signInRevision
+  const controller = new AbortController()
+  const timeout = window.setTimeout(() => controller.abort(), 5000)
+  const current = () => revision === signInRevision && !controller.signal.aborted && !storedToken()
+  try {
+    session()?.setItem(SILENT_KEY, '1')
+    const verifier = newVerifier()
+    const state = newState()
+    const base = cloudBaseUrl()
+    const callback = redirectUri()
+    const response = await fetch(authorizeUrl(base, {
+      redirectUri: callback,
+      challenge: await challengeFor(verifier),
+      state,
+      silent: true
+    }), {
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      redirect: 'follow',
+      cache: 'no-store',
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal
+    })
+    // Only headers and the URL matter. Do not download/parse another app.
+    await response.body?.cancel()
+    if (!current() || cloudBaseUrl() !== base || !response.ok || !response.redirected) return
+    const url = new URL(response.url)
+    if (`${url.origin}${url.pathname}` !== callback || url.hash) return
+    const query = url.searchParams
+    if (query.getAll('state').length !== 1 || query.get('state') !== state) return
+    if (query.getAll('iss').length !== 1 || !sameConsole(query.get('iss')!, base)) return
+    // login_required and every other OAuth error leave sign-in to the user.
+    if (query.has('error') || query.getAll('code').length !== 1 || !query.get('code')) return
+    const tokens = await cloudApi.exchangeCode(query.get('code')!, callback, verifier, controller.signal)
+    if (!current() || cloudBaseUrl() !== base) return
+    storeToken(tokens.access_token)
+    storeRefreshToken(tokens.refresh_token)
+  } catch { /* offline, timeout, denied or unsupported: keep the app usable */ } finally {
+    window.clearTimeout(timeout)
+  }
 }
 
 /**
@@ -213,7 +266,8 @@ export function safeContinue (value: unknown): string | null {
 export function handoffUrl (handoff: string, next: string | null): string {
   const base = cloudBaseUrl()
   const given = new URL(handoff, base)
-  const url = sameConsole(given.origin, base) ? new URL(`${given.pathname}${given.search}`, base) : given
+  if (!sameConsole(given.origin, base)) throw new Error('The sign-in handoff came from the wrong origin.')
+  const url = new URL(`${given.pathname}${given.search}`, base)
   url.searchParams.set('next', next ?? '/')
   return url.toString()
 }
@@ -223,6 +277,7 @@ export function handoffUrl (handoff: string, next: string | null): string {
  * session and every session issued from it, and comes back here.
  */
 export function signOutCentral (doc: Document = document): void {
+  signInRevision++
   session()?.setItem(SILENT_KEY, '1')
   const form = doc.createElement('form')
   form.method = 'POST'
@@ -241,5 +296,6 @@ export function signOutCentral (doc: Document = document): void {
 
 /** Forgets this tab's silent attempt, after an explicit sign-in succeeds. */
 export function clearSilentAttempt (): void {
+  signInRevision++
   session()?.removeItem(SILENT_KEY)
 }

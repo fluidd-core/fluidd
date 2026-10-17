@@ -69,4 +69,12 @@ describe('the console\'s sign-in page', () => {
       .mockRejectedValueOnce(new TypeError('Failed to fetch'))
     await expect(finishSignIn('page-session', '/authorize?client_id=fluidd')).resolves.toContain('code=h1')
   })
+
+  it('refuses a handoff URL on an attacker-controlled origin', async () => {
+    fetchMock
+      .mockResolvedValueOnce(answer(200, { code: 'h1', url: 'https://attacker.example/collect?code=h1', expires_at: 0 }))
+      .mockResolvedValueOnce(answer(200, { ok: true }))
+
+    await expect(finishSignIn('page-session', '/authorize?client_id=fluidd')).rejects.toThrow('wrong origin')
+  })
 })

@@ -348,4 +348,20 @@ export default class AccountSessions extends Vue {
     padding: 14px 0;
     font-size: 13px;
   }
+
+  @media (max-width: 480px) {
+    .sess__device {
+      grid-template-columns: 40px minmax(0, 1fr);
+    }
+    .sess__device > button {
+      grid-column: 2;
+      justify-self: start;
+    }
+    .sess__event {
+      grid-template-columns: 20px minmax(0, 1fr);
+    }
+    .acct-lrow__time {
+      grid-column: 2;
+    }
+  }
 </style>
