@@ -14,13 +14,12 @@
     >
       <div class="acct-card__title">
         <h2>What other people can see</h2>
-        <span class="acct-card__aside">Public page: off</span>
       </div>
       <div class="acct-list">
         <div class="acct-row">
           <div class="acct-row__label">
-            <b>Nothing of yours is public</b>
-            <span>Sharing prints with other people, a handle and a public page come later, and they'll start off.</span>
+            <b>Your profile and shared content</b>
+            <span>Review your name and profile settings in Profile. Only content you choose to share is public.</span>
           </div>
         </div>
         <div class="acct-row">
@@ -64,9 +63,17 @@
         <div class="acct-row">
           <div class="acct-row__label">
             <b>Library</b>
-            <span>Every print and model, as a zip. Until then, download each from its page in your Library.</span>
+            <span>Your retained prints, versions, models and files in one archive (.tar), with their metadata.</span>
           </div>
-          <span class="acct-soon">Coming soon</span>
+          <button
+            type="button"
+            class="lib-btn lib-btn--sm"
+            :disabled="busy"
+            data-tid="privacy-library-download"
+            @click="downloadLibrary"
+          >
+            Download Library
+          </button>
         </div>
       </div>
     </section>
@@ -126,6 +133,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { exportLibrary } from '@/services/library/export'
 import AccountReauthMixin from '@/mixins/account-reauth'
 import ReauthDialog from './ReauthDialog.vue'
 import { accountApi } from '@/services/account/api'
@@ -150,6 +158,8 @@ export default class AccountPrivacy extends Mixins(AccountReauthMixin) {
   busy = false
   error = ''
   message = ''
+  libraryDownload: AbortController | null = null
+  beforeDestroy () { this.libraryDownload?.abort() }
 
   created () {
     loadMe().catch(() => {})
@@ -160,6 +170,24 @@ export default class AccountPrivacy extends Mixins(AccountReauthMixin) {
 
   get retention (): RetentionRow[] {
     return this.rows.length ? [...this.rows, ...LIBRARY_RETENTION] : []
+  }
+
+  async downloadLibrary () {
+    if (this.busy) return
+    this.busy = true; this.error = ''; this.message = ''
+    const controller = new AbortController(); this.libraryDownload = controller
+    try {
+      const blob = await exportLibrary(controller.signal)
+      if (controller.signal.aborted) return
+      if (blob) {
+        const url = URL.createObjectURL(blob); const a = document.createElement('a')
+        a.href = url; a.download = 'muon3d-library.tar'; document.body.appendChild(a); a.click(); a.remove()
+        setTimeout(() => URL.revokeObjectURL(url), 10_000)
+      }
+      this.message = 'Your Library archive is ready as muon3d-library.tar.'
+    } catch (error) {
+      if (!controller.signal.aborted) this.error = error instanceof DOMException && error.name === 'AbortError' ? 'Download cancelled.' : describe(error)
+    } finally { this.busy = false; this.libraryDownload = null }
   }
 
   async download () {
