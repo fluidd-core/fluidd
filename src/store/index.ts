@@ -17,6 +17,7 @@ import { macros } from './macros'
 import { power } from './power'
 import { history } from './history'
 import { version } from './version'
+import { firmware } from './firmware'
 import { mesh } from './mesh'
 import { notifications } from './notifications'
 import { announcements } from './announcements'
@@ -50,6 +51,7 @@ export const storeOptions = {
     power,
     history,
     version,
+    firmware,
     mesh,
     notifications,
     announcements,

@@ -47,6 +47,22 @@ export const mutations = {
     }
   },
 
+  setAgentsLoaded (state, payload: boolean) {
+    state.agentsLoaded = payload
+  },
+
+  setAgents (state, payload: string[]) {
+    state.agents = [...payload]
+  },
+
+  setAgentConnected (state, payload: { name: string, connected: boolean }) {
+    const others = state.agents.filter(name => name !== payload.name)
+
+    state.agents = payload.connected
+      ? [...others, payload.name]
+      : others
+  },
+
   /**
    * On initial init we get the server (moonraker) configuration.
    */
