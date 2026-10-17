@@ -13,13 +13,13 @@
       aria-label="Name and photo"
     >
       <h2 class="lib-card-title">
-        Name and photo
+        Account name
       </h2>
       <div class="profile__photo">
         <span class="acct-avatar acct-avatar--xl">{{ initials }}</span>
         <div class="profile__photo-text">
-          <span class="acct-soon">Photos come with public profiles</span>
-          <span class="acct-field__note">Until then your initials stand in for you.</span>
+          <span class="acct-soon">Your profile photo lives in Library</span>
+          <span class="acct-field__note">Use the Library link below to edit it.</span>
         </div>
       </div>
       <label class="acct-field">
@@ -47,12 +47,14 @@
       </label>
     </section>
 
+    <account-community />
+
     <div class="acct-note">
       <frame-icon
         name="info"
         small
       />
-      <span><b>Nothing about you is public.</b> A handle and a public page for sharing prints come later, and they'll be off until you turn them on.</span>
+      <span>Your community name and username stay private until you choose Public above. Public pages also need an explicit choice in Library.</span>
     </div>
 
     <p
@@ -90,18 +92,17 @@
 </template>
 
 <script lang="ts">
+import AccountCommunity from './AccountCommunity.vue'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { cloudState } from '@/services/muon-cloud/state'
 import { accountState, describe, loadMe, renameAccount } from '@/services/account/state'
 import { initialsOf } from '@/services/account/model'
 
 /**
- * Profile (the canvas's "Account · Profile and handle", stage 1): the name,
- * which the console keeps (`PATCH /v1/me`). The photo, the handle and the
- * public page are KAN-534's, behind their flag, so here they're a line
- * saying they come later.
+ * The console owns the canonical name and private community setup.
+ * Library keeps the page, bio and sanitized photo.
  */
-@Component({})
+@Component({ components: { AccountCommunity } })
 export default class AccountProfile extends Vue {
   name = ''
   busy = false
