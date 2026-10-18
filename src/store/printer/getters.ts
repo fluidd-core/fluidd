@@ -277,7 +277,7 @@ export const getters = {
     const totalDuration = state.printer.print_stats?.total_duration ?? 0
     const printDuration = state.printer.print_stats?.print_duration ?? 0
 
-    const fileLeft = printDuration > 0 && fileProgress > 0
+    const fileLeft = printDuration > 0 && fileProgress >= 0.01
       ? printDuration / fileProgress - printDuration
       : 0
 
