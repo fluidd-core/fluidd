@@ -34,6 +34,7 @@ function show () {
 afterEach(() => {
   vi.clearAllMocks()
   setProMode(false)
+  cloudState.account = null
   cloudState.activePrinterId = null
   cloudState.printers = []
   printerTransportBinding.remote = false
@@ -93,6 +94,53 @@ describe('palette command safety', () => {
     await coolDown.run()
     expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
     expect(SocketActions.printerGcodeScript).not.toHaveBeenCalled()
+    wrapper.destroy()
+  })
+
+  it.each([
+    ['cool-down', 'printing'],
+    ['cancel', 'printing'],
+    ['estop', 'ready'],
+    ['job-part.gcode', 'ready']
+  ] as const)('refuses confirmed %s when the signed-in account changes', async (id, state) => {
+    const wrapper = show()
+    cloudState.account = { id: 'account-a' } as any
+    if (id === 'estop') wrapper.vm.$store.state.config.uiSettings.general.confirmOnEstop = true
+    const confirmed = command(wrapper, id, state)!
+    wrapper.vm.$confirm = vi.fn().mockImplementation(async () => {
+      cloudState.account = { id: 'account-b' } as any
+      return true
+    })
+    await confirmed.run()
+    expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
+    expect(Object.values(SocketActions).every(mock => !(mock as ReturnType<typeof vi.fn>).mock.calls.length)).toBe(true)
+    wrapper.destroy()
+  })
+
+  it.each([
+    ['pause', 'printing'],
+    ['resume', 'paused'],
+    ['cancel', 'printing'],
+    ['home', 'ready'],
+    ['preheat-pla', 'ready'],
+    ['cool-down', 'ready'],
+    ['job-part.gcode', 'ready'],
+    ['macro-PURGE', 'ready']
+  ] as const)('refuses stale %s after Klipper is no longer ready', async (id, state) => {
+    const wrapper = show()
+    const stale = command(wrapper, id, state)!
+    wrapper.vm.$store.getters['printer/getKlippyReady'] = false
+    wrapper.vm.$store.getters['printer/getKlippyConnected'] = false
+    await stale.run()
+    expect(Object.values(SocketActions).every(mock => !(mock as ReturnType<typeof vi.fn>).mock.calls.length)).toBe(true)
+    wrapper.destroy()
+  })
+
+  it('sends a still-valid palette command exactly once', async () => {
+    const wrapper = show()
+    await command(wrapper, 'macro-PURGE', 'ready')!.run()
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledWith('PURGE', undefined)
     wrapper.destroy()
   })
 

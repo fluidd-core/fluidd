@@ -209,6 +209,16 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
     return !this.sectionContext.foreign && !!activeSlug() && this.socketConnected && this.authenticated
   }
 
+  /** Commands belong to the selected printer and to the account that selected it. */
+  paletteTarget (): string {
+    return JSON.stringify([
+      this.$store.state.config.apiUrl,
+      cloudState.activePrinterId ?? '',
+      this.$route?.params?.printer ?? '',
+      cloudState.account?.id ?? ''
+    ])
+  }
+
   get printerName (): string | null {
     return this.inPrinter ? printerNameParts(this.$store.getters['config/getDisplayName'] as string).name : null
   }
@@ -271,18 +281,18 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
   get doCommands (): Command[] {
     const list: Command[] = []
     const on = this.printerName ? ` on ${this.printerName}` : ''
-    const target = this.commandTarget
+    const target = this.paletteTarget()
     if (this.inPrinter && this.commandControlAvailable && this.klippyReady) {
       if (this.printerPrinting) {
-        list.push({ id: 'pause', group: 'Do', label: 'Pause the print', keys: ['Shift', 'P'], icon: 'jobs', suggested: true, run: () => this.runPaletteCommand(target, () => this.pausePrint()) })
+        list.push({ id: 'pause', group: 'Do', label: 'Pause the print', keys: ['Shift', 'P'], icon: 'jobs', suggested: true, run: () => this.runPaletteCommand(target, () => this.pausePrint(), () => this.printerPrinting) })
       }
       if (this.printerPaused) {
-        list.push({ id: 'resume', group: 'Do', label: 'Resume the print', keys: ['Shift', 'P'], icon: 'jobs', suggested: true, run: () => this.runPaletteCommand(target, () => this.resumePrint()) })
+        list.push({ id: 'resume', group: 'Do', label: 'Resume the print', keys: ['Shift', 'P'], icon: 'jobs', suggested: true, run: () => this.runPaletteCommand(target, () => this.resumePrint(), () => this.printerPaused) })
       }
       if (this.printerPrinting || this.printerPaused) {
         list.push({ id: 'cancel', group: 'Do', label: 'Stop the print', words: 'cancel abort', keys: ['Shift', 'C'], icon: 'x', run: () => this.cancelPalettePrint(target) })
-      } else {
-        list.push({ id: 'home', group: 'Do', label: `Home all${on}`, words: 'axes g28', keys: ['Shift', 'H'], icon: 'control', suggested: true, run: () => this.runPaletteCommand(target, () => this.homeAll()) })
+      } else if (!this.printerBusy) {
+        list.push({ id: 'home', group: 'Do', label: `Home all${on}`, words: 'axes g28', keys: ['Shift', 'H'], icon: 'control', suggested: true, run: () => this.runPaletteCommand(target, () => this.homeAll(), () => !this.printerBusy) })
       }
       const presets = (this.$store.getters['config/getTempPresets'] as TemperaturePreset[]) ?? []
       presets.forEach((preset, i) => list.push({
@@ -328,12 +338,16 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
     return list
   }
 
-  runPaletteCommand (target: string, send: () => void): boolean {
-    this.commandRefusal = target !== this.commandTarget
+  runPaletteCommand (target: string, send: () => void, available: () => boolean = () => true, klipperRequired = true): boolean {
+    this.commandRefusal = target !== this.paletteTarget()
       ? 'Not sent. The selected printer changed. Try again.'
       : !this.inPrinter || !this.commandControlAvailable
           ? 'Not sent. Connect to a printer you can control first.'
-          : ''
+          : klipperRequired && (!this.klippyConnected || !this.klippyReady)
+            ? 'Not sent. Klipper is not ready.'
+            : !available()
+                ? 'Not sent. The printer state changed. Try again.'
+                : ''
     if (this.commandRefusal) return false
     send()
     return true
@@ -348,7 +362,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
     return this.runPaletteCommand(target, () => {
       SocketActions.printerPrintCancel()
       this.addConsoleEntry('CANCEL_PRINT')
-    })
+    }, () => this.printerPrinting || this.printerPaused)
   }
 
   async coolDown (target: string): Promise<boolean> {
@@ -362,18 +376,23 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
       'Everything stops at once: the print, the heaters and the motors. The printer then has to restart before it can do anything else.',
       { title: 'Stop the printer now?', buttonTrueText: 'Stop now', buttonFalseText: 'Keep going', danger: true }
     ))) return false
-    return this.runPaletteCommand(target, () => SocketActions.printerEmergencyStop())
+    return this.runPaletteCommand(target, () => SocketActions.printerEmergencyStop(), () => true, false)
   }
 
   async restartCommand (firmware: boolean): Promise<boolean> {
+    const target = this.paletteTarget()
     if (!await this.confirmCommandRestart()) return false
+    if (target !== this.paletteTarget()) {
+      this.commandRefusal = 'Not sent. The selected printer changed. Try again.'
+      return false
+    }
     // Send immediately after the final check. Moonraker's lifecycle notifications reset the UI.
     if (firmware) SocketActions.printerFirmwareRestart()
     else SocketActions.printerRestart()
     return true
   }
 
-  async hostCommand (what: 'reboot' | 'shutdown', target = this.commandTarget) {
+  async hostCommand (what: 'reboot' | 'shutdown', target = this.paletteTarget()) {
     this.commandRefusal = this.restartRefusal
     if (this.commandRefusal) return false
     const reboot = what === 'reboot'
@@ -386,7 +405,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
       }
     )
     if (!ok) return false
-    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer changed. Try again.' : this.restartRefusal
+    this.commandRefusal = target !== this.paletteTarget() ? 'Not sent. The selected printer changed. Try again.' : this.restartRefusal
     if (this.commandRefusal) return false
     if (reboot) SocketActions.machineReboot()
     else SocketActions.machineShutdown()
@@ -394,8 +413,8 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
   }
 
   get jobCommands (): Command[] {
-    if (!this.inPrinter || !this.commandControlAvailable || !this.klippyReady || this.printerPrinting || this.printerPaused) return []
-    const target = this.commandTarget
+    if (!this.inPrinter || !this.commandControlAvailable || !this.klippyReady || this.printerBusy) return []
+    const target = this.paletteTarget()
     const files = (this.$store.getters['files/getRootFiles']('gcodes') as MoonrakerRootFile[] | undefined) ?? []
     return [...files]
       .filter(f => /\.(gcode|g|gco|bgcode)$/i.test(f.path) && !f.path.split('/').some(part => part.startsWith('.')))
@@ -416,7 +435,7 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
       })
   }
 
-  async printJob (path: string, target = this.commandTarget) {
+  async printJob (path: string, target = this.paletteTarget()) {
     const name = jobName(path) ?? path
     const printer = this.printerName ?? 'The printer'
     const ok = await this.$confirm(`${printer} heats up, homes and starts printing.`, {
@@ -425,7 +444,8 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
       plateCheck: plateCheckNeeded(this.$store.state.history?.jobs)
     })
     if (!ok) return
-    if (!this.runPaletteCommand(target, () => {})) return false
+    const idle = () => !this.printerBusy
+    if (!this.runPaletteCommand(target, () => {}, idle)) return false
     const spoolman = this.$store.getters['spoolman/getAvailable'] && this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolman) {
       this.$store.commit('spoolman/setDialogState', { show: true, filename: path })
@@ -434,12 +454,12 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
     return this.runPaletteCommand(target, () => {
       SocketActions.printerPrintStart(path)
       this.go(printerHomePath())
-    })
+    }, idle)
   }
 
   get macroCommands (): Command[] {
     if (!this.inPrinter || !this.commandControlAvailable || !this.klippyReady) return []
-    const target = this.commandTarget
+    const target = this.paletteTarget()
     const macros = visibleMacros(this.$store.getters['macros/getVisibleMacros'] as MacroGroup[])
     return macros.map(m => ({
       id: `macro-${m.name}`,
