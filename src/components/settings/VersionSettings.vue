@@ -60,13 +60,13 @@
           <template #title>
             {{ packageTitle(component) }}
             <v-tooltip
-              v-if="'remote_url' in component && component.remote_url !== '?'"
+              v-if="getBaseUrl(component)"
               bottom
             >
               <template #activator="{ attrs, on }">
                 <a
                   v-bind="attrs"
-                  :href="component.remote_url"
+                  :href="getBaseUrl(component)"
                   target="_blank"
                   rel="noopener noreferrer"
                   v-on="on"
@@ -79,7 +79,7 @@
                   </v-icon>
                 </a>
               </template>
-              <span>{{ component.remote_url }}</span>
+              <span>{{ getBaseUrl(component) }}</span>
             </v-tooltip>
           </template>
 
@@ -287,12 +287,21 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   getBaseUrl (component: VersionInfo) {
-    if ('remote_url' in component && component.remote_url) {
+    if (
+      'remote_url' in component &&
+      /^https?:\/\//i.test(component.remote_url)
+    ) {
       return component.remote_url
     }
-    if ('owner' in component) {
+
+    if (
+      'owner' in component &&
+      component.owner !== '?' &&
+      component.repo_name !== '?'
+    ) {
       return `https://github.com/${component.owner}/${component.repo_name || component.name}`
     }
+
     return ''
   }
 
