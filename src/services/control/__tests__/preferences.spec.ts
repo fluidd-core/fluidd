@@ -198,6 +198,33 @@ describe('personal Control choices', () => {
     expect((await remote.read(refreshed)).folds['heat.other']).toBe(true)
   })
 
+  it('supersedes an in-flight read when the selected account credentials rotate', async () => {
+    const oldRead = deferred<ControlPreferences>()
+    const refreshedRead = deferred<ControlPreferences>()
+    const reads: PreferenceContext[] = []
+    const refreshed = { ...alice, token: 'alice-refreshed-session' }
+    const store = new ControlPreferenceStore({
+      read: context => {
+        reads.push({ ...context })
+        return context.token === refreshed.token ? refreshedRead.promise : oldRead.promise
+      },
+      patch: async () => { throw new Error('Offline') }
+    }, localStorage)
+
+    const expiredSelection = store.select(alice)
+    await store.setFold('heat.other', true)
+    const refreshedSelection = store.select(refreshed)
+
+    expect(reads).toEqual([alice, refreshed])
+    refreshedRead.resolve({ version: 1, folds: { 'fans.all': true } })
+    await refreshedSelection
+    expect(store.state.folds).toEqual({ 'fans.all': true, 'heat.other': true })
+
+    oldRead.resolve({ version: 1, folds: { private: true } })
+    await expiredSelection
+    expect(store.state.folds).toEqual({ 'fans.all': true, 'heat.other': true })
+  })
+
   it('refreshes anonymous choices after a second browser tab changes them', async () => {
     const { remote } = service()
     const first = new ControlPreferenceStore(remote, localStorage)
