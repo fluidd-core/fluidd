@@ -283,6 +283,12 @@ export default class DeveloperModeSettings extends Vue {
     return typeof message === 'string' ? message : String(err)
   }
 
+  /** An older MuonOS has developer mode, but not the panel-confirmation routes. */
+  missingOwnerConfirmation (err: unknown): boolean {
+    const status = (err as { response?: { status?: unknown } })?.response?.status
+    return status === 404 || status === 501
+  }
+
   async toggle () {
     if (!this.state.canManage || this.busy) return
     this.errorMessage = ''
@@ -337,7 +343,9 @@ export default class DeveloperModeSettings extends Vue {
       challenge = data
     } catch (err) {
       this.loading = false
-      this.errorMessage = this.describe(err)
+      this.errorMessage = this.missingOwnerConfirmation(err)
+        ? 'This printer software does not support owner confirmation yet. Developer mode was not changed.'
+        : this.describe(err)
       return
     }
     this.loading = false
