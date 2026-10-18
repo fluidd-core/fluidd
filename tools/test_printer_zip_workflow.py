@@ -73,6 +73,13 @@ class PrinterZipWorkflowTest(unittest.TestCase):
         self.assertNotIn("docker", self.workflow.lower())
         self.assertNotIn("FLUIDD_PAUSE_PUBLISH", self.workflow)
 
+    def test_third_party_actions_are_pinned_to_commits(self) -> None:
+        action_uses = re.findall(r"(?m)^\s+uses:\s+([^\s#]+)", self.workflow)
+        self.assertGreater(len(action_uses), 0)
+        for action in action_uses:
+            with self.subTest(action=action):
+                self.assertRegex(action, r"^[^@]+@[0-9a-f]{40}$")
+
     def test_write_token_is_available_only_to_gh_steps(self) -> None:
         workflow_preamble, jobs = self.workflow.split("\njobs:\n", maxsplit=1)
         job_preamble, steps = jobs.split("\n    steps:\n", maxsplit=1)
@@ -83,7 +90,7 @@ class PrinterZipWorkflowTest(unittest.TestCase):
         step_blocks = re.split(r"(?m)(?=^      - name: )", steps)
         named_steps = [step for step in step_blocks if step.startswith("      - name: ")]
         checkout_step = next(
-            step for step in named_steps if "uses: actions/checkout@v4" in step
+            step for step in named_steps if "uses: actions/checkout@" in step
         )
         self.assertIn("persist-credentials: false", checkout_step)
         gh_steps = [step for step in named_steps if re.search(r"\bgh release ", step)]
