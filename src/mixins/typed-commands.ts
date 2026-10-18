@@ -12,7 +12,11 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
   commandRefusal = ''
 
   get commandTarget (): string {
-    return `${this.$store.state.config.apiUrl}|${cloudState.activePrinterId ?? ''}`
+    return JSON.stringify([
+      this.$store.state.config.apiUrl,
+      cloudState.activePrinterId,
+      cloudState.account?.id ?? null
+    ])
   }
 
   get commandControlAvailable (): boolean {
@@ -39,7 +43,7 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
       title: 'Restart Klipper?', buttonTrueText: 'Restart', buttonFalseText: 'Keep running', danger: true
     })
     if (!ok) return false
-    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer changed. Try again.' : this.restartRefusal
+    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer or account changed. Try again.' : this.restartRefusal
     return !this.commandRefusal
   }
 

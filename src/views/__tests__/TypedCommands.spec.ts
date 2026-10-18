@@ -8,7 +8,10 @@ import { printerTransportBinding } from '@/services/managed-session/httpTranspor
 
 vi.mock('@/api/socketActions', () => ({ SocketActions: { printerGcodeScript: vi.fn(), printerEmergencyStop: vi.fn() } }))
 vi.mock('@/services/printer-pages', () => ({ activeSlug: () => 'hazel-1234' }))
-vi.mock('@/services/muon-cloud/state', () => ({ cloudState: { activePrinterId: null, printers: [] } }))
+vi.mock('@/services/muon-cloud/state', async () => {
+  const Vue = (await import('vue')).default
+  return { cloudState: Vue.observable({ account: null, activePrinterId: null, printers: [] }) }
+})
 
 const configfile = {
   settings: {
@@ -34,6 +37,7 @@ function show (component: typeof Console | typeof OverviewConsole, connected = t
 
 afterEach(() => {
   vi.clearAllMocks()
+  cloudState.account = null
   cloudState.activePrinterId = null
   cloudState.printers = []
   printerTransportBinding.remote = false
@@ -133,6 +137,32 @@ describe.each([Console, OverviewConsole])('typed batch submission', component =>
     expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
     expect(SocketActions.printerGcodeScript).not.toHaveBeenCalled()
     expect((wrapper.vm as Console).command).toBe('RESTART')
+    wrapper.destroy()
+  })
+
+  it.each(['SAVE_CONFIG', 'RESTART', 'FIRMWARE_RESTART'])('refuses %s when the signed-in account changes during confirmation', async command => {
+    const wrapper = show(component)
+    cloudState.account = { id: 'account-before' } as typeof cloudState.account
+    wrapper.vm.$confirm = vi.fn().mockImplementation(async () => {
+      cloudState.account = { id: 'account-after' } as typeof cloudState.account
+      return true
+    })
+    await wrapper.setData({ command })
+    await (wrapper.vm as Console).send()
+    expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).not.toHaveBeenCalled()
+    expect((wrapper.vm as Console).command).toBe(command)
+    wrapper.destroy()
+  })
+
+  it.each(['SAVE_CONFIG', 'RESTART', 'FIRMWARE_RESTART'])('sends %s once when the confirmed account target is unchanged', async command => {
+    const wrapper = show(component)
+    cloudState.account = { id: 'account-before' } as typeof cloudState.account
+    await wrapper.setData({ command })
+    await (wrapper.vm as Console).send()
+    expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledWith(command, undefined)
     wrapper.destroy()
   })
 
