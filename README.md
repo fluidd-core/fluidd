@@ -22,6 +22,23 @@ The commit and `cloudBaseUrl` are reported by the build itself and are not
 checked against compiled code. `config.json` is checked only for
 `hosted: false`; its provenance is not independently proven.
 
+After installing a MuonOS image by hand, compare the files actually served by
+the printer with the pinned release archive for the C3 acceptance record:
+
+```sh
+python3 tools/check-printer-fluidd.py http://m1-xxxx.local \
+  --zip fluidd.zip --out printer-fluidd-report.json
+```
+
+The check makes sequential, anonymous GET requests, disables environment and
+system proxies, and never follows redirects. It exits successfully only when
+every file in the ZIP is served with identical bytes and `/` equals the ZIP's
+`index.html`; the printer may serve additional files. The JSON report records
+the ZIP's size and SHA-256, served build metadata, printer `hosted` setting,
+all missing, redirected, or changed ZIP entries, and the service-worker version
+and SHA-256 when `sw.js` is present. HTTPS uses normal certificate verification;
+there is intentionally no insecure certificate override.
+
 ![Fluidd](/docs/assets/images/preview_sliced.png "Fluidd")
 
 ## Features
