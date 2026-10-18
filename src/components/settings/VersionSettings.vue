@@ -100,7 +100,7 @@
           </template>
 
           <v-tooltip
-            v-if="hasUpdate(component.name)"
+            v-if="hasUpdate(component.name) && hasInformation(component)"
             left
           >
             <template #activator="{ attrs, on }">
@@ -305,16 +305,40 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return ''
   }
 
-  handleInformationDialog (component: VersionInfo) {
+  getInformationUrl (component: VersionInfo) {
     switch (component.configured_type) {
+      case 'git_repo':
+      case 'system':
+        return ''
+
       case 'python':
-        if (component.channel === 'dev') {
-          window.open(`${this.getBaseUrl(component)}/compare/${component.current_hash}..${component.remote_hash}`)
-        } else {
-          window.open(component.changelog_url)
+        if (component.channel !== 'dev') {
+          return component.changelog_url
         }
         break
+    }
 
+    const baseUrl = this.getBaseUrl(component)
+
+    if (!baseUrl) {
+      return ''
+    }
+
+    return component.configured_type === 'python'
+      ? `${baseUrl}/compare/${component.current_hash}..${component.remote_hash}`
+      : `${baseUrl}/releases`
+  }
+
+  hasInformation (component: VersionInfo) {
+    return (
+      component.configured_type === 'git_repo' ||
+      component.configured_type === 'system' ||
+      this.getInformationUrl(component) !== ''
+    )
+  }
+
+  handleInformationDialog (component: VersionInfo) {
+    switch (component.configured_type) {
       case 'git_repo':
       case 'system':
         this.informationDialogState = {
@@ -324,7 +348,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
         break
 
       default:
-        window.open(`${this.getBaseUrl(component)}/releases`)
+        window.open(this.getInformationUrl(component))
         break
     }
   }
