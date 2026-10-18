@@ -906,9 +906,17 @@ export default class JobsTable extends Mixins(JobsMixin) {
     input.value = ''
     if (!this.controlReady) return
     if (!files.length) return
-    await this.uploadFiles(files, this.path, this.root, false)
+    const target = this.commandTarget
+    const path = this.path
+    const root = this.root
+    const stillCurrent = () => target === this.commandTarget && this.controlReady
+    const completed = await this.uploadFiles(files, path, root, false, stillCurrent)
+    if (!completed || !stillCurrent()) {
+      EventBus.$emit('Stopped: the printer changed', { type: 'warning', timeout: 5000 })
+      return
+    }
     if (files.length === 1 && isGcodeFile(files[0].name)) {
-      EventBus.bus.$emit('job-ready', this.path ? `${this.path}/${files[0].name}` : files[0].name)
+      EventBus.bus.$emit('job-ready', path ? `${path}/${files[0].name}` : files[0].name)
     }
   }
 

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import JobsTable from '../JobsTable.vue'
 import { SocketActions } from '@/api/socketActions'
 import { setProMode } from '@/services/pro-mode'
+import { EventBus } from '@/eventBus'
 import Vue from 'vue'
 
 const folder = { type: 'directory', name: 'parts', dirname: 'parts', modified: 1, size: 0 }
@@ -170,5 +171,51 @@ describe('JobsTable one layout', () => {
     action === 'rename' ? vm.rename('renamed.gcode') : vm.moveInto('parts')
     expect(move).not.toHaveBeenCalled()
     expect(vm.selected).toEqual([])
+  })
+
+  it.each(['printer', 'account', 'control'])('stops a sequential upload when the %s changes', async change => {
+    const access = Vue.observable({ control: true, target: 'account-a|printer-a' })
+    const wrapper = mountTable('table', access)
+    const uploaded: string[] = []
+    vi.spyOn(wrapper.vm as any, 'uploadFile').mockImplementation(async (...args: unknown[]) => {
+      const picked = args[0] as File
+      uploaded.push(picked.name)
+      if (change === 'control') access.control = false
+      else access.target = change === 'printer' ? 'account-a|printer-b' : 'account-b|printer-a'
+    })
+    const stopped = vi.spyOn(EventBus, '$emit')
+    const files = ['one.gcode', 'two.gcode', 'three.gcode'].map(name => new File(['gcode'], name))
+    ;(wrapper.vm as any).$store.state.files.uploads = files.map(file => ({ filepath: file.name, cancelled: false }))
+
+    await (wrapper.vm as any).onPicked({ target: { files, value: 'chosen' } })
+
+    expect(uploaded).toEqual(['one.gcode'])
+    expect(stopped).toHaveBeenCalledWith('Stopped: the printer changed', { type: 'warning', timeout: 5000 })
+  })
+
+  it('uploads a normal multi-file selection sequentially and in order', async () => {
+    const wrapper = mountTable()
+    const uploaded: string[] = []
+    vi.spyOn(wrapper.vm as any, 'uploadFile').mockImplementation(async (...args: unknown[]) => { uploaded.push((args[0] as File).name) })
+    const files = ['one.gcode', 'two.gcode', 'three.gcode'].map(name => new File(['gcode'], name))
+    ;(wrapper.vm as any).$store.state.files.uploads = files.map(file => ({ filepath: file.name, cancelled: false }))
+
+    await (wrapper.vm as any).onPicked({ target: { files, value: 'chosen' } })
+
+    expect(uploaded).toEqual(['one.gcode', 'two.gcode', 'three.gcode'])
+  })
+
+  it('does not offer a completed upload to print after its target changes', async () => {
+    const access = Vue.observable({ control: true, target: 'account-a|printer-a' })
+    const wrapper = mountTable('table', access)
+    vi.spyOn(wrapper.vm as any, 'uploadFile').mockImplementation(async () => { access.target = 'account-a|printer-b' })
+    const ready = vi.fn()
+    EventBus.bus.$on('job-ready', ready)
+    ;(wrapper.vm as any).$store.state.files.uploads = [{ filepath: 'one.gcode', cancelled: false }]
+
+    await (wrapper.vm as any).onPicked({ target: { files: [new File(['gcode'], 'one.gcode')], value: 'chosen' } })
+
+    expect(ready).not.toHaveBeenCalled()
+    EventBus.bus.$off('job-ready', ready)
   })
 })
