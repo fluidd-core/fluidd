@@ -8,6 +8,14 @@ export function firstLayerAllowed (value: NudgeContext): boolean {
 
 export interface NudgeBudget { total: number; remaining: number }
 
+export interface NudgeDatabaseTarget {
+  printerId: string
+  accountId: string
+  route: string
+  context: string
+  databaseKey: string
+}
+
 const hundredths = (value: number) => Math.round(value * 100) / 100
 
 export function nudgeBudget (reportedOffset: number, baseline: number): NudgeBudget | null {

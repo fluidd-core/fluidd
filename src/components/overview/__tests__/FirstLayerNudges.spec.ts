@@ -37,7 +37,7 @@ beforeEach(() => {
 afterEach(() => {
   Object.defineProperty(navigator, 'locks', { configurable: true, value: originalLocks })
   socket.printerGcodeScript.mockClear(); http.serverDatabaseItemGet.mockReset(); http.serverDatabaseItemPost.mockReset()
-  cloudState.printers = []; cloudState.activePrinterId = null; printerTransportBinding.remote = false
+  cloudState.printers = []; cloudState.activePrinterId = null; cloudState.account = null; printerTransportBinding.remote = false
 })
 
 function show (firmwareNudge = false) {
@@ -49,10 +49,54 @@ function show (firmwareNudge = false) {
   store.getters['printer/getPrinterState'] = 'printing'
   store.getters['printer/getAvailableCommands'] = { SET_GCODE_OFFSET: {}, ...(firmwareNudge ? { FIRST_LAYER_NUDGE: {} } : {}) }
   cloudState.printers = [{ id: 'p', role: 'operator', model: 'M1' }] as any
-  cloudState.activePrinterId = 'p'; printerTransportBinding.remote = true
+  cloudState.activePrinterId = 'p'; cloudState.account = { id: 'alice' } as any; printerTransportBinding.remote = true
   const wrapper = mount(FirstLayerNudges, { mocks: { $store: store, $waits: { onZAdjust: 'adjust' } } })
   return { store, wrapper, vm: wrapper.vm as any }
 }
+
+it.each([
+  ['printer', 'prune'],
+  ['account', 'prune'],
+  ['printer', 'baseline write'],
+  ['account', 'baseline write'],
+  ['printer', 'reservation read-back'],
+  ['account', 'reservation read-back']
+])('keeps every database call on the captured %s target after %s', async (changed, stage) => {
+  const device = show(true)
+  if (stage === 'prune') atPath('firstLayerNudges.p.finished', { baseline: 0, start_time: 1, filename: 'done.gcode' })
+  const calls: string[] = []
+  const target = () => `${cloudState.activePrinterId}/${cloudState.account?.id}`
+  const switchTarget = () => {
+    if (changed === 'printer') {
+      cloudState.printers.push({ id: 'other', role: 'operator', model: 'M1' } as any)
+      cloudState.activePrinterId = 'other'
+    } else cloudState.account = { id: 'bob' } as any
+  }
+  let switched = false
+  http.serverDatabaseItemGet.mockImplementation(async (...args: any[]) => {
+    calls.push(`GET:${target()}`)
+    const response = await fakeGet(args[0], args[1])
+    if (!switched && stage === 'prune' && args[1].params.key === 'firstLayerNudges.p') {
+      switched = true; switchTarget()
+    }
+    if (!switched && stage === 'reservation read-back' && response.data.result.value?.pending?.device === device.vm.deviceId) {
+      switched = true; switchTarget()
+    }
+    return response
+  })
+  http.serverDatabaseItemPost.mockImplementation(async (_namespace: string, key: string, value: unknown) => {
+    calls.push(`POST:${target()}`); atPath(key, value)
+    if (!switched && stage === 'baseline write') { switched = true; switchTarget() }
+  })
+  http.serverDatabaseItemDelete.mockImplementation(async () => { calls.push(`DELETE:${target()}`) })
+
+  await device.vm.nudge(-0.01)
+
+  expect(switched).toBe(true)
+  expect(calls.some(call => call.endsWith(changed === 'printer' ? 'other/alice' : 'p/bob'))).toBe(false)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  device.wrapper.destroy()
+})
 
 async function nudgeAndReport (device: ReturnType<typeof show>, by: number) {
   await device.vm.nudge(by)
