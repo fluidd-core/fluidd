@@ -30,6 +30,7 @@ const writeJson = (filename: string, value: unknown) => fs.promises.writeFile(
 )
 
 const vitePluginInjectVersion = (): Plugin => {
+  const printerZipVerify = process.env.PRINTER_ZIP_VERIFY === '1'
   let commit = ''
   let buildTime = ''
   let cloudBaseUrl = ''
@@ -49,11 +50,14 @@ const vitePluginInjectVersion = (): Plugin => {
     },
     transformIndexHtml: {
       order: 'pre',
-      handler: () => [{
-        tag: 'meta',
-        attrs: { name: 'fluidd-commit', content: commit },
-        injectTo: 'head'
-      }]
+      handler: () => {
+        if (!printerZipVerify) return []
+        return [{
+          tag: 'meta',
+          attrs: { name: 'fluidd-commit', content: commit },
+          injectTo: 'head'
+        }]
+      }
     },
     async writeBundle () {
       await Promise.all([

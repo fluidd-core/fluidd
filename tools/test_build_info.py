@@ -32,6 +32,10 @@ class BuildInfoTest(unittest.TestCase):
         self.assertIn("process.env.PRINTER_ZIP_VERIFY === '1'", config)
         self.assertNotIn("manifest: true", config)
 
+    def test_commit_meta_is_opt_in_for_printer_verification(self) -> None:
+        plugin = (ROOT / "vite.config.inject-version.ts").read_text(encoding="utf-8")
+        self.assertIn("if (!printerZipVerify) return []", plugin)
+
 
 if __name__ == "__main__":
     unittest.main()
