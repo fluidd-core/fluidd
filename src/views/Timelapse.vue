@@ -117,6 +117,7 @@
             :min="1"
             :max="frameCount"
             label="Frame"
+            :value-text-formatter="frameValueText"
             :disabled="rendering"
             @change="pickFrame"
           />
@@ -252,6 +253,10 @@ export default class Timelapse extends Mixins(StateMixin, FilesMixin, BrowserMix
   dialogOpen = false
   dialogRenders = false
   playing: string | null = null
+
+  frameValueText (value: number): string {
+    return `Frame ${value} of ${this.frameCount}`
+  }
 
   mounted () {
     SocketActions.serverFilesGetDirectory('timelapse', 'timelapse')

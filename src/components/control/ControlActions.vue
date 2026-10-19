@@ -4,6 +4,7 @@
     data-tid="control-actions"
   >
     <button
+      v-if="phone"
       type="button"
       class="cbtn"
       :disabled="!controlReady || busy"
@@ -25,6 +26,7 @@
       Home all
     </button>
     <button
+      v-if="phone"
       type="button"
       class="cbtn"
       :disabled="!controlReady"
@@ -37,8 +39,13 @@
       />
       Cool down
     </button>
-    <details class="control-actions__more">
+    <component
+      :is="phone ? 'details' : 'div'"
+      class="control-actions__more"
+      :class="{ 'control-actions__more--desktop': !phone }"
+    >
       <summary
+        v-if="phone"
         class="cbtn"
         aria-label="More printer actions"
       >
@@ -77,12 +84,13 @@
           type="button"
           class="cbtn"
           :disabled="!!restartRefusal || !savePending"
+          data-tid="save-config"
           @click="saveConfig"
         >
           Save config and restart{{ savePending ? '' : ' · nothing to save' }}
         </button>
       </div>
-    </details>
+    </component>
     <p
       v-if="commandRefusal"
       class="control-actions__refusal"
@@ -94,12 +102,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 
 /** Home and heat up front; idle-only actions use the shared command checks. */
 @Component({})
 export default class ControlActions extends Mixins(ControlMixin) {
+  @Prop({ type: Boolean }) readonly phone?: boolean
+
   get savePending (): boolean { return this.$store.state.printer.printer.configfile?.save_config_pending === true }
   saveConfig () { if (this.savePending) return this.sendTypedGcode('SAVE_CONFIG') }
 }
@@ -116,6 +126,10 @@ export default class ControlActions extends Mixins(ControlMixin) {
     }
   }
   .control-actions__more { position: relative; }
+  .control-actions__more--desktop,
+  .control-actions__more--desktop .control-actions__menu {
+    display: contents;
+  }
   .control-actions__menu {
     display: flex;
     flex-direction: column;
