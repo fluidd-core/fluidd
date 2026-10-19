@@ -29,6 +29,19 @@
             dense
           />
           <v-text-field
+            v-if="mode === 'sign-up'"
+            v-model="age"
+            label="Your age"
+            type="number"
+            min="13"
+            max="120"
+            hint="Private. Confirm once; accounts require age 13 or over."
+            persistent-hint
+            outlined
+            dense
+            data-tid="sign-up-age"
+          />
+          <v-text-field
             v-model="email"
             label="Email"
             type="email"
@@ -102,6 +115,7 @@ export default class CloudAccountDialog extends Vue {
   readonly initialMode!: 'sign-in' | 'sign-up'
 
   mode: 'sign-in' | 'sign-up' = 'sign-in'
+  age = ''
   name = ''
   email = ''
   password = ''
@@ -131,7 +145,7 @@ export default class CloudAccountDialog extends Vue {
     this.busy = true
     try {
       if (this.mode === 'sign-in') await signIn(this.email, this.password)
-      else await signUp(this.email, this.password, this.name)
+      else await signUp(this.email, this.password, this.name, Number(this.age))
       this.password = ''
       this.$emit('signed-in')
       this.open = false
