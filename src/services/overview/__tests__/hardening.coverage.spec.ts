@@ -22,7 +22,7 @@ describe('Overview hardening branches', () => {
   })
 
   // BUG: chartLines accepts NaN as a numeric reading and emits an invalid SVG path.
-  it.fails('drops non-finite chart readings instead of drawing NaN coordinates', () => {
+  it('drops non-finite chart readings instead of drawing NaN coordinates', () => {
     expect(chartLines([{ date: new Date(1000), extruder: Number.NaN }], ['extruder'], 60, 1000).lines).toEqual([])
   })
 
