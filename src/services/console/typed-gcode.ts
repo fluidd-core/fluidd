@@ -4,6 +4,7 @@ export interface TypedBatch {
   refusal: string | null;
   restarts: boolean;
   onlyRestarts: boolean;
+  savesConfig: boolean;
 }
 
 /** Klipper gcode.py command detection, including numbered lines. Not macro expansion. */
@@ -45,12 +46,19 @@ function parameters (raw: string): Record<string, string> | null {
 export function inspectTypedGcode (script: string, configfile?: SensorConfigFile): TypedBatch {
   let restarts = false
   let onlyRestarts = true
+  let savesConfig = false
   for (const original of script.split('\n')) {
     const line = original.trim()
     const command = commandOf(line)
     if (!command) continue
-    if (['RESTART', 'FIRMWARE_RESTART', 'SAVE_CONFIG'].includes(command)) {
+    if (['RESTART', 'FIRMWARE_RESTART'].includes(command)) {
       restarts = true
+      continue
+    }
+    if (command === 'SAVE_CONFIG') {
+      restarts = true
+      savesConfig = true
+      onlyRestarts = false
       continue
     }
     onlyRestarts = false
@@ -64,11 +72,11 @@ export function inspectTypedGcode (script: string, configfile?: SensorConfigFile
     }
     const args = parameters(line.slice(start, end))
     if (!args?.SENSOR || !/^[+-]?\d+$/.test(args.ENABLE ?? '')) {
-      return { refusal: 'Not sent. Check the sensor name and ENABLE value. Control cannot safely check this sensor command.', restarts, onlyRestarts }
+      return { refusal: 'Not sent. Check the sensor name and ENABLE value. Control cannot safely check this sensor command.', restarts, onlyRestarts, savesConfig }
     }
     if (!sensorCommand(args.SENSOR, Number(args.ENABLE) !== 0, configfile)) {
-      return { refusal: 'Not sent. This sensor starts the automatic filament load, or its settings have not loaded yet. Control keeps it on.', restarts, onlyRestarts }
+      return { refusal: 'Not sent. This sensor starts the automatic filament load, or its settings have not loaded yet. Control keeps it on.', restarts, onlyRestarts, savesConfig }
     }
   }
-  return { refusal: null, restarts, onlyRestarts }
+  return { refusal: null, restarts, onlyRestarts, savesConfig }
 }

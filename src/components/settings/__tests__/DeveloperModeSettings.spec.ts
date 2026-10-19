@@ -110,6 +110,18 @@ describe('developer mode in Settings', () => {
     w.destroy()
   })
 
+  it.each([404, 501])('explains when printer software lacks owner confirmation (%s)', async (responseStatus) => {
+    await refreshDevMode()
+    const vm = component()
+    printer.post.mockRejectedValueOnce({ response: { status: responseStatus } })
+
+    await vm.ask(true)
+
+    expect(vm.awaiting).toBe(false)
+    expect(vm.errorMessage).toBe('This printer software does not support owner confirmation yet. Developer mode was not changed.')
+    expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
+  })
+
   it('turns on with the printer\'s own waiver, then the printer\'s screen, then the change', async () => {
     await refreshDevMode()
     const vm = component()
