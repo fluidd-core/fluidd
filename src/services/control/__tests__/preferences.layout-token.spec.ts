@@ -3,7 +3,7 @@ import { ControlPreferenceStore, type ControlPreferences } from '../preferences'
 
 function deferred<T> () {
   let resolve!: (value: T) => void
-  const promise = new Promise<T>(r => { resolve = r })
+  const promise = new Promise<T>(_resolve => { resolve = _resolve })
   return { promise, resolve }
 }
 
