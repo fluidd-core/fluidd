@@ -12,6 +12,7 @@ export class ControlPreferenceStore {
   state = Vue.observable({ folds: {} as Record<string, boolean>, error: '', ready: false })
   private context: PreferenceContext | null = null
   private generation = 0
+  private readGeneration = 0
   private edited: Record<string, boolean> = {}
   private revisions: Record<string, number> = {}
   private revision = 0
@@ -27,12 +28,13 @@ export class ControlPreferenceStore {
   }
 
   isSelected (context: PreferenceContext): boolean {
-    return JSON.stringify(context) === JSON.stringify(this.context)
+    return context.accountId === this.context?.accountId && context.printerId === this.context?.printerId
   }
 
   select (context: PreferenceContext): Promise<void> {
     if (!this.isSelected(context)) {
       this.generation++
+      this.readGeneration++
       this.context = { ...context }
       this.edited = {}
       this.revisions = {}
@@ -42,6 +44,14 @@ export class ControlPreferenceStore {
       this.loading = null
       // Old requests keep their captured session; this context gets its own queue.
       this.queue = Promise.resolve()
+    } else {
+      // A refreshed token is new authority for future requests, not a new person's
+      // preferences. Keep pending edits while rotating the captured credentials.
+      if (context.token !== this.context?.token) {
+        this.readGeneration++
+        this.loading = null
+      }
+      this.context = { ...context }
     }
     return this.refresh()
   }
@@ -50,6 +60,7 @@ export class ControlPreferenceStore {
     if (this.loading) return this.loading
     const context = this.context
     const generation = this.generation
+    const readGeneration = this.readGeneration
     const revision = this.revision
     if (!context?.printerId || !validKey(context.printerId, 128)) return Promise.resolve()
     const pending = (async () => {
@@ -65,12 +76,12 @@ export class ControlPreferenceStore {
           }
         }
         validatePreferences(answer)
-        if (generation !== this.generation || revision !== this.revision) return
+        if (generation !== this.generation || readGeneration !== this.readGeneration || revision !== this.revision) return
         this.state.folds = { ...answer.folds, ...this.edited }
         if (Object.keys(this.edited).length === 0) this.state.error = ''
         this.state.ready = true
       } catch {
-        if (generation === this.generation && revision === this.revision) this.state.error = 'Your choices are not saved. Try again when the service or browser storage is available.'
+        if (generation === this.generation && readGeneration === this.readGeneration && revision === this.revision) this.state.error = 'Your choices are not saved. Try again when the service or browser storage is available.'
       }
     })()
     this.loading = pending
