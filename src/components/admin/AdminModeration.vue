@@ -2,12 +2,13 @@
   <section class="moderation">
     <p>Each lookup and decision is recorded. A decision needs a reason and fresh passkey confirmation.</p>
     <form @submit.prevent="read">
-      <label>Reason<textarea
+      <label for="moderation-reason">Reason</label><textarea
+        id="moderation-reason"
         v-model="reason"
         required
         minlength="8"
         maxlength="500"
-      /></label>
+      />
       <button
         class="cbtn cbtn--primary"
         :disabled="busy"
@@ -18,6 +19,7 @@
     <p
       v-if="message"
       role="status"
+      aria-live="polite"
     >
       {{ message }}
     </p>
@@ -65,7 +67,7 @@
             v-if="!notice.complete"
             class="cbtn"
             :disabled="busy"
-            @click="decide('notice-complete', { notice_id: notice.id })"
+            @click="askDecision('notice-complete', { notice_id: notice.id }, $event)"
           >
             Confirm notice complete · passkey
           </button>
@@ -87,7 +89,9 @@
             v-for="file in review.publication.files"
             :key="file.id"
           >
-            <p>{{ file.role }} · {{ file.size_bytes }} bytes · SHA-256 {{ file.sha256 }}</p>
+            <p class="long-text">
+              {{ file.role }} · {{ file.size_bytes }} bytes · SHA-256 {{ file.sha256 }}
+            </p>
             <button
               class="cbtn"
               :disabled="busy || file.size_bytes > 8 * 1024 * 1024"
@@ -108,7 +112,7 @@
           <button
             class="cbtn"
             :disabled="busy || !privacyChecked || !allSourcesFetched"
-            @click="decide('accept-source', { manifest: review.publication.manifest, privacy_checked: true })"
+            @click="askDecision('accept-source', { manifest: review.publication.manifest, privacy_checked: true }, $event)"
           >
             Accept source snapshot · passkey
           </button>
@@ -151,49 +155,49 @@
           <button
             class="cbtn"
             :disabled="busy || review.state !== 'open' || !review.publication || !sourceAccepted"
-            @click="decide('approve')"
+            @click="askDecision('approve', {}, $event)"
           >
             Approve public submission · passkey
           </button>
           <button
             class="cbtn"
             :disabled="busy || review.state === 'hidden'"
-            @click="decide('hide')"
+            @click="askDecision('hide', {}, $event)"
           >
             Hide content · passkey
           </button>
           <button
             class="cbtn"
             :disabled="busy || review.state !== 'hidden' || review.hidden_by === actor || !!review.publication && !sourceAccepted || !!review.profile && (!privacyChecked || !!review.profile.content.avatar && !sourceDownloads['profile-avatar']) || review.legal_hold || !!review.restore_after && review.restore_after * 1000 > Date.now()"
-            @click="decide('restore')"
+            @click="askDecision('restore', {}, $event)"
           >
             Restore · another reviewer required
           </button>
           <button
             class="cbtn"
             :disabled="busy"
-            @click="decide('close')"
+            @click="askDecision('close', {}, $event)"
           >
             {{ review.state === 'hidden' ? 'Close case · keep content hidden' : 'No action needed' }} · passkey
           </button>
           <button
             class="cbtn"
             :disabled="busy"
-            @click="decide('assign', { assignee: 'harry' })"
+            @click="askDecision('assign', { assignee: 'harry' }, $event)"
           >
             Assign to Harry · passkey
           </button>
           <button
             class="cbtn"
             :disabled="busy"
-            @click="decide('assign', { assignee: 'jack' })"
+            @click="askDecision('assign', { assignee: 'jack' }, $event)"
           >
             Assign to Jack · passkey
           </button>
           <button
             class="cbtn"
             :disabled="busy"
-            @click="decide(review.legal_hold ? 'clear-hold' : 'hold')"
+            @click="askDecision(review.legal_hold ? 'clear-hold' : 'hold', {}, $event)"
           >
             {{ review.legal_hold ? 'Clear restoration hold' : 'Hold restoration' }} · passkey
           </button>
@@ -256,6 +260,51 @@
         </button>
       </form>
     </template>
+    <button
+      v-if="uncertain"
+      type="button"
+      class="cbtn"
+      @click="refresh"
+    >
+      Refresh
+    </button>
+    <div
+      v-if="decision"
+      class="dialog-backdrop"
+      @mousedown.self="cancelDecision"
+    >
+      <section
+        ref="decisionDialog"
+        class="decision-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="decision-title"
+        tabindex="-1"
+        @keydown="trapDialog"
+      >
+        <h2 id="decision-title">
+          Confirm decision
+        </h2>
+        <p>This decision will ask for a fresh passkey and will be recorded with your reason.</p>
+        <div class="actions">
+          <button
+            type="button"
+            class="cbtn"
+            @click="cancelDecision"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="cbtn cbtn--primary"
+            data-tid="decision-confirm"
+            @click="confirmDecision"
+          >
+            Continue with passkey
+          </button>
+        </div>
+      </section>
+    </div>
   </section>
 </template>
 
@@ -281,6 +330,9 @@ export default class AdminModeration extends Vue {
   expiry = ''
   sourceDownloads: Record<string, string> = {}
   privacyChecked = false
+  uncertain = false
+  decision: { action: string; details: Record<string, unknown> } | null = null
+  decisionOpener: HTMLElement | null = null
   get sourceAccepted () { return this.review?.publication?.reviewed_by === this.actor && this.review.publication.reviewed_version === this.review.version }
   get allSourcesFetched () { return !!this.review?.publication?.files.length && this.review.publication.files.every(f => this.sourceDownloads[f.id]) }
   clearSources () { Object.values(this.sourceDownloads).forEach(url => URL.revokeObjectURL(url)); this.sourceDownloads = {}; this.privacyChecked = false }
@@ -316,12 +368,33 @@ export default class AdminModeration extends Vue {
   }
 
   date (at: number): string { return new Date(at * 1000).toLocaleString() }
+  askDecision (action: string, details: Record<string, unknown>, event: Event) {
+    this.decision = { action, details }; this.decisionOpener = event.currentTarget as HTMLElement
+    this.$nextTick(() => (this.$refs.decisionDialog as HTMLElement)?.focus())
+  }
+
+  cancelDecision () { this.decision = null; this.$nextTick(() => this.decisionOpener?.focus()) }
+  async confirmDecision () {
+    const pending = this.decision
+    this.decision = null
+    if (pending) await this.decide(pending.action, pending.details)
+    this.$nextTick(() => this.decisionOpener?.focus())
+  }
+
+  trapDialog (event: KeyboardEvent) {
+    if (event.key === 'Escape') { event.preventDefault(); this.cancelDecision(); return }
+    if (event.key !== 'Tab') return
+    const buttons = Array.from((this.$refs.decisionDialog as HTMLElement).querySelectorAll<HTMLElement>('button:not([disabled])'))
+    const first = buttons[0]; const last = buttons[buttons.length - 1]
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+  }
+
   async request (action: string, target: string, version = 0, details: Record<string, unknown> = {}): Promise<CommandResult | null> {
     if (this.busy || this.reason.trim().length < 8) { this.message = 'Give a short reason before continuing.'; return null }
     const revision = ++this.revision
     const token = storedToken()
     const current = () => this.alive && revision === this.revision && storedToken() === token && !document.hidden
-    this.busy = true; this.message = isStaffMutation(action) ? 'Confirm this decision with your passkey…' : 'Reading…'
+    this.uncertain = false; this.busy = true; this.message = isStaffMutation(action) ? 'Confirm this decision with your passkey…' : 'Loading…'
     try {
       const result = await staffCommand({ command: newCommandId(), action, target, version, reason: this.reason, details }, false, current)
       if (!current()) return null
@@ -330,7 +403,8 @@ export default class AdminModeration extends Vue {
       return result
     } catch (error) {
       if (current()) {
-        this.message = error instanceof DOMException && error.name === 'NotAllowedError' ? 'Confirmation cancelled. No command was sent.' : error instanceof Error ? error.message : 'Staff tools could not be reached.'
+        this.message = error instanceof DOMException && error.name === 'NotAllowedError' ? 'Passkey confirmation was cancelled or expired. No command was sent.' : error instanceof DOMException && (error.name === 'NotSupportedError' || error.name === 'SecurityError') ? 'Passkeys are unavailable. No command was sent.' : error instanceof Error ? error.message : 'Staff tools could not be reached.'
+        this.uncertain = isStaffMutation(action) && /outcome is uncertain/i.test(this.message)
         if (error instanceof AdminError && error.expired) this.$emit('expired')
       }
       return null
@@ -346,6 +420,8 @@ export default class AdminModeration extends Vue {
     if (!this.cases.length && !this.reservations.length) this.message = 'No work waiting.'
   }
 
+  async refresh () { this.uncertain = false; await this.read() }
+
   async open (id: string) { this.clearSources(); const result = await this.request('case', id); if (result?.case) this.review = result.case }
   async decide (action: string, details: Record<string, unknown> = {}) { if (this.review) await this.request(action, this.review.id, this.review.version, { ...(this.review.profile ? { profile_digest: this.review.profile.digest, privacy_checked: this.privacyChecked } : {}), ...details }) }
   async release (row: Reservation) { await this.request('release', row.pattern, row.version) }
@@ -357,8 +433,9 @@ export default class AdminModeration extends Vue {
 </script>
 
 <style scoped>
-.moderation { max-width: 860px; } form, article { padding: 20px; margin: 16px 0; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); overflow-wrap: anywhere; }
+.moderation { max-width: 860px; min-width: 0; overflow-wrap: anywhere; } form, article { max-width: 100%; padding: 20px; margin: 16px 0; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); overflow-wrap: anywhere; }
 label { display: block; margin-bottom: 16px; } textarea, input { display: block; width: 100%; padding: 10px; border: 1px solid var(--m3d-border); border-radius: 4px; background: var(--m3d-inset); color: var(--m3d-text); font: inherit; }
 textarea { min-height: 80px; } .actions { display: flex; flex-wrap: wrap; gap: 10px; } li { margin: 16px 0; white-space: pre-wrap; } button { white-space: normal; max-width: 100%; } button:disabled { opacity: .5; } :focus-visible { outline: 2px solid var(--m3d-accent); outline-offset: 2px; }
 input[type="checkbox"] { display: inline-block; width: auto; margin-right: 8px; }
+.long-text { word-break: break-all; } .dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .6); } .decision-dialog { width: min(440px, 100%); padding: 24px; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); color: var(--m3d-text); }
 </style>
