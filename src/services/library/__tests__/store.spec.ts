@@ -52,6 +52,35 @@ describe('the Library store', () => {
     expect(store.libraryStatus().promise).toBeNull()
   })
 
+  it('offers the prepared October words and sends their version when enabled', async () => {
+    const service = fakeService({ enabled: false })
+    store.setLibraryClient(service.client())
+    Object.assign(store.libraryState, { checked: true, promiseVersion: '2026-10-13' })
+    expect(store.libraryStatus().promise).toMatchObject({ version: '2026-10-13' })
+    expect(store.libraryStatus().promise?.summary).toContain('Your public name comes from the name you choose in Control.')
+    await store.turnLibraryOn('2026-10-13')
+    expect(service.calls[0]).toMatchObject({ path: '/v1/library/consent', body: { promise_version: '2026-10-13' } })
+  })
+
+  it('refuses unknown or stale consent before any request is sent', async () => {
+    const service = fakeService({ enabled: false })
+    store.setLibraryClient(service.client())
+    Object.assign(store.libraryState, { checked: true, promiseVersion: '2099-01-01' })
+    await expect(store.turnLibraryOn('2099-01-01')).rejects.toMatchObject({ code: 'promise_changed' })
+    Object.assign(store.libraryState, { promiseVersion: '2026-10-13' })
+    await expect(store.turnLibraryOn('2026-09-26')).rejects.toMatchObject({ code: 'promise_changed' })
+    expect(service.calls).toEqual([])
+  })
+
+  it('refuses a slicer consent for words other than the current service promise', async () => {
+    const service = fakeService({ enabled: false })
+    store.setLibraryClient(service.client())
+    Object.assign(store.libraryState, { checked: true, promiseVersion: '2026-10-13' })
+    await expect(store.saveFromSlicer({ item: null, name: 'Cube', origin: 'save', consent: '2026-09-26', project: new ArrayBuffer(1), outputs: [], thumbnail: null, summary: {} }))
+      .rejects.toMatchObject({ code: 'promise_changed' })
+    expect(service.calls).toEqual([])
+  })
+
   it('signed out, says so and nothing else', () => {
     store.resetLibrary(null)
     expect(store.libraryStatus()).toEqual({ signedIn: false, enabled: false, promise: null, preferences: null, usedBytes: null, quotaBytes: null })

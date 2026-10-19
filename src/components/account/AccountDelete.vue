@@ -105,14 +105,16 @@
           aria-label="Delete"
         >
           <span class="acct-muted del__text">{{ graceLine }}</span>
-          <div>
+          <div
+            v-if="grace && !scheduled"
+          >
             <button
               type="button"
               class="lib-btn lib-btn--dng"
               data-tid="delete-open"
               @click="open"
             >
-              {{ scheduled ? 'Delete now…' : 'Delete account…' }}
+              Delete account…
             </button>
           </div>
         </section>
@@ -155,7 +157,7 @@
 
       <template v-if="step === 1">
         <p class="m3-dlg__text">
-          {{ grace ? 'In 14 days we delete your account, your Library and who you share with. Until then you can change your mind.' : 'Your account, your Library and who you share with are deleted at once.' }}
+          In 14 days we delete your account, your Library and who you share with. Until then you can change your mind.
         </p>
         <div class="del__keep">
           <frame-icon
@@ -177,35 +179,6 @@
             small
             class="del__green"
           /><span>Your printers keep working on your network</span>
-        </div>
-        <div
-          v-if="grace && !scheduled"
-          class="m3-field"
-        >
-          <span class="m3-field__label">When</span>
-          <div class="del__when">
-            <button
-              type="button"
-              class="lib-chip"
-              :class="{ 'lib-chip--on': !now }"
-              :aria-pressed="!now ? 'true' : 'false'"
-              data-tid="delete-later"
-              @click="now = false"
-            >
-              In 14 days
-            </button>
-            <button
-              type="button"
-              class="lib-chip"
-              :class="{ 'lib-chip--on': now }"
-              :aria-pressed="now ? 'true' : 'false'"
-              data-tid="delete-now"
-              @click="now = true"
-            >
-              Now, at once
-            </button>
-          </div>
-          <span class="m3-dlg__note">{{ now ? 'Nothing to change your mind with: it goes as soon as you confirm.' : 'You can sign in and keep it until then.' }}</span>
         </div>
       </template>
 
@@ -320,7 +293,7 @@
             data-tid="delete-confirm"
             @click="confirm"
           >
-            {{ grace && !now ? 'Delete in 14 days' : 'Delete now' }}
+            Delete in 14 days
           </button>
         </template>
         <button
@@ -351,11 +324,8 @@ import { bytesText } from '@/services/library/format'
 
 /**
  * Delete account (the canvas's "Account · Delete account" and its three
- * steps): what goes and what stays, with the real numbers, then check, it's
- * you, done. With the console's 14-day grace period the person can choose
- * to wait (the default) or delete at once, and can keep the account until
- * the day. A console without the grace period deletes at once, and the page
- * says so before anything is asked.
+ * steps): what goes and what stays, then check, it's you, done. The account
+ * can be kept for 14 days. An older console needs an update before deletion.
  */
 @Component({ components: { M3Dialog } })
 export default class AccountDelete extends Vue {
@@ -364,7 +334,6 @@ export default class AccountDelete extends Vue {
 
   dialog = false
   step = 1
-  now = false
   password = ''
   code = ''
   busy = false
@@ -452,10 +421,10 @@ export default class AccountDelete extends Vue {
   }
 
   get graceLine (): string {
-    if (this.scheduled) return `Deletion is already set for ${this.deleteDay}. Until then you can keep your account, or delete it now.`
+    if (this.scheduled) return `Deletion is set for ${this.deleteDay}. Until then you can keep your account.`
     return this.grace
-      ? 'We wait 14 days before deleting anything, in case this wasn\'t you or you change your mind, unless you choose to delete at once. You\'re signed out everywhere straight away, and nothing of yours is shared from that moment.'
-      : 'Your account is deleted at once, and you\'re signed out everywhere.'
+      ? 'We wait 14 days before deleting anything, in case this wasn\'t you or you change your mind. You\'re signed out everywhere straight away, and nothing of yours is shared from that moment.'
+      : 'Account deletion needs a console update to support the 14-day recovery period.'
   }
 
   get stepTitle (): string {
@@ -468,10 +437,9 @@ export default class AccountDelete extends Vue {
     return dayText(seconds)
   }
 
-  /** While a deletion waits, only "now" is left to choose (the console allows it). */
   open () {
+    if (!this.grace || this.scheduled) return
     this.step = 1
-    this.now = this.scheduled
     this.password = ''
     this.code = ''
     this.dialogError = ''
@@ -485,11 +453,12 @@ export default class AccountDelete extends Vue {
   }
 
   async confirm () {
+    if (!this.grace || this.scheduled || this.busy) return
     this.busy = true
     this.dialogError = ''
     try {
       const reauth = this.hasPassword ? { password: this.password, code: this.twoStep ? this.code.replace(/\s+/g, '') : undefined } : {}
-      const answer = await accountApi.deleteAccount(reauth, this.grace && this.now)
+      const answer = await accountApi.deleteAccount(reauth)
       this.password = ''
       this.deletedAt = answer.delete_after ?? null
       this.step = 3
@@ -633,12 +602,6 @@ export default class AccountDelete extends Vue {
       border-color: var(--m3d-success);
       color: var(--m3d-success);
     }
-  }
-
-  .del__when {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
   }
 
   .del__done {
