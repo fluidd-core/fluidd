@@ -2,6 +2,43 @@
 
 Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
 
+## Printer release verification
+
+The manual printer-zip workflow records the exact build commit and configured
+cloud base URL in `build-info.json`, then verifies the local archive before
+publishing and the downloaded release asset afterward. The verifier accounts
+for every output named by Vite's manifest, including lazy chunks, and checks
+discoverable PWA precache and worker references. The manifest is compressed in
+ZIP metadata rather than shipped in the served tree. We cannot inspect the M1
+nginx configuration from this repository, so this assumes MuonOS extracts only
+ZIP file entries and ignores ZIP comments. Monaco editor workers, which
+vite-plugin-monaco-editor writes to `monacoeditorwork/` outside the manifest,
+are checked against the URLs it injects into `index.html`; if `index.html`
+names none, the output reports them as unchecked. PWA precache entries and
+`assets/` worker bundles that leave no discoverable URL are likewise reported
+as unchecked.
+
+The commit and `cloudBaseUrl` are reported by the build itself and are not
+checked against compiled code. `config.json` is checked only for
+`hosted: false`; its provenance is not independently proven.
+
+After installing a MuonOS image by hand, compare the files actually served by
+the printer with the pinned release archive for the C3 acceptance record:
+
+```sh
+python3 tools/check-printer-fluidd.py http://m1-xxxx.local \
+  --zip fluidd.zip --out printer-fluidd-report.json
+```
+
+The check makes sequential, anonymous GET requests, disables environment and
+system proxies, and never follows redirects. It exits successfully only when
+every file in the ZIP is served with identical bytes and `/` equals the ZIP's
+`index.html`; the printer may serve additional files. The JSON report records
+the ZIP's size and SHA-256, served build metadata, printer `hosted` setting,
+all missing, redirected, or changed ZIP entries, and the service-worker version
+and SHA-256 when `sw.js` is present. HTTPS uses normal certificate verification;
+there is intentionally no insecure certificate override.
+
 ![Fluidd](/docs/assets/images/preview_sliced.png "Fluidd")
 
 ## Features
