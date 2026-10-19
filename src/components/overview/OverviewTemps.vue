@@ -86,6 +86,7 @@
         </tbody>
       </table>
       <temperature-timeline
+        v-else
         :key="historyContext"
         :points="chartData"
         :sensors="timelineSensors"

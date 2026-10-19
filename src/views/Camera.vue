@@ -227,8 +227,12 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
 
   closeDetails () {
     if (!this.detailsOpen) return
+    const panel = this.$refs.detailsPanel as HTMLElement | undefined
+    const restoreFocus = !!panel?.contains(document.activeElement)
     this.detailsOpen = false
-    this.$nextTick(() => (this.$refs.detailsTrigger as HTMLButtonElement | undefined)?.focus())
+    if (restoreFocus) {
+      this.$nextTick(() => (this.$refs.detailsTrigger as HTMLButtonElement | undefined)?.focus())
+    }
   }
 
   mounted () {
@@ -246,7 +250,7 @@ export default class Camera extends Mixins(OverviewMixin, BrowserMixin) {
   onDocumentClick (event: MouseEvent) {
     const bar = this.$refs.detailsBar as HTMLElement | undefined
     if (!this.detailsOpen || (event.target instanceof Node && bar?.contains(event.target))) return
-    this.detailsOpen = false
+    this.closeDetails()
   }
 
   fillScreen () {
