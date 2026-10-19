@@ -45,6 +45,10 @@ export default class OverviewMixin extends Mixins(ControlMixin, FilesMixin) {
     return (this.printStats.filename as string | undefined) || ''
   }
 
+  get activePrintJob (): HistoryItem | undefined {
+    return this.$store.state.history?.jobs?.find((job: HistoryItem) => job.status === 'in_progress' && job.filename === this.jobFile && !job.end_time)
+  }
+
   get jobName (): string {
     return jobName(this.jobFile) ?? ''
   }
@@ -165,13 +169,15 @@ export default class OverviewMixin extends Mixins(ControlMixin, FilesMixin) {
   }
 
   async printAgain (filename: string) {
+    if (!this.controlReady || this.busy) return
+    const target = this.panelTarget
     const name = jobName(filename) ?? filename
     const ok = await this.$confirm(`${this.printerName} heats up, homes and starts printing.`, {
       title: `Print ${name} on ${this.printerName}?`,
       buttonTrueText: 'Print now',
       plateCheck: plateCheckNeeded(this.$store.state.history?.jobs)
     })
-    if (!ok) return
+    if (!ok || target !== this.panelTarget || !this.controlReady || this.busy) return
     const spoolman = this.$store.getters['spoolman/getAvailable'] && this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
     if (spoolman) {
       this.$store.commit('spoolman/setDialogState', { show: true, filename })
