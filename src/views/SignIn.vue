@@ -83,6 +83,7 @@
               v-model="name"
               label="Name"
               autocomplete="name"
+              autofocus
               outlined
               dense
             />
@@ -90,15 +91,25 @@
               v-if="mode === 'sign-up'"
               v-model="age"
               label="Your age"
-              type="number"
-              min="13"
-              max="120"
+              type="text"
+              inputmode="numeric"
               hint="Private. Confirm once; accounts require age 13 or over."
               persistent-hint
               outlined
               dense
               data-tid="sign-up-age"
+              :aria-describedby="ageError ? 'sign-up-age-error' : undefined"
+              :aria-invalid="ageError ? 'true' : undefined"
             />
+            <p
+              v-if="ageError"
+              id="sign-up-age-error"
+              class="error--text text-caption"
+              data-tid="sign-up-age-error"
+              role="alert"
+            >
+              {{ ageError }}
+            </p>
             <v-text-field
               v-model="email"
               label="Email"
@@ -106,7 +117,7 @@
               autocomplete="email webauthn"
               outlined
               dense
-              :autofocus="!passkeys"
+              :autofocus="mode !== 'sign-up' && !passkeys"
               data-tid="sign-in-email"
             />
             <v-text-field
@@ -128,6 +139,8 @@
             text
             class="mb-3"
             data-tid="sign-in-error"
+            role="alert"
+            aria-live="assertive"
           >
             {{ error }}
           </v-alert>
@@ -216,6 +229,7 @@ export default class SignIn extends Vue {
   busy = false
   passkeyBusy = false
   error: string | null = null
+  ageError = ''
 
   /** Where the console carries on after the handoff, if it is one it may. */
   get continuePath (): string | null {
@@ -262,6 +276,7 @@ export default class SignIn extends Vue {
   setMode (mode: Mode) {
     this.mode = mode
     this.error = null
+    this.ageError = ''
     if (mode !== 'code') {
       this.code = ''
       this.mfaToken = ''
@@ -300,6 +315,8 @@ export default class SignIn extends Vue {
           await this.finish(await codeSignIn(this.mfaToken, this.code))
           return
         case 'sign-up':
+          this.ageError = validateAge(this.age)
+          if (this.ageError) { this.busy = false; return }
           await this.finish(await signUp(this.email.trim(), this.password, this.name.trim(), Number(this.age)))
           return
         default:
@@ -325,6 +342,11 @@ export default class SignIn extends Vue {
     this.code = ''
     this.go(await finishSignIn(token, this.continuePath))
   }
+}
+
+function validateAge (age: string): string {
+  if (!/^\d+$/.test(age)) return 'Enter your age as a whole number.'
+  return Number(age) >= 13 && Number(age) <= 120 ? '' : 'Age must be between 13 and 120.'
 }
 </script>
 

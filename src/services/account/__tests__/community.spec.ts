@@ -25,4 +25,16 @@ describe('community credential and field boundary', () => {
     expect(url).toBe('https://control.test/v1/me/community-identity')
     expect(JSON.parse(request.body as string)).toEqual({ declared_age: 18 })
   })
+  it.each([
+    ['handle_taken', 'That username is already taken.'],
+    ['handle_reserved', 'That username is reserved.'],
+    ['handle_invalid', 'Use 3–24 letters, digits, dots or underscores.']
+  ])('preserves the %s handle refusal', async (code, message) => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ error: { code, message } }), { status: 409 })))
+    await expect(communityApi.claim('name')).rejects.toMatchObject({ code, message })
+  })
+  it('turns a refused network connection into a useful offline error', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('fetch failed') }))
+    await expect(communityApi.claim('ada')).rejects.toMatchObject({ code: 'offline', message: expect.stringContaining("can't be reached") })
+  })
 })

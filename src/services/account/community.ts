@@ -22,13 +22,18 @@ export interface CommunityProfile {
 }
 async function models<T> (method: string, path: string, body?: unknown): Promise<T> {
   const proof = await modelsAssertion.get()
-  const response = await fetch(`${MODELS_URL}${path}`, {
-    method,
-    credentials: 'omit',
-    cache: 'no-store',
-    headers: { authorization: `Bearer ${proof}`, 'content-type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body)
-  })
+  let response: Response
+  try {
+    response = await fetch(`${MODELS_URL}${path}`, {
+      method,
+      credentials: 'omit',
+      cache: 'no-store',
+      headers: { authorization: `Bearer ${proof}`, 'content-type': 'application/json' },
+      body: body === undefined ? undefined : JSON.stringify(body)
+    })
+  } catch {
+    throw libraryErrorFrom(0, { error: { code: 'offline', message: "Your Library can't be reached. Check this computer's internet connection." } })
+  }
   const data = await response.json()
   if (!response.ok) {
     if (response.status === 401) modelsAssertion.drop()

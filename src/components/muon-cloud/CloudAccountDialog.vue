@@ -25,6 +25,7 @@
             v-model="name"
             label="Name"
             autocomplete="name"
+            autofocus
             outlined
             dense
           />
@@ -32,15 +33,25 @@
             v-if="mode === 'sign-up'"
             v-model="age"
             label="Your age"
-            type="number"
-            min="13"
-            max="120"
+            type="text"
+            inputmode="numeric"
             hint="Private. Confirm once; accounts require age 13 or over."
             persistent-hint
             outlined
             dense
             data-tid="sign-up-age"
+            :aria-describedby="ageError ? 'dialog-sign-up-age-error' : undefined"
+            :aria-invalid="ageError ? 'true' : undefined"
           />
+          <p
+            v-if="ageError"
+            id="dialog-sign-up-age-error"
+            class="error--text text-caption"
+            data-tid="sign-up-age-error"
+            role="alert"
+          >
+            {{ ageError }}
+          </p>
           <v-text-field
             v-model="email"
             label="Email"
@@ -48,7 +59,7 @@
             autocomplete="email"
             outlined
             dense
-            autofocus
+            :autofocus="mode === 'sign-in'"
           />
           <v-text-field
             v-model="password"
@@ -67,6 +78,8 @@
             dense
             text
             class="mb-3"
+            role="alert"
+            aria-live="assertive"
           >
             {{ error }}
           </v-alert>
@@ -122,6 +135,7 @@ export default class CloudAccountDialog extends Vue {
   showPassword = false
   busy = false
   error: string | null = null
+  ageError = ''
   icons = { eye: '$eye', eyeOff: '$eyeOff' }
 
   redirecting = false
@@ -142,6 +156,11 @@ export default class CloudAccountDialog extends Vue {
 
   async submit () {
     this.error = null
+    this.ageError = ''
+    if (this.mode === 'sign-up') {
+      this.ageError = validateAge(this.age)
+      if (this.ageError) return
+    }
     this.busy = true
     try {
       if (this.mode === 'sign-in') await signIn(this.email, this.password)
@@ -155,5 +174,10 @@ export default class CloudAccountDialog extends Vue {
       this.busy = false
     }
   }
+}
+
+function validateAge (age: string): string {
+  if (!/^\d+$/.test(age)) return 'Enter your age as a whole number.'
+  return Number(age) >= 13 && Number(age) <= 120 ? '' : 'Age must be between 13 and 120.'
 }
 </script>
