@@ -31,8 +31,8 @@ export interface Section {
   label: string;
   icon: string;
   key: string;
-  /** Only with Pro on, below the Pro label. */
-  pro?: boolean;
+  /** Supporting pages, grouped below the main printer pages. */
+  group?: 'tools';
   shows?: (c: SectionContext) => boolean;
   pages: SectionPage[];
 }
@@ -110,7 +110,7 @@ export const SECTIONS: Section[] = [
     label: 'Console',
     icon: 'console',
     key: 't',
-    pro: true,
+    group: 'tools',
     pages: [{ path: '/console', label: 'Console' }]
   },
   {
@@ -118,7 +118,7 @@ export const SECTIONS: Section[] = [
     label: 'Files',
     icon: 'files',
     key: 'f',
-    pro: true,
+    group: 'tools',
     pages: [{ path: '/configure', label: 'Files' }]
   }
 ]
@@ -149,10 +149,10 @@ export function sectionOf (page: string): Section | undefined {
   return SECTIONS.find(s => s.pages.some(p => pageMatches(page, p.path)))
 }
 
-/** The sections shown: Pro's only with Pro on, and each only where it can work. */
+/** The sections shown, each only where it can work. Layout never grants access. */
 export function visibleSections (c: SectionContext): Section[] {
   if (c.foreign) return SECTIONS.filter(s => ['overview', 'jobs', 'slice', 'camera'].includes(s.id))
-  return SECTIONS.filter(s => (!s.pro || c.pro) && (!s.shows || s.shows(c)))
+  return SECTIONS.filter(s => !s.shows || s.shows(c))
 }
 
 /** A section's pages that show, in order. */

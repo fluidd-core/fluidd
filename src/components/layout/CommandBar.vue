@@ -132,7 +132,7 @@ import type { TemperaturePreset } from '@/store/config/types'
 import { visibleMacros, type MacroGroup } from '@/util/visible-macros'
 import type { MoonrakerRootFile } from '@/store/files/types'
 import { highlight, rankCommands, type Command, type Segment } from '@/services/command-bar/rank'
-import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, SECTIONS, visiblePages, visibleSections } from '@/router/printerSections'
+import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, visiblePages, visibleSections } from '@/router/printerSections'
 import { accountSections } from '@/services/account/model'
 import { activeSlug, foreignRecordForSlug, knownPrinters, printerHomePath, printerPath, samePageFor } from '@/services/printer-pages'
 import { cloudState } from '@/services/muon-cloud/state'
@@ -419,22 +419,16 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, Service
       run: () => this.go('/library')
     }, ...this.accountCommands]
     if (!activeSlug() && !this.sectionContext.foreign) return list
-    for (const section of this.sectionContext.foreign ? visibleSections(this.sectionContext) : SECTIONS) {
-      if (!this.sectionContext.foreign && section.shows && !section.shows(this.sectionContext)) continue
-      const locked = section.pro && !this.pro
+    for (const section of visibleSections(this.sectionContext)) {
       list.push({
         id: `go-${section.id}`,
         group: 'Go to',
         label: section.label,
-        hint: locked ? 'Pro: turns Pro on' : undefined,
-        words: section.pages.map(p => p.label).join(' '),
-        keys: locked ? undefined : ['G', section.key.toUpperCase()],
+        words: [section.group === 'tools' ? 'tools' : '', ...section.pages.map(p => p.label)].join(' '),
+        keys: ['G', section.key.toUpperCase()],
         icon: section.icon,
         suggested: section.id === 'jobs' || section.id === 'overview',
-        run: () => {
-          if (locked) setProMode(true)
-          this.go(this.sectionTo(section))
-        }
+        run: () => this.go(this.sectionTo(section))
       })
       for (const page of visiblePages(section, this.sectionContext).slice(1)) {
         list.push({

@@ -12,7 +12,7 @@ function read (): boolean {
 
 /**
  * Pro, one switch for the person at this browser (U3). It shows more: the
- * exact values, more rows and two more pages (Console and Files). It is a
+ * exact values and more rows. Console and Files live under Tools. It is a
  * display choice, never a permission, so it is kept here and not on the
  * printer, where everyone using it would share it.
  */

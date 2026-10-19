@@ -63,6 +63,34 @@
             />
           </router-link>
 
+          <div
+            v-if="toolSections.length"
+            class="app-more__tools"
+            role="group"
+            aria-label="Tools"
+          >
+            <div class="app-more__group-label">
+              Tools
+            </div>
+            <router-link
+              v-for="section in toolSections"
+              :key="section.id"
+              :to="sectionTo(section)"
+              class="app-more__row"
+              :class="{ 'app-more__row--on': currentSection === section }"
+              :data-tid="`more-${section.id}`"
+              @click.native="more = false"
+            >
+              <frame-icon :name="section.icon" />
+              <span class="app-more__label">{{ section.label }}</span>
+              <frame-icon
+                name="chevronRight"
+                small
+                class="app-more__chevron"
+              />
+            </router-link>
+          </div>
+
           <router-link
             to="/"
             class="app-more__row"
@@ -105,7 +133,7 @@
             <frame-icon name="control" />
             <span class="app-more__label">
               Pro controls
-              <span class="app-more__hint">Exact values, more rows, Console and Files</span>
+              <span class="app-more__hint">Exact values and more rows</span>
             </span>
             <span
               class="app-more__toggle"
@@ -149,7 +177,11 @@ export default class AppTabBar extends Mixins(FrameMixin) {
   }
 
   get moreSections (): Section[] {
-    return this.sections.filter(s => !TAB_SECTIONS.includes(s.id))
+    return this.sections.filter(s => !TAB_SECTIONS.includes(s.id) && s.group !== 'tools')
+  }
+
+  get toolSections (): Section[] {
+    return this.sections.filter(s => s.group === 'tools')
   }
 
   get moreActive (): boolean {
@@ -204,6 +236,8 @@ export default class AppTabBar extends Mixins(FrameMixin) {
   }
 
   .app-more {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
     padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
     border-radius: 22px 22px 0 0;
     background: var(--m3d-surface);
@@ -216,8 +250,18 @@ export default class AppTabBar extends Mixins(FrameMixin) {
     font-weight: 600;
   }
 
-  .app-more__list > * + * {
+  .app-more__list > * + *,
+  .app-more__tools > .app-more__row + .app-more__row {
     border-top: 1px solid var(--m3d-border);
+  }
+
+  .app-more__group-label {
+    padding: 12px 4px 4px;
+    color: var(--m3d-text-subtle);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .app-more__row {
