@@ -183,21 +183,34 @@ export function samePageFor (route: Pick<Route, 'params' | 'fullPath'>, slug: st
   return `/${slug}${route.fullPath.slice(current.length + 1)}`
 }
 
+/** Which printer Fluidd is on: its address, and for a cloud one its id. */
+function printerOnNow (): string {
+  const apiUrl: string = store.state.config.apiUrl ?? ''
+  return isManagedApiUrl(apiUrl) ? `cloud:${cloudState.activePrinterId}` : addressKey(apiUrl)
+}
+
 /**
  * Asks the printer Fluidd is on for its identity and remembers its slug. A
  * printer that isn't a Muon3D one has none, and keeps its address-based slug.
+ *
+ * An answer that comes after a switch to another printer is dropped. It used
+ * to be filed under the printer on by then: Boxwood's slug became another
+ * name for Walnut, and Boxwood's address then opened Walnut's page.
  */
 export async function learnActiveIdentity (timeout = 3000): Promise<string | null> {
   const apiUrl: string = store.state.config.apiUrl
   if (!apiUrl) return null
+  const asked = printerOnNow()
+  const before = activeSlug()
   try {
     const response = await httpClientActions.get<{ result: Record<string, unknown> }>('/server/muon/identity', { timeout })
+    if (printerOnNow() !== asked) return null
     const identity = response.data?.result
     const slug = slugForIdentity(identity as any)
     if (!slug) return null
-    rememberAlias(activeSlug(), slug)
+    rememberAlias(before, slug)
     if (isManagedApiUrl(apiUrl)) {
-      Vue.set(printerPagesState.learned, `cloud:${cloudState.activePrinterId}`, slug)
+      Vue.set(printerPagesState.learned, asked, slug)
       return slug
     }
     Vue.set(printerPagesState.learned, addressKey(apiUrl), slug)
@@ -218,9 +231,15 @@ export async function learnActiveIdentity (timeout = 3000): Promise<string | nul
   }
 }
 
-/** Keeps the address a printer had before it said who it is, as another name for it. */
+/**
+ * Keeps the address a printer had before it said who it is, as another name
+ * for it. Never another printer's own address: that would make one
+ * printer's page open the other.
+ */
 export function rememberAlias (before: string | null, learned: string) {
-  if (before && before !== learned) Vue.set(printerPagesState.aliases, before, learned)
+  if (!before || before === learned) return
+  if (knownPrinters().some(t => t.slug === before && t.kind === 'cloud' && `cloud:${t.printerId}` !== printerOnNow())) return
+  Vue.set(printerPagesState.aliases, before, learned)
 }
 
 /** The first path segment when it is a printer slug: what the address asks for. */
@@ -311,6 +330,8 @@ export function installPrinterPages (router: VueRouter, how: PrinterOpeners): vo
 export interface LoginCheck {
   apiConnected: boolean;
   authenticated: boolean;
+  /** The printer is reached through Muon3D, which never has Moonraker's login. */
+  managed?: boolean;
   /** The printer the route names, if any. */
   routePrinter: string | undefined;
   routeName: string | null | undefined;
@@ -324,7 +345,7 @@ export interface LoginCheck {
  * its password. Once it is on: connected, not signed in, and on its page.
  */
 export function printerPageNeedsLogin (c: LoginCheck, isActive: (slug: string) => boolean = isActiveSlug): boolean {
-  if (!c.apiConnected || c.authenticated || c.printerIndependent) return false
+  if (c.managed || !c.apiConnected || c.authenticated || c.printerIndependent) return false
   if (!c.routePrinter || c.routeName === 'Login') return false
   return isActive(c.routePrinter)
 }

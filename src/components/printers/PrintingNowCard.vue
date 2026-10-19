@@ -69,8 +69,9 @@
       </div>
 
       <div
-        v-if="variant === 'wide' && chips.length"
+        v-if="chips.length"
         class="now__chips"
+        data-tid="printing-now-chips"
       >
         <span
           v-for="chip in chips"
@@ -142,6 +143,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import type { PrinterTile, TileJob } from '@/services/printers-page/model'
 import { shortDuration } from '@/util/short-duration'
+import { colourName } from '@/services/control/model'
 import PrinterStage from './PrinterStage.vue'
 
 /**
@@ -200,6 +202,10 @@ export default class PrintingNowCard extends Vue {
 
   get chips (): string[] {
     const chips: string[] = []
+    const material = this.job?.material
+    if (material?.name || material?.colour) {
+      chips.push([material.name, material.colour ? colourName(material.colour) : ''].filter(Boolean).join(' · '))
+    }
     if (this.job?.nozzle != null) chips.push(`Nozzle ${this.job.nozzle}°`)
     if (this.job?.bed != null) chips.push(`Bed ${this.job.bed}°`)
     return chips

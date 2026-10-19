@@ -1,11 +1,17 @@
 <template>
   <control-card
-    title="Outputs and sensors"
-    :locked="klippyReady ? '' : notReadyReason"
+    :title="diagnosticsOnly ? 'Switches and sensors' : outputsOnly ? 'Outputs' : 'Outputs and sensors'"
+    :locked="controlLock"
     data-tid="control-outputs"
   >
+    <p
+      v-if="outputsOnly && !outputs.length"
+      class="outs__note"
+    >
+      This printer has no other outputs.
+    </p>
     <div
-      v-if="outputs.length"
+      v-if="!diagnosticsOnly && outputs.length"
       class="outs__group"
     >
       <h3 class="outs__label">
@@ -26,7 +32,7 @@
             :min="0"
             :max="100"
             :label="out.label"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @change="setOutput(out, $event)"
           />
           <span class="crow__value">{{ out.percent }}%</span>
@@ -35,14 +41,14 @@
           v-else
           :value="out.percent > 0"
           :label="out.label"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @input="setOutput(out, $event ? 100 : 0)"
         />
       </div>
     </div>
 
     <div
-      v-if="sensors.length"
+      v-if="!outputsOnly && sensors.length"
       class="outs__group"
       data-tid="control-sensors"
     >
@@ -56,7 +62,7 @@
       >
         <span class="crow__name">
           {{ sensor.prettyName }}
-          <span class="crow__sub">· {{ !sensor.enabled ? 'off' : sensor.filament_detected ? 'filament in' : 'no filament' }}</span>
+          <span class="crow__sub">· {{ typeof sensor.enabled !== 'boolean' || typeof sensor.filament_detected !== 'boolean' ? 'Unknown' : !sensor.enabled ? 'off' : sensor.filament_detected ? 'filament in' : 'no filament' }}</span>
           <span
             v-if="sensor.role === 'loads'"
             class="outs__why"
@@ -70,13 +76,14 @@
           v-else
           :value="sensor.enabled"
           :label="`${sensor.prettyName} on`"
-          :disabled="!klippyReady || (sensor.enabled && sensor.role !== 'runout')"
+          :disabled="!controlReady || typeof sensor.enabled !== 'boolean' || (sensor.enabled && sensor.role !== 'runout')"
           @input="setSensor(sensor.name, $event)"
         />
       </div>
     </div>
 
     <div
+      v-if="!outputsOnly"
       class="outs__group"
       data-tid="control-endstops"
     >
@@ -85,7 +92,7 @@
         <button
           type="button"
           class="outs__link"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           data-tid="control-endstops-check"
           @click="checkEndstops"
         >
@@ -101,7 +108,7 @@
         <span
           class="outs__state"
           :class="{ 'outs__state--hit': endstop.state === 'triggered' }"
-        >{{ endstop.state === 'triggered' ? 'Triggered' : 'Open' }}</span>
+        >{{ endstop.state === 'triggered' ? 'Triggered' : endstop.state === 'open' ? 'Open' : 'Unknown' }}</span>
       </div>
       <p
         v-if="!endstops.length"
@@ -114,10 +121,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { SocketActions } from '@/api/socketActions'
-import type { Endstop, Led, OutputPin, Probe, RunoutSensor } from '@/store/printer/types'
+import type { Endstop, Led, OutputPin, RunoutSensor } from '@/store/printer/types'
 import {
   filamentSensorRole,
   ledCommand,
@@ -144,13 +151,15 @@ interface Output {
 type Sensor = RunoutSensor & { prettyName: string; role: FilamentSensorRole }
 
 /**
- * Pro's outputs and sensors: the output pins and LEDs that aren't the
+ * Outputs and sensors: the output pins and LEDs that aren't the
  * lights (Fans and lights has those), the filament sensors with their
  * on/off (none for a sensor that loads filament), and the endstops, read
  * when asked.
  */
 @Component({ components: { ControlCard, RangeSlider, ToggleSwitch } })
 export default class ControlOutputs extends Mixins(ControlMixin) {
+  @Prop({ type: Boolean }) readonly outputsOnly?: boolean
+  @Prop({ type: Boolean }) readonly diagnosticsOnly?: boolean
   get outputs (): Output[] {
     const pins = ((this.$store.getters['printer/getPins'] as OutputPin[]) ?? [])
       .filter(p => p.controllable && p.name !== this.lightsPin?.name)
@@ -162,6 +171,7 @@ export default class ControlOutputs extends Mixins(ControlMixin) {
   }
 
   setOutput (out: Output, percent: number) {
+    if (!this.controlReady || !Number.isFinite(percent) || percent < 0 || percent > 100) return
     if (out.pin) this.sendGcode(pinCommand(out.pin, out.pin.pwm ? percent : percent > 0))
     else if (out.led) this.sendGcode(ledCommand(out.led.name, percent))
   }
@@ -178,24 +188,25 @@ export default class ControlOutputs extends Mixins(ControlMixin) {
 
   /** Reads the printer's settings as they are now, so an off is refused however this is called. */
   setSensor (name: string, enabled: boolean) {
+    if (!this.controlReady) return
     const gcode = sensorCommand(name, enabled, this.configfile)
     if (gcode) this.sendGcode(gcode)
   }
 
-  get probe (): Probe | undefined {
-    return this.$store.getters['printer/getProbe'] as Probe | undefined
-  }
+  requested = false
 
   get endstops (): Endstop[] {
+    if (!this.requested) return []
     const endstops = [...((this.$store.getters['printer/getEndstops'] as Endstop[]) ?? [])]
-    if (endstops.length && this.probe) endstops.push({ name: 'Probe', state: this.probe.last_query ? 'triggered' : 'open' })
     // Klipper says open, or TRIGGERED in capitals.
     return endstops.map(e => ({ name: e.name === 'Probe' ? e.name : e.name.toUpperCase(), state: String(e.state).toLowerCase() }))
   }
 
   checkEndstops () {
+    if (!this.controlReady) return
+    this.$store.commit('printer/setClearEndStops')
+    this.requested = true
     SocketActions.printerQueryEndstops()
-    if (this.probe) this.sendGcode('QUERY_PROBE', this.$waits.onQueryProbe)
   }
 
   /** A reading goes stale: leaving the page clears it, as Fluidd's own panel does. */

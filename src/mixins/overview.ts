@@ -7,7 +7,7 @@ import type { HistoryItem } from '@/store/history/types'
 import type { QueuedJob } from '@/store/jobQueue/types'
 import { jobName } from '@/services/printers-page/model'
 import { plateCheckNeeded } from '@/services/jobs/plate'
-import { filamentFact, heaterTile, longDuration, type HeaterTile } from '@/services/overview/model'
+import { filamentFact, heaterTile, longDuration, spoolFact, type HeaterTile } from '@/services/overview/model'
 import { activeSlug, printerHomePath } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
 import getFilePaths from '@/util/get-file-paths'
@@ -95,6 +95,16 @@ export default class OverviewMixin extends Mixins(ControlMixin, FilesMixin) {
     const total = (this.currentFile.filament_total as number | undefined) ?? null
     const grams = (this.currentFile.filament_weight_total as number | undefined) ?? null
     return filamentFact(used, total, grams)
+  }
+
+  /**
+   * The spool on the printer while it prints: what someone said is loaded,
+   * else what the file was sliced for. The filament tile gives way to Speed
+   * while printing, so this is where it shows (14 Oct 2026: "no spool
+   * attached even though it's printing").
+   */
+  get spoolFact (): string {
+    return spoolFact(this.loadedMaterial?.name ?? null, this.loadedColour, this.printingWith)
   }
 
   get runningFor (): string | null {

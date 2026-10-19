@@ -10,7 +10,7 @@ import { describeLibraryError, type ItemSetup, type LibraryItem } from '@/servic
 import { dayText, findPrints, librarySummary, storageLine, type PrintSort } from '@/services/library/format'
 import { fitText, printerFit } from '@/services/library/fit'
 import { activePrinterFacts, downloadGcode, downloadProject, gcodeFileName, saveToComputer } from '@/services/library/print-on'
-import { PROMISE_SUMMARY, PROMISE_URL } from '@/services/library/promise'
+import { libraryPromise, PROMISE_URL } from '@/services/library/promise'
 import { fileName } from '@/services/library/save'
 import {
   copyPrint,
@@ -59,8 +59,11 @@ export default class LibraryPageMixin extends Vue {
   error = ''
   syncTimer = 0
 
-  promiseSummary = PROMISE_SUMMARY
   promiseUrl = PROMISE_URL
+
+  get promise () {
+    return libraryState.checked ? libraryPromise(libraryState.promiseVersion) : null
+  }
 
   created () {
     watchLibraryAccount()
@@ -205,11 +208,13 @@ export default class LibraryPageMixin extends Vue {
 
   /** Turning it on is consent to the promise, so the promise is what it asks with. */
   async turnOn () {
-    const ok = await this.$confirm(PROMISE_SUMMARY, {
+    const promise = this.promise
+    if (!promise) return
+    const ok = await this.$confirm(promise.summary, {
       title: 'Turn on your Library?',
       buttonTrueText: 'Turn it on'
     })
-    if (ok) await this.act(turnLibraryOn)
+    if (ok) await this.act(() => turnLibraryOn(promise.version))
   }
 
   /** A print's own page, under the printer open here. */

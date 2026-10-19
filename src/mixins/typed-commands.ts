@@ -12,7 +12,12 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
   commandRefusal = ''
 
   get commandTarget (): string {
-    return `${this.$store.state.config.apiUrl}|${cloudState.activePrinterId ?? ''}|${this.$route?.params?.printer ?? ''}`
+    return JSON.stringify([
+      this.$store.state.config.apiUrl,
+      cloudState.activePrinterId,
+      this.$route?.params?.printer ?? null,
+      cloudState.account?.id ?? null
+    ])
   }
 
   get commandControlAvailable (): boolean {
@@ -31,15 +36,15 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
     return ''
   }
 
-  async confirmCommandRestart (): Promise<boolean> {
+  async confirmCommandRestart (kind: 'restart' | 'save' = 'restart'): Promise<boolean> {
     this.commandRefusal = this.restartRefusal
     if (this.commandRefusal) return false
     const target = this.commandTarget
-    const ok = await this.$confirm('Klipper reloads its settings. The printer must be idle before it can restart.', {
-      title: 'Restart Klipper?', buttonTrueText: 'Restart', buttonFalseText: 'Keep running', danger: true
+    const ok = await this.$confirm(kind === 'save' ? 'Saving keeps the new results in printer.cfg. Klipper restarts to use them. The printer must be idle.' : 'Klipper reloads its settings. The printer must be idle before it can restart.', {
+      title: kind === 'save' ? 'Save the results?' : 'Restart Klipper?', buttonTrueText: kind === 'save' ? 'Save and restart Klipper' : 'Restart', buttonFalseText: 'Keep running', danger: true
     })
     if (!ok) return false
-    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer changed. Try again.' : this.restartRefusal
+    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer or account changed. Try again.' : this.restartRefusal
     return !this.commandRefusal
   }
 
@@ -53,11 +58,19 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
     const batch = inspectTypedGcode(gcode, this.$store.state.printer.printer.configfile)
     this.commandRefusal = batch.refusal ?? ''
     if (this.commandRefusal) return false
+    if (batch.savesConfig && (!this.klippyConnected || !this.klippyReady)) {
+      this.commandRefusal = 'Not sent. Klipper must be running to save settings.'
+      return false
+    }
     if (!this.klippyConnected && !(batch.restarts && batch.onlyRestarts)) {
       this.commandRefusal = 'Not sent. Klipper is not connected.'
       return false
     }
     if (batch.restarts && !await this.confirmCommandRestart()) return false
+    if (batch.savesConfig && (!this.klippyConnected || !this.klippyReady)) {
+      this.commandRefusal = 'Not sent. Klipper must be running to save settings.'
+      return false
+    }
     if (!this.klippyConnected && !batch.onlyRestarts) {
       this.commandRefusal = 'Not sent. Klipper is not connected.'
       return false
