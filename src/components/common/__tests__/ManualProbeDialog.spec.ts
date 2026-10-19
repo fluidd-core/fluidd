@@ -51,6 +51,19 @@ it('opens Finer steps with the reported tried range without a mode', async () =>
   wrapper.destroy()
 })
 
+it.each([
+  ['near neighbours', 1.9, 2.1, ['To 1.900 mm (closer)', 'To 1.950 mm (closer)', 'To 2.050 mm (away)', 'To 2.100 mm (away)']],
+  ['neighbours beyond the cap', 1, 3, ['To 1.800 mm (closer)', 'To 1.800 mm (closer)', 'To 2.200 mm (away)', 'To 2.200 mm (away)']],
+  ['no neighbours', null, null, ['To 1.800 mm (closer)', 'To 1.800 mm (closer)', 'To 2.200 mm (away)', 'To 2.200 mm (away)']]
+] as const)('describes all bracket targets with %s', async (_, lower, upper, labels) => {
+  const { wrapper, state } = show()
+  state.printer.printer.manual_probe.z_position_lower = lower
+  state.printer.printer.manual_probe.z_position_upper = upper
+  await wrapper.find('[data-tid="manual-probe-finer"]').trigger('click')
+  expect(['--', '-', '+', '++'].map(step => wrapper.find(`[data-step="${step}"]`).text())).toEqual(labels)
+  wrapper.destroy()
+})
+
 it('keeps numeric TESTZ semantics, accepts once and aborts on close', async () => {
   const { wrapper } = show()
   await wrapper.find('[aria-label="0.05 mm closer to the plate"]').trigger('click')

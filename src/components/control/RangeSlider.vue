@@ -8,7 +8,8 @@
     :value="current"
     :disabled="disabled"
     :aria-label="label"
-    :style="{ '--fill': `${fill}%` }"
+    :aria-valuetext="valueTextFormatter(current)"
+    :style="{ '--fill': `${fill}%`, height: '24px' }"
     @input="onInput"
     @change="onChange"
   >
@@ -34,6 +35,9 @@ export default class RangeSlider extends Vue {
 
   @Prop({ type: String, default: '' })
   readonly label!: string
+
+  @Prop({ type: Function, default: (value: number) => String(value) })
+  readonly valueTextFormatter!: (value: number) => string
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
@@ -68,10 +72,13 @@ export default class RangeSlider extends Vue {
   // The input is the track, filled up to the value; the thumb sits on it.
   .range {
     width: 100%;
-    height: 4px;
-    margin: 12px 0;
+    height: 24px;
+    margin: 2px 0;
     border-radius: 2px;
     background: linear-gradient(to right, var(--m3d-accent) var(--fill), var(--m3d-border-strong) var(--fill));
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 4px;
     cursor: pointer;
     appearance: none;
 
@@ -81,8 +88,8 @@ export default class RangeSlider extends Vue {
     }
 
     &::-webkit-slider-thumb {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       border: 0;
       border-radius: 50%;
       background: #fff;
@@ -91,8 +98,8 @@ export default class RangeSlider extends Vue {
     }
 
     &::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       border: 0;
       border-radius: 50%;
       background: #fff;

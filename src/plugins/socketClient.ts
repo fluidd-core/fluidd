@@ -284,6 +284,7 @@ export class WebSocketClient {
       }
       consola.debug(`${this.logPrefix} Response error:`, d.error)
       if (this.store) this.store.dispatch('socket/onSocketError', d.error)
+      request?.resolve?.(undefined)
       return
     }
 
@@ -297,6 +298,7 @@ export class WebSocketClient {
       consola.debug(`${this.logPrefix} Response:`, result)
       if (request.dispatch && this.store) this.store.dispatch(request.dispatch, result)
       if (request.commit && this.store) this.store.commit(request.commit, result)
+      request.resolve?.(result)
     } else if (d.params && d.params[0]) {
       const [params, eventtime] = d.params
 
@@ -435,10 +437,13 @@ export class WebSocketClient {
       }
       if (options && options.dispatch) request.dispatch = options.dispatch
       if (options && options.commit) request.commit = options.commit
+      const response = new Promise<unknown>(resolve => { request.resolve = resolve })
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
+      return response
     } else {
       consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
+      return Promise.resolve(undefined)
     }
   }
 }
@@ -487,6 +492,7 @@ interface Request {
   commit?: string;
   params?: any;
   wait?: string;
+  resolve?: (result: unknown) => void;
 }
 
 interface SocketRequest {

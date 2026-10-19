@@ -36,7 +36,7 @@ export function panelStore () {
     'wait/hasWait': () => false
   })
   const state = Vue.observable<any>({ printer: { printer }, config: { apiUrl: 'http://mock.local', instances: [], uiSettings: { general: { defaultToolheadXYSpeed: 130, defaultToolheadZSpeed: 10, defaultExtrudeLength: 10, defaultExtrudeSpeed: 5 } } }, console: { console: [], commandHistory: [] }, gcodePreview: {} })
-  return { state, getters, dispatch: vi.fn(), commit: vi.fn(), extruder }
+  return { state, getters, dispatch: vi.fn(), commit: vi.fn(), subscribe: vi.fn(() => vi.fn()), extruder }
 }
 
 export const panelStubs = { 'frame-icon': true, 'v-progress-circular': true }
