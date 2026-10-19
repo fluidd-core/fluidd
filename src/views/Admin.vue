@@ -96,7 +96,7 @@
             @submit.prevent="read(false)"
           >
             <template v-if="section === 'accounts'">
-              <label for="admin-query">Exact email or account ID</label>
+              <label for="admin-query">Exact email, account ID or handle</label>
               <input
                 id="admin-query"
                 v-model="query"
@@ -140,8 +140,10 @@
           </form>
           <section
             v-if="account"
+            ref="accountResult"
             class="admin-card"
             aria-label="Account result"
+            tabindex="-1"
           >
             <h2>{{ account.name }}</h2><p class="muted">
               {{ account.id }}
@@ -164,10 +166,13 @@
           </section>
           <section
             v-if="entries.length"
+            ref="auditResults"
             class="admin-card admin-scroll"
             aria-label="Audit results"
+            tabindex="-1"
           >
             <table>
+              <caption>Staff audit log</caption>
               <thead><tr><th>Time</th><th>Staff / action</th><th>Reason / result</th></tr></thead><tbody>
                 <tr
                   v-for="entry in entries"
@@ -182,6 +187,7 @@
               type="button"
               class="cbtn"
               :disabled="busy"
+              aria-label="Load the next page of older audit entries"
               @click="read(true)"
             >
               Load older entries
@@ -323,10 +329,12 @@ export default class Admin extends Vue {
     try {
       const result = this.section === 'accounts' ? await lookupAccount(this.query, this.reason) : await readAudit(this.source, older ? this.next : null, this.reason)
       if (revision !== this.revision || Date.now() >= this.expires * 1000 || storedToken() !== token) return
-      if ('account' in result) { this.account = result.account; if (!result.account) this.message = 'No account matched that exact email or ID.' } else {
+      if ('account' in result) { this.account = result.account; this.message = result.account ? 'Account result loaded.' : 'No account matched that exact email, ID or handle.' } else {
         this.entries = older ? [...this.entries, ...result.entries] : result.entries; this.next = result.next
-        if (!this.entries.length) this.message = 'No audit entries yet.'
+        this.message = !this.entries.length ? 'No audit entries yet.' : older ? 'Older audit entries loaded.' : 'Audit log loaded.'
       }
+      await this.$nextTick()
+      if (!older) ((this.account ? this.$refs.accountResult : this.$refs.auditResults) as HTMLElement | undefined)?.focus()
     } catch (error) { if (revision === this.revision) this.failure(error) } finally { if (revision === this.revision) this.busy = false }
   }
 }
@@ -351,7 +359,7 @@ h1 { font-size: 28px; font-weight: 500; letter-spacing: -.6px; } h2 { font-size:
 .admin-card { padding: 24px; margin-bottom: 20px; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); }
 label { display: block; margin-bottom: 8px; font-weight: 500; } input, textarea, select { display: block; width: 100%; padding: 10px 12px; margin-bottom: 20px; border: 1px solid var(--m3d-border); border-radius: 4px; background: var(--m3d-inset); color: var(--m3d-text); } textarea { min-height: 80px; }
 dl { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 12px; } dt { color: var(--m3d-text-muted); } dd { margin: 0; overflow-wrap: anywhere; }
-.admin-scroll { overflow-x: auto; } table { width: 100%; border-collapse: collapse; } th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--m3d-border); overflow-wrap: anywhere; } th { font-size: 11px; color: var(--m3d-text-muted); } :focus-visible { outline: 2px solid var(--m3d-accent); outline-offset: 2px; }
+.admin-scroll { max-width: 100%; overflow-x: auto; } table { width: 100%; table-layout: fixed; border-collapse: collapse; } caption { padding: 0 0 12px; text-align: left; font-weight: 600; } th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--m3d-border); overflow-wrap: anywhere; word-break: break-word; } th { font-size: 11px; color: var(--m3d-text-muted); } :focus-visible { outline: 2px solid var(--m3d-accent); outline-offset: 2px; }
 .admin-dialog-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .6); }
 .admin-dialog { width: min(440px, 100%); padding: 24px; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); color: var(--m3d-text); }
 .admin-dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 20px; }
