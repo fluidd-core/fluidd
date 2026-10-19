@@ -32,6 +32,7 @@
             type="password"
             autocomplete="current-password"
             aria-label="Password"
+            :aria-describedby="error ? errorId : undefined"
             data-tid="reauth-password"
             @keydown.enter="submit"
           >
@@ -48,6 +49,7 @@
             inputmode="numeric"
             autocomplete="one-time-code"
             aria-label="Code from your authenticator app"
+            :aria-describedby="error ? errorId : undefined"
             data-tid="reauth-code"
             @keydown.enter="submit"
           >
@@ -63,6 +65,7 @@
     </p>
     <p
       v-if="error"
+      :id="errorId"
       class="m3-dlg__error"
       role="alert"
     >
@@ -138,6 +141,7 @@ export default class ReauthDialog extends Vue {
 
   password = ''
   code = ''
+  readonly errorId = 'reauth-confirmation-error'
 
   @Watch('value')
   onOpen (open: boolean) {

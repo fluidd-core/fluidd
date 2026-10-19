@@ -1,9 +1,10 @@
 import { accountRequest, AccountError } from './client'
 import { storedToken } from '@/services/muon-cloud/api'
-import { usePasskey } from './webauthn'
+import { passkeysSupported, usePasskey } from './webauthn'
 
 /** Ordinary account confirmation on cloud #36. This never grants staff authority. */
 export async function confirmAccount (current: () => boolean = () => true): Promise<void> {
+  if (!passkeysSupported()) throw new AccountError('Passkeys are not supported in this browser. Use your password instead.', 400)
   const token = storedToken()
   const check = () => {
     if (!token || storedToken() !== token || !current()) throw new AccountError('The account changed. Open this action again.', 401)

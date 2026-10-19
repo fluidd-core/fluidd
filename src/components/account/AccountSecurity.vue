@@ -371,12 +371,15 @@
           type="password"
           autocomplete="new-password"
           aria-label="New password"
+          :aria-describedby="dialogError ? 'security-password-error' : undefined"
         ></span>
         <span class="m3-dlg__note">At least 8 characters.</span>
       </label>
       <p
         v-if="dialogError"
+        id="security-password-error"
         class="m3-dlg__error"
+        role="alert"
       >
         {{ dialogError }}
       </p>
