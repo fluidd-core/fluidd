@@ -1,81 +1,54 @@
-# Staff portal handoff
+# Hosted Control staff portal
 
-No deploy or staff provisioning took place in this run. This is a draft
-staff page at `/admin`, on hosted Control only. The public Library
-and printer-served builds cannot send staff requests from this page.
+`/admin` is a staff surface in the hosted Control build. It is deliberately unavailable on printer-hosted Control, Library and Slicer, when Control's configured console origin differs from the page origin, or inside a frame. The portal uses the ordinary signed-in console session; staff authority additionally requires an enrolled passkey and server-side staff membership. There is no password fallback for staff authority.
 
-Merge the milestone 1 account draft #80 before this stack. Review the mock
-makeover before its page draft. The page needs the console staff API and the
-models staff audit draft; models itself needs #18 then #21. Console merge
-order starts with #30, #35 and the passkey-provenance draft, which includes
-#36, followed by the staff API. #37 remains the independent device/grace fix.
-Deploy #37 before Control #80 consumes its grouped-device and deletion contract.
+Account and staff pages use the same responsive Control layout for everyone. There is **one layout**: neither the account area nor `/admin` is conditional on a Pro/simple-mode switch. A narrow viewport changes navigation presentation, not capabilities.
 
-Jack must configure the console's operator-owned staff ID file and models
-issuer/key/CORS trust, then run the full combined-head checks before deploy.
-Use the console's existing sign-in session. Confirm staff access with a real
-enrolled passkey. No password fallback grants staff authority. Nothing in
-this page stores a staff assertion, adds a refresh credential or puts a
-search/proof in a URL. Account details clear on lock, expiry, hidden tab or
-session-token change; a late response cannot reopen them.
+## Deployment order and release hold
 
-Acceptance on isolated local services: password-only staff and passkey-only
-nonstaff both fail; Jack/Harry fixture IDs and an enrolled passkey pass;
-cancel/expiry keep the page locked; exact ID/email lookup returns minimal
-details and audit; prefix lookup returns no match; removed membership and
-logout stop new reads; one models proof cannot be reused or used as a Library
-session. A previously issued models proof has at most a two-minute offline
-lease. Immediate cross-service revocation and action-bound write proofs are
-required before adding mutation capabilities.
+Deploy the console implementation before enabling any of these Control features. Deploy models before enabling the features marked below. An older console must fail closed; do not shim a destructive or staff route at the CDN.
 
-Local checks and limits are in the project PLAN.md. Complete Cargo, clippy,
-Control production build and setup-budget checks remain release gates where
-they could not run under the no-big-build instruction. No printer acceptance
-is needed for these pages.
+| Control feature | Console route(s) | Models route | When absent |
+| --- | --- | --- | --- |
+| Staff unlock | `POST /v1/me/reauth/passkey/options`, `POST /v1/me/reauth/passkey`, then `POST /v1/admin/session` | — | Portal remains locked and reports that staff tools could not be reached/confirmed. |
+| Exact account lookup | `POST /v1/admin/accounts/lookup` | — | No result is exposed. If `admin_version` is absent in a successful older response, all account-action controls remain hidden. |
+| Account audit | `POST /v1/admin/audit/read` | — | Read fails without changing or retaining the previous result. |
+| Community audit | `POST /v1/me/staff/assertion` | `POST https://models.muon3d.com/v1/admin/audit/read` | Read fails closed. The assertion is held only for that models request. |
+| Moderation queue, cases, reservations and evidence | brokered `POST /v1/admin/community` (`queue`, `case`, `reservations`, `source`, and mutations) | Indirect: the console broker owns models admission/write proof | Screen is unavailable; Control never calls models directly and never receives a write proof. |
+| Staff account actions | brokered `POST /v1/admin/accounts/action` | Indirect where lifecycle propagation is needed | Controls are hidden without `admin_version`; an unavailable broker saves nothing. |
 
-## Moderation and account actions draft
+Every mutation gets a new staff-purpose WebAuthn ceremony, then sends an action/target/version/body-bound command through the same-origin console broker. A 401, unreadable reply, network failure, or 5xx is never replayed: the outcome is treated as uncertain and staff must inspect the case/account and audit before acting again. Reads may refresh the ordinary session once; writes may not. Source bytes are deliberately requested, size/hash checked, and never stored. Lock, expiry, navigation, token change, or a hidden tab clears private results and prevents a late response or passkey prompt from reopening them.
 
-The milestone4 page stacks on #85 -> #84 -> #80. It adds queue/case review,
-private correspondence, Jack/Harry assignment slots, handle reservations and
-the existing audit view. Console account actions remain on their own origin.
-Runtime requires cloud #44 and its account-actions follow-up on #42 (including
-#37), and models #38 plus the report/notice follow-up on Library #37. These
-add console18 and models10/11 respectively. No backend is assumed merged.
+Before merging this composition into `develop`, set the release-side `FLUIDD_PAUSE_PUBLISH` hold and verify publishing is paused. Keep the hold in place through the merge and combined-head acceptance; remove it only when the console and (where required) models deployments above are live and Control is approved for publication.
 
-Every write opens the existing staff-purpose passkey ceremony and sends a
-method/target/version/body-bound command through the console broker. The
-browser receives no write proof or admission ticket. A write is never retried
-automatically, including on401. Network/unreadable replies say the outcome is
-uncertain and require case/account/audit review. A successful write locks and
-clears private results. Hidden tab, expiry, navigation and token-change guards
-prevent late responses or a late passkey prompt from sending a stale action.
+## Required response headers
 
-Restoration needs a different actor, no active hold and an elapsed counter-
-notice wait. Weekday targets need staff holiday review. Case evidence is text
-only in this draft; no source file is loaded automatically. Account restoration
-and deletion cancellation have separate buttons and cannot silently undo each
-other. A missing account version hides write controls on older backends.
+Configure the hosted edge/origin for `/admin` **and its SPA fallback** to send:
 
-Before release, run real-service online admission/logout/removal, WebAuthn,
-conflicting decisions, catalogue notice deadlines and callback outage tests.
-Complete locked Rust/clippy/Geometry and the Control production build/setup
-budget. Browser captures in the project folder use fixture HTTP/passkeys;
-they do not establish real-service acceptance. Preserve exact consent #89,
-Library #36, phone signup parity and receiver-before-sender holds. Pause
-Fluidd publishing before later develop merges. No printer release is included.
+```http
+Content-Security-Policy: frame-ancestors 'none'
+Cache-Control: no-store
+```
 
-## Milestone 5 evidence workflow
+`frame-ancestors 'none'` is the server-enforced partner to Control's framed-context refusal and prevents clickjacking; JavaScript frame checks alone are not a security boundary. `no-store` prevents staff lookup, moderation, evidence and audit HTML/responses from entering browser or intermediary caches. Apply `no-store` to staff API responses too. Do not put lookup text, reasons, proofs, account data or command bodies in URLs; do not persist staff assertions, results, evidence bytes or write authority in Web Storage.
 
-This follow-up stays on #90/#85/#84/#80. It needs the console source broker
-on cloud #47 (on #45/#44) and models #51 (on #48/#45/#39/#38/#37).
-Fetch each source deliberately, verify its complete size/SHA256, inspect it,
-then accept the manifest with a fresh passkey. Approval is a separate decision.
-Files over8MiB remain pending. A downloaded archive is not automatically safe
-or stripped of internal metadata. Verify file privacy before any public release.
+## Verification
 
-Profile cases display current text and a content digest. Deliberate photo
-inspection uses the same broker. Restoration binds that digest, inspection
-confirmation and another reviewer. Source object URLs are revoked on lock,
-navigation and destruction. No staff write credential or source bytes are saved
-in storage. Check desktop/phone, keyboard, changed bytes, revoked role, expired
-passkey, uncertain response and changed-profile conflicts on isolated services.
+From a clean checkout, run the dedicated admin tests, then the normal gates:
+
+```sh
+npm ci
+npx vitest run src/services/admin src/components/admin src/views/__tests__/admin.spec.ts src/router/__tests__/admin-route.spec.ts
+npm run lint
+```
+
+The suite enforces hosted-origin and framed-context refusal; fresh passkey confirmation for each staff mutation; origin-bound broker calls; no automatic mutation replay after a 401 or uncertain response; and no staff lookup, reason, proof or result in URLs or storage. Complete real-service membership removal, logout, WebAuthn cancellation/expiry, conflicting decisions, evidence digest, and models/console outage acceptance before lifting the publish hold.
+
+## Release holds and limits that still apply
+
+- Deploy console #37 (grouped devices and mandatory 14-day grace) before Control #80 consumes it.
+- Staff writes are never retried automatically, including after a 401. An unreadable or network reply means the outcome is uncertain: review the case, account and audit before deciding again.
+- Restoring hidden content needs a different staff member from the one who hid it, no active hold, and an elapsed counter-notice wait. Weekday targets skip weekends only, so staff must check holidays.
+- Source files over 8 MiB stay pending. Downloading or hashing a file does not make an archive safe or strip its metadata. Check file privacy before any public release.
+- An offline models read proof stays valid for at most two minutes after staff removal or logout. An admitted staff command can still commit within ten seconds. Neither is instant cancellation; Jack reviews both bounds before release.
+- Real staff IDs, the staff file, keys and the broker pairing are configured only in a separate, authorised release.
