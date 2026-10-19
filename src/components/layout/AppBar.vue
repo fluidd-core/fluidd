@@ -150,7 +150,7 @@
         </v-tooltip>
 
         <button
-          v-if="!sectionContext.foreign"
+          v-if="!sectionContext.foreign && proSwitchShown"
           type="button"
           role="switch"
           class="app-header__pro"
