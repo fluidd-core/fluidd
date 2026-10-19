@@ -24,7 +24,7 @@ import { InlineSvgPlugin } from 'vue-inline-svg'
 // Init.
 import { appInit } from './init'
 import { initCloud } from './services/muon-cloud/state'
-import { shouldTrySilentSignIn, startCentralSignIn } from './services/muon-cloud/centralLogin'
+import { checkCentralSession } from './services/muon-cloud/centralLogin'
 import { activateCloudPrinter, activateLocalPrinter, forgetManagedInstance } from './services/muon-cloud/activate'
 import {
   activeSlug,
@@ -66,7 +66,9 @@ if (startupState.cachedShown) document.getElementById(LOADER_ID)?.classList.add(
 
 // The first frame's two pages' chunks, fetched in parallel with appInit;
 // the warm load would otherwise wait for the router to resolve the route.
-if (!NO_PREFETCH_PATHS.test(window.location.pathname)) {
+// Silent sign-in now keeps this document, so its chunks are useful too.
+const prefetchFirstPages = () => {
+  if (NO_PREFETCH_PATHS.test(window.location.pathname)) return
   import('@/views/Printers.vue').catch(() => {})
   import('@/views/Overview.vue').catch(() => {})
 }
@@ -134,12 +136,11 @@ const mountApp = () => {
 if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
   Vue.use(SocketPlugin, { url: '', store })
   mountApp()
-} else if (shouldTrySilentSignIn()) {
-  // Served by the console with no session (WEB-12): ask /authorize with
-  // prompt=none before loading anything. Signed in there, this comes straight
-  // back with a code; if not, it comes back signed out and shows "Sign in".
-  startCentralSignIn({ silent: true }).catch((e) => consola.debug('Could not start the central sign-in', e))
 } else {
+  // The cookie check and appInit run independently: even a stalled console
+  // must not hold up mounting the app. initCloud adopts its result later.
+  const sessionCheck = checkCentralSession()
+  prefetchFirstPages()
   appInit()
     .then(async (config: InitConfig) => {
       consola.debug('Loaded App Configuration', config)
@@ -180,7 +181,7 @@ if (/^\/(?:setup|sign-in)(?:\/|$)/.test(window.location.pathname)) {
       //
       // Wait for the first navigation: a lazy route is not the current route
       // until its chunk has loaded, and its meta decides here.
-      initCloud().then((returnTo) => router.onReady(async () => {
+      initCloud(sessionCheck).then((returnTo) => router.onReady(async () => {
         // Back from the console's /authorize: go on where the sign-in started,
         // before anything below reads the current route.
         if (returnTo && returnTo !== '/') await router.replace(returnTo).catch(() => {})

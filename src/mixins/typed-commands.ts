@@ -15,6 +15,7 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
     return JSON.stringify([
       this.$store.state.config.apiUrl,
       cloudState.activePrinterId,
+      this.$route?.params?.printer ?? null,
       cloudState.account?.id ?? null
     ])
   }

@@ -109,6 +109,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import { consola } from 'consola'
+import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 
 @Component({})
 export default class Login extends Vue {
@@ -120,12 +121,16 @@ export default class Login extends Vue {
   availableSources = [this.source]
 
   async mounted () {
+    // A cloud printer has no Moonraker login, and muon-link refuses
+    // /access/* to every remote role: asking only raised "Server error".
+    if (isManagedApiUrl(this.$store.state.config.apiUrl)) return
     const authInfo = await this.$store.dispatch('auth/getAuthInfo')
     this.source = authInfo.defaultSource ?? this.source
     this.availableSources = authInfo.availableSources ?? this.availableSources
   }
 
   async handleLogin () {
+    if (isManagedApiUrl(this.$store.state.config.apiUrl)) return
     this.error = false
     this.loading = true
     try {

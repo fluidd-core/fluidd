@@ -19,6 +19,8 @@ export interface TileJob {
   layers: number | null;
   nozzle: number | null;
   bed: number | null;
+  /** What the printer says is loaded, when anyone has said. */
+  material?: { name: string | null, colour: string | null } | null;
 }
 
 export interface PrinterTile {
@@ -116,7 +118,8 @@ export function needsYou (state: TileState): boolean {
   return state === 'paused' || state === 'error'
 }
 
-function cloudJob (s: PrinterStatus | undefined): TileJob | null {
+/** A print from a printer's status read: through Muon3D, or on this network (status.ts). */
+function statusJob (s: PrinterStatus | undefined): TileJob | null {
   if (!s || (!s.reachable && s.error !== 'reconnecting') || !s.filename) return null
   const progress = typeof s.progress === 'number' ? Math.floor(s.progress * 100) : null
   const elapsed = s.printDuration ?? 0
@@ -130,8 +133,19 @@ function cloudJob (s: PrinterStatus | undefined): TileJob | null {
     layer: s.layer ?? null,
     layers: s.totalLayers ?? null,
     nozzle: s.extruder ? Math.round(s.extruder.temperature) : null,
-    bed: s.bed ? Math.round(s.bed.temperature) : null
+    bed: s.bed ? Math.round(s.bed.temperature) : null,
+    material: s.material ?? null
   }
+}
+
+/**
+ * The status read that says most about an entry that Fluidd is not on: the
+ * service's, while it reaches the printer; else the one this network gave.
+ */
+function statusFor (e: DirectoryEntry, status: Record<string, PrinterStatus>): PrinterStatus | undefined {
+  const cloud = e.cloud ? status[e.cloud.id] : undefined
+  const lan = e.lan?.health?.status
+  return cloud?.reachable ? cloud : lan ?? cloud
 }
 
 /** A file's name without its folders and extension: bracket_v2, not prints/bracket_v2.gcode. */
@@ -154,7 +168,7 @@ function tileFor (e: DirectoryEntry, src: PageSources, groupName: string | null)
         nozzle: foreign.temps.find(t => t.id === 'nozzle')?.actual ?? null,
         bed: foreign.temps.find(t => t.id === 'bed')?.actual ?? null
       }
-    : e.active ? src.activeJob : (e.cloud ? cloudJob(src.status[e.cloud.id]) : null)
+    : e.active ? src.activeJob : statusJob(statusFor(e, src.status))
   const parts = printerNameParts(e.name)
   const remote = e.active === 'cloud' || (!e.host && !!e.cloud)
   let label: string
@@ -262,7 +276,9 @@ export function printersPage (src: PageSources): PrintersPage {
   const found = src.directory.found.map(e => tileFor(e, src, null))
   const other = (src.directory.foreign ?? src.foreign ?? []).map(e => tileFor(e, src, null))
   const allKnown = [...all, ...other]
-  const printingNow = all.filter(t => t.state === 'printing' || t.state === 'paused')
+  // A printer found on this network that is printing leads too: it is
+  // printing now, whoever's it is.
+  const printingNow = [...all, ...found].filter(t => t.state === 'printing' || t.state === 'paused')
   const count = (f: (t: PrinterTile) => boolean) => allKnown.filter(f).length
 
   return {

@@ -4,11 +4,15 @@ import type { InstanceConfig } from '@/store/config/types'
 import store from '@/store'
 import type { ForeignPrinterRecord } from '@/services/foreign-printers/types'
 import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/registry'
+import { httpClientActions } from '@/api/httpClientActions'
+import { cloudState } from '@/services/muon-cloud/state'
+import { MANAGED_API_URL } from '@/services/muon-cloud/origin'
 import {
   activeSlug,
   installPrinterPages,
   isActiveSlug,
   isPrintersOwnPage,
+  learnActiveIdentity,
   openPrinterAt,
   preferSavedPrinterFor,
   printerPageNeedsLogin,
@@ -124,6 +128,57 @@ describe('a page opened before the printer said who it is', () => {
   })
 })
 
+describe("a printer's identity, answered after Fluidd moved to another printer", () => {
+  const WALNUT = 'http://192.168.137.73'
+  const BOXWOOD_ID = 'f1f6920f757634a16b969df342a052e2fac8af51567754717d86bf0905f1ad65'
+  const walnutIdentity = { name: 'walnut', suffix: '8987', derived_name: 'walnut', endpoint_id: 'a'.repeat(64) }
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    store.state.config.apiUrl = ''
+    cloudState.activePrinterId = null
+    cloudState.printers = []
+  })
+
+  it("is dropped, so neither printer's address becomes the other's", async () => {
+    // 14 Oct: Walnut's late answer filed Boxwood's address as another name
+    // for Walnut, and opening Boxwood went to Walnut's page.
+    cloudState.printers = [{ id: BOXWOOD_ID, name: 'Boxwood · 367A' } as never]
+    store.state.config.apiUrl = WALNUT
+    let answer!: (value: unknown) => void
+    vi.spyOn(httpClientActions, 'get').mockReturnValue(new Promise(resolve => { answer = resolve }) as never)
+    const learning = learnActiveIdentity()
+
+    store.state.config.apiUrl = MANAGED_API_URL
+    cloudState.activePrinterId = BOXWOOD_ID
+    answer({ data: { result: walnutIdentity } })
+
+    await expect(learning).resolves.toBeNull()
+    expect(printerPagesState.aliases).toEqual({})
+    expect(printerPagesState.learned).toEqual({})
+    expect(activeSlug()).toBe('boxwood-367a')
+    expect(isActiveSlug('walnut-8987')).toBe(false)
+  })
+
+  it('is kept when Fluidd is still on that printer', async () => {
+    store.state.config.apiUrl = WALNUT
+    vi.spyOn(httpClientActions, 'get').mockResolvedValue({ data: { result: walnutIdentity } } as never)
+    await expect(learnActiveIdentity()).resolves.toBe('walnut-8987')
+    expect(activeSlug()).toBe('walnut-8987')
+  })
+})
+
+describe("another account printer's address", () => {
+  it('is never kept as another name for the printer Fluidd is on', () => {
+    cloudState.printers = [{ id: 'f1f6920f', name: 'Boxwood · 367A' } as never]
+    store.state.config.apiUrl = 'http://192.168.137.73'
+    rememberAlias('boxwood-367a', 'walnut-8987')
+    expect(printerPagesState.aliases).toEqual({})
+    store.state.config.apiUrl = ''
+    cloudState.printers = []
+  })
+})
+
 describe('the same page for another printer', () => {
   it('keeps the page, its query and its fragment', () => {
     expect(samePageFor({ params: { printer: 'boxwood-367a' }, fullPath: '/boxwood-367a/jobs?sort=name' }, 'walnut-8987'))
@@ -221,5 +276,11 @@ describe('a printer opened by its address', () => {
   it('leaves the login page and the pages that belong to no printer alone', () => {
     expect(printerPageNeedsLogin({ ...page, routeName: 'Login' }, on)).toBe(false)
     expect(printerPageNeedsLogin({ ...page, routePrinter: undefined, printerIndependent: true }, on)).toBe(false)
+  })
+
+  it("never asks for Moonraker's login through Muon3D", () => {
+    // 14 Oct: Boxwood opened through Muon3D showed the login page, whose
+    // password went to /access/login, which muon-link refuses to every role.
+    expect(printerPageNeedsLogin({ ...page, managed: true }, on)).toBe(false)
   })
 })

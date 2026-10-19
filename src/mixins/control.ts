@@ -5,11 +5,12 @@ import { proMode } from '@/services/pro-mode'
 import type { TemperaturePreset } from '@/store/config/types'
 import type { Fan, Heater, Led, OutputPin, Sensor } from '@/store/printer/types'
 import {
-  choiceNamed,
   clampTo,
   fanCommand,
   fanPercent,
+  fileFilament,
   lightsOutput,
+  loadedChoice,
   materialChoices,
   materialInUse,
   materialsFrom,
@@ -134,14 +135,24 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
     const name = this.savesMaterial
       ? savedMaterialName(this.$store.state.printer.printer.save_variables?.variables)
       : (this.$store.state.config.uiSettings.general.loadedMaterial as string | null)
-    const choice = choiceNamed(this.materialChoices, name)
+    const choice = loadedChoice(this.materialChoices, name)
     const colour = this.loadedColour
     return choice && colour ? { ...choice, colour } : choice
   }
 
   /**
+   * While a print runs and nobody has said what's loaded: what its file was
+   * sliced for, which is what is feeding now. Shown as that, never saved as
+   * the loaded record (14 Oct: Walnut printing showed "Not set").
+   */
+  get printingWith (): { name: string, colour: string | null } | null {
+    if (this.loadedMaterial || !(this.printerPrinting || this.printerPaused)) return null
+    return fileFilament(this.$store.state.printer.printer.current_file)
+  }
+
+  /**
    * The loaded filament's colour, when someone has said it: the printer's
-   * save_variables muon_material_color (set here, on Control and from the
+   * save_variables muon_material_colour (set here, on Control and from the
    * slicer), else, on a printer that can't remember one, the one set here.
    * Null when nobody has: a material's swatch is not its colour.
    */

@@ -7,7 +7,7 @@
     <img
       :src="src"
       alt=""
-      loading="lazy"
+      fetchpriority="high"
       class="printer-stage__m1"
     >
     <slot />

@@ -35,6 +35,7 @@ import Vue from 'vue'
 import store from '@/store'
 import type { InstanceConfig } from '@/store/config/types'
 import { cloudApi } from './api'
+import { STATUS_QUERY, statusFrom, type PrinterStatus } from './status'
 
 export interface LanLinkStatus {
   /**
@@ -101,6 +102,11 @@ export interface LanHealth {
   state: 'ready' | 'printing' | 'paused' | 'error' | 'locked';
   message?: string;
   checkedAt: number;
+  /**
+   * Everything its card shows, read in the same request: the job, progress,
+   * temperatures and what's loaded. Absent when the printer refused.
+   */
+  status?: PrinterStatus;
 }
 
 /** Networks worth trying when nothing else says where the printers are. */
@@ -180,9 +186,7 @@ export async function refreshCloudNearby () {
       linked: !!p.linked,
       localAddrs: p.local_addrs ?? []
     }))
-    for (const p of discoveryState.cloud) {
-      if (p.localAddrs.length > 1) reachableFirst(p).catch(() => {})
-    }
+    for (const p of discoveryState.cloud) foundThroughService(p).catch(() => {})
   } catch {
     discoveryState.cloud = []
   } finally {
@@ -196,7 +200,7 @@ export async function refreshCloudNearby () {
  * which only a device joined to that hotspot can use. Measured on boxwood,
  * 2026-09-24: the hotspot address came first.
  */
-async function reachableFirst (printer: CloudNearbyPrinter) {
+async function reachableFirst (printer: CloudNearbyPrinter): Promise<string | null> {
   const answers = await Promise.all(printer.localAddrs.map(async host => {
     try {
       await getJson(`${apiUrlFor(host)}/server/muon/identity`, {}, 2500)
@@ -206,12 +210,28 @@ async function reachableFirst (printer: CloudNearbyPrinter) {
     }
   }))
   const i = answers.indexOf(true)
-  if (i <= 0) return
+  if (i < 0) return null
   const current = discoveryState.cloud.find(c => c.printerId === printer.printerId)
-  if (!current) return
-  const addrs = [...printer.localAddrs]
-  const [host] = addrs.splice(i, 1)
-  current.localAddrs = [host, ...addrs]
+  if (current && i > 0) {
+    const addrs = [...printer.localAddrs]
+    const [host] = addrs.splice(i, 1)
+    current.localAddrs = [host, ...addrs]
+  }
+  return printer.localAddrs[i]
+}
+
+/**
+ * A printer the service says shares this network, read at once rather than
+ * when the sweep reaches its network (up to half a minute later): its card
+ * then says what it is doing straight away (14 Oct 2026: Walnut, printing,
+ * showed only its name until it was opened).
+ */
+async function foundThroughService (printer: CloudNearbyPrinter) {
+  if (discoveryState.found.some(l => l.endpointId === printer.printerId)) return
+  const host = printer.localAddrs.length > 1 ? await reachableFirst(printer) : printer.localAddrs[0]
+  if (!host || discoveryState.found.some(l => l.endpointId === printer.printerId)) return
+  const found = await probe(host)
+  if (found) remember(found)
 }
 
 /**
@@ -377,16 +397,17 @@ export async function probe (host: string, timeout = PROBE_TIMEOUT_MS): Promise<
 export async function printerHealth (apiUrl: string, timeout = PROBE_TIMEOUT_MS): Promise<LanHealth | null> {
   const checkedAt = Date.now()
   try {
-    const result = await getJson(`${apiUrl}/printer/objects/query?webhooks&print_stats`, {}, timeout)
+    const result = await getJson(`${apiUrl}${STATUS_QUERY}`, {}, timeout)
     const webhooks = result?.status?.webhooks ?? {}
     const job = result?.status?.print_stats?.state
+    const status: PrinterStatus = { reachable: true, ...statusFrom(result?.status ?? {}), updatedAt: checkedAt }
     if (webhooks.state !== 'ready') {
-      return { state: 'error', message: webhooks.state_message || `Klipper ${webhooks.state ?? 'not running'}`, checkedAt }
+      return { state: 'error', message: webhooks.state_message || `Klipper ${webhooks.state ?? 'not running'}`, checkedAt, status }
     }
-    if (job === 'printing') return { state: 'printing', checkedAt }
-    if (job === 'paused') return { state: 'paused', checkedAt }
-    if (job === 'error') return { state: 'error', message: 'The last print stopped with an error', checkedAt }
-    return { state: 'ready', checkedAt }
+    if (job === 'printing') return { state: 'printing', checkedAt, status }
+    if (job === 'paused') return { state: 'paused', checkedAt, status }
+    if (job === 'error') return { state: 'error', message: 'The last print stopped with an error', checkedAt, status }
+    return { state: 'ready', checkedAt, status }
   } catch (error) {
     const message = error instanceof Error ? error.message : ''
     if (message === 'HTTP 401' || message === 'HTTP 403') return { state: 'locked', checkedAt }
@@ -581,10 +602,11 @@ async function sweep () {
 
 /**
  * Searches the network, or returns the search already running. A search that
- * finished in the last minute is reused unless `force` is set.
+ * finished in the last minute is reused unless `force` is set. `nearby:
+ * false` leaves out the console's list, for a caller that asked it already.
  */
-export function discoverPrinters (force = false): Promise<void> {
-  refreshCloudNearby().catch(() => {})
+export function discoverPrinters (force = false, { nearby = true }: { nearby?: boolean } = {}): Promise<void> {
+  if (nearby) refreshCloudNearby().catch(() => {})
   if (running) return running
   if (!force && Date.now() - discoveryState.finishedAt < FRESH_FOR_MS) return Promise.resolve()
   running = sweep().finally(() => { running = null })
@@ -608,6 +630,24 @@ export async function refreshKnownPrinters () {
     else forget(host)
   }).finally(() => { refreshing = null })
   return refreshing
+}
+
+let readingStatus: Promise<void> | null = null
+
+/**
+ * Reads again what the printers already found are doing, one request each:
+ * a print's progress moves every few seconds, and the full check
+ * (`refreshKnownPrinters`) runs only every 15.
+ */
+export function refreshLanStatus (): Promise<void> {
+  if (readingStatus) return readingStatus
+  readingStatus = Promise.all(discoveryState.found.map(async p => {
+    const health = await printerHealth(p.apiUrl)
+    if (!health) return
+    const i = discoveryState.found.findIndex(f => f.apiUrl === p.apiUrl)
+    if (i >= 0) discoveryState.found.splice(i, 1, { ...discoveryState.found[i], health })
+  })).then(() => {}).finally(() => { readingStatus = null })
+  return readingStatus
 }
 
 /** Refreshes the link state of the printers already found. */
