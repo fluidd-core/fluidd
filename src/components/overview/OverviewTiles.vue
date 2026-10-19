@@ -4,38 +4,56 @@
     :class="{ 'ov-tiles--phone': phone }"
     data-tid="overview-tiles"
   >
-    <router-link
+    <section
       v-for="tile in heaterTiles"
-      :key="tile.id"
-      :to="controlPath"
+      :key="tile.context + tile.id"
       class="ov-tile"
       :data-tid="`tile-${tile.id}`"
     >
-      <span class="ov-tile__head">
-        <span>{{ tile.label }}</span>
+      <button
+        type="button"
+        class="ov-tile__door"
+        :aria-expanded="openTile === tile.id ? 'true' : 'false'"
+        :aria-controls="tileControlsId(tile.id)"
+        @click="openTile = openTile === tile.id ? null : tile.id"
+      >
+        <span class="ov-tile__head">
+          <span>{{ tile.label }}</span>
+          <span
+            class="ov-tile__state"
+            :class="`ov-tile__state--${tile.tone}`"
+          >{{ tile.state }}</span>
+        </span>
+        <span class="ov-tile__value">
+          {{ tile.value }}<small v-if="tile.target"> / {{ tile.target }}</small>
+        </span>
         <span
-          class="ov-tile__state"
-          :class="`ov-tile__state--${tile.tone}`"
-        >{{ tile.state }}</span>
-      </span>
-      <span class="ov-tile__value">
-        {{ tile.value }}<small v-if="tile.target"> / {{ tile.target }}</small>
-      </span>
-      <span
-        v-if="tile.bar !== null"
-        class="ov-tile__bar"
-      ><i
-        :class="`ov-tile__bar--${tile.tone}`"
-        :style="{ width: `${tile.bar * 100}%` }"
-      /></span>
-    </router-link>
+          v-if="tile.bar !== null"
+          class="ov-tile__bar"
+        ><i
+          :class="`ov-tile__bar--${tile.tone}`"
+          :style="{ width: `${tile.bar * 100}%` }"
+        /></span>
+      </button>
+      <number-field
+        v-if="openTile === tile.id"
+        :id="tileControlsId(tile.id)"
+        :value="targetFor(tile.id)"
+        unit="°"
+        :label="`${tile.label} target`"
+        :min="0"
+        :max="limitFor(tile.id)"
+        :disabled="!controlReady"
+        @change="commitTarget(tile.context, heaterFor(tile.id), $event)"
+      />
+    </section>
 
     <!-- Printing: speed and the part fan. Idle: the filament and the lights. -->
     <material-picker
       v-if="phone && !busy"
       phone
     />
-    <template v-if="!phone">
+    <template v-if="!phone || busy">
       <div
         v-if="busy"
         class="ov-tile ov-tile--static"
@@ -51,8 +69,19 @@
           label="Speed"
           accent
           fill
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @input="setSpeed"
+        />
+        <number-field
+          v-for="context in [panelTarget]"
+          :key="context"
+          :value="speedFactor"
+          label="Custom speed"
+          unit="%"
+          :min="1"
+          :max="500"
+          :disabled="!controlReady"
+          @change="commitSpeed(context, $event)"
         />
       </div>
       <material-picker v-else />
@@ -61,7 +90,7 @@
         v-if="!busy && hasLights"
         type="button"
         class="ov-tile"
-        :disabled="!klippyReady"
+        :disabled="!controlReady"
         data-tid="tile-lights"
         @click="setLights(lightsValue === 0)"
       >
@@ -75,34 +104,58 @@
         <span class="ov-tile__value">{{ lightsValue > 0 ? 'On' : 'Off' }}</span>
         <span class="ov-tile__sub">Tap to turn {{ lightsValue > 0 ? 'off' : 'on' }}</span>
       </button>
-      <router-link
+      <section
         v-else-if="partFan"
-        :to="controlPath"
         class="ov-tile"
         data-tid="tile-part-fan"
       >
-        <span class="ov-tile__head">
-          <span>Part fan</span>
-          <frame-icon
-            name="fan"
-            small
+        <button
+          type="button"
+          class="ov-tile__door"
+          :aria-expanded="openTile === 'fan' ? 'true' : 'false'"
+          :aria-controls="tileControlsId('fan')"
+          @click="openTile = openTile === 'fan' ? null : 'fan'"
+        >
+          <span class="ov-tile__head">
+            <span>Part fan</span>
+            <frame-icon
+              name="fan"
+              small
+            />
+          </span>
+          <span class="ov-tile__value">{{ fanValue(partFan) }}%</span>
+          <span class="ov-tile__sub">{{ busy ? 'Set by the print' : fanValue(partFan) ? 'On' : 'Off' }}</span>
+        </button>
+        <template v-if="openTile === 'fan'">
+          <number-field
+            v-for="context in [panelTarget]"
+            :id="tileControlsId('fan')"
+            :key="context"
+            :value="fanValue(partFan)"
+            label="Part fan"
+            unit="%"
+            :min="0"
+            :max="100"
+            :disabled="!controlReady"
+            @change="commitFan(context, partFan, $event)"
           />
-        </span>
-        <span class="ov-tile__value">{{ fanValue(partFan) }}%</span>
-        <span class="ov-tile__sub">{{ busy ? 'Set by the print' : fanValue(partFan) ? 'On' : 'Off' }}</span>
-      </router-link>
+        </template>
+      </section>
     </template>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
+import type { Heater, Fan } from '@/store/printer/types'
 import type { HeaterTile } from '@/services/overview/model'
 import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
 import MaterialPicker from './MaterialPicker.vue'
+import NumberField from '@/components/control/NumberField.vue'
 
 interface TileView {
+  context: string;
   id: string;
   label: string;
   value: string;
@@ -118,22 +171,33 @@ interface TileView {
  * idle, what's loaded (changed here, phones too) and the lights (switched
  * here).
  */
-@Component({ components: { SegPicker, MaterialPicker } })
+@Component({ components: { SegPicker, MaterialPicker, NumberField } })
 export default class OverviewTiles extends Mixins(OverviewMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
 
-  get controlPath (): string {
-    return this.pagePath('/control')
-  }
+  openTile: string | null = null
+  @Watch('panelTarget')
+  resetTile () { this.openTile = null }
+
+  // Each keyed field captures its render target, including detached callbacks.
+  commitTarget (context: string, heater: Heater | null, value: number) { if (context === this.panelTarget) this.setHeater(heater, value) }
+  commitSpeed (context: string, value: number) { if (context === this.panelTarget) this.setSpeed(value) }
+  commitFan (context: string, fan: Fan, value: number) { if (context === this.panelTarget) this.setFan(fan, value) }
+
+  heaterFor (id: string) { return id === 'nozzle' ? this.nozzle : this.bed }
+  targetFor (id: string): number { return this.heaterFor(id)?.target ?? 0 }
+  limitFor (id: string): number { return this.heaterFor(id)?.maxTemp ?? 300 }
+  tileControlsId (id: string): string { return `overview-${id}-exact-value` }
 
   view (id: string, label: string, tile: HeaterTile | null): TileView | null {
     if (!tile) return null
     const deg = `${Math.round(tile.temperature)}°`
     if (tile.status === 'off') {
-      return { id, label, value: deg, target: '', state: this.busy ? 'off' : 'Off · tap to heat', tone: 'off', bar: null }
+      return { context: this.panelTarget, id, label, value: deg, target: '', state: this.busy ? 'off' : 'Off · tap to heat', tone: 'off', bar: null }
     }
     return {
+      context: this.panelTarget,
       id,
       label,
       value: deg,
@@ -155,6 +219,7 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
 </script>
 
 <style lang="scss" scoped>
+.ov-tile__door { display: flex; flex-direction: column; gap: 4px; width: 100%; text-align: left; color: inherit; }
   .ov-tiles {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

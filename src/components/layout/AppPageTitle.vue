@@ -136,9 +136,7 @@ export default class AppPageTitle extends Mixins(FrameMixin, BrowserMixin, Print
       return route
     }
     if (this.currentSection?.id === 'control') {
-      return this.pro
-        ? 'Pro: the exact values, in the same places as Simple, with more below.'
-        : 'Heat, move, filament, speed, fans and lights.'
+      return 'Heat, move, filament, speed, fans and lights. Click any value to type it.'
     }
     if (this.currentPage === '/settings') {
       return `Kept on ${printerNameParts(this.displayName).name}, so they're the same for everyone who opens it.`

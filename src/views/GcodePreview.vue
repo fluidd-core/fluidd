@@ -119,6 +119,7 @@
             :min="0"
             :max="Math.max(0, fileLayers.length - 1)"
             label="Layer"
+            :value-text-formatter="layerValueText"
             @change="setLayer"
           />
         </div>
@@ -132,6 +133,7 @@
             :min="0"
             :max="Math.max(0, layerEnd - layerStart)"
             label="How far along the layer"
+            :value-text-formatter="moveValueText"
             @change="moveEnd = layerStart + $event"
           />
         </div>
@@ -204,6 +206,14 @@ export default class GcodePreviewPage extends Mixins(JobsMixin, BrowserMixin) {
   moveEnd = 0
   fetching = ''
   error = ''
+
+  layerValueText (value: number): string {
+    return `Layer ${value + 1} of ${this.fileLayers.length}`
+  }
+
+  moveValueText (value: number): string {
+    return `Move ${value + 1} of ${Math.max(1, this.layerEnd - this.layerStart + 1)}`
+  }
 
   mounted () {
     this.loadFiles()
