@@ -11,6 +11,21 @@ import { printerTransportBinding } from '@/services/managed-session/httpTranspor
 const socket = vi.hoisted(() => ({ printerPrintPause: vi.fn(), printerPrintCancel: vi.fn(), printerPrintStart: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
 afterEach(() => { vi.clearAllMocks(); cloudState.account = null; cloudState.activePrinterId = null; cloudState.printers = []; printerTransportBinding.remote = false; localStorage.clear() })
+it('links the Customise Overview trigger to the revealed editor', async () => {
+  const state = Vue.observable<any>({ config: { apiUrl: 'http://mock.local', uiSettings: { general: {} } }, printer: { printer: {} } })
+  const getters = Vue.observable<any>({ 'printer/getPrinterState': 'ready', 'printer/getHeaters': [], 'printer/getSensors': [], 'printer/getAvailableCommands': {}, 'jobQueue/getQueuedJobs': [] })
+  const wrapper = mount(Overview, { attachTo: document.body, computed: { isMobileViewport: () => false }, mocks: { $store: { state, getters, dispatch: vi.fn() } }, stubs: { 'overview-stage': true, 'overview-print-something': true, 'overview-tiles': true, 'overview-quick-actions': true } })
+  const trigger = wrapper.find('.overview__customise button')
+  const id = trigger.attributes('aria-controls')
+  expect(id).toBeTruthy()
+  expect(wrapper.find(`#${id}`).exists()).toBe(false)
+  const button = trigger.element as HTMLButtonElement
+  button.focus()
+  await trigger.trigger('click')
+  expect(wrapper.find(`#${id}`).exists()).toBe(true)
+  expect(document.activeElement).toBe(trigger.element)
+  wrapper.destroy()
+})
 it('keeps print actions fixed with either old mode value and rechecks the target after Stop confirmation', async () => {
   let confirm!: (value: boolean) => void
   const state = Vue.observable<any>({ config: { apiUrl: 'http://mock.local', uiSettings: { general: {} } }, printer: { printer: { print_stats: { filename: 'part.gcode' } } } })
@@ -60,4 +75,40 @@ it('refuses a stale editor input instead of saving the old arrangement to the ne
     await Vue.nextTick(); await Vue.nextTick(); await Vue.nextTick()
     expect(writes).toEqual([])
   } finally { wrapper.destroy() }
+})
+
+it('keeps cards available for an empty spool, a brief Klipper outage, and managed Console', async () => {
+  cloudState.account = { id: 'alice', name: 'Alice', email: 'alice@example.test', created_at: 1 }
+  cloudState.printers = [{ id: 'a', name: 'a', model: 'M1', version: '1', linked_at: 1, last_seen: 1, online: true, online_since: 1, role: 'operator' }]
+  cloudState.activePrinterId = 'a'; printerTransportBinding.remote = true
+  const state = Vue.observable<any>({
+    config: { apiUrl: 'https://muon-cloud.invalid', uiSettings: { general: {}, temperaturePresets: [{ id: 'pla', name: 'PLA', values: {} }] } },
+    printer: { printer: { save_variables: { variables: {} } } }
+  })
+  const getters = Vue.observable<any>({ 'auth/getAuthenticated': true, 'socket/getConnectionState': true, 'socket/getApiConnected': true, 'printer/getKlippyReady': false, 'printer/getKlippyConnected': false, 'printer/getPrinterState': 'loading', 'printer/getHeaters': [], 'printer/getSensors': [], 'printer/getAvailableCommands': {}, 'config/getTempPresets': [], 'jobQueue/getQueuedJobs': [] })
+  const wrapper = mount(Overview, { computed: { isMobileViewport: () => false }, mocks: { $store: { state, getters, dispatch: vi.fn() } }, stubs: { 'overview-stage': true, 'overview-print-something': true, 'overview-tiles': true, 'overview-quick-actions': true } })
+  const unavailable = (wrapper.vm as any).unavailable
+  expect(unavailable.spool).toBeUndefined()
+  expect(unavailable['quick-actions']).toBeUndefined()
+  expect(unavailable['live-tune']).toBeUndefined()
+  expect(unavailable.console).toBeUndefined()
+  wrapper.destroy()
+})
+
+it('keeps the stage, current print, Pause and Stop outside a hostile empty card layout', async () => {
+  cloudState.account = { id: 'alice', name: 'Alice', email: 'alice@example.test', created_at: 1 }
+  cloudState.printers = [{ id: 'a', name: 'a', model: 'M1', version: '1', linked_at: 1, last_seen: 1, online: true, online_since: 1, role: 'operator' }]
+  cloudState.activePrinterId = 'a'; printerTransportBinding.remote = true
+  localStorage.setItem('muon.cloud.token', 'fixture-session')
+  const preferences = new ControlPreferenceStore({ read: async () => ({ version: 2, folds: {}, overview: { cards: [] } }), patch: async () => ({ version: 1, folds: {} }) }, localStorage)
+  const state = Vue.observable<any>({ config: { apiUrl: 'https://muon-cloud.invalid', uiSettings: { general: {} } }, printer: { printer: { print_stats: { filename: 'part.gcode' } } } })
+  const getters = Vue.observable<any>({ 'socket/getConnectionState': true, 'socket/getApiConnected': true, 'auth/getAuthenticated': true, 'printer/getKlippyReady': true, 'printer/getKlippyConnected': true, 'printer/getPrinterState': 'printing', 'printer/getHeaters': [], 'printer/getSensors': [], 'printer/getAvailableCommands': {}, 'jobQueue/getQueuedJobs': [] })
+  const wrapper = mount(Overview, { propsData: { preferenceStore: preferences }, computed: { isMobileViewport: () => false }, mocks: { $store: { state, getters, dispatch: vi.fn() } }, stubs: { 'overview-stage': { template: '<div data-fixed="stage" />' }, 'overview-this-print': { template: '<div data-fixed="print" />' }, 'overview-tiles': true } })
+  await Vue.nextTick(); await Vue.nextTick()
+  expect(wrapper.find('[data-fixed="stage"]').exists()).toBe(true)
+  expect(wrapper.find('[data-fixed="print"]').exists()).toBe(true)
+  expect(wrapper.find('[data-tid="overview-pause"]').exists()).toBe(true)
+  expect(wrapper.find('[data-tid="overview-stop"]').exists()).toBe(true)
+  expect(wrapper.findAll('.overview__cards [data-card]')).toHaveLength(0)
+  wrapper.destroy()
 })
