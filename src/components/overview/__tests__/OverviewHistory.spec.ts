@@ -50,6 +50,7 @@ it('drops table target drafts on a context switch and refuses a detached old fie
   store.getters['charts/getChartData'] = []
   const wrapper = mount(OverviewTemps, { mocks: { $store: store }, stubs: { 'frame-icon': true } })
   await wrapper.findAll('button').wrappers.find(w => w.text() === 'Table')!.trigger('click')
+  expect(wrapper.findComponent({ name: 'TemperatureTimeline' }).exists()).toBe(false)
   const oldField = wrapper.findComponent({ name: 'NumberField' })
   const input = wrapper.find('input[aria-label="Nozzle target"]')
   await input.setValue('220')

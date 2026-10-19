@@ -64,6 +64,28 @@ describe('the temperature graph', () => {
   it('draws nothing with no readings', () => {
     expect(chartLines([], ['extruder'], 900, now).lines).toEqual([])
   })
+
+  it('treats every non-finite or non-numeric reading as a gap without unsafe coordinates', () => {
+    const readings = [NaN, 200, Infinity, null, 'hot', undefined, 210, NaN]
+    const points = readings.map((extruder, index) => ({
+      date: new Date(now - (readings.length - 1 - index) * 1000),
+      extruder
+    })) as never
+    const chart = chartLines(points, ['extruder'], 900, now)
+
+    expect(chart.lines[0].path).toMatch(/^M.* M/)
+    expect(chart.lines[0].path).not.toMatch(/NaN|Infinity/)
+    expect(chart.min).toBeLessThan(200)
+    expect(chart.max).toBeGreaterThan(210)
+  })
+
+  it('draws no line and does not crash when every reading is missing', () => {
+    const points = [NaN, Infinity, null, undefined, '215'].map((extruder, index) => ({ date: new Date(now - index * 1000), extruder })) as never
+    const chart = chartLines(points, ['extruder'], 900, now)
+
+    expect(chart).toEqual({ lines: [], min: 0, max: 0 })
+    expect(JSON.stringify(chart)).not.toMatch(/NaN|Infinity/)
+  })
 })
 
 describe("the graph's windows", () => {

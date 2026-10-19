@@ -34,10 +34,29 @@ it('keeps the second recorded decimal in an exact temperature reading', async ()
   wrapper.destroy()
 })
 
+it('reports a non-finite hovered reading as missing and never puts it in an SVG path', async () => {
+  const wrapper = mount(TemperatureTimeline, { propsData: { points: [{ date: new Date(7000), extruder: 214 }, { date: new Date(8000), extruder: NaN, extruderTarget: 215 }, { date: new Date(9000), extruder: Infinity }, { date: new Date(10000), extruder: null }], sensors: [{ key: 'extruder', label: 'Nozzle', color: '#ff8c42' }], now: 10000, start: 1000 } })
+
+  await wrapper.find('input[type="range"]').setValue('8000')
+  expect(wrapper.text()).toContain('Nozzle unrecorded')
+  expect(wrapper.text()).not.toContain('NaN')
+  expect(wrapper.findAll('path').wrappers.every(path => !/NaN|Infinity/.test(path.attributes('d') ?? ''))).toBe(true)
+  wrapper.destroy()
+})
+
 it('shows the graph around older retained history selected with the phone time control', async () => {
   const wrapper = mount(TemperatureTimeline, { propsData: { points: [{ date: new Date(6300000), extruder: 200 }, { date: new Date(7200000), extruder: 201 }], sensors: [{ key: 'extruder', label: 'Nozzle', color: '#ff8c42' }], now: 7200000, start: 0, windowSeconds: 300 } })
   await wrapper.find('input[type="range"]').setValue('6300000')
   expect(wrapper.find('path').attributes('d')).toMatch(/^M300\.0 /)
   expect(wrapper.text()).toContain('200.0°')
+  wrapper.destroy()
+})
+
+it('renders an accessible track segment for a gap in the middle of history', () => {
+  const wrapper = mount(TemperatureTimeline, { propsData: { points: [{ date: new Date(1000), extruder: 200 }, { date: new Date(2000), extruder: 201 }, { date: new Date(6000), extruder: 202 }], sensors: [{ key: 'extruder', label: 'Nozzle', color: '#ff8c42' }], now: 7000, start: 0 } })
+  const gaps = wrapper.findAll('[data-gap]')
+  expect((wrapper.vm as any).gaps).toEqual([{ from: 0, to: 500 }, { from: 2500, to: 5500 }])
+  expect(gaps.length).toBe(2)
+  expect(gaps.wrappers.some(gap => gap.attributes('aria-label')?.includes('missing'))).toBe(true)
   wrapper.destroy()
 })
