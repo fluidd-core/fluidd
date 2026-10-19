@@ -6,10 +6,11 @@ import { AccountError } from '@/services/account/client'
 import type { Session } from '@/services/account/api'
 
 const endSession = vi.hoisted(() => vi.fn(async () => ({ ok: true })))
+const endDevice = vi.hoisted(() => vi.fn(async () => ({ ok: true })))
 const endSessions = vi.hoisted(() => vi.fn(async (): Promise<{ ok: boolean, ended?: number }> => ({ ok: true, ended: 1 })))
 vi.mock('@/services/account/api', async (actual) => ({
   ...(await actual() as object),
-  accountApi: { endSession, endSessions }
+  accountApi: { endSession, endDevice, endSessions }
 }))
 vi.mock('@/services/account/state', async (actual) => ({
   ...(await actual() as object),
@@ -71,7 +72,9 @@ describe('Devices and sessions', () => {
     expect(rows).toHaveLength(1)
     await rows.at(0).find('button').trigger('click')
     await settle()
-    expect(endSession).toHaveBeenCalledWith('s-mac')
+    expect(endDevice).toHaveBeenCalledTimes(1)
+    expect(endDevice).toHaveBeenCalledWith('s-mac')
+    expect(endSession).not.toHaveBeenCalled()
     await w.find('[data-tid="sessions-this-device"] button').trigger('click')
     expect(beginSignOut).toHaveBeenCalled()
   })
