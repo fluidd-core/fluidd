@@ -1,5 +1,6 @@
 import { describe, expect, it, test } from 'vitest'
 import router from '@/router'
+import { hasProSwitch } from '@/services/pro-mode'
 import { routeAfterInit } from '../afterInit'
 import { isDeniedNavigation, NAVIGATION_DENYLIST } from '@/swNavigation'
 import swSource from '@/sw.ts?raw'
@@ -19,6 +20,16 @@ describe('/slice', () => {
     const component = route.matched[0].components.default as { cid?: number }
     expect(typeof component).toBe('function')
     expect(component.cid).toBeUndefined()
+  })
+
+  it.each(['/boxwood-367a/slice', '/slice'])('%s has no mode: no Pro switch is offered there (KAN-550)', (path) => {
+    const route = router.resolve(path).route
+    expect(route.matched[0].meta.noMode).toBe(true)
+    expect(hasProSwitch(route)).toBe(false)
+  })
+
+  it.each(['/boxwood-367a', '/boxwood-367a/jobs', '/boxwood-367a/console', '/library'])('%s keeps its Pro switch', (path) => {
+    expect(hasProSwitch(router.resolve(path).route)).toBe(true)
   })
 
   it('keeps the printer\'s sign-in: not signed in, it goes to the login', () => {

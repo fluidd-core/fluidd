@@ -7,6 +7,7 @@ import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
 import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import Updating from '@/views/Updating.vue'
+import { isStaleChunkError, reloadForNewBuild } from '@/util/stale-build'
 
 // Views. Every route is lazy (KAN-525) but Updating, which stays in the main
 // chunk: while the printer restarts into an update it can't serve a chunk.
@@ -168,7 +169,9 @@ const printerRoutes: Array<RouteConfig> = [
       printerIndependent: true,
       keepOnPrinterSwitch: true,
       // The printer's page all the same: the rail and the E-STOP stay (KAN-511).
-      frame: 'printer'
+      frame: 'printer',
+      // The slicer has no mode: no Pro switch here (KAN-550).
+      noMode: true
     }
   },
   {
@@ -267,6 +270,12 @@ const LEGACY_PRINTER_PAGES = [
 ]
 
 const routes: Array<RouteConfig> = [
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/views/Admin.vue'),
+    meta: { printerIndependent: true }
+  },
   {
     // Every printer: printing now, your groups, those found on this network
     // and those offline, and a welcome with none. A printer's own address
@@ -408,7 +417,8 @@ const routes: Array<RouteConfig> = [
     },
     meta: {
       printerIndependent: true,
-      keepOnPrinterSwitch: true
+      keepOnPrinterSwitch: true,
+      noMode: true
     }
   },
   {
@@ -467,11 +477,25 @@ const router = new VueRouter({
   }
 })
 
+// Where the navigation in flight is going, for a stale build's reload to land on.
+let pendingTarget: string | undefined
+
 router.beforeEach((to, from, next) => {
+  pendingTarget = to.fullPath
   const foreignRedirect = foreignPageRedirect(to)
   if (foreignRedirect) return next(foreignRedirect)
   router.app?.$store.commit('config/setContainerColumnCount', 2)
   next()
+})
+
+// KAN-562: every route is lazy, so a tab still running the build before a
+// deploy fails to load the next page it opens, and callers that swallow the
+// rejected push make that "nothing happens". Load the page afresh instead.
+router.onError((error) => {
+  if (isStaleChunkError(error)) reloadForNewBuild(pendingTarget)
+})
+window.addEventListener('vite:preloadError', (event) => {
+  if (reloadForNewBuild(pendingTarget)) event.preventDefault()
 })
 
 declare module 'vue-router' {
@@ -483,6 +507,11 @@ declare module 'vue-router' {
     keepOnPrinterSwitch?: boolean
     /** 'printer': drawn as the printer's page (the rail, the E-STOP) though it works without one. */
     frame?: 'printer'
+    /**
+     * Another app framed here (Slice, later Design), which has no mode: Control's Pro switch is not offered on it
+     * (services/pro-mode.ts hasProSwitch, KAN-550).
+     */
+    noMode?: boolean
   }
 }
 
