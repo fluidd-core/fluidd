@@ -57,7 +57,7 @@ export function foreignRecordForSlug (slug: string | undefined): ForeignPrinterR
 }
 
 export const printerPagesState = Vue.observable({
-  /** Slugs learned from `/server/muon/identity`, by API address. */
+  /** Local-printer slugs learned from `/server/muon/identity`, by API address. */
   learned: {} as Record<string, string>,
   /**
    * The address a printer had before its identity was known (from its IP:
@@ -91,7 +91,7 @@ export function knownPrinters (): PrinterTarget[] {
   const local: PrinterTarget[] = savedInstances().map(instance => ({ kind: 'local', slug: slugForInstance(instance), instance }))
   const cloud: PrinterTarget[] = cloudState.printers.map(p => ({
     kind: 'cloud',
-    slug: printerPagesState.learned[`cloud:${p.id}`] ?? slugForCloudPrinter(p),
+    slug: slugForCloudPrinter(p),
     printerId: p.id
   }))
   const targets = [...local, ...cloud]
@@ -135,8 +135,6 @@ export function activeSlug (): string | null {
   if (isManagedApiUrl(apiUrl)) {
     const id = cloudState.activePrinterId
     if (!id) return null
-    const learned = printerPagesState.learned[`cloud:${id}`]
-    if (learned) return learned
     const printer = cloudState.printers.find(p => p.id === id)
     return printer ? slugForCloudPrinter(printer) : null
   }
@@ -208,11 +206,10 @@ export async function learnActiveIdentity (timeout = 3000): Promise<string | nul
     const identity = response.data?.result
     const slug = slugForIdentity(identity as any)
     if (!slug) return null
+    // A hosted route is the complete account ID, never identity/display text.
+    // Learning a name must not change what printer that route identifies.
+    if (isManagedApiUrl(apiUrl)) return activeSlug()
     rememberAlias(before, slug)
-    if (isManagedApiUrl(apiUrl)) {
-      Vue.set(printerPagesState.learned, asked, slug)
-      return slug
-    }
     Vue.set(printerPagesState.learned, addressKey(apiUrl), slug)
     // Kept with the saved printer, so the next visit knows its slug at once.
     const mdnsHost = mdnsHostFor(identity)

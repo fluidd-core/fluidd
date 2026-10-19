@@ -28,6 +28,12 @@
         >{{ windowLabel }}</span>
       </div>
     </div>
+    <seg-picker
+      :options="[{ value: 'graph', label: 'Graph' }, { value: 'table', label: 'Table' }]"
+      :value="table ? 'table' : 'graph'"
+      label="Temperature view"
+      @input="table = $event === 'table'"
+    />
     <div :class="{ 'ov-temps__body': table }">
       <table
         v-if="table"
@@ -45,7 +51,7 @@
         <tbody>
           <tr
             v-for="row in rows"
-            :key="row.key"
+            :key="row.context + row.key"
           >
             <td>
               <i
@@ -67,9 +73,9 @@
                 :label="`${row.label} target`"
                 :min="0"
                 :max="row.heater.maxTemp || 350"
-                :disabled="!klippyReady"
+                :disabled="!controlReady"
                 class="ov-temps__target-field"
-                @change="setHeater(row.heater, $event)"
+                @change="commitTarget(row.context, row.heater, $event)"
               />
               <span
                 v-else
@@ -79,79 +85,56 @@
           </tr>
         </tbody>
       </table>
-      <div class="ov-temps__plot">
-        <svg
-          class="ov-temps__chart"
-          :viewBox="`0 0 ${W} ${H}`"
-          preserveAspectRatio="none"
-          role="img"
-          :aria-label="ariaLabel"
-        >
-          <path
-            v-for="i in 3"
-            :key="`grid-${i}`"
-            :d="`M0 ${(H / 4) * i}H${W}`"
-            class="ov-temps__grid"
-          />
-          <template v-for="line in chart.lines">
-            <path
-              v-if="line.targetY !== null"
-              :key="`${line.key}-target`"
-              :d="`M0 ${line.targetY}H${W}`"
-              class="ov-temps__target"
-            />
-            <path
-              :key="line.key"
-              :d="line.path"
-              class="ov-temps__line"
-              :style="{ stroke: colorOf(line.key) }"
-            />
-          </template>
-        </svg>
-        <div class="ov-temps__axis">
-          <span>−{{ windowLabel }}</span>
-          <span>now</span>
-        </div>
-      </div>
+      <temperature-timeline
+        v-else
+        :key="historyContext"
+        :points="chartData"
+        :sensors="timelineSensors"
+        :now="now"
+        :start="printStart"
+        :events="markers"
+        :event-start="observedSince"
+        :window-seconds="windowSeconds"
+      />
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
-import { chartLines, chartWindows, defaultChartWindow, sensorRows, type ChartPoint, type SensorRow } from '@/services/overview/model'
+import { chartWindows, defaultChartWindow, sensorRows, type ChartPoint, type SensorRow } from '@/services/overview/model'
 import SegPicker from '@/components/control/SegPicker.vue'
 import NumberField from '@/components/control/NumberField.vue'
+import TemperatureTimeline from './TemperatureTimeline.vue'
+import { observedEvents, type Observation } from '@/services/overview/timeline'
 import type { Heater, Sensor } from '@/store/printer/types'
+import type { HistoryItem } from '@/store/history/types'
 
 const COLORS: Record<string, string> = { extruder: '#ff8c42', heater_bed: '#6aa8ff' }
 /** For the other heaters and sensors, in order. */
 const MORE_COLORS = ['#b38cff', '#4fd1a5', '#e6c84a', '#ff6b9a', '#8ab4c8', '#c49a6c']
 
 /**
- * The nozzle and bed over the last few minutes, each with its target
- * dashed. Pro shows every heater and sensor, as a table beside the graph:
- * power, temperature, and a target to type for each heater.
+ * Retained nozzle/bed history, with a Table disclosure for every sensor
+ * and exact heater targets. Missing history stays visible.
  */
-@Component({ components: { NumberField, SegPicker } })
+@Component({ components: { NumberField, SegPicker, TemperatureTimeline } })
 export default class OverviewTemps extends Mixins(OverviewMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
 
-  /** Every heater and sensor, with the table (Pro's Overview). */
-  @Prop({ type: Boolean })
-  readonly table?: boolean
+  commitTarget (context: string, heater: Heater, value: number) { if (context === this.panelTarget) this.setHeater(heater, value) }
 
-  W = 600
-  H = 160
+  table = false
+
   pickedWindow: number | null = null
   now = Date.now()
   timer: number | null = null
 
   mounted () {
     // The graph moves on with the clock, not only when a reading arrives.
-    this.timer = window.setInterval(() => { this.now = Date.now() }, 5000)
+    this.timer = window.setInterval(() => { this.now = Date.now() }, 1000)
   }
 
   beforeDestroy () {
@@ -188,13 +171,36 @@ export default class OverviewTemps extends Mixins(OverviewMixin) {
     return [...main, ...others, ...this.sensors.map(s => s.key)]
   }
 
-  get rows (): Array<SensorRow<Heater>> {
-    return sensorRows(this.heaters, this.sensors)
+  get rows (): Array<SensorRow<Heater> & { context: string }> {
+    return sensorRows(this.heaters, this.sensors).map(row => ({ ...row, context: this.panelTarget }))
   }
 
-  get chart () {
-    const data = (this.$store.getters['charts/getChartData'] as ChartPoint[]) ?? []
-    return chartLines(data, this.keys, this.windowSeconds, this.now, this.W, this.H)
+  previous: Observation | null = null
+  markers: Array<{ at: number; label: string }> = []
+  observedSince = 0
+  get chartData (): ChartPoint[] { return this.$store.getters['charts/getChartData'] ?? [] }
+  get timelineSensors () { return this.keys.map(key => ({ key, label: this.rows.find(r => r.key === key)?.label ?? key, color: this.colorOf(key) })) }
+  get currentHistory (): HistoryItem | undefined { return this.$store.state.history?.jobs?.find((j: HistoryItem) => j.status === 'in_progress' && j.filename === this.jobFile) }
+  get printStart (): number | undefined { const start = this.currentHistory?.start_time; return typeof start === 'number' && Number.isFinite(start) ? start * 1000 : undefined }
+  get historyContext (): string { return `${this.panelTarget}|${this.currentHistory?.job_id ?? this.jobFile}|${this.socketConnected && this.klippyConnected}` }
+  get liveObservation (): Observation {
+    const printer = this.$store.state.printer.printer
+    const filament: Record<string, boolean> = {}
+    for (const [key, value] of Object.entries(printer)) {
+      const sensor = value as { filament_detected?: boolean } | null
+      if (/^filament_(switch|motion)_sensor /.test(key) && typeof sensor?.filament_detected === 'boolean') filament[key] = sensor.filament_detected
+    }
+    return { context: this.historyContext, layer: printer.print_stats?.info?.current_layer, paused: printer.pause_resume?.is_paused, duration: printer.print_stats?.total_duration, filament }
+  }
+
+  @Watch('liveObservation', { deep: true, immediate: true })
+  recordObservation (current: Observation) {
+    if (!this.socketConnected || !this.klippyConnected || !this.apiConnected) { this.previous = null; this.markers = []; this.observedSince = 0; return }
+    const at = Date.now()
+    if (!this.previous || current.context !== this.previous.context || (typeof current.duration === 'number' && typeof this.previous.duration === 'number' && current.duration < this.previous.duration)) { this.markers = []; this.observedSince = at; this.previous = null }
+    this.markers.push(...observedEvents(this.previous, current, at))
+    if (this.markers.length > 512) { this.markers = this.markers.slice(-512); this.observedSince = this.markers[0].at }
+    this.previous = current
   }
 
   colorOf (key: string): string {
@@ -258,7 +264,7 @@ export default class OverviewTemps extends Mixins(OverviewMixin) {
     container-type: inline-size;
   }
 
-  // Pro: the table beside the graph, under it when the card is narrow.
+  // The table sits beside the graph, or below on a narrow card.
   .ov-temps__body {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
