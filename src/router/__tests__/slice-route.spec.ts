@@ -21,6 +21,11 @@ describe('/slice', () => {
     expect(component.cid).toBeUndefined()
   })
 
+  it.each(['/boxwood-367a/slice', '/slice'])('%s remains explicitly mode-free (KAN-550)', (path) => {
+    const route = router.resolve(path).route
+    expect(route.matched[0].meta.noMode).toBe(true)
+  })
+
   it('keeps the printer\'s sign-in: not signed in, it goes to the login', () => {
     const guard = router.resolve('/boxwood-367a/slice').route.matched[0].beforeEnter
     const signedIn = router.resolve('/boxwood-367a/console').route.matched[0].beforeEnter

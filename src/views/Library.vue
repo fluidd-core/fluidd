@@ -126,7 +126,7 @@
         <button
           type="button"
           class="lib-btn lib-btn--pri"
-          :disabled="busy"
+          :disabled="busy || !promise"
           data-tid="library-turn-on"
           @click="turnOn"
         >
@@ -139,6 +139,9 @@
           rel="noopener"
         >What we keep</a>
       </div>
+      <p v-if="!promise">
+        The Library has a promise this version of Control cannot show. Update Control before turning it on.
+      </p>
     </section>
 
     <!-- On, and nothing in it yet. -->

@@ -1,7 +1,7 @@
 <template>
   <control-card
     title="Mesh profiles"
-    :locked="klippyReady ? '' : 'The printer isn\'t ready.'"
+    :locked="controlLock"
     data-tid="mesh-profiles"
   >
     <template #aside>
@@ -31,7 +31,7 @@
             v-else
             type="button"
             class="mprof__link"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @click="load(profile.name)"
           >
             Load
@@ -40,7 +40,7 @@
             v-if="!profile.adaptive"
             type="button"
             class="mprof__link mprof__link--danger"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             :aria-label="`Remove ${profile.name}`"
             @click="remove(profile.name)"
           >
@@ -70,7 +70,7 @@
       <button
         type="button"
         class="cbtn"
-        :disabled="!klippyReady || !activeName"
+        :disabled="!controlReady || !activeName"
         data-tid="mesh-save-as"
         @click="saveOpen = true"
       >
@@ -79,7 +79,7 @@
       <button
         type="button"
         class="cbtn cbtn--ghost"
-        :disabled="!klippyReady || !activeName"
+        :disabled="!controlReady || !activeName"
         @click="clear"
       >
         Clear
@@ -123,7 +123,7 @@ import ControlCard from '@/components/control/ControlCard.vue'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
 
 /**
- * Pro's mesh profiles: the saved ones with how uneven each is, loading and
+ * Saved mesh profiles with how uneven each is, loading and
  * removing them, measuring the bed (the same check as Maintenance, so it
  * counts there too), saving the mesh in use under a name, and saving to
  * printer.cfg when Klipper has results waiting.
@@ -151,22 +151,32 @@ export default class MeshProfiles extends Mixins(MaintenanceMixin) {
   }
 
   async load (name: string) {
+    if (!this.controlReady || !validProfileName(name) || !this.profiles.some(p => p.name === name)) return
+    const target = this.maintenanceTarget
     // Mid-print, a different mesh moves the nozzle under the part.
     if (this.printerPrinting && !(await this.$confirm('The nozzle follows the new mesh from the next move.', { title: `Load ${name} while printing?`, buttonTrueText: 'Load it' }))) return
+    if (!this.controlReady || target !== this.maintenanceTarget) return
     this.sendGcode(meshProfileCommand('LOAD', name))
   }
 
   async remove (name: string) {
+    if (!this.controlReady || !validProfileName(name) || !this.profiles.some(p => p.name === name && !p.adaptive)) return
+    const target = this.maintenanceTarget
     if (!(await this.$confirm('It goes from printer.cfg the next time Klipper saves.', { title: `Remove the mesh ${name}?`, buttonTrueText: 'Remove', danger: true }))) return
+    if (!this.controlReady || target !== this.maintenanceTarget) return
     this.sendGcode(meshProfileCommand('REMOVE', name))
   }
 
   async clear () {
+    if (!this.controlReady) return
+    const target = this.maintenanceTarget
     if (this.printerPrinting && !(await this.$confirm('The nozzle stops following the bed from the next move.', { title: 'Clear the mesh while printing?', buttonTrueText: 'Clear it', danger: true }))) return
+    if (!this.controlReady || target !== this.maintenanceTarget) return
     this.sendGcode('BED_MESH_CLEAR')
   }
 
   saveAs (name: string) {
+    if (!this.controlReady || !this.activeName) return
     if (!validProfileName(name)) {
       this.$store.dispatch('notifications/pushNotification', { title: 'Not saved', description: 'A profile name takes letters, numbers, spaces, dots, dashes and underscores.', type: 'error', snackbar: true })
       return

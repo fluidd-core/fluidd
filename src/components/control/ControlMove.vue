@@ -7,7 +7,7 @@
   >
     <template #aside>
       <span
-        v-if="!phone && !pro"
+        v-if="!phone"
         class="move__step-label"
       >Step</span>
       <seg-picker
@@ -119,35 +119,50 @@
       </div>
     </div>
 
-    <div
-      v-if="pro && !phone"
-      class="move__exact"
+    <button
+      type="button"
+      class="move__position"
+      data-tid="move-position"
+      :aria-expanded="goOpen ? 'true' : 'false'"
+      aria-controls="move-go-panel"
+      @click="goOpen = !goOpen"
     >
-      <label
-        v-for="(axis, i) in ['X', 'Y', 'Z']"
-        :key="axis"
-        class="move__exact-field"
-      >
-        <span>{{ axis }}</span>
-        <number-field
-          :value="goTo[i] !== null ? goTo[i] : position[i]"
-          :decimals="2"
-          :min="axisMin[i]"
-          :max="axisMax[i]"
-          :label="`${axis} to go to`"
-          :disabled="!ready || busy || !isHomed(axis)"
-          @change="setGoTo(i, $event)"
-        />
-      </label>
-      <button
-        type="button"
-        class="cbtn"
-        :disabled="!ready || busy || !hasGoTo"
-        data-tid="move-go"
-        @click="go"
-      >
-        Go
-      </button>
+      X {{ fmt(position[0]) }} · Y {{ fmt(position[1]) }} · Z {{ fmt(position[2]) }} · Go to…
+    </button>
+    <div
+      v-show="goOpen"
+      id="move-go-panel"
+    >
+      <p class="move__keys">
+        Homed {{ homedAxes || 'none' }} · head at {{ xySpeed }} mm/s · plate at {{ zSpeed }} mm/s
+      </p>
+      <div class="move__exact">
+        <label
+          v-for="(axis, i) in ['X', 'Y', 'Z']"
+          :key="axis"
+          class="move__exact-field"
+        >
+          <span>{{ axis }} · {{ axisMin[i] }} to {{ axisMax[i] }}</span>
+          <number-field
+            :value="goTo[i] !== null ? goTo[i] : position[i]"
+            :decimals="2"
+            :min="axisMin[i]"
+            :max="axisMax[i]"
+            :label="`${axis} to go to`"
+            :disabled="!ready || busy || !isHomed(axis)"
+            @change="setGoTo(i, $event)"
+          />
+        </label>
+        <button
+          type="button"
+          class="cbtn"
+          :disabled="!canGo"
+          data-tid="move-go"
+          @click="go"
+        >
+          Go
+        </button>
+      </div>
     </div>
 
     <div class="move__actions">
@@ -208,20 +223,8 @@
           />
           Home Z
         </button>
-        <button
-          type="button"
-          class="cbtn cbtn--ghost"
-          :disabled="!ready || busy"
-          data-tid="motors-off"
-          @click="motorsOff"
-        >
-          Motors off
-        </button>
         <span class="move__keys">
-          <template v-if="pro">
-            Homed <b class="move__homed">{{ homedAxes || 'none' }}</b> · moves at {{ xySpeed }} mm/s · plate at {{ zSpeed }} mm/s
-          </template>
-          <template v-else>Arrow keys move · PgUp / PgDn move the plate</template>
+          Arrow keys move · PgUp / PgDn move the plate
         </span>
       </template>
     </div>
@@ -229,7 +232,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { plateToPosition } from '@/services/control/model'
 import { rowFraction, Y_BACK } from '@/services/machine/orientation'
@@ -251,13 +254,18 @@ export default class ControlMove extends Mixins(ControlMixin) {
 
   step = 10
   goTo: Array<number | null> = [null, null, null]
+  goOpen = false
+  goTarget = ''
+
+  @Watch('panelTarget')
+  clearDraft () { this.goTo = [null, null, null]; this.goOpen = false }
 
   get ready (): boolean {
-    return this.klippyReady
+    return this.controlReady
   }
 
   get lockReason (): string {
-    if (!this.ready) return this.notReadyReason
+    if (!this.ready) return this.controlLock
     if (this.busy) return 'Not while printing: moving the head would ruin the print'
     return ''
   }
@@ -267,8 +275,8 @@ export default class ControlMove extends Mixins(ControlMixin) {
   }
 
   get stepOptions (): SegOption[] {
-    const steps = this.phone ? [1, 10, 50] : this.pro ? [0.1, 1, 10, 50, 100] : [0.1, 1, 10, 50]
-    return steps.map((s, i) => ({ value: s, label: i === steps.length - 1 && !this.phone && !this.pro ? `${s} mm` : String(s) }))
+    const steps = this.phone ? [1, 10, 50] : [0.1, 1, 10, 50]
+    return steps.map((s, i) => ({ value: s, label: i === steps.length - 1 ? `${s} mm` : String(s) }))
   }
 
   get xyHomedHere (): boolean {
@@ -344,6 +352,7 @@ export default class ControlMove extends Mixins(ControlMixin) {
   }
 
   setGoTo (i: number, value: number) {
+    if (!this.hasGoTo) this.goTarget = this.panelTarget
     this.goTo.splice(i, 1, value)
   }
 
@@ -351,7 +360,13 @@ export default class ControlMove extends Mixins(ControlMixin) {
     return this.goTo.some(v => v !== null)
   }
 
+  get canGo (): boolean {
+    return this.ready && !this.busy && this.hasGoTo && this.goTarget === this.panelTarget &&
+      this.goTo.every((v, i) => v === null || (Number.isFinite(v) && v >= this.axisMin[i] && v <= this.axisMax[i] && this.isHomed('XYZ'[i])))
+  }
+
   go () {
+    if (!this.canGo) return
     const [X, Y, Z] = this.goTo
     this.moveTo({ X: X ?? undefined, Y: Y ?? undefined, Z: Z ?? undefined })
     this.goTo = [null, null, null]
@@ -364,6 +379,8 @@ export default class ControlMove extends Mixins(ControlMixin) {
     color: var(--m3d-text-muted);
     font-size: 13px;
   }
+
+  .move__position { color: var(--m3d-accent); text-align: left; font-size: 13px; }
 
   .move__body {
     display: flex;
