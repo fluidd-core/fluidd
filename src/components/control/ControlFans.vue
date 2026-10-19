@@ -1,184 +1,114 @@
 <template>
-  <!-- Simple: the part fan and the lights, each in a few words. -->
-  <div
-    v-if="!pro"
-    class="fans-simple"
-    :class="{ 'fans-simple--phone': phone }"
+  <control-card
+    title="Fans and lights"
+    :locked="controlLock"
+    data-tid="control-fans"
   >
-    <control-card
-      v-if="partFan && !phone"
-      title="Part fan"
-      :note="klippyReady ? 'The other fans look after themselves.' : ''"
-      :locked="klippyReady ? '' : notReadyReason"
-      data-tid="control-part-fan"
+    <div
+      v-if="partFan"
+      class="crow"
     >
-      <template #aside>
-        <span>cools the print</span>
-      </template>
+      <span class="crow__name">Part fan <span class="crow__sub">cools the print</span></span>
       <seg-picker
         :options="fanOptions"
         :value="fanMode"
         label="Part fan"
-        big
-        fill
-        :disabled="!klippyReady"
+        :disabled="!controlReady"
         @input="setFanMode"
       />
-    </control-card>
-
-    <control-card
-      v-if="hasLights && !phone"
-      title="Lights"
-      :note="klippyReady ? 'Off while printing turns the camera dark too.' : ''"
-      :locked="klippyReady ? '' : notReadyReason"
-      data-tid="control-lights"
+    </div>
+    <p
+      v-if="partFan"
+      class="fans-pro__none"
     >
-      <template #aside>
-        <toggle-switch
-          :value="lightsValue > 0"
-          label="Lights"
-          :disabled="!klippyReady"
-          @input="setLights"
-        />
-      </template>
-      <div
-        v-if="dimmable"
-        class="fans-simple__dim"
-      >
-        <frame-icon
-          name="bulb"
-          small
-          class="fans-simple__dim-low"
-        />
-        <range-slider
-          :value="lightsValue"
-          label="Lights brightness"
-          :disabled="!klippyReady"
-          @change="setLights"
-        />
-        <frame-icon
-          name="bulb"
-        />
-      </div>
-    </control-card>
-
-    <!-- A phone: one card, a row each. -->
-    <control-card
-      v-if="phone && (partFan || hasLights)"
-      data-tid="control-fans-phone"
+      Auto follows the next fan command in the print; On and Off set it now.
+    </p>
+    <div
+      v-if="hasLights"
+      class="crow"
     >
-      <div class="fans-simple__rows">
-        <div
-          v-if="partFan"
-          class="crow"
-        >
-          <span class="crow__name">Part fan</span>
-          <seg-picker
-            :options="fanOptionsShort"
-            :value="fanMode"
-            label="Part fan"
-            :disabled="!klippyReady"
-            @input="setFanMode"
-          />
-        </div>
-        <div
-          v-if="hasLights"
-          class="crow"
-        >
-          <span class="crow__name">Lights</span>
-          <toggle-switch
-            :value="lightsValue > 0"
-            label="Lights"
-            :disabled="!klippyReady"
-            @input="setLights"
-          />
-        </div>
-      </div>
-    </control-card>
-  </div>
-
-  <!-- Pro: every fan, its reading, and a slider for the ones you set. -->
-  <control-card
-    v-else
-    title="Fans and lights"
-    :locked="klippyReady ? '' : notReadyReason"
-    data-tid="control-fans"
-  >
-    <div class="fans-pro">
+      <span class="crow__name">Lights</span>
+      <toggle-switch
+        :value="lightsValue > 0"
+        label="Lights"
+        :disabled="!controlReady"
+        @input="setLights"
+      />
+    </div>
+    <control-task-fold
+      fold-key="fans.all"
+      :title="otherOutputCount ? 'All fans and outputs' : 'All fans'"
+      :summary="`${fans.length} fans${otherOutputCount ? ` · ${otherOutputCount} outputs` : ''} · brightness`"
+    >
       <div
         v-for="fan in fans"
         :key="fan.key"
         class="crow"
       >
-        <span class="crow__name">
-          {{ fan.type === 'fan' ? 'Part fan' : fan.prettyName }}
-          <span
-            v-if="!isSettable(fan)"
-            class="crow__sub"
-          > · {{ automaticLabel(fan) }}</span>
-        </span>
+        <span class="crow__name">{{ fan.type === 'fan' ? 'Part fan' : fan.prettyName }}<span
+          v-if="!isSettable(fan)"
+          class="crow__sub"
+        > · {{ automaticLabel(fan) }}</span></span>
         <range-slider
           v-if="isSettable(fan)"
           class="fans-pro__slider"
           :value="fanValue(fan)"
           :label="fan.prettyName"
-          :disabled="!klippyReady"
+          :value-text-formatter="percentValueText"
+          :disabled="!controlReady"
           @change="setFan(fan, $event)"
         />
         <b class="crow__value">{{ fanValue(fan) ? `${fanValue(fan)}%` : 'off' }}</b>
       </div>
       <div
-        v-if="hasLights"
+        v-if="hasLights && dimmable"
         class="crow"
       >
-        <span class="crow__name">Lights</span>
+        <span class="crow__name">Lights brightness</span>
         <range-slider
-          v-if="dimmable"
           class="fans-pro__slider"
           :value="lightsValue"
-          label="Lights"
-          :disabled="!klippyReady"
+          label="Lights brightness"
+          :value-text-formatter="percentValueText"
+          :disabled="!controlReady"
           @change="setLights"
         />
-        <toggle-switch
-          v-else
-          :value="lightsValue > 0"
-          label="Lights"
-          :disabled="!klippyReady"
-          @input="setLights"
-        />
-        <b class="crow__value">{{ lightsValue ? `${lightsValue}%` : 'off' }}</b>
       </div>
-      <p
-        v-if="!fans.length && !hasLights"
-        class="fans-pro__none"
-      >
-        This printer has no fans or lights to set.
-      </p>
-    </div>
+      <control-outputs outputs-only />
+    </control-task-fold>
   </control-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
-import type { Fan } from '@/store/printer/types'
+import type { Fan, Led, OutputPin } from '@/store/printer/types'
 import ControlCard from './ControlCard.vue'
 import SegPicker, { type SegOption } from './SegPicker.vue'
 import ToggleSwitch from './ToggleSwitch.vue'
 import RangeSlider from './RangeSlider.vue'
+import ControlTaskFold from './ControlTaskFold.vue'
+import ControlOutputs from './ControlOutputs.vue'
 
 type FanMode = 'auto' | 'on' | 'off'
 
 /**
- * Fans and lights. Simple: the part fan as Auto (as sliced), On or Off,
- * and the lights. Pro: every fan with its reading, a slider for each one
- * you can set, and the lights' brightness.
+ * Part fan and lights up front; automatic fans, brightness and outputs one step away.
  */
-@Component({ components: { ControlCard, SegPicker, ToggleSwitch, RangeSlider } })
+@Component({ components: { ControlCard, SegPicker, ToggleSwitch, RangeSlider, ControlTaskFold, ControlOutputs } })
 export default class ControlFans extends Mixins(ControlMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
+
+  percentValueText (value: number): string {
+    return `${value} percent`
+  }
+
+  get otherOutputCount (): number {
+    const pins = ((this.$store.getters['printer/getPins'] as OutputPin[]) ?? []).filter(p => p.controllable && p.name !== this.lightsPin?.name)
+    const leds = ((this.$store.getters['printer/getAllLeds'] as Led[]) ?? []).filter(l => l.name !== this.lightsLed?.name)
+    return pins.length + leds.length
+  }
 
   get fanOptions (): SegOption[] {
     return [

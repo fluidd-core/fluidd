@@ -29,6 +29,9 @@ const configfile = {
 function show (sensors: Sensor[], printer: Record<string, unknown> = { configfile }) {
   const getters: Record<string, unknown> = {
     'printer/getKlippyReady': true,
+    'printer/getKlippyConnected': true,
+    'socket/getApiConnected': true,
+    'auth/getAuthenticated': true,
     'socket/getConnectionState': true,
     'printer/getPins': [],
     'printer/getAllLeds': [],
@@ -39,7 +42,7 @@ function show (sensors: Sensor[], printer: Record<string, unknown> = { configfil
   return mount(ControlOutputs, {
     mocks: {
       $store: {
-        state: { printer: { printer } },
+        state: { printer: { printer }, config: { apiUrl: 'http://mock.local' } },
         getters,
         dispatch: vi.fn(),
         commit: vi.fn()

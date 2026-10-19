@@ -91,6 +91,7 @@
             :min="0"
             :max="Math.max(0, layerCount - 1)"
             label="Layer"
+            :value-text-formatter="layerValueText"
             @change="setLayer"
           />
           <dl
@@ -202,6 +203,10 @@ export default class JobViewer extends Mixins(StateMixin, FilesMixin) {
   downloading = false
   autoLoad = false
   timer: number | null = null
+
+  layerValueText (value: number): string {
+    return `Layer ${value + 1} of ${this.layerCount}`
+  }
 
   get size (): string {
     return this.job ? fileSize(this.job.size) : ''
