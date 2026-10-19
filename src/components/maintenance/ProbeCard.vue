@@ -1,7 +1,7 @@
 <template>
   <control-card
     title="Probe"
-    :locked="klippyReady ? '' : 'The printer isn\'t ready.'"
+    :locked="controlLock"
     data-tid="probe-card"
   >
     <template
@@ -30,7 +30,7 @@
           <button
             type="button"
             class="probe__link"
-            :disabled="!klippyReady"
+            :disabled="!controlReady || hasWait($waits.onQueryProbe)"
             data-tid="probe-query"
             @click="query"
           >
@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import MaintenanceMixin from '@/mixins/maintenance'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { Probe } from '@/store/printer/types'
@@ -105,7 +105,24 @@ import { plateCheckNeeded } from '@/services/jobs/plate'
  */
 @Component({ components: { ControlCard } })
 export default class ProbeCard extends Mixins(MaintenanceMixin) {
-  queried = false
+  queryAfter = Infinity
+  queryPrevious: ConsoleEntry[] = []
+
+  @Watch('maintenanceTarget')
+  clearQuery () { this.queryAfter = Infinity; this.queryPrevious = [] }
+
+  get queryReport (): boolean | null {
+    const entries = (this.$store.state.console.console as ConsoleEntry[] | undefined) ?? []
+    for (let i = entries.length - 1; i >= 0; i--) {
+      const entry = entries[i]
+      if (entry.type !== 'response' || (entry.time ?? 0) < this.queryAfter || this.queryPrevious.includes(entry)) continue
+      const match = /\bprobe: (open|TRIGGERED)\b/i.exec(entry.message)
+      if (match) return match[1].toLowerCase() === 'triggered'
+    }
+    return null
+  }
+
+  get queried (): boolean { return this.queryReport !== null }
 
   get probe (): Probe | undefined {
     return this.$store.getters['printer/getProbe'] as Probe | undefined
@@ -122,11 +139,13 @@ export default class ProbeCard extends Mixins(MaintenanceMixin) {
   }
 
   get triggered (): boolean {
-    return !!this.probe?.last_query
+    return this.queryReport === true
   }
 
   query () {
-    this.queried = true
+    if (!this.probe || !this.controlReady || this.hasWait(this.$waits.onQueryProbe)) return
+    this.queryPrevious = [...(this.$store.state.console.console ?? [])]
+    this.queryAfter = Math.floor(Date.now() / 1000)
     this.sendGcode('QUERY_PROBE', this.$waits.onQueryProbe)
   }
 
@@ -174,13 +193,14 @@ export default class ProbeCard extends Mixins(MaintenanceMixin) {
 
   async checkAccuracy () {
     if (!this.canCheck) return
+    const target = this.maintenanceTarget
     const [x, y] = this.middle
     const ok = await this.$confirm(
       `${this.allHomed ? 'The head' : 'It homes, then the head'} goes to the middle of the bed (X${x} Y${y}) and probes there ten times. Keep the plate on and the nozzle clean.`,
       // It touches the middle of the plate ten times: the plate check first, as for a print.
       { title: 'Check how steady the probe is?', buttonTrueText: 'Start', plateCheck: plateCheckNeeded(this.$store.state.history?.jobs) }
     )
-    if (!ok || this.checksBlocked) return
+    if (!ok || target !== this.maintenanceTarget || !this.canCheck) return
     this.sendGcode(probeAccuracyScript(this.allHomed, this.middle), this.$waits.onProbeAccuracy)
   }
 }

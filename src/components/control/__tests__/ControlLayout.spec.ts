@@ -14,8 +14,8 @@ it.each([false, true])('keeps all six task panels with either legacy setting on 
     proMode.on = pro
     const wrapper = mount(Control, { mocks: { $store: store, $waits: waits, $route: { params: { printer: 'mock' } } }, computed: { isMobileViewport: () => phone }, stubs: { ...panelStubs, MaterialPicker: true } })
     for (const name of ['heat', 'move', 'filament', 'speed', 'fans', 'macros']) expect(wrapper.findAll(`[data-tid="control-${name}"]`).length).toBe(1)
-    expect(wrapper.find('[data-tid="control-shaper"]').exists()).toBe(true)
-    expect(wrapper.find('[data-tid="control-endstops"]').exists()).toBe(true)
+    expect(wrapper.find('[data-tid="control-shaper"]').exists()).toBe(false)
+    expect(wrapper.find('[data-tid="control-endstops"]').exists()).toBe(false)
     expect(wrapper.findAll('[data-tid="control-retraction"]').length).toBe(0)
     if (phone) expect(wrapper.find('[data-tid="control-actions"]').exists()).toBe(true)
     wrapper.destroy()

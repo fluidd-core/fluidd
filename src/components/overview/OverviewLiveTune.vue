@@ -16,7 +16,7 @@
           <button
             type="button"
             aria-label="Slower"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @click="setSpeed(Math.max(1, speedFactor - 5))"
           >
             <frame-icon
@@ -30,13 +30,13 @@
             :min="1"
             :max="500"
             label="Speed"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @change="setSpeed"
           />
           <button
             type="button"
             aria-label="Faster"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @click="setSpeed(speedFactor + 5)"
           >
             <frame-icon
@@ -52,7 +52,7 @@
           <button
             type="button"
             aria-label="Less flow"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @click="setFlow(Math.max(1, flowFactor - 1))"
           >
             <frame-icon
@@ -66,13 +66,13 @@
             :min="1"
             :max="300"
             label="Flow"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @change="setFlow"
           />
           <button
             type="button"
             aria-label="More flow"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @click="setFlow(flowFactor + 1)"
           >
             <frame-icon
@@ -94,7 +94,7 @@
           :max="2"
           :decimals="3"
           label="Pressure advance"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @change="setPressureAdvance"
         />
       </div>
@@ -105,7 +105,7 @@
             type="button"
             class="ov-tune__nudge"
             aria-label="Nozzle closer"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @click="nudgeZ(-0.01)"
           >
             −0.01
@@ -115,7 +115,7 @@
             type="button"
             class="ov-tune__nudge"
             aria-label="Nozzle further"
-            :disabled="!klippyReady"
+            :disabled="!controlReady"
             @click="nudgeZ(0.01)"
           >
             +0.01
@@ -132,7 +132,7 @@
           :value="fanValue(partFan)"
           label="Part fan"
           :value-text-formatter="percentValueText"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @change="setFan(partFan, $event)"
         />
         <b class="crow__value">{{ fanValue(partFan) }}%</b>
@@ -144,7 +144,7 @@
           unit="mm/s²"
           :min="1"
           label="Acceleration limit"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @change="setLimit('ACCEL', $event)"
         />
       </div>
@@ -153,7 +153,7 @@
       v-if="canSaveZ"
       type="button"
       class="ov-tune__save"
-      :disabled="!klippyReady || !zOffset"
+      :disabled="!controlReady || busy || !zOffset"
       @click="saveZ"
     >
       Save Z offset for next time
@@ -185,7 +185,7 @@ export default class OverviewLiveTune extends Mixins(OverviewMixin) {
   }
 
   nudgeZ (by: number) {
-    this.sendGcode(`SET_GCODE_OFFSET Z_ADJUST=${by} MOVE=${this.isHomed('Z') ? 1 : 0}`, this.$waits.onZAdjust)
+    this.adjustZ(by)
   }
 
   get commands (): Record<string, unknown> {
@@ -198,6 +198,7 @@ export default class OverviewLiveTune extends Mixins(OverviewMixin) {
   }
 
   saveZ () {
+    if (!this.controlReady || this.busy || !this.canSaveZ) return
     this.sendGcode('Z_OFFSET_APPLY_PROBE' in this.commands ? 'Z_OFFSET_APPLY_PROBE' : 'Z_OFFSET_APPLY_ENDSTOP')
   }
 }
