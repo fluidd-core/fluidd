@@ -94,6 +94,7 @@
           </router-link>
 
           <button
+            v-if="proSwitchShown"
             type="button"
             role="switch"
             class="app-more__row"
