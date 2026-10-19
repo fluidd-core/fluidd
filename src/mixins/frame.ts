@@ -1,7 +1,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from './state'
 import type { WebcamConfig } from '@/store/webcams/types'
-import { proMode } from '@/services/pro-mode'
 import { slicerPresence } from '@/services/slicer-bridge/slicerUrl'
 import { activeSlug, isForeignSlug } from '@/services/printer-pages'
 import { pageOfRoute, scopedPath } from '@/router/printerPagePaths'
@@ -18,22 +17,18 @@ import {
 /** What the rail, the header and the phone's tabs share: where you are and where you can go. */
 @Component
 export default class FrameMixin extends Mixins(StateMixin) {
-  get pro (): boolean {
-    return proMode.on
-  }
-
   get sectionContext (): SectionContext {
     if (isForeignSlug(this.$route.params.printer)) {
-      return { pro: false, slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: true }
+      return { slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: true }
     }
     const cameras = this.$store.getters['webcams/getVisibleWebcams'] as WebcamConfig[]
     return {
-      pro: proMode.on,
       slicer: slicerPresence.state === 'present',
       camera: cameras.length ? encodeURI(cameras[0].uid) : null,
       history: this.$store.getters['server/componentSupport']('history') as boolean,
       timelapse: this.$store.getters['server/componentSupport']('timelapse') as boolean,
       diagnostics: this.$store.state.config.uiSettings.general.enableDiagnostics as boolean,
+      bedMesh: !!this.$store.getters['mesh/getSupportsBedMesh'],
       foreign: isForeignSlug(this.$route.params.printer)
     }
   }
