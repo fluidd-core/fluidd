@@ -27,15 +27,6 @@
       :phone="isMobileViewport"
     />
     <control-macros class="area-macros" />
-    <control-task-fold
-      class="area-diagnosis"
-      fold-key="control.diagnosis"
-      title="Shaper and switches"
-      summary="Input shaper, filament sensors and endstops"
-    >
-      <control-tuning shaper-only />
-      <control-outputs diagnostics-only />
-    </control-task-fold>
   </div>
 </template>
 
@@ -49,14 +40,11 @@ import ControlFilament from '@/components/control/ControlFilament.vue'
 import ControlSpeed from '@/components/control/ControlSpeed.vue'
 import ControlFans from '@/components/control/ControlFans.vue'
 import ControlMacros from '@/components/control/ControlMacros.vue'
-import ControlTuning from '@/components/control/ControlTuning.vue'
-import ControlOutputs from '@/components/control/ControlOutputs.vue'
-import ControlTaskFold from '@/components/control/ControlTaskFold.vue'
 import ControlActions from '@/components/control/ControlActions.vue'
 
-/** One set of task panels. Diagnosis remains here until Maintenance has its new home. */
+/** One set of task panels. Diagnosis lives in Maintenance. */
 @Component({
-  components: { ControlMove, ControlHeat, ControlFilament, ControlSpeed, ControlFans, ControlMacros, ControlTuning, ControlOutputs, ControlTaskFold, ControlActions }
+  components: { ControlMove, ControlHeat, ControlFilament, ControlSpeed, ControlFans, ControlMacros, ControlActions }
 })
 export default class Control extends Mixins(BrowserMixin) {
   get contextKey (): string {
@@ -72,8 +60,7 @@ export default class Control extends Mixins(BrowserMixin) {
     grid-template-areas:
       'move move move heat heat heat'
       'filament filament speed speed fans fans'
-      'macros macros macros macros macros macros'
-      'diagnosis diagnosis diagnosis diagnosis diagnosis diagnosis';
+      'macros macros macros macros macros macros';
     gap: 16px;
     align-items: start;
   }
@@ -84,18 +71,17 @@ export default class Control extends Mixins(BrowserMixin) {
   .area-filament { grid-area: filament; }
   .area-fans { grid-area: fans; }
   .area-macros { grid-area: macros; }
-  .area-diagnosis { grid-area: diagnosis; }
   .area-actions { grid-area: actions; }
   @media (max-width: 1263px) {
     .control-page {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: 'move heat' 'filament speed' 'fans fans' 'macros macros' 'diagnosis diagnosis';
+      grid-template-areas: 'move heat' 'filament speed' 'fans fans' 'macros macros';
     }
   }
   @media (max-width: 899px) {
     .control-page {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: 'actions' 'heat' 'move' 'speed' 'filament' 'fans' 'macros' 'diagnosis';
+      grid-template-areas: 'actions' 'heat' 'move' 'speed' 'filament' 'fans' 'macros';
       gap: 12px;
     }
   }

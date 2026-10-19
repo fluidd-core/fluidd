@@ -152,7 +152,7 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
         gcode: checkCommand(info.id, context),
         confirm: info.confirm(this.tuneTemperature, checkCommand(info.id, context) ?? '')
       }))
-      .filter(row => row.gcode !== null)
+      .filter(row => row.gcode !== null || (row.id === 'shaper' && !!this.$store.state.printer.printer.configfile?.settings?.input_shaper))
   }
 
   get dueCount (): number {
