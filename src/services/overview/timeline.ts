@@ -1,0 +1,78 @@
+import type { ChartPoint } from './model'
+export interface Observation { context: string; layer?: number; paused?: boolean; duration?: number; filament: Record<string, boolean> }
+export function retainedSamples (payload: Record<string, Record<string, unknown[]>>, now: number, retention: number): ChartPoint[] {
+  const entries = Object.entries(payload ?? {}).filter(([, fields]) => Array.isArray(fields?.temperatures))
+  const count = Math.min(Math.max(0, Math.floor(retention)), Math.max(0, ...entries.map(([, fields]) => fields.temperatures.length)))
+  return Array.from({ length: count }, (_, i) => {
+    const point: ChartPoint = { date: new Date(now - (count - 1 - i) * 1000) }
+    for (const [key, fields] of entries) {
+      for (const [field, suffix] of [['temperatures', ''], ['targets', 'Target'], ['powers', 'Power'], ['speeds', 'Speed']]) {
+        if (field === 'targets' && /^(temperature_probe|temperature_sensor)/.test(key)) continue
+        const values = fields[field]
+        const value = Array.isArray(values) ? values[values.length - count + i] : undefined
+        if (typeof value === 'number' && Number.isFinite(value)) point[key + suffix] = value
+      }
+    }
+    return point
+  })
+}
+
+export interface MissingInterval { from: number; to: number }
+
+/** Missing one-second sample spans, unioned conservatively across the displayed series. */
+export function missingIntervals (points: ChartPoint[], keys: string[], from: number, to: number): MissingInterval[] {
+  if (to <= from || !keys.length) return [{ from, to }].filter(gap => gap.to > gap.from)
+  const sorted = points.filter(point => Number.isFinite(point.date.getTime())).sort((a, b) => a.date.getTime() - b.date.getTime())
+  const gaps: MissingInterval[] = []
+  for (const key of keys) {
+    const samples = sorted.filter(point => typeof point[key] === 'number' && Number.isFinite(point[key]))
+    let coveredTo = from
+    for (let i = 0; i < samples.length; i++) {
+      const at = samples[i].date.getTime()
+      const coveredFrom = Math.max(from, at - 500)
+      if (coveredFrom > coveredTo) gaps.push({ from: coveredTo, to: coveredFrom })
+      // The newest real reading remains the displayed live value until now.
+      coveredTo = Math.max(coveredTo, Math.min(to, i === samples.length - 1 ? to : at + 500))
+    }
+    if (coveredTo < to) gaps.push({ from: coveredTo, to })
+  }
+  gaps.sort((a, b) => a.from - b.from || a.to - b.to)
+  return gaps.reduce<MissingInterval[]>((merged, gap) => {
+    const previous = merged.at(-1)
+    if (previous && gap.from <= previous.to) previous.to = Math.max(previous.to, gap.to)
+    else merged.push({ ...gap })
+    return merged
+  }, [])
+}
+
+export function sampleAt (points: ChartPoint[], at: number): ChartPoint | null {
+  const closest = points.filter(p => Number.isFinite(p.date.getTime())).reduce<ChartPoint | null>((best, p) => !best || Math.abs(p.date.getTime() - at) < Math.abs(best.date.getTime() - at) ? p : best, null)
+  return closest && Math.abs(closest.date.getTime() - at) <= 750 && Object.values(closest).some(v => typeof v === 'number' && Number.isFinite(v)) ? closest : null
+}
+
+export function historyPath (points: ChartPoint[], key: string, from: number, to: number, width: number, y: (v: number) => number): string {
+  let previous: number | null = null
+  const path: string[] = []
+  for (const p of points) {
+    const at = p.date.getTime()
+    const value = p[key]
+    if (!Number.isFinite(at) || at < from || at > to || typeof value !== 'number' || !Number.isFinite(value)) { previous = null; continue }
+    const pointX = (at - from) / Math.max(1, to - from) * width
+    const pointY = y(value)
+    if (!Number.isFinite(pointX) || !Number.isFinite(pointY)) { previous = null; continue }
+    path.push(`${previous === null || at < previous || at - previous > 2500 ? 'M' : 'L'}${pointX.toFixed(1)} ${pointY.toFixed(1)}`)
+    previous = at
+  }
+  return path.join(' ')
+}
+
+export function observedEvents (previous: Observation | null, current: Observation, at: number): Array<{ at: number; label: string }> {
+  if (!previous || previous.context !== current.context) return []
+  const events: Array<{ at: number; label: string }> = []
+  if (Number.isInteger(current.layer) && current.layer! > 0 && current.layer !== previous.layer) events.push({ at, label: `Layer ${current.layer}` })
+  if (typeof previous.paused === 'boolean' && typeof current.paused === 'boolean' && previous.paused !== current.paused) events.push({ at, label: current.paused ? 'Paused' : 'Resumed' })
+  for (const [key, present] of Object.entries(current.filament)) {
+    if (typeof previous.filament[key] === 'boolean' && previous.filament[key] !== present) events.push({ at, label: `${key}: filament ${present ? 'detected' : 'absent'}` })
+  }
+  return events
+}
