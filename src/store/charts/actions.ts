@@ -1,9 +1,11 @@
 import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import type { ChartData, ChartState } from './types'
+import type { ChartState } from './types'
+import { retainedSamples } from '@/services/overview/timeline'
 import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
+import { cloudState } from '@/services/muon-cloud/state'
 
 export const actions: ActionTree<ChartState, RootState> = {
   /**
@@ -17,70 +19,13 @@ export const actions: ActionTree<ChartState, RootState> = {
    * Loads stored server data for the past 20 minutes.
    */
   async initTempStore ({ commit, rootGetters, rootState }, payload) {
-    const now = new Date() // Set a base time to work out the temp data from.
-    // On a fresh boot of the host system, moonraker should give us enough data;
-    // however, it seems sometimes it does not. So - we should pad this out when
-    // we need to.
-    // Otherwise, for a system that has been running for a bit - we should expect
-    // enough data from moonraker to start with.
-
-    // Note that some items come back with targets when they should not,
-    // so we have to account for this too.
-
-    // how many datasets to add. Moonraker should give us 20 minutes, in 1 second intervals.. but we only need 10 minutes.
-    const retention = rootGetters['charts/getChartRetention']
-    const targetsToAvoid = [
-      'temperature_probe',
-      'temperature_sensor'
-    ]
-
-    if (
-      payload &&
-      Object.keys(payload).length === 0
-    ) {
-      // Empty chart data
-      commit('setChartStore', [])
-      return
-    }
-
-    for (const originalKey in payload) { // each heater / temp fan
-      // If the dataset is less than what we need, then pad the beginning
-      // until we get to our intended count
-      if (targetsToAvoid.some(e => originalKey.startsWith(e))) {
-        delete payload[originalKey].targets
-      }
-      ['temperatures', 'targets', 'powers', 'speeds'].forEach((k) => {
-        const arr = payload[originalKey][k]
-        if (arr && arr.length) {
-          if (arr.length < retention) {
-            const length = retention - arr.length
-            const lastValue = arr[0]
-            payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...arr]
-          } else {
-            payload[originalKey][k] = arr.splice(arr.length - retention)
-          }
-        }
-      })
-    }
-
-    const keys = Object.keys(payload)
-    const d: ChartData[] = []
-    for (let i = 0; i < retention; i++) {
-      const date = new Date(now.getTime() - (1000 * (retention - i)) - 2000)
-      const r: ChartData = {
-        date
-      }
-      keys.forEach(key => {
-        if (rootState.printer.printer[key]) {
-          r[key] = payload[key].temperatures[i]
-          if ('targets' in payload[key]) r[`${key}Target`] = payload[key].targets[i]
-          if ('powers' in payload[key]) r[`${key}Power`] = payload[key].powers[i]
-          if ('speeds' in payload[key]) r[`${key}Speed`] = payload[key].speeds[i]
-        }
-      })
-      d.push(r)
-    }
-    commit('setChartStore', d)
+    const response = payload?.requestContext ? payload.payload : payload
+    const context = payload?.requestContext as { apiUrl?: string; connectionId?: string | null, printerId?: string | null } | undefined
+    if (context && (context.apiUrl !== rootState.config.apiUrl || context.connectionId !== rootState.socket.connectionId || context.printerId !== cloudState.activePrinterId)) return
+    // Moonraker supplies ordered one-second arrays, not absolute timestamps.
+    // Anchor approximately at receipt; never pad a short history with readings.
+    const sensors = Object.fromEntries(Object.entries(response ?? {}).filter(([key]) => !!rootState.printer.printer[key]))
+    commit('setChartStore', retainedSamples(sensors as Record<string, Record<string, unknown[]>>, Date.now(), rootGetters['charts/getChartRetention']))
   },
 
   /**

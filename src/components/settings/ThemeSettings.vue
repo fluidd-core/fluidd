@@ -66,10 +66,7 @@
         />
       </div>
     </div>
-    <div
-      v-if="pro"
-      class="m3-set__row"
-    >
+    <div class="m3-set__row">
       <div class="m3-set__label">
         <b>A community theme</b>
         <span>Another maker's colours and logo. Their names and logos are theirs; Fluidd's makers include them with permission.</span>
@@ -99,7 +96,6 @@ import { UI_STYLES } from '@/util/ui-style'
 import ThemePicker from '../ui/AppColorPicker.vue'
 import SegPicker from '@/components/control/SegPicker.vue'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
-import { proMode } from '@/services/pro-mode'
 
 @Component({
   components: {
@@ -109,10 +105,6 @@ import { proMode } from '@/services/pro-mode'
   }
 })
 export default class ThemeSettings extends Mixins(StateMixin) {
-  get pro (): boolean {
-    return proMode.on
-  }
-
   get theme (): ThemeConfig {
     return this.$store.state.config.uiSettings.theme as ThemeConfig
   }

@@ -10,7 +10,7 @@ const baseEmit = (method: string, options: NotifyOptions) => {
     consola.warn('Socket emit denied, socket not ready.', method, options)
     return
   }
-  Vue.$socket.emit(method, options)
+  return Vue.$socket.emit(method, options)
 }
 
 export const SocketActions = {
@@ -287,7 +287,7 @@ export const SocketActions = {
   },
 
   async printerQueryEndstops () {
-    baseEmit(
+    return baseEmit(
       'printer.query_endstops.status', {
         dispatch: 'printer/onQueryEndstops',
         wait: Waits.onQueryEndstops
@@ -467,6 +467,7 @@ export const SocketActions = {
     baseEmit(
       'server.temperature_store', {
         dispatch: 'charts/initTempStore',
+        captureContext: true,
         params: {
           include_monitors: true
         }

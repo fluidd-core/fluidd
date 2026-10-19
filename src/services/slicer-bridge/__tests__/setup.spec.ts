@@ -12,11 +12,21 @@ describe('what the printer has loaded, for the slicer', () => {
   it('takes Spoolman\'s spool first, its temperatures or else the table\'s', () => {
     const setup = hostSetup({
       spool: { remaining_weight: 640, filament: { name: 'Teal', material: 'PETG', color_hex: '1aa0a0', settings_extruder_temp: null, settings_bed_temp: 85 } },
-      loaded: choices[0],
+      loaded: null,
       heated: null,
       choices
     })
     expect(setup.material).toEqual({ name: 'PETG Teal', type: 'PETG', colour: '#1AA0A0', nozzle: 245, bed: 85, source: 'spool', remaining: 640 })
+  })
+
+  it('uses the printer record ahead of a stale active spool', () => {
+    expect(hostSetup({
+      spool: { filament: { material: 'PETG', color_hex: 'F07B22' } },
+      loaded: choices[0],
+      loadedColour: '#2F63C6',
+      heated: choices[1],
+      choices
+    }).material).toEqual({ name: 'PLA', type: 'PLA', colour: '#2F63C6', nozzle: 210, bed: 55, source: 'loaded' })
   })
 
   it('then what the printer was told is loaded, with the table\'s temperatures and no colour', () => {

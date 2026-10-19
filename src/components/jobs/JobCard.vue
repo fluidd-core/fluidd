@@ -2,44 +2,51 @@
   <div
     class="job"
     :class="{ 'job--printing': job.printing, 'job--row': row }"
-    role="button"
-    tabindex="0"
     :data-tid="`job-${job.key}`"
-    @click="$emit('open')"
-    @keydown.enter.self="$emit('open')"
   >
-    <div class="job__picture">
-      <img
-        v-if="job.thumbnail"
-        :src="job.thumbnail"
-        alt=""
-        loading="lazy"
-      >
-      <frame-icon
-        v-else
-        name="jobs"
-        large
-        class="job__no-picture"
-      />
-      <span
-        v-if="job.printing && !row"
-        class="job__badge job__badge--printing"
-      >printing</span>
-    </div>
-    <div class="job__text">
-      <span class="job__title">{{ job.title }}</span>
-      <span class="job__facts">
-        {{ job.facts || job.filename }}
+    <button
+      type="button"
+      class="job__open"
+      :data-tid="`job-open-${job.key}`"
+      @click="$emit('open')"
+      @keydown.enter.prevent="$emit('open')"
+      @keydown.space.prevent="$emit('open')"
+    >
+      <span class="job__picture">
+        <img
+          v-if="job.thumbnail"
+          :src="job.thumbnail"
+          alt=""
+          loading="lazy"
+        >
+        <frame-icon
+          v-else
+          name="jobs"
+          large
+          class="job__no-picture"
+        />
         <span
-          v-if="job.printed && !job.printing"
-          class="job__printed"
-        > · printed</span>
-        <span
-          v-if="job.printing && row"
-          class="job__printed job__printed--now"
-        > · printing</span>
+          v-if="job.printing && !row"
+          class="job__badge job__badge--printing"
+        >printing</span>
       </span>
-    </div>
+      <span class="job__text">
+        <span class="job__title">{{ job.title }}</span>
+        <span
+          class="job__facts"
+        >
+          {{ job.facts || job.filename }}
+          <span
+            v-if="job.printed && !job.printing"
+            class="job__printed"
+          > · printed</span>
+          <span
+            v-if="job.printing && row"
+            class="job__printed job__printed--now"
+          > · printing</span>
+        </span>
+      </span>
+    </button>
     <div class="job__actions">
       <button
         type="button"
@@ -108,9 +115,24 @@ export default class JobCard extends Vue {
     transition: box-shadow var(--m3d-duration-fast) var(--m3d-ease);
 
     &:hover,
-    &:focus-visible {
+    &:focus-within {
       box-shadow: inset 0 0 0 1.5px var(--m3d-accent);
       outline: none;
+    }
+  }
+
+  .job__open {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 0;
+    color: inherit;
+    text-align: left;
+
+    &:focus-visible {
+      border-radius: 16px;
+      outline: 2px solid var(--m3d-accent);
+      outline-offset: 2px;
     }
   }
 
@@ -235,6 +257,13 @@ export default class JobCard extends Vue {
     padding: 8px 12px 8px 8px;
     border-radius: 0;
     background: transparent;
+
+    .job__open {
+      flex: 1 1 0;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
 
     .job__picture {
       flex: none;

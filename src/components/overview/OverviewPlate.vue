@@ -80,7 +80,7 @@ import MacrosMixin, { type ShownMacro } from '@/mixins/macros'
 const PINNED = 6
 
 /**
- * Pro: the objects on the plate, to skip one that fails (exclude_object),
+ * The objects on the plate, to skip one that fails (exclude_object),
  * and the printer's macros: the six you'd press first here (the everyday
  * ones from a few groups, and those you run most; mixins/macros.ts), and
  * every one on Control.
