@@ -102,6 +102,7 @@ const createHttpClient = (store: Store<RootState>) => {
     }
 
     const url = error.config?.url || ''
+    const quiet = quietErrorRequests.includes(url)
 
     // A cloud printer's gateway refuses what a remote session may never
     // reach (Moonraker's users, the Aux API, updates). A read refused that
@@ -116,7 +117,6 @@ const createHttpClient = (store: Store<RootState>) => {
       consola.debug('Refused through Muon3D', url, message)
       return Promise.reject(error)
     }
-    const quiet = quietErrorRequests.includes(url)
     switch (error.response.status) {
       case 500:
         consola.debug(error.response.status, error.message, message)
