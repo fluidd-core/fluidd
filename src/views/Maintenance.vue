@@ -1,5 +1,6 @@
 <template>
   <div
+    :key="commandTarget"
     class="maintenance-page"
     :class="{ 'maintenance-page--phone': isMobileViewport }"
     data-tid="maintenance-page"
@@ -12,17 +13,17 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import MaintenanceChecks from '@/components/maintenance/MaintenanceChecks.vue'
 import MaintenanceMesh from '@/components/maintenance/MaintenanceMesh.vue'
 
 /**
  * Maintenance (`/boxwood-367a/maintenance`): what keeps prints coming out
  * right. Each check says when it last ran and whether it's due, with the
- * bed as last measured beside them. Pro adds the mesh's numbers and a link
- * to the profiles and 3D view on Bed mesh.
+ * bed as last measured beside them. Open a row for its values and diagnosis.
  */
 @Component({ components: { MaintenanceChecks, MaintenanceMesh } })
-export default class Maintenance extends Mixins(BrowserMixin) {
+export default class Maintenance extends Mixins(BrowserMixin, TypedCommandsMixin) {
   get supportsBedMesh (): boolean {
     return this.$store.getters['mesh/getSupportsBedMesh'] as boolean
   }
