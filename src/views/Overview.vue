@@ -47,6 +47,7 @@
         type="button"
         class="cbtn"
         :aria-expanded="editing ? 'true' : 'false'"
+        aria-controls="overview-layout-editor"
         @click="toggleEditing"
       >
         {{ editing ? 'Done' : 'Customise Overview' }}
@@ -55,6 +56,7 @@
     </div>
     <overview-cards
       v-if="editing"
+      id="overview-layout-editor"
       :value="layout"
       :unavailable="unavailable"
       @input="chooseLayout"
@@ -167,7 +169,7 @@ import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 import { controlPreferenceStore } from '@/services/account/control-preferences'
 import { REMEMBER_CONTROL_FOLDS, type ControlPreferenceStore } from '@/services/control/preferences'
-import { cardLayout, overviewCards } from '@/services/overview/cards'
+import { cardLayout, cardUnavailable, overviewCards, type OverviewCapabilities } from '@/services/overview/cards'
 import type { WebcamConfig } from '@/store/webcams/types'
 import type { HistoryItem } from '@/store/history/types'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
@@ -220,15 +222,30 @@ export default class Overview extends Mixins(OverviewMixin, BrowserMixin) {
   get diagnosticCharts (): DiagnosticsCardConfig[] { return Object.values(this.$store.state.layout?.layouts?.diagnostics ?? {}).flat().filter((c: any) => c.enabled) as DiagnosticsCardConfig[] }
   get unavailable (): Record<string, string> {
     const printer = this.$store.state.printer.printer
+    const components: string[] = this.$store.state.server?.info?.components ?? []
+    const commands = Object.keys(this.$store.getters['printer/getAvailableCommands'] ?? {})
+    const capabilities: OverviewCapabilities = {
+      temperatures: !!(this.heaters.length || (this.$store.getters['printer/getSensors'] ?? []).length),
+      // Availability follows authority, not a transient Klipper state. The
+      // controls themselves keep enforcing readiness when a command is sent.
+      control: this.commandControlAvailable,
+      queue: components.includes('job_queue'),
+      camera: !!this.cameras.length,
+      macros: Object.keys(printer).some(key => key.startsWith('gcode_macro ')),
+      // The lazy Console route and Tools navigation support managed printers;
+      // typed commands inside it independently enforce role and connection.
+      console: true,
+      bedMesh: !!printer.bed_mesh,
+      calibration: commands.some(command => /CALIBRATE|TUNE/.test(command)),
+      diagnostics: !!this.$store.state.config.uiSettings.general.enableDiagnostics && !!this.diagnosticCharts.length,
+      objects: !!printer.exclude_object,
+      filament: this.savesMaterial || this.materialChoices.length > 0 || !!this.loadedMaterial || !!this.printingWith || components.includes('spoolman')
+    }
     const result: Record<string, string> = {}
-    if (!this.heaters.length && !(this.$store.getters['printer/getSensors'] ?? []).length) result.temperatures = 'No temperature sensors are reported.'
-    if (!this.$store.state.config.uiSettings.general.enableDiagnostics) result.chart = 'Turn on Diagnostics in Settings to record a chart.'
-    else if (!this.diagnosticCharts.length) result.chart = 'No diagnostic chart is configured.'
-    if (!this.cameras.length) result.camera = 'No camera is configured.'
-    if (!printer.bed_mesh) result.bed = 'This printer does not report bed_mesh.'
-    if (!printer.exclude_object) result.objects = 'Object exclusion is not available on this printer.'
-    if (!(this.$store.state.server?.info?.components ?? []).includes('job_queue')) result.queue = 'This printer does not provide a job queue.'
-    if (!Object.keys(this.$store.getters['printer/getAvailableCommands'] ?? {}).some(c => /CALIBRATE|TUNE/.test(c))) result.checks = 'No calibration commands are reported.'
+    for (const card of overviewCards) {
+      const explanation = cardUnavailable(card.id, capabilities)
+      if (explanation) result[card.id] = explanation
+    }
     return result
   }
 

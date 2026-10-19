@@ -32,6 +32,7 @@
             :min="0"
             :max="100"
             :label="out.label"
+            :value-text-formatter="percentValueText"
             :disabled="!controlReady"
             @change="setOutput(out, $event)"
           />
@@ -160,6 +161,10 @@ type Sensor = RunoutSensor & { prettyName: string; role: FilamentSensorRole }
 export default class ControlOutputs extends Mixins(ControlMixin) {
   @Prop({ type: Boolean }) readonly outputsOnly?: boolean
   @Prop({ type: Boolean }) readonly diagnosticsOnly?: boolean
+  percentValueText (value: number): string {
+    return `${value} percent`
+  }
+
   get outputs (): Output[] {
     const pins = ((this.$store.getters['printer/getPins'] as OutputPin[]) ?? [])
       .filter(p => p.controllable && p.name !== this.lightsPin?.name)

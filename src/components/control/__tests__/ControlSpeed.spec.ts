@@ -37,3 +37,48 @@ it('sets firmware retraction and refuses a cruise ratio above one or a stale dis
   expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(['SET_RETRACTION RETRACT_LENGTH=1.2'])
   wrapper.destroy()
 })
+
+it('bounds every velocity limit by printer configuration and rechecks before send', async () => {
+  const store = panelStore()
+  store.state.printer.printer.configfile.settings.printer = {
+    max_velocity: 500,
+    max_accel: 12000,
+    square_corner_velocity: 12,
+    minimum_cruise_ratio: 0.8
+  }
+  const wrapper = mount(ControlSpeed, { mocks: { $store: store, $waits: waits }, stubs: panelStubs })
+  const velocity = wrapper.find('input[aria-label="Velocity"]')
+  await velocity.setValue('501'); await velocity.trigger('keydown.enter')
+  expect(wrapper.text()).toContain('from 0.001 to 500 mm/s')
+  ;(wrapper.vm as any).setLimit('VELOCITY', 500)
+  ;(wrapper.vm as any).setLimit('ACCEL', 12001)
+  ;(wrapper.vm as any).setLimit('SQUARE_CORNER_VELOCITY', Number.NaN)
+  expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(['SET_VELOCITY_LIMIT VELOCITY=500'])
+  wrapper.destroy()
+})
+
+it('shows limits disabled and refuses to send when configuration has no valid bounds', () => {
+  const store = panelStore()
+  const wrapper = mount(ControlSpeed, { mocks: { $store: store, $waits: waits }, stubs: panelStubs })
+  expect(wrapper.find('input[aria-label="Velocity"]').exists()).toBe(true)
+  expect(wrapper.find('input[aria-label="Velocity"]').attributes('disabled')).toBeDefined()
+  expect(wrapper.text()).toContain("This printer hasn't reported its limits")
+  ;(wrapper.vm as any).setLimit('VELOCITY', 800)
+  ;(wrapper.vm as any).setLimit('ACCEL', 20000)
+  expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  wrapper.destroy()
+})
+
+it.each([
+  ['800', 800, true],
+  ['not-a-number', 100, false],
+  [-1, 100, false],
+  [0, 100, false]
+])('validates configured velocity bound %j', (configured, value, sends) => {
+  const store = panelStore()
+  store.state.printer.printer.configfile.settings.printer = { max_velocity: configured }
+  const wrapper = mount(ControlSpeed, { mocks: { $store: store, $waits: waits }, stubs: panelStubs })
+  ;(wrapper.vm as any).setLimit('VELOCITY', value)
+  expect(socket.printerGcodeScript.mock.calls.map(c => c[0])).toEqual(sends ? [`SET_VELOCITY_LIMIT VELOCITY=${value}`] : [])
+  wrapper.destroy()
+})

@@ -34,6 +34,15 @@ import type { Move } from '@/store/gcodePreview/types'
 const peakFlows = new WeakMap<readonly Move[], number | null>()
 
 type Axis = 'X' | 'Y' | 'Z'
+export type LimitKey = 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL'
+
+const limitSetting: Record<LimitKey, string> = {
+  VELOCITY: 'max_velocity',
+  ACCEL: 'max_accel',
+  SQUARE_CORNER_VELOCITY: 'square_corner_velocity',
+  MINIMUM_CRUISE_RATIO: 'minimum_cruise_ratio',
+  ACCEL_TO_DECEL: 'max_accel_to_decel'
+}
 
 /** The heat below which a nozzle's − goes to Off and its + starts. */
 export const NOZZLE_FLOOR = 170
@@ -367,9 +376,20 @@ export default class ControlMixin extends Mixins(TypedCommandsMixin, ToolheadMix
     this.sendGcode(`SET_PRESSURE_ADVANCE ADVANCE=${value}`)
   }
 
+  /** Configured ceiling. Live status is a current value, never authority for a new limit. */
+  limitMaximum (key: LimitKey): number | null {
+    const setting = this.$store.state.printer.printer.configfile?.settings?.printer?.[limitSetting[key]]
+    const parsed = typeof setting === 'number' || (typeof setting === 'string' && setting.trim() !== '')
+      ? Number(setting)
+      : Number.NaN
+    if (!Number.isFinite(parsed) || parsed <= 0) return null
+    return key === 'MINIMUM_CRUISE_RATIO' ? Math.min(parsed, 1) : parsed
+  }
+
   /** Velocity, acceleration, square corner velocity and the cruise ratio, until a restart. */
-  setLimit (key: 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL', value: number) {
-    if (!this.controlReady || !Number.isFinite(value) || value < 0 || (['VELOCITY', 'ACCEL'].includes(key) && value <= 0) || (key === 'MINIMUM_CRUISE_RATIO' && value > 1)) return
+  setLimit (key: LimitKey, value: number) {
+    const maximum = this.limitMaximum(key)
+    if (!this.controlReady || maximum === null || !Number.isFinite(value) || value < 0 || value > maximum || (['VELOCITY', 'ACCEL'].includes(key) && value <= 0)) return
     this.sendGcode(`SET_VELOCITY_LIMIT ${key}=${value}`)
   }
 

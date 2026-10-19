@@ -8,6 +8,22 @@ const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
 afterEach(() => { socket.printerGcodeScript.mockClear(); cloudState.account = null })
 
+it('shows only unique actions on desktop and keeps Home and Cool down in the phone menu', () => {
+  const store = panelStore()
+  const mountActions = (phone: boolean) => mount(ControlActions, { propsData: { phone }, mocks: { $store: store, $waits: waits, $route: { params: {} }, $confirm: vi.fn() }, stubs: panelStubs })
+  const desktop = mountActions(false)
+  expect(desktop.find('[data-tid="home-all"]').exists()).toBe(false)
+  expect(desktop.find('[data-tid="cool-down"]').exists()).toBe(false)
+  expect(desktop.find('[data-tid="motors-off"]').exists()).toBe(true)
+  expect(desktop.find('summary').exists()).toBe(false)
+  desktop.destroy()
+  const phone = mountActions(true)
+  expect(phone.find('[data-tid="home-all"]').exists()).toBe(true)
+  expect(phone.find('[data-tid="cool-down"]').exists()).toBe(true)
+  expect(phone.find('summary').exists()).toBe(true)
+  phone.destroy()
+})
+
 it('refuses a confirmation completed after the signed-in account changed', async () => {
   const store = panelStore()
   const confirm = vi.fn().mockImplementation(async () => { cloudState.account = { id: 'other' } as any; return true })
