@@ -230,8 +230,8 @@
       :printer-name="printerName"
       @close="detail = null"
       @step="step"
-      @print="detail && printOrQueue(detail)"
-      @queue="detail && addToQueue(detail)"
+      @print="detail && printDetail(detail)"
+      @queue="detail && queueDetail(detail)"
       @download="detail && downloadJob(detail)"
       @delete="deleteDetail"
     />
@@ -268,6 +268,7 @@ type JobsView = 'pictures' | 'list' | 'table'
 export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   view: JobsView = 'pictures'
   detail: JobFile | null = null
+  detailTarget: string | null = null
   /** The file the viewer shows, and the currently listed files in order. */
   viewing: JobFile | null = null
   tableFiles: JobFile[] = []
@@ -326,6 +327,25 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
 
   open (job: JobFile) {
     this.detail = job
+    this.detailTarget = this.commandTarget
+  }
+
+  @Watch('commandTarget')
+  onCommandTarget () {
+    this.detail = null
+    this.detailTarget = null
+    this.viewing = null
+    this.tableFiles = []
+  }
+
+  async printDetail (job: JobFile) {
+    if (this.detailTarget !== this.commandTarget || !this.controlReady) return
+    await this.printOrQueue(job)
+  }
+
+  async queueDetail (job: JobFile) {
+    if (this.detailTarget !== this.commandTarget || !this.controlReady) return
+    await this.addToQueue(job)
   }
 
   get detailList (): JobFile[] {
@@ -351,8 +371,9 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   async clearQueue () {
     if (!this.controlReady) return
     const target = this.commandTarget
-    const ok = await this.$confirm(`The files stay on ${this.printerName}.`, { title: `Take all ${this.queue.length} jobs out of the queue?`, buttonTrueText: 'Clear the queue', danger: true })
-    if (ok && target === this.commandTarget && this.controlReady) SocketActions.serverJobQueueDeleteJobs(this.queue.map(j => j.job_id))
+    const jobs = this.queue.map(j => j.job_id)
+    const ok = await this.$confirm(`The files stay on ${this.printerName}.`, { title: `Take all ${jobs.length} jobs out of the queue?`, buttonTrueText: 'Clear the queue', danger: true })
+    if (ok && target === this.commandTarget && this.controlReady) SocketActions.serverJobQueueDeleteJobs(jobs)
   }
 
   startQueue () {
@@ -370,7 +391,7 @@ export default class Jobs extends Mixins(JobsMixin, BrowserMixin) {
   }
 
   async deleteDetail () {
-    if (this.detail && await this.removeJob(this.detail)) this.detail = null
+    if (this.detail && this.detailTarget === this.commandTarget && this.controlReady && await this.removeJob(this.detail)) this.detail = null
   }
 
   // -- history ---------------------------------------------------------------
