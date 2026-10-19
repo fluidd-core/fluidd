@@ -8,7 +8,8 @@ const boot = vi.hoisted(() => ({
   appInit: vi.fn(async () => ({ apiConfig: { socketUrl: '' } })),
   check: vi.fn(() => new Promise<void>(() => {})),
   initCloud: vi.fn(async () => null),
-  navigate: vi.fn(async () => {})
+  navigate: vi.fn(async () => {}),
+  retire: vi.fn()
 }))
 vi.mock('vue', () => ({
   default: class {
@@ -20,6 +21,7 @@ vi.mock('vue', () => ({
   }
 }))
 vi.mock('@/init', () => ({ appInit: boot.appInit }))
+vi.mock('@/services/retired-storage', () => ({ retireProStorage: boot.retire }))
 vi.mock('@/services/muon-cloud/state', () => ({ initCloud: boot.initCloud }))
 vi.mock('@/services/muon-cloud/centralLogin', () => ({ shouldTrySilentSignIn: () => true, checkCentralSession: boot.check, startCentralSignIn: boot.navigate }))
 vi.mock('@/App.vue', () => ({ default: {} }))
@@ -59,4 +61,5 @@ it('initializes and mounts the app while the silent check is unresolved, without
   expect(boot.check).toHaveBeenCalledOnce()
   expect(boot.navigate).not.toHaveBeenCalled()
   expect(boot.initCloud).toHaveBeenCalledWith(boot.check.mock.results[0].value)
+  expect(boot.retire).toHaveBeenCalledOnce()
 })

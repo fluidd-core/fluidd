@@ -1,5 +1,6 @@
 <template>
   <div
+    :key="commandTarget"
     class="bedmesh-page"
     :class="{ 'bedmesh-page--phone': isMobileViewport }"
     data-tid="bedmesh-page"
@@ -25,7 +26,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import BrowserMixin from '@/mixins/browser'
 import BedSurface from '@/components/maintenance/BedSurface.vue'
 import MaintenanceMesh from '@/components/maintenance/MaintenanceMesh.vue'
@@ -33,12 +34,11 @@ import MeshProfiles from '@/components/maintenance/MeshProfiles.vue'
 import ProbeCard from '@/components/maintenance/ProbeCard.vue'
 
 /**
- * Bed mesh (Maintenance, Pro): the bed as a 3D surface and as numbers,
- * the saved mesh profiles, and the probe. Endstops and filament sensors
- * are on Control, under Outputs and sensors.
+ * Bed: the surface, measured heights, saved profiles and probe tools.
+ * Switch and filament diagnosis lives in Maintenance Health.
  */
 @Component({ components: { BedSurface, MaintenanceMesh, MeshProfiles, ProbeCard } })
-export default class Tune extends Mixins(StateMixin, BrowserMixin) {
+export default class Tune extends Mixins(TypedCommandsMixin, BrowserMixin) {
   get supportsBedMesh (): boolean {
     return this.$store.getters['mesh/getSupportsBedMesh'] as boolean
   }

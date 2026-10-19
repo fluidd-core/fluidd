@@ -1,116 +1,135 @@
 <template>
   <control-card
-    v-if="!pro || simple"
     title="Speed"
-    :locked="klippyReady ? '' : notReadyReason"
-    :note="klippyReady ? speedNote : ''"
+    :locked="controlLock"
+    :note="controlReady ? speedNote : ''"
     data-tid="control-speed"
   >
     <template #aside>
-      <span>{{ isCustom ? `${speedName} · while printing` : 'while printing' }}</span>
+      <span>while printing</span>
     </template>
     <seg-picker
       :options="speedOptions"
       :value="speedFactor"
-      label="Speed"
+      label="Speed presets"
       big
       accent
       fill
-      :disabled="!klippyReady"
+      :disabled="!controlReady"
       @input="setSpeed"
     />
-  </control-card>
-
-  <control-card
-    v-else
-    title="Speed and limits"
-    :locked="klippyReady ? '' : notReadyReason"
-    :note="klippyReady ? 'Velocity and below last until Klipper restarts. Save them in Files › printer.cfg.' : ''"
-    data-tid="control-speed"
-  >
-    <div class="limits">
-      <div class="crow">
-        <span class="crow__name">Speed <span class="crow__sub">· {{ speedName }}</span></span>
+    <template v-if="!simple">
+      <button
+        type="button"
+        class="speed__custom"
+        data-tid="speed-custom"
+        :aria-expanded="custom || isCustom ? 'true' : 'false'"
+        aria-controls="speed-custom-value"
+        @click="custom = !custom"
+      >
+        Custom · {{ speedFactor }}%
+      </button>
+      <div
+        v-show="custom || isCustom"
+        id="speed-custom-value"
+      >
         <number-field
+          :key="panelTarget"
           :value="speedFactor"
           unit="%"
           :min="1"
           :max="500"
           label="Speed"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @change="setSpeed"
         />
       </div>
-      <div class="crow">
-        <span class="crow__name">Flow</span>
-        <number-field
+      <control-task-fold
+        fold-key="speed.fine"
+        title="Fine-tune"
+        :summary="`Flow ${flowFactor}%${pressureAdvance === null ? '' : ` · PA ${pressureAdvance} s`}`"
+      >
+        <tuning-value
+          :context="panelTarget"
+          label="Flow"
           :value="flowFactor"
           unit="%"
           :min="1"
           :max="300"
-          label="Flow"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @change="setFlow"
         />
-      </div>
-      <div
-        v-if="pressureAdvance !== null"
-        class="crow"
-      >
-        <span class="crow__name">Pressure advance</span>
-        <number-field
+        <tuning-value
+          v-if="pressureAdvance !== null"
+          :context="panelTarget"
+          label="Pressure advance"
           :value="pressureAdvance"
           unit="s"
-          :min="0"
           :max="2"
           :decimals="3"
-          label="Pressure advance"
-          :disabled="!klippyReady"
+          :disabled="!controlReady"
           @change="setPressureAdvance"
         />
-      </div>
-      <div
-        v-for="limit in limits"
-        :key="limit.key"
-        class="crow"
-      >
-        <span class="crow__name">{{ limit.label }}</span>
-        <number-field
+        <tuning-value
+          v-for="limit in limits"
+          :key="limit.key"
+          :context="panelTarget"
+          :label="limit.label"
           :value="limit.value"
           :unit="limit.unit"
-          :min="0"
+          :min="['VELOCITY', 'ACCEL'].includes(limit.key) ? 0.001 : 0"
+          :max="limit.max ?? 0"
           :decimals="limit.decimals"
-          :label="limit.label"
-          :disabled="!klippyReady"
+          :disabled="!controlReady || limit.max === null"
+          :reason="limit.max === null ? limitReason : ''"
           @change="setLimit(limit.key, $event)"
         />
-      </div>
-    </div>
+        <h3
+          v-if="retractionRows.length"
+          class="speed__retract"
+        >
+          Firmware retraction · G10 and G11
+        </h3>
+        <tuning-value
+          v-for="row in retractionRows"
+          :key="row.key"
+          :context="panelTarget"
+          :label="row.label"
+          :value="row.value"
+          :unit="row.unit"
+          :min="row.key.endsWith('speed') ? 0.1 : 0"
+          :max="row.max"
+          :decimals="row.decimals"
+          :disabled="!controlReady"
+          @change="setRetraction(row.key, $event)"
+        />
+        <p class="speed__lifetime">
+          These values last until Klipper restarts. To keep them, save them in Files › printer.cfg. Put back remembers this visit's previous value.
+        </p>
+      </control-task-fold>
+    </template>
   </control-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import ControlMixin from '@/mixins/control'
+import ControlMixin, { type LimitKey } from '@/mixins/control'
 import { leftAt } from '@/services/control/speed'
 import { shortDuration } from '@/util/short-duration'
 import type { TimeEstimates } from '@/store/printer/types'
 import ControlCard from './ControlCard.vue'
 import SegPicker, { type SegOption } from './SegPicker.vue'
 import NumberField from './NumberField.vue'
+import ControlTaskFold from './ControlTaskFold.vue'
+import TuningValue from './TuningValue.vue'
+import { retractionCommand, type RetractionKey } from '@/services/control/model'
 
-type LimitKey = 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL'
-
-/**
- * Speed. Simple: Slow, Normal or Fast, each saying what it does and, while
- * printing, about how long is left at it (services/control/speed.ts: Slow
- * is half speed; Fast is as fast as the nozzle can melt this print's
- * filament). Pro: the exact speed and flow, pressure advance, and the
- * motion limits.
- */
-@Component({ components: { ControlCard, SegPicker, NumberField } })
+/** Presets and an exact custom value, with reversible tuning beside them. */
+@Component({ components: { ControlCard, SegPicker, NumberField, ControlTaskFold, TuningValue } })
 export default class ControlSpeed extends Mixins(ControlMixin) {
-  /** Slow, Normal and Fast even with Pro on, as Overview on a phone shows them. */
+  custom = false
+
+  /** Overview can retain its compact preset card. */
   @Prop({ type: Boolean })
   readonly simple?: boolean
 
@@ -147,24 +166,58 @@ export default class ControlSpeed extends Mixins(ControlMixin) {
   }
 
   /** Velocity, acceleration, corner speed, and whichever cruise setting this Klipper has. */
-  get limits (): Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number }> {
+  get limitReason (): string {
+    return "This printer hasn't reported its limits"
+  }
+
+  get limits (): Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number, max: number | null }> {
     const t = this.toolhead
-    const list: Array<{ key: LimitKey, label: string, value: number | null, unit: string, decimals: number }> = [
-      { key: 'VELOCITY', label: 'Velocity', value: t.max_velocity ?? null, unit: 'mm/s', decimals: 0 },
-      { key: 'ACCEL', label: 'Acceleration', value: t.max_accel ?? null, unit: 'mm/s²', decimals: 0 },
-      { key: 'SQUARE_CORNER_VELOCITY', label: 'Square corner velocity', value: t.square_corner_velocity ?? null, unit: 'mm/s', decimals: 1 }
+    const row = (key: LimitKey, label: string, value: number | null, unit: string, decimals: number) => {
+      const max = this.limitMaximum(key)
+      return { key, label, value, unit, decimals, max }
+    }
+    const list = [
+      row('VELOCITY', 'Velocity', t.max_velocity ?? null, 'mm/s', 0),
+      row('ACCEL', 'Acceleration', t.max_accel ?? null, 'mm/s²', 0),
+      row('SQUARE_CORNER_VELOCITY', 'Square corner velocity', t.square_corner_velocity ?? null, 'mm/s', 1)
     ]
     if (typeof t.minimum_cruise_ratio === 'number') {
-      list.push({ key: 'MINIMUM_CRUISE_RATIO', label: 'Minimum cruise ratio', value: t.minimum_cruise_ratio, unit: '', decimals: 2 })
+      const ratio = row('MINIMUM_CRUISE_RATIO', 'Minimum cruise ratio', t.minimum_cruise_ratio, '', 2)
+      list.push(ratio)
     } else if (typeof t.max_accel_to_decel === 'number') {
-      list.push({ key: 'ACCEL_TO_DECEL', label: 'Accel to decel', value: t.max_accel_to_decel, unit: 'mm/s²', decimals: 0 })
+      const accelToDecel = row('ACCEL_TO_DECEL', 'Accel to decel', t.max_accel_to_decel, 'mm/s²', 0)
+      list.push(accelToDecel)
     }
     return list
+  }
+
+  get retraction (): Record<RetractionKey, number> | null {
+    return this.$store.state.printer.printer.firmware_retraction ?? null
+  }
+
+  get retractionRows (): Array<{ key: RetractionKey, label: string, value: number, unit: string, max: number, decimals: number }> {
+    const r = this.retraction
+    if (!r) return []
+    return [
+      { key: 'retract_length', label: 'Retract', value: r.retract_length, unit: 'mm', max: 15, decimals: 2 },
+      { key: 'retract_speed', label: 'Retract speed', value: r.retract_speed, unit: 'mm/s', max: 200, decimals: 0 },
+      { key: 'unretract_extra_length', label: 'Extra on the way back', value: r.unretract_extra_length, unit: 'mm', max: 5, decimals: 2 },
+      { key: 'unretract_speed', label: 'Unretract speed', value: r.unretract_speed, unit: 'mm/s', max: 200, decimals: 0 }
+    ]
+  }
+
+  setRetraction (key: RetractionKey, value: number) {
+    const row = this.retractionRows.find(r => r.key === key)
+    if (!this.controlReady || !row || !Number.isFinite(value) || value < (key.endsWith('speed') ? 0.1 : 0) || value > row.max) return
+    this.sendGcode(retractionCommand(key, value))
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .speed__custom { color: var(--m3d-accent); text-align: left; }
+  .speed__retract { font-size: 14px; }
+  .speed__lifetime { color: var(--m3d-text-subtle); font-size: 12px; }
   .limits > .crow + .crow {
     border-top: 1px solid var(--m3d-border);
   }

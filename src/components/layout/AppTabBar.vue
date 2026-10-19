@@ -63,6 +63,34 @@
             />
           </router-link>
 
+          <div
+            v-if="toolSections.length"
+            class="app-more__tools"
+            role="group"
+            aria-label="Tools"
+          >
+            <div class="app-more__group-label">
+              Tools
+            </div>
+            <router-link
+              v-for="section in toolSections"
+              :key="section.id"
+              :to="sectionTo(section)"
+              class="app-more__row"
+              :class="{ 'app-more__row--on': currentSection === section }"
+              :data-tid="`more-${section.id}`"
+              @click.native="more = false"
+            >
+              <frame-icon :name="section.icon" />
+              <span class="app-more__label">{{ section.label }}</span>
+              <frame-icon
+                name="chevronRight"
+                small
+                class="app-more__chevron"
+              />
+            </router-link>
+          </div>
+
           <router-link
             to="/"
             class="app-more__row"
@@ -92,25 +120,6 @@
               class="app-more__chevron"
             />
           </router-link>
-
-          <button
-            type="button"
-            role="switch"
-            class="app-more__row"
-            :aria-checked="pro ? 'true' : 'false'"
-            data-tid="more-pro"
-            @click="togglePro"
-          >
-            <frame-icon name="control" />
-            <span class="app-more__label">
-              Pro controls
-              <span class="app-more__hint">Exact values, more rows, Console and Files</span>
-            </span>
-            <span
-              class="app-more__toggle"
-              :class="{ 'app-more__toggle--on': pro }"
-            />
-          </button>
         </div>
         <div class="app-more__account">
           <cloud-account-menu />
@@ -124,7 +133,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import FrameMixin from '@/mixins/frame'
 import type { Section, SectionId } from '@/router/printerSections'
-import { setProMode } from '@/services/pro-mode'
 import { probeSlicer } from '@/services/slicer-bridge/slicerUrl'
 import CloudAccountMenu from '@/components/muon-cloud/CloudAccountMenu.vue'
 
@@ -148,15 +156,15 @@ export default class AppTabBar extends Mixins(FrameMixin) {
   }
 
   get moreSections (): Section[] {
-    return this.sections.filter(s => !TAB_SECTIONS.includes(s.id))
+    return this.sections.filter(s => !TAB_SECTIONS.includes(s.id) && s.group !== 'tools')
+  }
+
+  get toolSections (): Section[] {
+    return this.sections.filter(s => s.group === 'tools')
   }
 
   get moreActive (): boolean {
     return !!this.currentSection && !this.tabs.includes(this.currentSection)
-  }
-
-  togglePro () {
-    setProMode(!this.pro)
   }
 }
 </script>
@@ -203,6 +211,8 @@ export default class AppTabBar extends Mixins(FrameMixin) {
   }
 
   .app-more {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
     padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
     border-radius: 22px 22px 0 0;
     background: var(--m3d-surface);
@@ -215,8 +225,18 @@ export default class AppTabBar extends Mixins(FrameMixin) {
     font-weight: 600;
   }
 
-  .app-more__list > * + * {
+  .app-more__list > * + *,
+  .app-more__tools > .app-more__row + .app-more__row {
     border-top: 1px solid var(--m3d-border);
+  }
+
+  .app-more__group-label {
+    padding: 12px 4px 4px;
+    color: var(--m3d-text-subtle);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .app-more__row {
@@ -251,37 +271,6 @@ export default class AppTabBar extends Mixins(FrameMixin) {
     color: var(--m3d-text-muted);
     font-size: 12px;
   }
-
-  .app-more__toggle {
-    position: relative;
-    flex: none;
-    width: 44px;
-    height: 26px;
-    border-radius: 13px;
-    background: var(--m3d-switch-off, var(--m3d-border-strong));
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
-      transition: left var(--m3d-duration-fast) var(--m3d-ease);
-    }
-  }
-
-  .app-more__toggle--on {
-    background: var(--m3d-accent);
-
-    &::after {
-      left: 20px;
-    }
-  }
-
   .app-more__account {
     display: flex;
     justify-content: flex-end;
