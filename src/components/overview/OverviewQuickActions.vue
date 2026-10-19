@@ -60,7 +60,7 @@
       </button>
     </div>
     <p class="ov-quick__note">
-      {{ pro ? 'Everything else is in Control; your macros are beside the temperatures.' : 'Everything else is in Control. Pro adds your macros here.' }}
+      Everything else is in Control. Add Macros with Customise Overview.
     </p>
   </section>
 </template>

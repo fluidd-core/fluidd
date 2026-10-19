@@ -22,6 +22,7 @@
     <div class="ov-print__bar">
       <i :style="{ width: `${Math.min(100, progress)}%` }" />
     </div>
+    <first-layer-nudges />
     <dl class="ov-print__facts">
       <div
         v-for="fact in facts"
@@ -70,6 +71,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import OverviewMixin from '@/mixins/overview'
 import ControlTaskFold from '@/components/control/ControlTaskFold.vue'
+import FirstLayerNudges from './FirstLayerNudges.vue'
 import { jobName } from '@/services/printers-page/model'
 
 /**
@@ -77,7 +79,7 @@ import { jobName } from '@/services/printers-page/model'
  * how long it has run and what the slicer said, and what is queued next.
  * Live numbers opens exact progress, speed, flow, position and homing facts.
  */
-@Component({ components: { ControlTaskFold } })
+@Component({ components: { ControlTaskFold, FirstLayerNudges } })
 export default class OverviewThisPrint extends Mixins(OverviewMixin) {
   get percentText (): string {
     return `${Math.floor(this.progress)}%`
