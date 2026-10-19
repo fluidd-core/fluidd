@@ -7,6 +7,7 @@ import { foreignRegistry, foreignSlug } from '@/services/foreign-printers/regist
 import { httpClientActions } from '@/api/httpClientActions'
 import { cloudState } from '@/services/muon-cloud/state'
 import { MANAGED_API_URL } from '@/services/muon-cloud/origin'
+import { slugForCloudPrinter } from '../slug'
 import {
   activeSlug,
   installPrinterPages,
@@ -89,6 +90,23 @@ describe('opening a foreign printer', () => {
   })
 })
 
+describe('a cloud printer route', () => {
+  it('still identifies the clicked printer after the account list is renamed and reordered', () => {
+    const boxwood = { id: 'same-prefix-boxwood', name: 'Boxwood' }
+    const giblet = { id: 'same-prefix-giblet', name: 'Giblet' }
+    const clicked = slugForCloudPrinter(boxwood)
+
+    // The account refresh arrives between render and click. Display names and
+    // ordering are presentation only; neither may change the route identity.
+    const refreshed = [
+      { kind: 'cloud' as const, slug: slugForCloudPrinter({ ...giblet, name: 'Boxwood' }), printerId: giblet.id },
+      { kind: 'cloud' as const, slug: slugForCloudPrinter({ ...boxwood, name: 'Workshop Boxwood' }), printerId: boxwood.id }
+    ]
+
+    expect(resolveSlug(clicked, refreshed)).toMatchObject({ kind: 'cloud', printerId: boxwood.id })
+  })
+})
+
 describe('the printer an address names', () => {
   const printers = [
     local('boxwood-367a', 'http://192.168.1.153'),
@@ -156,7 +174,7 @@ describe("a printer's identity, answered after Fluidd moved to another printer",
     await expect(learning).resolves.toBeNull()
     expect(printerPagesState.aliases).toEqual({})
     expect(printerPagesState.learned).toEqual({})
-    expect(activeSlug()).toBe('boxwood-367a')
+    expect(activeSlug()).toBe(slugForCloudPrinter({ id: BOXWOOD_ID, name: 'Boxwood · 367A' }))
     expect(isActiveSlug('walnut-8987')).toBe(false)
   })
 
@@ -172,7 +190,7 @@ describe("another account printer's address", () => {
   it('is never kept as another name for the printer Fluidd is on', () => {
     cloudState.printers = [{ id: 'f1f6920f', name: 'Boxwood · 367A' } as never]
     store.state.config.apiUrl = 'http://192.168.137.73'
-    rememberAlias('boxwood-367a', 'walnut-8987')
+    rememberAlias(slugForCloudPrinter({ id: 'f1f6920f', name: 'Boxwood · 367A' }), 'walnut-8987')
     expect(printerPagesState.aliases).toEqual({})
     store.state.config.apiUrl = ''
     cloudState.printers = []

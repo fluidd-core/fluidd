@@ -213,7 +213,7 @@ import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug } from '@/services/printer-pages'
 
 /**
- * Files (Pro): the printer's folders on the left (its own settings, the
+ * Files (Tools): the printer's folders on the left (its own settings, the
  * Muon3D defaults, logs and the rest) and the file open on the right, in
  * the editor, with Save, and Save and restart for files a service reads.
  * Developer mode, which makes the config folder yours, is in Settings; the

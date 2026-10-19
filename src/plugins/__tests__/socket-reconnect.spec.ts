@@ -92,6 +92,18 @@ async function opened (client: WebSocketClient) {
 }
 
 describe('WebSocketClient reconnecting', () => {
+  it('purges unanswered requests and waits when reconnecting', async () => {
+    const { client, store } = lanClient()
+    const socket = await opened(client)
+    client.emit('server.temperature_store', { dispatch: 'charts/initTempStore', wait: 'history' })
+    expect(client.requests).toHaveLength(1)
+
+    socket.emit('close', { code: 1006, reason: 'lost', wasClean: false })
+
+    expect(client.requests).toHaveLength(0)
+    expect(store.commit).toHaveBeenCalledWith('wait/setRemoveWait', 'history')
+  })
+
   it('retries a clean close it did not ask for, and tells the store it was not clean', async () => {
     // Moonraker closes cleanly when it reaps a quiet socket, and over Iroh
     // every close from the printer arrives as clean. Both used to end on

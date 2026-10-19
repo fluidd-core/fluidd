@@ -18,6 +18,7 @@ import {
   type PrinterSocket
 } from '@/services/managed-transport'
 import axios from 'axios'
+import { cloudState } from '@/services/muon-cloud/state'
 
 /** The longest wait between two tries to reconnect. */
 const MAX_RECONNECT_DELAY_MS = 30_000
@@ -128,6 +129,7 @@ export class WebSocketClient {
 
   close () {
     this.attempt++
+    this.purgeRequests()
     this.cancelRetry()
     clearTimeout(this.pingTimeout)
     clearTimeout(this.deadTimeout)
@@ -142,6 +144,7 @@ export class WebSocketClient {
   async connect (url?: string) {
     if (url) this.url = url
     const attempt = ++this.attempt
+    this.purgeRequests()
     const target = this.url
     this.cache = null
     this.closing = false
@@ -178,6 +181,7 @@ export class WebSocketClient {
     reconnect?: () => Promise<PrinterSocket>
   ) {
     this.attempt++
+    this.purgeRequests()
     this.closing = false
     this.cancelRetry()
     this.bindConnection(connection, reconnect ?? null)
@@ -186,6 +190,7 @@ export class WebSocketClient {
   /** Ends an adopted session without allowing its close event to reconnect. */
   releaseTransportSocket (closeConnection = true) {
     this.attempt++
+    this.purgeRequests()
     this.cancelRetry()
     const connection = this.connection
     this.connection = null
@@ -238,6 +243,7 @@ export class WebSocketClient {
     consola.debug(`${this.logPrefix} Connection closed:`, event)
     clearTimeout(this.pingTimeout)
     clearTimeout(this.deadTimeout)
+    this.purgeRequests()
     const asked = this.closing
     this.closing = false
     if (this.store) {
@@ -273,6 +279,10 @@ export class WebSocketClient {
       this.requests.splice(requestIndex, 1)
     }
 
+    // A response captured by an earlier connection attempt has no authority
+    // over the newly selected session, even if a transport delivers it late.
+    if (request?.requestContext?.connectionAttempt !== undefined && request.requestContext.connectionAttempt !== this.attempt) return
+
     // Remove a wait if defined.
     if (this.store && request && request.wait && request.wait.length) {
       this.store.commit('wait/setRemoveWait', request.wait)
@@ -284,6 +294,7 @@ export class WebSocketClient {
       }
       consola.debug(`${this.logPrefix} Response error:`, d.error)
       if (this.store) this.store.dispatch('socket/onSocketError', d.error)
+      request?.resolve?.(undefined)
       return
     }
 
@@ -295,8 +306,9 @@ export class WebSocketClient {
 
       Object.defineProperty(result, '__request__', { enumerable: false, value: request })
       consola.debug(`${this.logPrefix} Response:`, result)
-      if (request.dispatch && this.store) this.store.dispatch(request.dispatch, result)
+      if (request.dispatch && this.store) this.store.dispatch(request.dispatch, request.requestContext ? { payload: result, requestContext: request.requestContext } : result)
       if (request.commit && this.store) this.store.commit(request.commit, result)
+      request.resolve?.(result)
     } else if (d.params && d.params[0]) {
       const [params, eventtime] = d.params
 
@@ -351,6 +363,16 @@ export class WebSocketClient {
     this.retryTimer = null
     this.retryAction = null
     this.retryAt = null
+  }
+
+  /** Forget unanswered RPCs and their loading indicators when a session ends. */
+  private purgeRequests () {
+    if (this.store) {
+      for (const request of this.requests) {
+        if (request.wait?.length) this.store.commit('wait/setRemoveWait', request.wait)
+      }
+    }
+    this.requests = []
   }
 
   /** Runs a waiting retry now, from the first step of the backoff. */
@@ -434,11 +456,22 @@ export class WebSocketClient {
         request.params = options.params
       }
       if (options && options.dispatch) request.dispatch = options.dispatch
+      if (options?.captureContext && this.store) {
+        request.requestContext = {
+          apiUrl: this.store.state.config.apiUrl,
+          connectionId: this.store.state.socket.connectionId,
+          printerId: cloudState.activePrinterId,
+          connectionAttempt: this.attempt
+        }
+      }
       if (options && options.commit) request.commit = options.commit
+      const response = new Promise<unknown>(resolve => { request.resolve = resolve })
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
+      return response
     } else {
       consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
+      return Promise.resolve(undefined)
     }
   }
 }
@@ -478,6 +511,7 @@ export interface NotifyOptions {
   dispatch?: string;
   commit?: string;
   wait?: string;
+  captureContext?: boolean;
 }
 
 interface Request {
@@ -487,6 +521,8 @@ interface Request {
   commit?: string;
   params?: any;
   wait?: string;
+  resolve?: (result: unknown) => void;
+  requestContext?: { apiUrl: string; connectionId: string | null, printerId: string | null, connectionAttempt: number };
 }
 
 interface SocketRequest {
