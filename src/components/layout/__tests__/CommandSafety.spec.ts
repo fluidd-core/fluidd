@@ -5,8 +5,8 @@ import { SocketActions } from '@/api/socketActions'
 import { cloudState } from '@/services/muon-cloud/state'
 import { printerTransportBinding } from '@/services/managed-session/httpTransportBinding'
 
-vi.mock('@/api/socketActions', () => ({ SocketActions: { printerGcodeScript: vi.fn(), printerRestart: vi.fn(), printerFirmwareRestart: vi.fn(), machineReboot: vi.fn(), machineShutdown: vi.fn() } }))
-vi.mock('@/services/printer-pages', () => ({ activeSlug: () => 'hazel-1234', isForeignSlug: () => false, knownPrinters: () => [] }))
+vi.mock('@/api/socketActions', () => ({ SocketActions: { printerGcodeScript: vi.fn(), printerPrintPause: vi.fn(), printerPrintResume: vi.fn(), printerPrintCancel: vi.fn(), printerPrintStart: vi.fn(), printerEmergencyStop: vi.fn(), printerRestart: vi.fn(), printerFirmwareRestart: vi.fn(), machineReboot: vi.fn(), machineShutdown: vi.fn() } }))
+vi.mock('@/services/printer-pages', () => ({ activeSlug: () => 'hazel-1234', isForeignSlug: () => false, knownPrinters: () => [], printerHomePath: () => '/hazel-1234' }))
 vi.mock('@/services/muon-cloud/state', () => ({ cloudState: { activePrinterId: null, printers: [], account: null } }))
 // Discovery reaches application startup (and installs router/Vuetify globally).
 vi.mock('@/services/muon-cloud/directory', () => ({ savedName: () => 'Hazel' }))
@@ -17,8 +17,8 @@ function show () {
     computed: { isMobileViewport: () => false, sectionContext: () => ({ foreign: false, camera: null }) },
     mocks: {
       $store: {
-        state: { printer: { printer: { configfile: { settings: { 'filament_switch_sensor loader': { insert_gcode: 'LOAD' } } } } }, config: { apiUrl: 'http://hazel.local', uiSettings: { general: { enableKeyboardShortcuts: true } } } },
-        getters: { 'socket/getConnectionState': true, 'socket/getApiConnected': true, 'auth/getAuthenticated': true, 'printer/getKlippyReady': true, 'printer/getKlippyConnected': true, 'printer/getKlippyState': 'Ready', 'printer/getPrinterState': 'ready', 'config/getDisplayName': 'Hazel', 'files/getRootFiles': () => [], 'macros/getVisibleMacros': [] },
+        state: { printer: { printer: { configfile: { settings: { 'filament_switch_sensor loader': { insert_gcode: 'LOAD' } } } } }, config: { apiUrl: 'http://hazel.local', uiSettings: { general: { enableKeyboardShortcuts: true, confirmOnEstop: false }, spoolman: { autoSpoolSelectionDialog: false } } }, history: { jobs: [] } },
+        getters: { 'socket/getConnectionState': true, 'socket/getApiConnected': true, 'auth/getAuthenticated': true, 'printer/getKlippyReady': true, 'printer/getKlippyConnected': true, 'printer/getKlippyState': 'Ready', 'printer/getPrinterState': 'ready', 'config/getDisplayName': 'Hazel', 'config/getTempPresets': [{ id: 'pla', name: 'PLA', extruder: 210, heater_bed: 60 }], 'files/getRootFiles': () => [{ path: 'part.gcode', modified: 1 }], 'macros/getVisibleMacros': [{ id: 'main', name: null, macros: [{ name: 'PURGE', config: {} }] }], 'spoolman/getAvailable': false },
         dispatch: vi.fn(),
         commit: vi.fn()
       },
@@ -32,12 +32,116 @@ function show () {
 
 afterEach(() => {
   vi.clearAllMocks()
+  cloudState.account = null
   cloudState.activePrinterId = null
   cloudState.printers = []
   printerTransportBinding.remote = false
 })
 
 describe('palette command safety', () => {
+  const paletteActions = [
+    ['pause', 'printing'],
+    ['resume', 'paused'],
+    ['cancel', 'printing'],
+    ['home', 'ready'],
+    ['preheat-pla', 'ready'],
+    ['cool-down', 'ready'],
+    ['estop', 'ready'],
+    ['job-part.gcode', 'ready'],
+    ['macro-PURGE', 'ready']
+  ] as const
+
+  function command (wrapper: ReturnType<typeof show>, id: string, state: string) {
+    wrapper.vm.$store.getters['printer/getPrinterState'] = state
+    return (wrapper.vm as CommandBar).commands.find(item => item.id === id)
+  }
+
+  it.each(paletteActions)('does not offer %s to a cloud viewer', (id, state) => {
+    const wrapper = show()
+    wrapper.vm.$store.state.config.apiUrl = 'https://muon-cloud.invalid'
+    cloudState.activePrinterId = 'hazel'
+    cloudState.printers = [{ id: 'hazel', name: 'Hazel', model: 'M1', version: 'test', linked_at: 0, last_seen: 0, online_since: null, online: true, role: 'viewer' }]
+    printerTransportBinding.remote = true
+    expect(command(wrapper, id, state)).toBeUndefined()
+    wrapper.destroy()
+  })
+
+  it.each(paletteActions)('does not offer %s while disconnected', (id, state) => {
+    const wrapper = show()
+    wrapper.vm.$store.getters['socket/getConnectionState'] = false
+    expect(command(wrapper, id, state)).toBeUndefined()
+    wrapper.destroy()
+  })
+
+  it.each(paletteActions)('refuses stale %s after the printer target changes', async (id, state) => {
+    const wrapper = show()
+    const stale = command(wrapper, id, state)!
+    wrapper.vm.$store.state.config.apiUrl = 'http://oak.local'
+    await stale.run()
+    expect(Object.values(SocketActions).every(mock => !(mock as ReturnType<typeof vi.fn>).mock.calls.length)).toBe(true)
+    wrapper.destroy()
+  })
+
+  it('refuses cool down when the printer changes during confirmation', async () => {
+    const wrapper = show()
+    const coolDown = command(wrapper, 'cool-down', 'printing')!
+    wrapper.vm.$confirm = vi.fn().mockImplementation(async () => {
+      wrapper.vm.$store.state.config.apiUrl = 'http://oak.local'
+      return true
+    })
+    await coolDown.run()
+    expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).not.toHaveBeenCalled()
+    wrapper.destroy()
+  })
+
+  it.each([
+    ['cool-down', 'printing'],
+    ['cancel', 'printing'],
+    ['estop', 'ready'],
+    ['job-part.gcode', 'ready']
+  ] as const)('refuses confirmed %s when the signed-in account changes', async (id, state) => {
+    const wrapper = show()
+    cloudState.account = { id: 'account-a' } as any
+    if (id === 'estop') wrapper.vm.$store.state.config.uiSettings.general.confirmOnEstop = true
+    const confirmed = command(wrapper, id, state)!
+    wrapper.vm.$confirm = vi.fn().mockImplementation(async () => {
+      cloudState.account = { id: 'account-b' } as any
+      return true
+    })
+    await confirmed.run()
+    expect(wrapper.vm.$confirm).toHaveBeenCalledTimes(1)
+    expect(Object.values(SocketActions).every(mock => !(mock as ReturnType<typeof vi.fn>).mock.calls.length)).toBe(true)
+    wrapper.destroy()
+  })
+
+  it.each([
+    ['pause', 'printing'],
+    ['resume', 'paused'],
+    ['cancel', 'printing'],
+    ['home', 'ready'],
+    ['preheat-pla', 'ready'],
+    ['cool-down', 'ready'],
+    ['job-part.gcode', 'ready'],
+    ['macro-PURGE', 'ready']
+  ] as const)('refuses stale %s after Klipper is no longer ready', async (id, state) => {
+    const wrapper = show()
+    const stale = command(wrapper, id, state)!
+    wrapper.vm.$store.getters['printer/getKlippyReady'] = false
+    wrapper.vm.$store.getters['printer/getKlippyConnected'] = false
+    await stale.run()
+    expect(Object.values(SocketActions).every(mock => !(mock as ReturnType<typeof vi.fn>).mock.calls.length)).toBe(true)
+    wrapper.destroy()
+  })
+
+  it('sends a still-valid palette command exactly once', async () => {
+    const wrapper = show()
+    await command(wrapper, 'macro-PURGE', 'ready')!.run()
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledTimes(1)
+    expect(SocketActions.printerGcodeScript).toHaveBeenCalledWith('PURGE', undefined)
+    wrapper.destroy()
+  })
+
   it('sends typed G-code with Pro off exactly once', async () => {
     const wrapper = show()
     await wrapper.setData({ open: true, query: '> M105' })

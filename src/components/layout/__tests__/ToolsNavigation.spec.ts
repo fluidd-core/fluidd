@@ -63,7 +63,9 @@ describe('Tools navigation', () => {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))
       await wrapper.vm.$nextTick()
       expect(wrapper.find('[data-tid="command-bar"]').exists()).toBe(true)
-      expect((wrapper.vm as CommandBar).results.every(command => !/pro/i.test(`${command.id} ${command.label}`))).toBe(true)
+      const commands = (wrapper.vm as CommandBar).commands
+      expect(commands.length).toBeGreaterThan(0)
+      expect(commands.every(command => !/\bpro\b/i.test(`${command.id} ${command.label}`))).toBe(true)
     }
     expect(wrapper.find('[data-tid="pro-switch"]').exists()).toBe(false)
     expect(wrapper.find('[data-tid="more-pro"]').exists()).toBe(false)
