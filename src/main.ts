@@ -49,6 +49,7 @@ import App from './App.vue'
 import { LOADER_ID, setLoaderProgress, startupState } from './services/startup/loader'
 import { readSnapshot, renderCachedState } from './services/startup/snapshot'
 import { afterFirstPaint, NO_PREFETCH_PATHS, prefetchRoutes } from './services/startup/idle'
+import { retireProStorage } from './services/retired-storage'
 
 // Register global directives.
 import Blur from '@/directives/blur'
@@ -56,6 +57,7 @@ import { restoreUiStyle } from '@/util/ui-style'
 import { applyGlassIcons } from '@/util/glass-icons'
 
 // The entry is evaluated: the loader's next mark (KAN-525).
+retireProStorage()
 setLoaderProgress(0.8)
 
 // What the printers last showed goes up while the socket connects; the

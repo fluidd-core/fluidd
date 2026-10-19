@@ -14,6 +14,21 @@ describe('the checks that touch the plate', () => {
 const DAY = 86_400_000
 const now = 1_760_000_000_000
 
+it.each(['[[null]]', '[["bad"]]', '[[0.1],[]]', '[[0.1],[0.2,0.3]]', 'not json', '{}'])('does not record a completed bed measurement from %s', mesh => {
+  expect(checkProduced('bedMesh', { mesh: '[]', pending: {} }, { mesh, pending: {} })).toBe(false)
+})
+
+for (const value of ['', 'NaN', 'not measured']) {
+  it.each([
+    ['shaper', 'input_shaper', 'shaper_freq_x'],
+    ['pid', 'extruder', 'pid_kp'],
+    ['firstLayer', 'probe', 'z_offset']
+  ] as const)('does not record %s with an invalid numeric report', (id, section, key) => {
+    const before = { mesh: '[]', pending: {} }
+    expect(checkProduced(id, before, { ...before, pending: { [section]: { [key]: value } } })).toBe(false)
+  })
+}
+
 describe('a check\'s status', () => {
   it('asks for a bed mesh never run from here', () => {
     expect(checkStatus('bedMesh', undefined, now)).toMatchObject({ tone: 'warn', due: true })

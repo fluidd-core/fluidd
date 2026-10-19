@@ -5,6 +5,7 @@ export interface RunningCheck {
   id: CheckId;
   /** The printer it runs on, by its address name. */
   printer: string | null;
+  target?: string;
   startedAt: number;
   /** What Klipper held when it started, to tell when it has a new result. */
   before: CheckEvidence;
