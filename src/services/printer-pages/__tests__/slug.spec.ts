@@ -32,10 +32,10 @@ describe('printer slugs', () => {
     expect(slugForMdnsHost(undefined)).toBeNull()
   })
 
-  it("names an account printer by the console's display name", () => {
-    expect(slugForCloudPrinter({ id: 'f1f6920f757634a1', name: 'Boxwood · 367A' })).toBe('boxwood-367a')
-    // Renamed in the console without its suffix: four characters of the EndpointId.
-    expect(slugForCloudPrinter({ id: 'f1f6920f757634a1', name: 'Workshop printer' })).toBe('workshop-printer-f1f6')
+  it('names an account printer by its complete stable ID', () => {
+    expect(slugForCloudPrinter({ id: 'f1f6920f757634a1', name: 'Boxwood · 367A' })).toBe('printer-f1f6920f757634a1')
+    // Renaming changes presentation, not the route identity.
+    expect(slugForCloudPrinter({ id: 'f1f6920f757634a1', name: 'Workshop printer' })).toBe('printer-f1f6920f757634a1')
   })
 
   it('names any other printer by its name and a hash of its address', () => {
@@ -50,7 +50,7 @@ describe('printer slugs', () => {
   it("never starts with a path the printer's nginx sends to Moonraker", () => {
     expect(slugForAddress('Printer', 'http://10.0.0.5')).toMatch(/^p-printer-[a-z0-9]{4}$/)
     expect(slugForIdentity({ name: 'server room', suffix: 'a1b2' })).toBe('p-server-room-a1b2')
-    expect(slugForCloudPrinter({ id: 'abcd', name: 'Access 1' })).toBe('p-access-1-abcd')
+    expect(slugForCloudPrinter({ id: 'abcd', name: 'Access 1' })).toBe('printer-abcd')
   })
 
   it('always has the shape the router accepts, and Fluidd routes never do', () => {

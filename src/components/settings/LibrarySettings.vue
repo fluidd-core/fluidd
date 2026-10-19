@@ -78,11 +78,14 @@
       >
         What was in it is deleted on {{ purgeDay }} unless you turn it back on.
       </p>
-      <div class="lib-set__promise">
+      <div
+        v-if="promise"
+        class="lib-set__promise"
+      >
         <b>{{ promiseTitle }}</b>
         <ul>
           <li
-            v-for="line in promiseLines"
+            v-for="line in promise.lines"
             :key="line"
           >
             {{ line }}
@@ -94,6 +97,9 @@
           rel="noopener"
         >What we read and keep, in full</a>
       </div>
+      <p v-else>
+        The Library has a promise this version of Control cannot show. Update Control before turning it on.
+      </p>
       <p
         v-if="error"
         class="lib-set__error"
@@ -104,7 +110,7 @@
         <button
           type="button"
           class="lib-btn lib-btn--pri"
-          :disabled="busy"
+          :disabled="busy || !promise"
           data-tid="library-turn-on"
           @click="turnOn"
         >
@@ -232,7 +238,7 @@ import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
 import { describeLibraryError, type Preferences } from '@/services/library/api'
 import { bytesText, dayText } from '@/services/library/format'
-import { PROMISE_LINES, PROMISE_TITLE, PROMISE_URL } from '@/services/library/promise'
+import { libraryPromise, PROMISE_TITLE, PROMISE_URL } from '@/services/library/promise'
 import {
   libraryState,
   refreshLibrary,
@@ -258,8 +264,11 @@ export default class LibrarySettings extends Vue {
   accountDialog = false
 
   promiseTitle = PROMISE_TITLE
-  promiseLines = PROMISE_LINES
   promiseUrl = PROMISE_URL
+
+  get promise () {
+    return libraryState.checked ? libraryPromise(libraryState.promiseVersion) : null
+  }
 
   created () {
     watchLibraryAccount()
@@ -318,7 +327,8 @@ export default class LibrarySettings extends Vue {
   }
 
   turnOn () {
-    return this.run(turnLibraryOn)
+    const version = this.promise?.version
+    if (version) return this.run(() => turnLibraryOn(version))
   }
 
   async turnOff () {

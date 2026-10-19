@@ -29,13 +29,13 @@ function tableEntry (choice: MaterialChoice): HostMaterial {
 /**
  * What the selected printer has loaded, for the slicer (printer.setup,
  * docs/fluidd-integration.md in muon3d-slicer). The first that answers:
- * Spoolman's active spool, then what the printer was told is loaded (its
- * save_variables muon_material, as the panel sets it), then the material the
- * heaters are set to. With it, Fluidd's material table.
+ * What the printer was told is loaded (save_variables muon_material), then
+ * Spoolman's active spool, then the material the heaters are set to.
+ * With it, Fluidd's material table. See docs/loaded-filament.md.
  *
  * The loaded material carries a colour only when one was given: a spool's,
  * or the one someone set for what's loaded (save_variables
- * muon_material_color, KAN-516). The slicer writes it into the G-code as the
+ * muon_material_colour, KAN-516). The slicer writes it into the G-code as the
  * filament's colour, and a material type's swatch isn't that.
  */
 export function hostSetup (input: {
@@ -50,7 +50,9 @@ export function hostSetup (input: {
   const byType = (type: string | null | undefined) => (type ? input.choices.find(c => c.name.toUpperCase() === type.toUpperCase()) : undefined)
   let material: HostMaterial | null = null
   const f = input.spool?.filament
-  if (f && (f.material || f.name)) {
+  if (input.loaded) {
+    material = { ...tableEntry(input.loaded), colour: input.loadedColour ? input.loadedColour.toUpperCase() : null, source: 'loaded' }
+  } else if (f && (f.material || f.name)) {
     const type = f.material?.trim() || null
     const entry = byType(type)
     const hex = f.color_hex?.replace(/^#/, '')
@@ -63,8 +65,6 @@ export function hostSetup (input: {
       source: 'spool',
       remaining: input.spool?.remaining_weight ?? null
     }
-  } else if (input.loaded) {
-    material = { ...tableEntry(input.loaded), colour: input.loadedColour ? input.loadedColour.toUpperCase() : null, source: 'loaded' }
   } else if (input.heated) {
     material = { ...tableEntry(input.heated), colour: null, source: 'heaters' }
   }

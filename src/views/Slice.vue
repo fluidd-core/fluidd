@@ -52,7 +52,6 @@ import type { Route, NavigationGuardNext } from 'vue-router'
 import { consola } from 'consola'
 import BrowserMixin from '@/mixins/browser'
 import ControlMixin from '@/mixins/control'
-import { proMode } from '@/services/pro-mode'
 import { readLook } from '@/services/slicer-bridge/look'
 import { hostSetup, type ActiveSpool } from '@/services/slicer-bridge/setup'
 import type { HostSetup, PrinterMaterial } from '@/services/slicer-bridge/vendor/printer-client/bridge/protocol'
@@ -96,8 +95,10 @@ export const CROSS_ORIGIN_SANDBOX = 'allow-scripts allow-same-origin allow-forms
  * has not saved asks first.
  *
  * The Fluidd integration (KAN-511, muon3d-slicer docs/fluidd-integration.md):
- * the slicer is told Fluidd's look, its Simple or Pro, and what the selected
- * printer has loaded, each again when it changes. A slicer that draws itself
+ * the slicer is told Fluidd's look and what the selected printer has loaded,
+ * each again when it changes. The slicer receives no Control layout mode
+ * (KAN-550, route meta
+ * noMode). A slicer that draws itself
  * as a part of the page (its hello lists ui.look) gets a frame with no card
  * of its own; an older one keeps today's framed card. The rail stays either
  * way.
@@ -227,7 +228,6 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
       theme: this.theme,
       density: this.density,
       look: this.readLook(),
-      mode: proMode.on ? 'pro' : 'simple',
       setup: (key) => (key === this.host?.printer()?.key ? this.currentSetup : null),
       onMaterial: (key, material) => { if (key === this.host?.printer()?.key) this.takeMaterial(material) },
       library: createFluiddLibrary({ browse: () => { this.$router.push('/library').catch(() => {}) } }),
@@ -247,7 +247,6 @@ export default class Slice extends Mixins(ControlMixin, BrowserMixin) {
     this.styleObserver = new MutationObserver(sendLook)
     this.styleObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-m3d-style'] })
     this.$watch('density', (density: 'compact' | 'touch') => this.host?.bridge.setDensity(density))
-    this.$watch(() => proMode.on, (on: boolean) => this.host?.bridge.setMode(on ? 'pro' : 'simple'))
     // One printer.setup a frame, however many of its inputs change at once.
     this.$watch(() => JSON.stringify(this.currentSetup), () => {
       cancelAnimationFrame(this.setupFrame)
