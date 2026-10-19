@@ -190,14 +190,12 @@ afterEach(() => {
 describe('Control authority matrix', () => {
   for (const row of rows) {
     for (const scenario of ['viewer', 'operator', 'disconnected'] as const) {
-      const knownGap = row.name === 'Settings / install MuonOS update' && (scenario === 'viewer' || scenario === 'disconnected')
-      ;(knownGap ? it.fails : it)(`${row.name} — ${scenario}`, async () => runCase(row, scenario))
+      it(`${row.name} — ${scenario}`, async () => runCase(row, scenario))
     }
     if (row.needsKlipper !== false) it(`${row.name} — Klipper not ready`, async () => runCase(row, 'klipper-not-ready'))
     if (row.confirm) {
       for (const change of ['printer', 'account', 'role'] as const) {
-        const knownGap = row.name === 'Settings / install MuonOS update'
-        ;(knownGap ? it.fails : it)(`${row.name} — ${change} changes during confirmation`, async () => {
+        it(`${row.name} — ${change} changes during confirmation`, async () => {
           const fixture = row.mount(); setCase(fixture, 'operator')
           fixture.confirm.mockImplementation(async () => {
             if (change === 'printer') cloudState.activePrinterId = 'oak'
