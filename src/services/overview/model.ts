@@ -62,6 +62,8 @@ export interface ChartPoint {
   date: Date;
 }
 
+const finiteNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value)
+
 /**
  * The temperature graph's lines for the last `windowSeconds`, drawn in a
  * box `width` by `height`. The scale fits every reading and target shown,
@@ -74,9 +76,9 @@ export function chartLines (data: ChartPoint[], keys: string[], windowSeconds: n
   for (const d of shown) {
     for (const key of keys) {
       const v = d[key]
-      if (typeof v === 'number') values.push(v)
+      if (finiteNumber(v)) values.push(v)
       const t = d[`${key}Target`]
-      if (typeof t === 'number' && t > 0) values.push(t)
+      if (finiteNumber(t) && t > 0) values.push(t)
     }
   }
   if (!values.length) return { lines: [], min: 0, max: 0 }
@@ -88,12 +90,21 @@ export function chartLines (data: ChartPoint[], keys: string[], windowSeconds: n
   const x = (date: Date) => ((date.getTime() - from) / (windowSeconds * 1000)) * width
   const y = (v: number) => height - ((v - min) / (max - min)) * height
   const lines = keys.map(key => {
-    const points = shown.filter(d => typeof d[key] === 'number')
-    const path = points.map((d, i) => `${i ? 'L' : 'M'}${x(d.date).toFixed(1)} ${y(d[key] as number).toFixed(1)}`).join(' ')
-    const last = points[points.length - 1]
+    let connected = false
+    const path: string[] = []
+    let last: ChartPoint | undefined
+    for (const point of shown) {
+      const value = point[key]
+      const pointX = x(point.date)
+      const pointY = finiteNumber(value) ? y(value) : NaN
+      if (!Number.isFinite(pointX) || !Number.isFinite(pointY)) { connected = false; continue }
+      path.push(`${connected ? 'L' : 'M'}${pointX.toFixed(1)} ${pointY.toFixed(1)}`)
+      connected = true
+      last = point
+    }
     const target = last ? last[`${key}Target`] : undefined
-    return { key, path, targetY: typeof target === 'number' && target > 0 ? y(target) : null }
-  }).filter(l => l.path)
+    return { key, path: path.join(' '), targetY: finiteNumber(target) && target > 0 ? y(target) : null }
+  }).filter(line => line.path)
   return { lines, min, max }
 }
 
@@ -126,7 +137,7 @@ export interface SensorRow<H> {
 }
 
 /**
- * Pro's table of every heater and sensor: the nozzle and bed by their
+ * The table of every heater and sensor: the nozzle and bed by their
  * everyday names, power as a percentage, and temperatures to a tenth.
  */
 export function sensorRows<H extends { name: string, prettyName: string, temperature: number, power?: number }> (

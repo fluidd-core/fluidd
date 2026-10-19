@@ -270,9 +270,9 @@
       @save="handleMeshSave"
     />
 
-    <manual-probe-dialog
-      v-if="manualProbeDialogOpen"
+    <manual-probe-recovery
       v-model="manualProbeDialogOpen"
+      :automatic="showManualProbeDialogAutomatically"
     />
   </collapsable-card>
 </template>

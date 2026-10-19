@@ -158,7 +158,7 @@ import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vu
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
 
 /**
- * Charts (Overview, Pro): your own charts from anything the printer
+ * Charts: your own charts from anything the printer
  * reports, each with a live legend of its values, in an order you set;
  * hidden ones wait below. Each is still Fluidd's chart, kept in Fluidd's
  * layout store, and edited with Fluidd's chart editor.
