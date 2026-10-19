@@ -6,6 +6,13 @@ import { httpClientActions } from '@/api/httpClientActions'
 import type { FileWithPath } from '@/types'
 import consola from 'consola'
 
+type UploadResponse = ReturnType<typeof httpClientActions.serverFilesUploadPost>
+
+// A picker/drop action can be observed by more than one mounted upload surface.
+// The File object identifies that one browser action; forget it after settlement
+// so a later, deliberate upload or retry still reaches the printer.
+const uploadsInFlight = new WeakMap<File, Map<string, UploadResponse>>()
+
 @Component
 export default class FilesMixin extends Vue {
   get apiUrl (): string {
@@ -175,7 +182,27 @@ export default class FilesMixin extends Vue {
    * @param andPrint If we should attempt to print this file or not.
    * @param options Axios request options
    */
-  async uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
+  uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig): UploadResponse {
+    const destination = `${root}\0${path}\0${andPrint}`
+    let destinations = uploadsInFlight.get(file)
+    const existing = destinations?.get(destination)
+    if (existing) return existing
+
+    if (!destinations) {
+      destinations = new Map()
+      uploadsInFlight.set(file, destinations)
+    }
+
+    const upload = this.performUploadFile(file, path, root, andPrint, options)
+    destinations.set(destination, upload)
+    upload.finally(() => {
+      destinations?.delete(destination)
+      if (!destinations?.size) uploadsInFlight.delete(file)
+    }).catch(() => {})
+    return upload
+  }
+
+  private async performUploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
     const filepath = path
       ? `${path}/${file.name}`
       : file.name
