@@ -1,5 +1,10 @@
+import Vue from 'vue'
+import { mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { CHALLENGE, FakePrinter, OWNER, WAIVER } from '@/services/dev-mode/__tests__/fakePrinter'
 
+// The Aux API's own client is only for reading the state, backing up and
+// starting again from the defaults now. A change never goes through it.
 const api = vi.hoisted(() => ({
   getDevModeStatusDevModeGet: vi.fn(),
   getDevModeWaiverDevModeWaiverGet: vi.fn(),
@@ -14,20 +19,35 @@ vi.mock('@/aux_api/useAuxApi', () => ({
   useAuxApi: () => ({ devMode: api })
 }))
 
-// The knob's answer comes through Moonraker's /server/aux/proxy, as on a real printer (KAN-518).
-const http = vi.hoisted(() => ({ post: vi.fn() }))
+const http = vi.hoisted(() => ({ post: vi.fn(), get: vi.fn(), serverMuonDevModeGet: vi.fn() }))
 vi.mock('@/api/httpClientActions', () => ({ httpClientActions: http }))
 
-// The mock must be registered before the component and the state capture useAuxApi().
+// The mocks must be registered before the component and the state capture useAuxApi().
 // eslint-disable-next-line import/first
 import DeveloperModeSettings from '../DeveloperModeSettings.vue'
 // eslint-disable-next-line import/first
 import { devModeState, refreshDevMode } from '@/services/dev-mode/state'
 
+let printer: FakePrinter
+
 function component () {
   const vm = new (DeveloperModeSettings as any)()
   vm.$t = (key: string) => key
   return vm
+}
+
+const settle = () => new Promise(resolve => setTimeout(resolve))
+
+function mounted () {
+  return mount(DeveloperModeSettings as any, {
+    mocks: { $t: (key: string) => key },
+    stubs: {
+      'v-dialog': { props: ['value'], template: '<div v-if="value"><slot /></div>' },
+      'toggle-switch': { props: ['value', 'disabled'], template: '<button data-tid="developer-mode-switch" :disabled="disabled" />' },
+      'frame-icon': true,
+      'router-link': true
+    }
+  })
 }
 
 const status = (over: Record<string, unknown> = {}) => ({
@@ -37,9 +57,10 @@ const status = (over: Record<string, unknown> = {}) => ({
 describe('developer mode in Settings', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    api.setDevModeDevModePost.mockResolvedValue({ data: { enabled: true } })
-    api.getDevModeStatusDevModeGet.mockResolvedValue(status())
-    api.getDevModeWaiverDevModeWaiverGet.mockResolvedValue({ data: { version: 'w-1', text: 'The printer\'s waiver' } })
+    printer = new FakePrinter()
+    ;(Vue as unknown as { $httpClient: unknown }).$httpClient = printer
+    // As on a real printer: the state read follows what the printer did.
+    api.getDevModeStatusDevModeGet.mockImplementation(async () => status({ enabled: printer.devMode }))
   })
 
   it('reads whether the printer would record it for good', async () => {
@@ -58,83 +79,195 @@ describe('developer mode in Settings', () => {
     expect(devModeState.canManage).toBe(false)
   })
 
-  it('asks for the printer\'s own waiver, then a press at the printer, before turning on', async () => {
-    await refreshDevMode()
-    const vm = component()
-    await vm.toggle()
-    expect(vm.enableDialog).toBe(true)
-    expect(vm.waiverText).toBe('The printer\'s waiver')
-    expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
+  it('shows the switch to the owner, and to nobody else on a linked printer', async () => {
+    const owner = mounted()
+    await settle()
+    expect(owner.find('[data-tid="developer-mode-switch"]').exists()).toBe(true)
+    expect(owner.find('[data-tid="developer-mode-who"]').exists()).toBe(false)
+    owner.destroy()
 
-    api.openDevModeConsentDevModeConsentPost.mockResolvedValue({ data: { challenge_id: 'c1', instruction: 'Press the knob', expires_in_seconds: 60 } })
-    vm.accepted = true
-    await vm.confirmEnable()
-    expect(vm.awaiting).toBe(true)
+    printer.asOwner = false
+    const other = mounted()
+    await settle()
+    expect(other.find('[data-tid="developer-mode-switch"]').exists()).toBe(false)
+    expect(other.find('[data-tid="developer-mode-who"]').text()).toContain(`Only ${OWNER} can change developer mode`)
+    other.destroy()
 
-    http.post.mockResolvedValue({ data: { result: { challenge_id: 'c1', confirmed: false, expires_at: 1 } } })
-    await vm.pollConsent()
-    expect(http.post).toHaveBeenCalledWith('/server/aux/proxy', { path: '/dev_mode/consent/c1', method: 'GET' })
-    expect(api.getDevModeConsentDevModeConsentChallengeIdGet).not.toHaveBeenCalled()
-    expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
-
-    http.post.mockResolvedValue({ data: { result: { challenge_id: 'c1', confirmed: true, expires_at: 1 } } })
-    await vm.pollConsent()
-    expect(api.setDevModeDevModePost).toHaveBeenCalledWith({ enabled: true, waiver_acknowledged: true, waiver_version: 'w-1', challenge_id: 'c1' })
-    expect(vm.enableDialog).toBe(false)
-    vm.stopWaiting()
+    // While nobody owns the printer, anyone may ask.
+    printer.linked = false
+    const open = mounted()
+    await settle()
+    expect(open.find('[data-tid="developer-mode-switch"]').exists()).toBe(true)
+    open.destroy()
   })
 
-  it.each([404, 501])('explains when printer software lacks owner confirmation (%s)', async (status) => {
+  it('shows no switch where the printer has no request route, and says why', async () => {
+    printer.routeMissing = true
+    const w = mounted()
+    await settle()
+    expect(w.find('[data-tid="developer-mode-switch"]').exists()).toBe(false)
+    expect(w.find('[data-tid="developer-mode-who"]').text()).toMatch(/can't take a developer-mode request/)
+    w.destroy()
+  })
+
+  it.each([404, 501])('explains when printer software lacks owner confirmation (%s)', async (responseStatus) => {
     await refreshDevMode()
     const vm = component()
-    await vm.toggle()
-    vm.accepted = true
-    api.openDevModeConsentDevModeConsentPost.mockRejectedValue({ response: { status } })
+    printer.post.mockRejectedValueOnce({ response: { status: responseStatus } })
 
-    await vm.confirmEnable()
+    await vm.ask(true)
 
     expect(vm.awaiting).toBe(false)
     expect(vm.errorMessage).toBe('This printer software does not support owner confirmation yet. Developer mode was not changed.')
     expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
   })
 
-  it('stops waiting when the knob is held to turn it down, and says so when the printer stops answering', async () => {
+  it('turns on with the printer\'s own waiver, then the printer\'s screen, then the change', async () => {
     await refreshDevMode()
     const vm = component()
+    await vm.refreshAsking()
     await vm.toggle()
-    api.openDevModeConsentDevModeConsentPost.mockResolvedValue({ data: { challenge_id: 'c2', instruction: 'Press the knob', expires_in_seconds: 60 } })
+    expect(vm.enableDialog).toBe(true)
+    expect(vm.waiverText).toBe(WAIVER.text)
+    // Showing the waiver asks nothing of the printer's screen.
+    expect(printer.opened).toEqual([])
+
     vm.accepted = true
     await vm.confirmEnable()
-
-    http.post.mockRejectedValue(new Error('Network Error'))
-    for (let i = 0; i < 4; i++) await vm.pollConsent()
+    expect(printer.opened).toEqual([{ enabled: true }])
     expect(vm.awaiting).toBe(true)
-    expect(vm.errorMessage).toMatch(/isn't saying whether the knob was pressed/)
 
-    http.post.mockResolvedValue({ data: { result: { challenge_id: 'c2', confirmed: false, refused: true, expires_at: 1 } } })
     await vm.pollConsent()
-    expect(vm.awaiting).toBe(false)
-    expect(vm.errorMessage).toMatch(/Turned down at the printer/)
+    expect(printer.polled).toEqual([CHALLENGE])
+    expect(printer.completed).toEqual([])
+
+    printer.confirm()
+    await vm.pollConsent()
+    expect(printer.completed).toEqual([{
+      enabled: true, challenge_id: CHALLENGE, waiver_acknowledged: true, waiver_version: WAIVER.version
+    }])
+    expect(printer.devMode).toBe(true)
+    expect(vm.enableDialog).toBe(false)
+    expect(devModeState.enabled).toBe(true)
+    // Never straight to the Aux API, whose generic routes carry no owner.
+    expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
+    expect(api.openDevModeConsentDevModeConsentPost).not.toHaveBeenCalled()
+  })
+
+  it('turns off only once the printer\'s screen is answered, too', async () => {
+    printer.devMode = true
+    await refreshDevMode()
+    const vm = component()
+    await vm.refreshAsking()
+    await vm.toggle()
+    expect(vm.disableDialog).toBe(true)
+
+    await vm.confirmDisable()
+    expect(printer.opened).toEqual([{ enabled: false }])
+    expect(vm.awaiting).toBe(true)
+    await vm.pollConsent()
+    expect(printer.completed).toEqual([])
+    expect(printer.devMode).toBe(true)
+
+    printer.confirm()
+    await vm.pollConsent()
+    expect(printer.completed).toEqual([{ enabled: false, challenge_id: CHALLENGE }])
+    expect(printer.devMode).toBe(false)
+    expect(vm.disableDialog).toBe(false)
     expect(api.setDevModeDevModePost).not.toHaveBeenCalled()
   })
 
-  it('turns on directly where the printer has no guard', async () => {
-    api.getDevModeStatusDevModeGet.mockResolvedValue(status({ guard_armed: false }))
-    await refreshDevMode()
-    const vm = component()
+  it('says "Confirm on the printer\'s screen" until the printer answers', async () => {
+    printer.devMode = true
+    const w = mounted()
+    await settle()
+    const vm = w.vm as any
     await vm.toggle()
-    expect(api.setDevModeDevModePost).toHaveBeenCalledWith({ enabled: true })
-    expect(vm.enableDialog).toBe(false)
+    await w.vm.$nextTick()
+    expect(w.find('[data-tid="developer-disable-dialog"]').exists()).toBe(true)
+    expect(w.find('[data-tid="developer-press-knob"]').exists()).toBe(false)
+
+    await w.find('[data-tid="developer-disable"]').trigger('click')
+    await settle()
+    expect(w.find('[data-tid="developer-press-knob"]').text()).toContain("Confirm on the printer's screen")
+    expect(w.find('[data-tid="developer-press-knob"]').text()).toContain('Press the knob on the printer to turn Developer Mode off.')
+
+    printer.confirm()
+    await vm.pollConsent()
+    await settle()
+    expect(w.find('[data-tid="developer-press-knob"]').exists()).toBe(false)
+    expect(w.find('[data-tid="developer-disable-dialog"]').exists()).toBe(false)
+    w.destroy()
   })
 
-  it('turns off with one confirmation, no press at the printer', async () => {
-    api.getDevModeStatusDevModeGet.mockResolvedValue(status({ enabled: true }))
+  it('stops waiting when it is turned down at the printer, and says so when the printer stops answering', async () => {
     await refreshDevMode()
     const vm = component()
+    await vm.refreshAsking()
     await vm.toggle()
-    expect(vm.disableDialog).toBe(true)
+    vm.accepted = true
+    await vm.confirmEnable()
+
+    const answer = printer.get.getMockImplementation()!
+    printer.get.mockImplementation(async () => { throw new Error('Network Error') })
+    for (let i = 0; i < 4; i++) await vm.pollConsent()
+    expect(vm.awaiting).toBe(true)
+    expect(vm.errorMessage).toMatch(/isn't saying whether its screen was answered/)
+
+    printer.get.mockImplementation(answer)
+    printer.refused = true
+    await vm.pollConsent()
+    expect(vm.awaiting).toBe(false)
+    expect(vm.errorMessage).toMatch(/Turned down at the printer/)
+    expect(printer.completed).toEqual([])
+    vm.stopWaiting()
+  })
+
+  it('shows a refusal in the printer\'s words, and takes the switch away from a non-owner', async () => {
+    printer.devMode = true
+    await refreshDevMode()
+    const vm = component()
+    await vm.refreshAsking()
+    expect(vm.mayAsk).toBe(true)
+    await vm.toggle()
+
+    // The printer was linked to someone else after the page loaded.
+    printer.asOwner = false
     await vm.confirmDisable()
-    expect(api.setDevModeDevModePost).toHaveBeenCalledWith({ enabled: false })
-    expect(api.openDevModeConsentDevModeConsentPost).not.toHaveBeenCalled()
+    expect(vm.errorMessage).toMatch(new RegExp(`^Only ${OWNER} can change developer mode`))
+    expect(vm.awaiting).toBe(false)
+    expect(vm.mayAsk).toBe(false)
+    expect(printer.opened).toEqual([])
+  })
+
+  it('catches up when the printer is already in the state asked for', async () => {
+    await refreshDevMode()
+    const vm = component()
+    await vm.refreshAsking()
+    await vm.toggle()
+    printer.devMode = true // changed at the printer meanwhile
+    vm.accepted = true
+    await vm.confirmEnable()
+    expect(vm.errorMessage).toBe('Developer mode is already on.')
+    expect(vm.enableDialog).toBe(false)
+    expect(devModeState.enabled).toBe(true)
+  })
+
+  it('shows the new waiver when the terms changed while it was being read', async () => {
+    await refreshDevMode()
+    const vm = component()
+    await vm.refreshAsking()
+    await vm.toggle()
+    vm.accepted = true
+    await vm.confirmEnable()
+    printer.currentWaiver = 'w-2'
+    printer.waiver = { version: 'w-2', text: 'New terms' }
+    printer.confirm()
+    await vm.pollConsent()
+    expect(printer.devMode).toBe(false)
+    expect(vm.accepted).toBe(false)
+    expect(vm.waiverText).toBe('New terms')
+    expect(vm.waiverVersion).toBe('w-2')
+    vm.stopWaiting()
   })
 })

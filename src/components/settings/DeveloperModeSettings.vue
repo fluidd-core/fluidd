@@ -10,9 +10,10 @@
         <p>{{ stateLine }}</p>
       </div>
       <toggle-switch
+        v-if="mayAsk"
         :value="!!state.enabled"
         label="Developer mode"
-        :disabled="!state.canManage || state.enabled === null || busy"
+        :disabled="state.enabled === null || busy"
         data-tid="developer-mode-switch"
         @input="toggle"
       />
@@ -23,10 +24,11 @@
     </p>
 
     <p
-      v-if="!state.canManage && state.enabled !== null"
+      v-if="notAsking"
       class="devm__note"
+      data-tid="developer-mode-who"
     >
-      This browser can see developer mode but not change it. Change it from the printer's own network, or as its owner.
+      {{ notAsking }}
     </p>
 
     <div
@@ -119,7 +121,8 @@
         >
           <span class="devm__pulse" />
           <div>
-            <b>{{ consentInstruction || 'Press the knob on the printer to confirm.' }}</b>
+            <b>Confirm on the printer's screen</b>
+            <span v-if="consentInstruction">{{ consentInstruction }}</span>
             <span>{{ $t('app.general.dev_mode.consent-expires', { seconds: secondsRemaining }) }}</span>
           </div>
         </div>
@@ -134,7 +137,7 @@
             type="button"
             class="cbtn cbtn--ghost"
             :disabled="loading"
-            @click="closeEnable"
+            @click="closeDialogs"
           >
             {{ $t('app.general.btn.cancel') }}
           </button>
@@ -154,11 +157,27 @@
     <v-dialog
       v-model="disableDialog"
       max-width="480"
+      :persistent="awaiting"
     >
-      <div class="devm__dialog">
+      <div
+        class="devm__dialog"
+        data-tid="developer-disable-dialog"
+      >
         <h3>Turn off developer mode</h3>
         <p>{{ $t('app.general.dev_mode.disable-modal-1') }}</p>
         <p>{{ $t('app.general.dev_mode.disable-modal-2') }}</p>
+        <div
+          v-if="awaiting"
+          class="devm__press"
+          data-tid="developer-press-knob"
+        >
+          <span class="devm__pulse" />
+          <div>
+            <b>Confirm on the printer's screen</b>
+            <span v-if="consentInstruction">{{ consentInstruction }}</span>
+            <span>{{ $t('app.general.dev_mode.consent-expires', { seconds: secondsRemaining }) }}</span>
+          </div>
+        </div>
         <p
           v-if="errorMessage"
           class="devm__error"
@@ -170,14 +189,14 @@
             type="button"
             class="cbtn cbtn--ghost"
             :disabled="loading"
-            @click="disableDialog = false"
+            @click="closeDialogs"
           >
             {{ $t('app.general.btn.cancel') }}
           </button>
           <button
             type="button"
             class="cbtn cbtn--primary"
-            :disabled="loading"
+            :disabled="loading || awaiting"
             data-tid="developer-disable"
             @click="confirmDisable"
           >
@@ -194,27 +213,42 @@ import { Component, Vue } from 'vue-property-decorator'
 import consola from 'consola'
 import { useAuxApi } from '@/aux_api/useAuxApi'
 import { devModeState, refreshDevMode } from '@/services/dev-mode/state'
-import { readConsent } from '@/services/dev-mode/consent'
+import {
+  askToChange,
+  completeChange,
+  readAnswer,
+  whoMayAsk,
+  whyNot,
+  DevModeRefused,
+  type DevModeAsking
+} from '@/services/dev-mode/request'
 import { scopedPath } from '@/router/printerPagePaths'
 import { activeSlug } from '@/services/printer-pages'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 
-/** How often the browser asks whether the knob has been pressed yet. */
+/** How often the browser asks whether the printer's screen has been answered. */
 const CONSENT_POLL_MS = 1500
 
 /**
  * Settings › Developer mode: whether it's on, a switch to change it, and
  * whether turning it on marks the printer for good (the OTP fuse, which the
- * development fleet ships disarmed). Turning it on takes the printer's own
- * waiver and a press of the knob at the printer (KAN-465); turning it off
- * is one press here. With it on: edit macros, open the config, back it up,
- * or start again from the defaults.
+ * development fleet ships disarmed). With it on: edit macros, open the
+ * config, back it up, or start again from the defaults.
+ *
+ * Every change, on and off, is asked for here and confirmed on the printer's
+ * screen (KAN-547), through Moonraker's request route
+ * (services/dev-mode/request), the same from the LAN and from away. Turning
+ * on also takes the printer's own waiver. On a linked printer the switch is
+ * the owner's alone, so nobody else is shown it.
  */
 @Component({ components: { ToggleSwitch } })
 export default class DeveloperModeSettings extends Vue {
   api = useAuxApi().devMode
   state = devModeState
 
+  /** Who may ask, as the printer said; null until it has. */
+  asking: DevModeAsking | null = null
+  askingError = ''
   enableDialog = false
   disableDialog = false
   accepted = false
@@ -222,7 +256,8 @@ export default class DeveloperModeSettings extends Vue {
   waiverText = ''
   waiverVersion: string | null = null
   waiverError = ''
-  challengeId: string | null = null
+  /** The change waiting on the printer's screen. */
+  pending: { challengeId: string, enabled: boolean } | null = null
   consentInstruction = ''
   secondsRemaining = 0
   awaiting = false
@@ -234,6 +269,7 @@ export default class DeveloperModeSettings extends Vue {
 
   mounted () {
     refreshDevMode()
+    this.refreshAsking()
   }
 
   beforeDestroy () {
@@ -242,6 +278,17 @@ export default class DeveloperModeSettings extends Vue {
 
   get busy (): boolean {
     return this.loading || this.awaiting
+  }
+
+  get mayAsk (): boolean {
+    return this.asking?.mayAsk === true
+  }
+
+  /** Why there is no switch, when there isn't one. */
+  get notAsking (): string {
+    if (this.state.enabled === null) return ''
+    if (this.askingError) return this.askingError
+    return whyNot(this.asking) ?? ''
   }
 
   get stateLine (): string {
@@ -283,19 +330,30 @@ export default class DeveloperModeSettings extends Vue {
     return typeof message === 'string' ? message : String(err)
   }
 
-  /** An older MuonOS has developer mode, but not the panel-confirmation routes. */
+  /** An older MuonOS has developer mode, but not the owner-confirmation route. */
   missingOwnerConfirmation (err: unknown): boolean {
-    const status = (err as { response?: { status?: unknown } })?.response?.status
+    const status = (err as { status?: unknown, response?: { status?: unknown } })?.status ??
+      (err as { response?: { status?: unknown } })?.response?.status
     return status === 404 || status === 501
   }
 
+  /** Asks the printer who may ask, and for the waiver turning on agrees to. Asks nothing of its screen. */
+  async refreshAsking () {
+    try {
+      this.asking = await whoMayAsk()
+      this.askingError = ''
+    } catch (err) {
+      consola.debug('Cannot ask this printer for a developer-mode change:', err)
+      this.asking = null
+      this.askingError = this.describe(err)
+    }
+  }
+
   async toggle () {
-    if (!this.state.canManage || this.busy) return
+    if (!this.mayAsk || this.busy) return
     this.errorMessage = ''
     if (this.state.enabled) {
       this.disableDialog = true
-    } else if (!this.state.guardArmed) {
-      await this.setEnabled(true)
     } else {
       this.accepted = false
       this.enableDialog = true
@@ -307,20 +365,20 @@ export default class DeveloperModeSettings extends Vue {
   async loadWaiver () {
     this.waiverText = ''
     this.waiverError = ''
-    try {
-      const { data } = await this.api.getDevModeWaiverDevModeWaiverGet()
-      if (!data?.text || !data?.version) throw new Error('the printer returned an empty waiver')
-      this.waiverText = data.text
-      this.waiverVersion = data.version
-    } catch (err) {
-      consola.error('Failed to load the developer-mode waiver:', err)
-      this.waiverError = this.describe(err)
+    await this.refreshAsking()
+    const waiver = this.asking?.waiver
+    if (waiver) {
+      this.waiverText = waiver.text
+      this.waiverVersion = waiver.version
+    } else {
+      this.waiverError = this.askingError || 'the printer returned no waiver'
     }
   }
 
-  closeEnable () {
+  closeDialogs () {
     this.stopWaiting()
     this.enableDialog = false
+    this.disableDialog = false
     this.errorMessage = ''
   }
 
@@ -330,28 +388,41 @@ export default class DeveloperModeSettings extends Vue {
     this.pollTimer = null
     this.countdownTimer = null
     this.awaiting = false
-    this.challengeId = null
+    this.pending = null
   }
 
-  /** Opens the printer's challenge, waits for the knob, then redeems it with the accepted waiver. */
-  async confirmEnable () {
+  confirmEnable () {
+    return this.ask(true)
+  }
+
+  confirmDisable () {
+    return this.ask(false)
+  }
+
+  /**
+   * Puts the question on the printer's screen, then waits for its answer.
+   * Nothing changes until the person there confirms it and this browser
+   * completes it; a request nobody answers just expires.
+   */
+  async ask (enabled: boolean) {
     this.errorMessage = ''
     this.loading = true
     let challenge
     try {
-      const { data } = await this.api.openDevModeConsentDevModeConsentPost()
-      challenge = data
+      challenge = await askToChange(enabled)
     } catch (err) {
       this.loading = false
-      this.errorMessage = this.missingOwnerConfirmation(err)
-        ? 'This printer software does not support owner confirmation yet. Developer mode was not changed.'
-        : this.describe(err)
+      if (this.missingOwnerConfirmation(err)) {
+        this.errorMessage = 'This printer software does not support owner confirmation yet. Developer mode was not changed.'
+      } else {
+        await this.refused(err)
+      }
       return
     }
     this.loading = false
-    this.challengeId = challenge.challenge_id
+    this.pending = { challengeId: challenge.challengeId, enabled }
     this.consentInstruction = challenge.instruction
-    this.secondsRemaining = Math.max(0, Math.round(challenge.expires_in_seconds))
+    this.secondsRemaining = Math.max(0, Math.round(challenge.expiresInSeconds))
     this.awaiting = true
     this.pollFailures = 0
     this.countdownTimer = window.setInterval(() => {
@@ -365,59 +436,61 @@ export default class DeveloperModeSettings extends Vue {
   }
 
   /**
-   * Asks whether the knob was pressed (services/dev-mode/consent: through
-   * Moonraker's proxy, the only way to reach that route). Turned down at the
-   * printer ends the wait; a printer that stops answering is said so after a
-   * few tries rather than waited on in silence.
+   * Asks whether the printer's screen was answered. Turned down there ends
+   * the wait; a printer that stops answering is said so after a few tries
+   * rather than waited on in silence.
    */
   async pollConsent () {
-    const id = this.challengeId
-    if (!id) return
+    const pending = this.pending
+    if (!pending) return
     let answer
     try {
-      answer = await readConsent(id)
+      answer = await readAnswer(pending.challengeId)
       this.pollFailures = 0
     } catch (err) {
       this.pollFailures++
-      if (this.pollFailures >= 4) this.errorMessage = `The printer isn't saying whether the knob was pressed: ${this.describe(err)}`
+      if (this.pollFailures >= 4) this.errorMessage = `The printer isn't saying whether its screen was answered: ${this.describe(err)}`
       return
     }
-    if (answer?.refused) {
+    if (answer.refused) {
       this.stopWaiting()
       this.errorMessage = 'Turned down at the printer. Nothing changed.'
       return
     }
-    if (!answer?.confirmed) return
+    if (!answer.confirmed) return
     this.stopWaiting()
     this.loading = true
     try {
-      await this.api.setDevModeDevModePost({ enabled: true, waiver_acknowledged: true, waiver_version: this.waiverVersion, challenge_id: id })
+      await completeChange({
+        enabled: pending.enabled,
+        challengeId: pending.challengeId,
+        waiverVersion: pending.enabled ? this.waiverVersion ?? undefined : undefined
+      })
       this.enableDialog = false
-    } catch (err) {
-      this.errorMessage = this.describe(err)
-    } finally {
-      this.loading = false
-      await refreshDevMode()
-    }
-  }
-
-  async setEnabled (enabled: boolean) {
-    this.loading = true
-    try {
-      await this.api.setDevModeDevModePost({ enabled })
       this.disableDialog = false
     } catch (err) {
-      this.errorMessage = this.describe(err)
-      if (!this.disableDialog) this.notify(enabled ? 'Turn on developer mode' : 'Turn off developer mode', err)
+      await this.refused(err)
     } finally {
       this.loading = false
       await refreshDevMode()
     }
   }
 
-  confirmDisable () {
-    this.errorMessage = ''
-    return this.setEnabled(false)
+  /** Says why the printer refused, and catches up with what it said. */
+  async refused (err: unknown) {
+    this.errorMessage = this.describe(err)
+    if (!(err instanceof DevModeRefused)) return
+    if (err.code === 'no_change') {
+      await refreshDevMode()
+      this.enableDialog = false
+      this.disableDialog = false
+    } else if (err.code === 'owner_required' || err.code === 'owner_unknown') {
+      await this.refreshAsking()
+    } else if (err.code === 'waiver_out_of_date') {
+      // The terms changed after they were shown here: show the new ones.
+      this.accepted = false
+      await this.loadWaiver()
+    }
   }
 
   async restoreDefaults () {
