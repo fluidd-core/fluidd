@@ -8,11 +8,20 @@
       :fold-id="foldKey"
       :title="title"
       :summary="summary"
+      :choice="choice"
     >
-      <slot />
+      <template #default="selection">
+        <slot v-bind="selection || {}" />
+      </template>
     </personal-task-fold>
     <template v-else>
+      <slot
+        v-if="choice"
+        :value="open"
+        :choose="choose"
+      />
       <task-fold
+        v-else
         :fold-id="foldKey"
         :title="title"
         :summary="summary"
@@ -22,7 +31,7 @@
         <slot />
       </task-fold>
       <p
-        v-if="open"
+        v-if="open || choice"
         class="control-fold__note"
       >
         These choices last for this visit.
@@ -44,7 +53,9 @@ export default class ControlTaskFold extends Vue {
   @Prop({ type: String, required: true }) readonly foldKey!: string
   @Prop({ type: String, required: true }) readonly title!: string
   @Prop({ type: String, required: true }) readonly summary!: string
+  @Prop({ type: Boolean }) readonly choice?: boolean
   open = false
+  choose (value: boolean) { this.open = value }
 
   get printerId (): string {
     return isManagedApiUrl(this.$store.state.config.apiUrl) && printerTransportBinding.remote ? cloudState.activePrinterId ?? '' : ''
