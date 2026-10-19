@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
-import { adminAvailable, confirmStaff, lookupAccount, readAudit } from '../client'
+import { adminAvailable, confirmStaff, lookupAccount, readAudit, staffCommand } from '../client'
 import { TOKEN_KEY } from '@/services/muon-cloud/api'
 
 const response = (value: unknown, status = 200) => ({ ok: status === 200, status, text: async () => JSON.stringify(value) })
@@ -10,6 +10,19 @@ beforeEach(() => {
 afterEach(() => { localStorage.clear(); vi.unstubAllGlobals() })
 
 describe('staff requests', () => {
+  it('never automatically retries a mutation and keeps console authority on its origin', async () => {
+    const fetch = vi.fn().mockResolvedValueOnce(response({ ceremony_id: 'once', options: { publicKey: { challenge: 'YQ' } }, expires_at: Date.now() / 1000 + 60 }))
+      .mockResolvedValueOnce(response({ ok: true })).mockResolvedValueOnce(response({ actor: 'staff', staff_expires_at: Date.now() / 1000 + 120 }))
+      .mockRejectedValueOnce(new Error('connection lost'))
+    vi.stubGlobal('fetch', fetch)
+    vi.stubGlobal('navigator', { credentials: { get: async () => ({ id: 'YQ', rawId: new Uint8Array([1]).buffer, type: 'public-key', response: { clientDataJSON: new Uint8Array([1]).buffer, authenticatorData: new Uint8Array([1]).buffer, signature: new Uint8Array([1]).buffer } }) } })
+    const command = { command: '0123456789abcdef0123456789abcdef', action: 'hide', target: 'case-1', version: 3, reason: 'Review unsafe content', details: {} }
+    await expect(staffCommand(command)).rejects.toThrow('outcome is uncertain')
+    expect(fetch.mock.calls.map(c => c[0])).toEqual([
+      'https://control.muon3d.com/v1/me/reauth/passkey/options', 'https://control.muon3d.com/v1/me/reauth/passkey', 'https://control.muon3d.com/v1/admin/session', 'https://control.muon3d.com/v1/admin/community'
+    ])
+    expect(JSON.parse(fetch.mock.calls[3][1].body)).toEqual(command)
+  })
   it('completes the staff-purpose ceremony before opening a staff session', async () => {
     const fetch = vi.fn().mockResolvedValueOnce(response({ ceremony_id: 'bound', options: { publicKey: { challenge: 'YQ', userVerification: 'required' } }, expires_at: Date.now() / 1000 + 60 }))
       .mockResolvedValueOnce(response({ ok: true }))
