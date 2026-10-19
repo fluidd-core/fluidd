@@ -235,9 +235,10 @@ export default class FilesMixin extends Vue {
   }
 
   // Upload some files.
-  async uploadFiles (files: FileList | File[] | FileWithPath[], path: string, root: string, andPrint: boolean) {
+  async uploadFiles (files: FileList | File[] | FileWithPath[], path: string, root: string, andPrint: boolean, canContinue: () => boolean = () => true): Promise<boolean> {
+    const pendingFiles = Array.from(files as ArrayLike<File | FileWithPath>)
     // For each file, adds the associated state.
-    for (const file of files) {
+    for (const file of pendingFiles) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
 
       const filepath = fullPath
@@ -259,12 +260,22 @@ export default class FilesMixin extends Vue {
     // So instead, upload sequentially waiting for moonraker to finish
     // processing of each file.
     if (files.length > 1) andPrint = false
-    for (const file of files) {
+    for (const [index, file] of pendingFiles.entries()) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
 
       const filepath = fullPath
         ? `${fullPath}/${fileObject.name}`
         : fileObject.name
+
+      // A caller whose commands belong to a captured printer/account checks
+      // again after every awaited upload, before the next request is sent.
+      if (!canContinue()) {
+        for (const remaining of pendingFiles.slice(index)) {
+          const [remainingPath, remainingFile] = this.getFullPathAndFile(path, remaining)
+          this.$store.dispatch('files/removeFileUpload', remainingPath ? `${remainingPath}/${remainingFile.name}` : remainingFile.name)
+        }
+        return false
+      }
 
       const fileState = this.$store.state.files.uploads.find((u: FilesUpload) => u.filepath === filepath)
 
@@ -278,5 +289,6 @@ export default class FilesMixin extends Vue {
         this.$store.dispatch('files/removeFileUpload', filepath)
       }
     }
+    return true
   }
 }
