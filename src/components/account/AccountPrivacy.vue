@@ -72,7 +72,7 @@
             data-tid="privacy-library-download"
             @click="downloadLibrary"
           >
-            Download Library
+            {{ libraryDownload ? 'Downloading…' : 'Download Library' }}
           </button>
         </div>
       </div>
@@ -106,20 +106,25 @@
     </section>
 
     <p
-      v-if="message"
+      v-if="announcement"
       class="acct-note acct-note--info"
       role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-tid="privacy-download-status"
     >
       <frame-icon
         name="info"
         small
       />
-      <span>{{ message }}</span>
+      <span>{{ announcement }}</span>
     </p>
     <p
       v-if="error"
       class="acct-error"
       role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
     >
       {{ error }}
     </p>
@@ -158,6 +163,7 @@ export default class AccountPrivacy extends Mixins(AccountReauthMixin) {
   busy = false
   error = ''
   message = ''
+  progress = ''
   libraryDownload: AbortController | null = null
   beforeDestroy () { this.libraryDownload?.abort() }
 
@@ -172,25 +178,31 @@ export default class AccountPrivacy extends Mixins(AccountReauthMixin) {
     return this.rows.length ? [...this.rows, ...LIBRARY_RETENTION] : []
   }
 
+  get announcement () { return this.message || this.progress }
+
   async downloadLibrary () {
     if (this.busy) return
-    this.busy = true; this.error = ''; this.message = ''
+    this.busy = true; this.error = ''; this.message = ''; this.progress = 'Preparing your Library archive…'
     const controller = new AbortController(); this.libraryDownload = controller
     try {
-      const blob = await exportLibrary(controller.signal)
+      const blob = await exportLibrary(controller.signal, (received, total) => {
+        const amount = `${(received / 1024 / 1024).toFixed(1)} MiB received`
+        this.progress = total ? `Downloading your Library archive: ${amount} of ${(total / 1024 / 1024).toFixed(1)} MiB.` : `Downloading your Library archive: ${amount}.`
+      })
       if (controller.signal.aborted) return
       if (blob) {
         const url = URL.createObjectURL(blob); const a = document.createElement('a')
         a.href = url; a.download = 'muon3d-library.tar'; document.body.appendChild(a); a.click(); a.remove()
         setTimeout(() => URL.revokeObjectURL(url), 10_000)
       }
-      this.message = 'Your Library archive is ready as muon3d-library.tar.'
+      this.progress = ''; this.message = 'Your Library archive is ready as muon3d-library.tar.'
     } catch (error) {
-      if (!controller.signal.aborted) this.error = error instanceof DOMException && error.name === 'AbortError' ? 'Download cancelled.' : describe(error)
-    } finally { this.busy = false; this.libraryDownload = null }
+      if (!controller.signal.aborted) this.error = error instanceof DOMException && error.name === 'AbortError' ? 'Download cancelled. No file was saved.' : describe(error)
+    } finally { this.progress = ''; this.busy = false; this.libraryDownload = null }
   }
 
   async download () {
+    if (this.busy) return
     this.busy = true
     this.error = ''
     this.message = ''

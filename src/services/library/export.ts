@@ -6,8 +6,18 @@ interface Writer { write (chunk: Uint8Array): Promise<void>; close (): Promise<v
 interface PickerWindow extends Window { showSaveFilePicker?: (options: unknown) => Promise<{ createWritable (): Promise<Writer> }> }
 const BUFFER_LIMIT = 128 * 1024 * 1024
 
+function exportError (response: Response, body: unknown): Error {
+  switch (response.status) {
+    case 401: return new Error('Your session ended. Sign in and start the download again.')
+    case 404: return new Error('No Library archive was found for this account.')
+    case 409: return new Error('Your Library changed while the archive was prepared. Start the download again.')
+    case 429: return new Error('Too many archive requests. Wait a moment and try again.')
+    default: return libraryErrorFrom(response.status, body)
+  }
+}
+
 /** Models read authority only. A failed stream never becomes a successful download. */
-export async function exportLibrary (signal: AbortSignal): Promise<Blob | null> {
+export async function exportLibrary (signal: AbortSignal, onProgress?: (received: number, total: number | null) => void): Promise<Blob | null> {
   const session = storedToken()
   const check = () => { signal.throwIfAborted(); if (!session || session !== storedToken()) throw new Error('The account changed. Start the download again.') }
   check()
@@ -21,10 +31,12 @@ export async function exportLibrary (signal: AbortSignal): Promise<Blob | null> 
     if (!response.ok) {
       if (response.status === 401) modelsAssertion.drop()
       let body: unknown; try { body = await response.json() } catch { body = null }
-      throw libraryErrorFrom(response.status, body)
+      throw exportError(response, body)
     }
     if (response.headers.get('content-type')?.split(';')[0] !== 'application/x-tar' || !response.body) throw new Error('The Library sent an unreadable archive.')
-    if (!writer && Number(response.headers.get('content-length')) > BUFFER_LIMIT) throw new Error('This browser can download archives up to 128 MiB. Use a browser with Save file support, or download individual files from Library.')
+    const lengthHeader = response.headers.get('content-length')
+    const total = lengthHeader && /^\d+$/.test(lengthHeader) ? Number(lengthHeader) : null
+    if (!writer && total !== null && total > BUFFER_LIMIT) throw new Error('This browser can download archives up to 128 MiB. Use a browser with Save file support, or download individual files from Library.')
     const reader = response.body.getReader()
     const parts: Uint8Array[] = []; let size = 0; let prefix = new Uint8Array(); let tail = new Uint8Array()
     try {
@@ -37,6 +49,7 @@ export async function exportLibrary (signal: AbortSignal): Promise<Blob | null> 
         tail = new Uint8Array(keep)
         if (writer) await writer.write(value)
         else parts.push(value)
+        onProgress?.(size, total)
       }
     } finally { await reader.cancel().catch(() => {}); reader.releaseLock() }
     check()
