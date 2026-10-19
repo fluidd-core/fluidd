@@ -3,19 +3,27 @@ import { ControlPreferenceStore, type ControlPreferences } from '../preferences'
 
 it('round trips the ordered layout, resets without losing folds and isolates account/printer contexts', async () => {
   const records = new Map<string, any>()
+  const record = (c: any) => records.get(`${c.accountId}/${c.printerId}`) ?? { version: 2, folds: {}, overview: { cards: null } }
   const remote = {
-    read: async (c: any) => records.get(`${c.accountId}/${c.printerId}`) ?? { version: 2, folds: {}, overview: { cards: null } },
-    patch: async () => ({ version: 1, folds: {} } as ControlPreferences),
-    patchLayout: async (c: any, cards: string[] | null) => {
-      const value = { version: 2, folds: { heat: true }, overview: { cards } }
+    read: async (c: any) => record(c),
+    patch: async (c: any, folds: Record<string, boolean>) => {
+      const current = record(c)
+      const value = { ...current, folds: { ...current.folds, ...folds } }
       records.set(`${c.accountId}/${c.printerId}`, value)
-      return value as any
+      return value as ControlPreferences
+    },
+    patchLayout: async (c: any, cards: string[] | null) => {
+      const current = record(c)
+      const value = { ...current, version: 2 as const, overview: { cards } }
+      records.set(`${c.accountId}/${c.printerId}`, value)
+      return value
     }
   }
   const store = new ControlPreferenceStore(remote, localStorage) as any
   const alice = { accountId: 'alice', printerId: 'a', token: 'session-a' }
   await store.select(alice)
   await store.setLayout(['console', 'queue'])
+  await store.setFold('heat', true)
   await store.refresh()
   expect(store.state.layout).toEqual(['console', 'queue'])
   expect(store.state.folds).toEqual({ heat: true })
