@@ -150,12 +150,12 @@
         </v-tooltip>
 
         <button
-          v-if="!sectionContext.foreign"
+          v-if="!sectionContext.foreign && proSwitchShown"
           type="button"
           role="switch"
           class="app-header__pro"
           :aria-checked="pro ? 'true' : 'false'"
-          :title="pro ? 'Pro is on: exact values, more rows, Console and Files' : 'Pro shows exact values, more rows, Console and Files'"
+          :title="pro ? 'Pro is on: exact values and more rows' : 'Pro shows exact values and more rows'"
           data-tid="pro-switch"
           @click="togglePro"
         >

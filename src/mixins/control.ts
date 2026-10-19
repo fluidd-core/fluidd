@@ -1,5 +1,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from './state'
+import TypedCommandsMixin from './typed-commands'
+import { cloudState } from '@/services/muon-cloud/state'
 import ToolheadMixin from './toolhead'
 import { proMode } from '@/services/pro-mode'
 import type { TemperaturePreset } from '@/store/config/types'
@@ -25,6 +26,7 @@ import {
   type MaterialChoice
 } from '@/services/control/model'
 import { presetCommands } from '@/util/temperature-preset'
+import { zAdjustCommand } from '@/services/control/z-adjust'
 import { fastPercent, materialMaxFlow, peakFlow, speedChoices, type SpeedChoice } from '@/services/control/speed'
 import type { Move } from '@/store/gcodePreview/types'
 
@@ -32,6 +34,15 @@ import type { Move } from '@/store/gcodePreview/types'
 const peakFlows = new WeakMap<readonly Move[], number | null>()
 
 type Axis = 'X' | 'Y' | 'Z'
+export type LimitKey = 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL'
+
+const limitSetting: Record<LimitKey, string> = {
+  VELOCITY: 'max_velocity',
+  ACCEL: 'max_accel',
+  SQUARE_CORNER_VELOCITY: 'square_corner_velocity',
+  MINIMUM_CRUISE_RATIO: 'minimum_cruise_ratio',
+  ACCEL_TO_DECEL: 'max_accel_to_decel'
+}
 
 /** The heat below which a nozzle's − goes to Off and its + starts. */
 export const NOZZLE_FLOOR = 170
@@ -43,7 +54,26 @@ export const BED_FLOOR = 40
  * the G-code Fluidd's own cards send, so Control and the cards agree.
  */
 @Component
-export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
+export default class ControlMixin extends Mixins(TypedCommandsMixin, ToolheadMixin) {
+  get controlReady (): boolean {
+    return this.commandControlAvailable && this.klippyReady && this.klippyConnected
+  }
+
+  adjustZ (by: number) {
+    if (!this.controlReady || !this.isHomed('Z') || this.hasWait(this.$waits.onZAdjust)) return
+    const command = zAdjustCommand(by, true)
+    if (command) this.sendGcode(command, this.$waits.onZAdjust)
+  }
+
+  get panelTarget (): string {
+    return `${this.commandTarget}|${cloudState.account?.id ?? ''}`
+  }
+
+  get controlLock (): string {
+    if (!this.commandControlAvailable) return 'Connect to a printer you can control first.'
+    return this.controlReady ? '' : this.notReadyReason
+  }
+
   get pro (): boolean {
     return proMode.on
   }
@@ -55,7 +85,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get busy (): boolean {
-    return this.printerPrinting || this.printerPaused
+    return this.printerPrinting || this.printerPaused || this.printerState === 'busy'
   }
 
   get toolhead () {
@@ -152,7 +182,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   /**
    * The loaded filament's colour, when someone has said it: the printer's
-   * save_variables muon_material_color (set here, on Control and from the
+   * save_variables muon_material_colour (set here, on Control and from the
    * slicer), else, on a printer that can't remember one, the one set here.
    * Null when nobody has: a material's swatch is not its colour.
    */
@@ -182,6 +212,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   /** Heats for a material: as its preset says when it has one, else to its temperatures. */
   heatFor (choice: MaterialChoice) {
+    if (!this.controlReady) return
     const preset = choice.presetId === null ? undefined : this.presets.find(p => p.id === choice.presetId)
     if (preset) {
       presetCommands(preset).forEach(g => this.sendGcode(g))
@@ -192,17 +223,20 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   setHeater (heater: Heater | null, target: number) {
-    if (!heater) return
-    const max = heater.maxTemp ?? Infinity
-    this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${heater.name} TARGET=${clampTo(Math.round(target), 0, max)}`)
+    const current = this.heaters.find(h => h.name === heater?.name)
+    if (!this.controlReady || !current || !Number.isFinite(target) || target < 0 || target > (current.maxTemp ?? 300)) return
+    this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${current.name} TARGET=${Math.round(target)}`)
   }
 
   applyMaterial (material: Material) {
+    if (!this.controlReady) return
     const preset = this.presets.find(p => p.id === material.id)
     if (preset) presetCommands(preset).forEach(g => this.sendGcode(g))
   }
 
   async coolDown () {
+    if (!this.controlReady) return
+    const target = this.panelTarget
     if (this.busy) {
       const ok = await this.$confirm('The printer is busy. With the heaters off, what it is doing now will most likely fail.', {
         title: 'Turn the heaters off?',
@@ -212,7 +246,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
       })
       if (!ok) return
     }
-    this.sendGcode('TURN_OFF_HEATERS')
+    if (this.controlReady && target === this.panelTarget) this.sendGcode('TURN_OFF_HEATERS')
   }
 
   // -- move ------------------------------------------------------------------
@@ -227,6 +261,8 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   /** A step along one axis, cut short at the machine's limits. */
   moveBy (axis: Axis, distance: number) {
+    if (!this.controlReady || this.busy || !this.isHomed(axis) || !Number.isFinite(distance)) return
+    if (![this.xySpeed, this.zSpeed].every(v => Number.isFinite(v) && v > 0)) return
     const i = 'XYZ'.indexOf(axis)
     const signed = this.inverted(axis) ? -distance : distance
     const target = clampTo(this.position[i] + signed, this.axisMin[i], this.axisMax[i])
@@ -237,13 +273,15 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   /** To a place, inside the machine. */
   moveTo (place: { X?: number, Y?: number, Z?: number }) {
+    if (!this.controlReady || this.busy || ![this.xySpeed, this.zSpeed].every(v => Number.isFinite(v) && v > 0)) return
     const parts: string[] = []
     let rate = this.xySpeed
     for (const axis of ['X', 'Y', 'Z'] as Axis[]) {
       const value = place[axis]
-      if (value === undefined || Number.isNaN(value)) continue
+      if (value === undefined) continue
       const i = 'XYZ'.indexOf(axis)
-      parts.push(`${axis}${clampTo(value, this.axisMin[i], this.axisMax[i])}`)
+      if (!this.isHomed(axis) || !Number.isFinite(value) || value < this.axisMin[i] || value > this.axisMax[i]) return
+      parts.push(`${axis}${value}`)
       if (axis === 'Z') rate = Math.min(rate, this.zSpeed)
     }
     if (parts.length) this.sendMoveGcode(parts.join(' '), rate, true)
@@ -256,6 +294,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   home (axes = '') {
+    if (!this.controlReady || this.busy) return
     this.sendGcode(axes ? `G28 ${axes.split('').join(' ')}` : 'G28', this.homeWait(axes))
   }
 
@@ -264,6 +303,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   motorsOff () {
+    if (!this.controlReady || this.busy) return
     this.sendGcode('M84')
   }
 
@@ -282,6 +322,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   setSpeed (percent: number) {
+    if (!this.controlReady || !Number.isFinite(percent) || percent < 1 || percent > 500) return
     this.sendGcode(`M220 S${Math.round(percent)}`)
   }
 
@@ -322,6 +363,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   setFlow (percent: number) {
+    if (!this.controlReady || !Number.isFinite(percent) || percent < 1 || percent > 300) return
     this.sendGcode(`M221 S${Math.round(percent)}`)
   }
 
@@ -330,11 +372,24 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   setPressureAdvance (value: number) {
+    if (!this.controlReady || !Number.isFinite(value) || value < 0 || value > 2) return
     this.sendGcode(`SET_PRESSURE_ADVANCE ADVANCE=${value}`)
   }
 
+  /** Configured ceiling. Live status is a current value, never authority for a new limit. */
+  limitMaximum (key: LimitKey): number | null {
+    const setting = this.$store.state.printer.printer.configfile?.settings?.printer?.[limitSetting[key]]
+    const parsed = typeof setting === 'number' || (typeof setting === 'string' && setting.trim() !== '')
+      ? Number(setting)
+      : Number.NaN
+    if (!Number.isFinite(parsed) || parsed <= 0) return null
+    return key === 'MINIMUM_CRUISE_RATIO' ? Math.min(parsed, 1) : parsed
+  }
+
   /** Velocity, acceleration, square corner velocity and the cruise ratio, until a restart. */
-  setLimit (key: 'VELOCITY' | 'ACCEL' | 'SQUARE_CORNER_VELOCITY' | 'MINIMUM_CRUISE_RATIO' | 'ACCEL_TO_DECEL', value: number) {
+  setLimit (key: LimitKey, value: number) {
+    const maximum = this.limitMaximum(key)
+    if (!this.controlReady || maximum === null || !Number.isFinite(value) || value < 0 || value > maximum || (['VELOCITY', 'ACCEL'].includes(key) && value <= 0)) return
     this.sendGcode(`SET_VELOCITY_LIMIT ${key}=${value}`)
   }
 
@@ -353,6 +408,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   setFan (fan: Fan, percent: number) {
+    if (!this.controlReady || !Number.isFinite(percent) || percent < 0 || percent > 100) return
     const gcode = fanCommand(fan, percent)
     if (gcode) this.sendGcode(gcode)
   }
@@ -377,6 +433,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   setLights (value: number | boolean) {
+    if (!this.controlReady || (typeof value === 'number' && (!Number.isFinite(value) || value < 0 || value > 100))) return
     const percent = typeof value === 'boolean' ? (value ? 100 : 0) : value
     if (this.lightsPin) {
       this.sendGcode(pinCommand(this.lightsPin, this.lightsPin.pwm ? percent : percent > 0))

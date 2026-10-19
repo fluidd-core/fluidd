@@ -1,7 +1,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from './state'
 import type { WebcamConfig } from '@/store/webcams/types'
-import { proMode } from '@/services/pro-mode'
+import { hasProSwitch, proMode } from '@/services/pro-mode'
 import { slicerPresence } from '@/services/slicer-bridge/slicerUrl'
 import { activeSlug, isForeignSlug } from '@/services/printer-pages'
 import { pageOfRoute, scopedPath } from '@/router/printerPagePaths'
@@ -22,6 +22,11 @@ export default class FrameMixin extends Mixins(StateMixin) {
     return proMode.on
   }
 
+  /** Whether this page offers the Pro switch: not on a page with no mode (Slice). */
+  get proSwitchShown (): boolean {
+    return hasProSwitch(this.$route)
+  }
+
   get sectionContext (): SectionContext {
     if (isForeignSlug(this.$route.params.printer)) {
       return { pro: false, slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: true }
@@ -34,6 +39,7 @@ export default class FrameMixin extends Mixins(StateMixin) {
       history: this.$store.getters['server/componentSupport']('history') as boolean,
       timelapse: this.$store.getters['server/componentSupport']('timelapse') as boolean,
       diagnostics: this.$store.state.config.uiSettings.general.enableDiagnostics as boolean,
+      bedMesh: !!this.$store.getters['mesh/getSupportsBedMesh'],
       foreign: isForeignSlug(this.$route.params.printer)
     }
   }

@@ -417,7 +417,7 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
 
   /**
    * The filament's colour: the one set for what's loaded (Overview, Control
-   * or the slicer, kept on the printer as muon_material_color), since that is
+   * or the slicer, kept on the printer as muon_material_colour), since that is
    * what is in the nozzle; else the file's slicer settings.
    */
   get partColour (): number {

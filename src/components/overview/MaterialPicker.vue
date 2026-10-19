@@ -80,7 +80,7 @@
           class="matp__row"
           :class="{ 'matp__row--on': loadedMaterial && loadedMaterial.name === m.name }"
           :aria-selected="loadedMaterial && loadedMaterial.name === m.name ? 'true' : 'false'"
-          :disabled="printerPrinting"
+          :disabled="busy"
           :data-tid="`material-${m.name}`"
           @click="choose(m)"
         >
@@ -98,7 +98,7 @@
         </button>
       </div>
       <p
-        v-if="printerPrinting"
+        v-if="busy"
         class="matp__note"
       >
         Not while printing: the print was sliced for what's loaded.
@@ -208,7 +208,7 @@ import { activeSlug } from '@/services/printer-pages'
  * What's loaded, for everyone, on Overview (a tile) and Control (`chip`):
  * the material and its colour, and a press to change either. The printer
  * remembers both (save_variables muon_material, as the panel does, and
- * muon_material_color beside it), so the panel, these pages, the slicer
+ * muon_material_colour beside it), so the panel, these pages, the slicer
  * and the live M1 agree. From here: heat for it, and load or unload with
  * the printer's own macros.
  */
@@ -278,7 +278,7 @@ export default class MaterialPicker extends Mixins(ControlMixin) {
   }
 
   choose (m: MaterialChoice) {
-    if (this.printerPrinting) return
+    if (this.busy) return
     this.setLoadedMaterial(m)
   }
 
