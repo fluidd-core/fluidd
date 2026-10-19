@@ -15,21 +15,40 @@ export default class ManualProbeRecovery extends Mixins(TypedCommandsMixin, Tool
   @Prop({ type: Boolean }) readonly value?: boolean
   @Prop({ type: Boolean, default: true }) readonly automatic!: boolean
   shown = false
-  revision = 0
+  selectedContext = ''
+  contextFresh = false
+  unsubscribeStatus: (() => void) | null = null
 
   get recoveryContext (): string { return `${this.commandTarget}|${cloudState.account?.id ?? ''}` }
 
-  get recoveryState (): string {
-    return `${this.recoveryContext}|${this.isManualProbeActive}|${this.klippyReady}|${this.printerState}`
+  get recoveryEligibility (): string {
+    return `${this.isManualProbeActive}|${this.klippyReady}|${this.printerState}`
   }
 
-  @Watch('recoveryState', { immediate: true })
-  async recover () {
-    const revision = ++this.revision
+  created () {
+    this.unsubscribeStatus = this.$store.subscribe((mutation) => {
+      if (mutation.type !== 'printer/setSocketNotify' || mutation.payload?.key !== 'manual_probe' || this.contextFresh) return
+      this.contextFresh = true
+      this.recover()
+    })
+  }
+
+  beforeDestroy () { this.unsubscribeStatus?.() }
+
+  @Watch('recoveryContext', { immediate: true })
+  onRecoveryContext () {
+    const context = this.recoveryContext
+    const initialContext = this.selectedContext === ''
+    this.selectedContext = context
+    this.contextFresh = initialContext
     this.shown = false
-    // Destroy the old dialog before capturing the newly selected context.
-    await this.$nextTick()
-    if (revision === this.revision && this.automatic && this.isManualProbeActive && this.klippyReady && !this.printerPrinting && !this.printerPaused) this.shown = true
+    if (initialContext) this.recover()
+  }
+
+  @Watch('recoveryEligibility')
+  recover () {
+    if (!this.shown && this.contextFresh && this.automatic && this.isManualProbeActive && this.klippyReady &&
+      !this.printerPrinting && !this.printerPaused) this.shown = true
   }
 
   @Watch('value')

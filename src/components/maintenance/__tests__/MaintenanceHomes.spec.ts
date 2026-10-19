@@ -73,11 +73,12 @@ it('keeps an input shaper editable when no measurement command is supported', as
 
 it('uses a reported shaper instead of config and refuses malformed, out-of-range and stale edits', async () => {
   const { wrapper, store } = show()
+  const tuning = wrapper.findComponent(ControlTuning)
+  const vm = tuning.vm as any
+  vm.beginShaperReport()
   store.state.console.console.push({ type: 'response', time: 10, message: '// shaper_type_x:ei shaper_freq_x:51.2' })
   await Vue.nextTick()
-  const tuning = wrapper.findComponent(ControlTuning)
   expect(tuning.exists()).toBe(true)
-  const vm = tuning.vm as any
   expect(vm.shaper('x')).toEqual({ type: 'ei', freq: 51.2 })
   for (const change of [{ freq: NaN }, { freq: 301 }, { freq: -1 }, { type: 'mzv\nG28' }]) vm.setShaper('x', change)
   store.getters['auth/getAuthenticated'] = false

@@ -117,6 +117,7 @@
               :min="0"
               :max="layerCount - 1"
               label="Layer"
+              :value-text-formatter="layerValueText"
               @change="layer = $event"
             />
             <span class="job-detail__count">{{ layer + 1 }} / {{ layerCount }}</span>
@@ -247,6 +248,10 @@ export default class JobDetail extends Mixins(BrowserMixin, FilesMixin) {
   playing = false
   timer: number | null = null
   previewError = ''
+
+  layerValueText (value: number): string {
+    return `Layer ${value + 1} of ${this.layerCount}`
+  }
 
   get viewOptions (): SegOption[] {
     return [{ value: 'model', label: 'Model' }, { value: 'layers', label: 'Layers' }]
