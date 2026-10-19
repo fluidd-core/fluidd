@@ -57,6 +57,7 @@ export class ControlPreferenceStore {
       if (context.token !== this.context?.token) {
         this.readGeneration++
         this.loading = null
+        if (this.layoutEdit) this.state.layoutError = 'Your Overview is not saved. Try again with the refreshed session.'
       }
       this.context = { ...context }
     }
@@ -171,10 +172,14 @@ export class ControlPreferenceStore {
       try {
         if (context.accountId) {
           if (!context.token || !this.remote.patchLayout) throw new Error('Layout sync is unavailable.')
+          const readGeneration = this.readGeneration
           const answer = await this.remote.patchLayout(context, edit.cards)
           validatePreferences(answer)
           if (answer.version !== 2) throw new Error('Layout sync is unavailable.')
           if (generation !== this.generation) return
+          // The session was refreshed while this save was in flight: its answer belongs to the old
+          // credentials, so keep the layout as an unsaved edit for the retry with the new session.
+          if (readGeneration !== this.readGeneration) return
           this.state.folds = { ...answer.folds, ...this.edited }
           if (this.layoutEdit === edit) this.state.layout = answer.overview?.cards ?? null
         } else {
