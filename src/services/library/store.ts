@@ -24,7 +24,7 @@ import {
 } from './api'
 import { modelsAssertion } from './assertion'
 import { syncFeed } from './feed'
-import { PROMISE_SUMMARY, PROMISE_URL, PROMISE_VERSION } from './promise'
+import { libraryPromise } from './promise'
 import { cleanName, saveToLibrary, type SaveProgress, type SaveRequest } from './save'
 
 export interface LibraryState {
@@ -213,8 +213,9 @@ export async function setLibraryPreferences (patch: PreferencesPatch): Promise<v
 }
 
 /** Turns the Library on with the promise this Fluidd shows (MSV-3). */
-export async function turnLibraryOn (): Promise<void> {
-  await client.consent(PROMISE_VERSION)
+export async function turnLibraryOn (version: string): Promise<void> {
+  requireCurrentPromise(version)
+  await client.consent(version)
   // A read that began before the consent would answer "off".
   await refreshing?.catch(() => {})
   await refreshLibrary()
@@ -305,6 +306,10 @@ export async function loadProject (id: string, version: number | null): Promise<
 
 /** Saves what the slicer sent (library.save), then reads the storage used again. */
 export async function saveFromSlicer (request: SaveRequest, onProgress?: (progress: SaveProgress) => void) {
+  if (request.consent) {
+    await ensureLibraryRead()
+    requireCurrentPromise(request.consent)
+  }
   const saved = await saveToLibrary(client, request, onProgress)
   keep(saved.item)
   if (request.consent) libraryState.enabled = true
@@ -326,13 +331,21 @@ export function libraryStatus (state: LibraryState = libraryState): LibraryStatu
   const signedIn = state.account !== null
   // The text here is the one this Fluidd can show; a service that now wants
   // another version gets no promise, so nobody consents to words they weren't shown.
-  const promiseShown = signedIn && !state.enabled && (state.promiseVersion === null || state.promiseVersion === PROMISE_VERSION)
+  const promise = state.checked ? libraryPromise(state.promiseVersion) : null
+  const promiseShown = signedIn && !state.enabled && promise !== null
   return {
     signedIn,
     enabled: signedIn && state.enabled,
-    promise: promiseShown ? { version: PROMISE_VERSION, summary: PROMISE_SUMMARY, url: PROMISE_URL } : null,
+    promise: promiseShown && promise ? { version: promise.version, summary: promise.summary, url: promise.url } : null,
     preferences: signedIn && state.preferences ? { autosave: state.preferences.autosave, ask: state.preferences.ask } : null,
     usedBytes: signedIn ? state.usedBytes : null,
     quotaBytes: signedIn ? state.quotaBytes : null
+  }
+}
+
+function requireCurrentPromise (version: string) {
+  if (!libraryState.account) throw notSignedIn()
+  if (!libraryState.checked || !libraryPromise(version) || libraryState.promiseVersion !== version) {
+    throw new LibraryError('promise_changed', "The Library's promise has changed. Reload to read the current promise.", 409)
   }
 }
