@@ -1,6 +1,6 @@
 <template>
   <control-card
-    title="Motion tuning"
+    :title="shaperOnly ? 'Input shaper' : 'Motion tuning'"
     :locked="controlLock"
     :note="klippyReady ? note : ''"
     data-tid="control-tuning"
@@ -39,7 +39,7 @@
             class="tune__select"
             :value="shaper(axis).type"
             :aria-label="`${axis.toUpperCase()} shaper`"
-            :disabled="!controlReady"
+            :disabled="!controlReady || busy"
             @change="onShaperType(axis, $event)"
           >
             <option
@@ -57,7 +57,7 @@
             :max="300"
             :decimals="1"
             :label="`${axis.toUpperCase()} shaper frequency`"
-            :disabled="!controlReady"
+            :disabled="!controlReady || busy"
             @change="setShaper(axis, { freq: $event })"
           />
         </span>
@@ -115,7 +115,7 @@ import NumberField from './NumberField.vue'
 const REPORT_LINES = 200
 
 /**
- * Pro's motion tuning: the input shaper on each axis (Klipper keeps no
+ * The input shaper on each axis (Klipper keeps no
  * status for it, so it shows printer.cfg's until Klipper reports its own,
  * which any SET_INPUT_SHAPER does) and firmware retraction. Both last
  * until Klipper restarts.
@@ -163,8 +163,10 @@ export default class ControlTuning extends Mixins(ControlMixin) {
   }
 
   setShaper (axis: ShaperAxis, change: Partial<AxisShaper>) {
-    if (!this.controlReady) return
-    this.sendGcode(shaperCommand(axis, { ...this.shaper(axis), ...change }))
+    if (!this.controlReady || this.busy || !this.hasShaper || !this.axes.includes(axis)) return
+    const next = { ...this.shaper(axis), ...change }
+    if (!Number.isFinite(next.freq) || next.freq < 0 || next.freq > 300 || !this.shaperTypes(axis).includes(next.type) || !/^\w+$/.test(next.type)) return
+    this.sendGcode(shaperCommand(axis, next))
   }
 
   onShaperType (axis: ShaperAxis, event: Event) {
@@ -198,7 +200,7 @@ export default class ControlTuning extends Mixins(ControlMixin) {
   }
 
   get note (): string {
-    return 'These last until Klipper restarts. Maintenance measures the shaper; keep what you settle on in Files › printer.cfg.'
+    return 'These last until Klipper restarts. Run measures new values; save the results to keep them. Manual changes can be kept in Files › printer.cfg.'
   }
 }
 </script>
