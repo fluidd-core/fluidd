@@ -1,0 +1,49 @@
+name: Prune old artifacts
+
+# Actions artifact storage is an org-wide quota (2 GB on the Team plan). When it
+# is full every upload-artifact in the org fails ("Artifact storage quota has
+# been hit"). Artifacts here are hand-offs inside one run, so anything older than
+# the window is dead weight. Runs daily; a manual run defaults to a dry run.
+on:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+    inputs:
+      days:
+        description: Delete artifacts older than this many days
+        default: '3'
+      dry_run:
+        description: List what would be deleted without deleting it
+        type: boolean
+        default: true
+
+permissions: {}
+
+concurrency:
+  group: prune-artifacts
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    name: Delete artifacts older than the window
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      actions: write # delete artifacts
+    steps:
+      - name: Prune
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          DAYS: ${{ github.event_name == 'workflow_dispatch' && inputs.days || '3' }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+        run: |
+          set -euo pipefail
+          cutoff=$(date -u -d "$DAYS days ago" +%Y-%m-%dT%H:%M:%SZ)
+          gh api --paginate "/repos/$REPO/actions/artifacts?per_page=100" \
+            --jq ".artifacts[] | select(.expired == false and .created_at < \"$cutoff\") | [.id, .size_in_bytes, .name] | @tsv" > old.tsv
+          echo "$(wc -l < old.tsv) artifacts older than $DAYS days, $(awk '{s+=$2} END{printf "%.0f", s/1e6}' old.tsv) MB" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "$DRY_RUN" = "true" ]; then cat old.tsv; exit 0; fi
+          while IFS=$'\t' read -r id _ _; do
+            gh api -X DELETE "/repos/$REPO/actions/artifacts/$id" --silent
+          done < old.tsv
