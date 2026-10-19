@@ -33,7 +33,7 @@
 
       <div class="app-rail__rule" />
 
-      <template v-for="section in simpleSections">
+      <template v-for="section in mainSections">
         <app-rail-link
           :key="section.id"
           :to="sectionTo(section)"
@@ -46,19 +46,24 @@
         />
       </template>
 
-      <template v-if="proSections.length">
+      <div
+        v-if="toolSections.length"
+        class="app-rail__tools"
+        role="group"
+        aria-label="Tools"
+      >
         <div
           v-if="!compact"
           class="app-rail__label"
         >
-          Pro
+          Tools
         </div>
         <div
           v-else
           class="app-rail__rule"
         />
         <app-rail-link
-          v-for="section in proSections"
+          v-for="section in toolSections"
           :key="section.id"
           :to="sectionTo(section)"
           :icon="section.icon"
@@ -68,7 +73,7 @@
           :compact="compact"
           :data-tid="`rail-${section.id}`"
         />
-      </template>
+      </div>
 
       <p
         v-if="sectionContext.foreign"
@@ -122,8 +127,8 @@ import AppRailLink from './AppRailLink.vue'
 import NetworkQuickMenu from './NetworkQuickMenu.vue'
 
 /**
- * The pages of the printer you're on, named, with their keys. Pro's two
- * sit below a label and show only with Pro on. At the bottom, how this
+ * The pages of the printer you're on, named, with their keys. Console and
+ * Files sit under Tools for everyone. At the bottom, how this
  * browser reaches the printer, which opens to its Wi-Fi and hotspot
  * (NetworkQuickMenu). Below the lg breakpoint it keeps the icons.
  */
@@ -145,12 +150,12 @@ export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
     return this.$vuetify.breakpoint.mdAndDown
   }
 
-  get simpleSections (): Section[] {
-    return this.sections.filter(s => !s.pro)
+  get mainSections (): Section[] {
+    return this.sections.filter(s => s.group !== 'tools')
   }
 
-  get proSections (): Section[] {
-    return this.sections.filter(s => s.pro)
+  get toolSections (): Section[] {
+    return this.sections.filter(s => s.group === 'tools')
   }
 
   get enableKeyboardShortcuts (): boolean {
@@ -218,6 +223,12 @@ export default class AppRail extends Mixins(FrameMixin, BrowserMixin) {
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+  }
+
+  .app-rail__tools {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .app-rail__spacer {

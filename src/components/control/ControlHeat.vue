@@ -1,219 +1,142 @@
 <template>
   <control-card
     title="Heat"
-    :locked="ready ? '' : notReadyReason"
-    :note="pro || !ready ? '' : 'Pick a material to heat both. The table is kept on the printer, so the panel, this page and the app agree.'"
+    :locked="controlLock"
+    note="Pick a material to heat both. The table is kept on the printer, so the panel, this page and the app agree."
     data-tid="control-heat"
   >
     <template #aside>
-      <template v-if="pro">
+      <details class="heat__more">
+        <summary
+          class="cbtn"
+          aria-label="Heat options"
+        >
+          More
+        </summary>
         <a
           class="heat__edit"
           :href="materialsLink"
           @click.prevent="$router.push(materialsLink)"
         >Edit materials</a>
-      </template>
-      <template v-else>
-        <span v-if="nozzle">Nozzle <b>{{ deg(nozzle.temperature) }}</b></span>
-        <span v-if="bed">· Bed <b>{{ deg(bed.temperature) }}</b></span>
-      </template>
+      </details>
     </template>
 
-    <!-- Simple: a material heats both; − and + for each. -->
-    <template v-if="!pro">
-      <div
-        class="heat__materials"
-        :class="{ 'heat__materials--phone': phone }"
-      >
-        <button
-          v-for="m in materials"
-          :key="m.id"
-          type="button"
-          class="heat__material"
-          :class="{ 'heat__material--on': material && material.id === m.id }"
-          :disabled="!ready"
-          :data-tid="`material-${m.name}`"
-          @click="applyMaterial(m)"
-        >
-          <span class="heat__material-name">{{ m.name }}</span>
-          <span class="heat__material-temps">{{ m.nozzle }}°<template v-if="m.bed !== null"> · {{ m.bed }}°</template></span>
-        </button>
-        <p
-          v-if="!materials.length"
-          class="heat__none"
-        >
-          No materials yet. Add them in Settings › Thermal presets.
-        </p>
-      </div>
-      <div
-        v-if="!phone"
-        class="heat__steppers"
-      >
-        <div
-          v-for="h in steppers"
-          :key="h.heater.name"
-          class="heat__stepper"
-        >
-          <span class="heat__stepper-name">{{ h.label }}</span>
-          <button
-            type="button"
-            class="heat__step"
-            :aria-label="`${h.label} cooler`"
-            :disabled="!ready || !h.heater.target"
-            @click="setHeater(h.heater, nextTarget(h, -1))"
-          >
-            <frame-icon
-              name="minus"
-              small
-            />
-          </button>
-          <span class="heat__stepper-value">{{ h.heater.target ? `${Math.round(h.heater.target)}°` : 'Off' }}</span>
-          <button
-            type="button"
-            class="heat__step"
-            :aria-label="`${h.label} hotter`"
-            :disabled="!ready"
-            @click="setHeater(h.heater, nextTarget(h, 1))"
-          >
-            <frame-icon
-              name="plus"
-              small
-            />
-          </button>
-        </div>
-      </div>
+    <div
+      class="heat__materials"
+      :class="{ 'heat__materials--phone': phone }"
+    >
       <button
-        v-else
+        v-for="m in materials"
+        :key="m.id"
         type="button"
-        class="cbtn cbtn--wide"
+        class="heat__material"
+        :class="{ 'heat__material--on': material && material.id === m.id }"
         :disabled="!ready"
-        @click="coolDown"
+        :data-tid="`material-${m.name}`"
+        @click="applyMaterial(m)"
       >
-        Cool down
+        <span class="heat__material-name">{{ m.name }}</span>
+        <span class="heat__material-temps">{{ m.nozzle }}°<template v-if="m.bed !== null"> · {{ m.bed }}°</template></span>
       </button>
-    </template>
-
-    <!-- Pro: each heater's exact target, the materials as chips, the extruder. -->
-    <template v-else>
-      <div class="heat__rows">
-        <div
-          v-for="h in steppers"
-          :key="h.heater.name"
-          class="crow"
-        >
-          <span class="crow__name">
-            {{ h.label }}
-            <span class="crow__sub"> · {{ deg1(h.heater.temperature) }} · power {{ Math.round((h.heater.power || 0) * 100) }}%</span>
-          </span>
-          <number-field
-            :value="Math.round(h.heater.target)"
-            unit="°C"
-            :min="0"
-            :max="h.heater.maxTemp || 500"
-            :label="`${h.label} target`"
-            :disabled="!ready"
-            @change="setHeater(h.heater, $event)"
-          />
-        </div>
-        <div
-          v-if="chamber"
-          class="crow"
-        >
-          <span class="crow__name">
-            Chamber <span class="crow__sub">(reading only)</span>
-          </span>
-          <b class="crow__value">{{ deg1(chamber.temperature) }}</b>
-        </div>
-      </div>
-      <div class="heat__chips">
-        <button
-          v-for="m in materials"
-          :key="m.id"
-          type="button"
-          class="heat__chip"
-          :class="{ 'heat__chip--on': material && material.id === m.id }"
-          :disabled="!ready"
-          @click="applyMaterial(m)"
-        >
-          {{ m.name }} {{ m.nozzle }}<template v-if="m.bed !== null">
-            · {{ m.bed }}
-          </template>
-        </button>
-      </div>
-
-      <div
-        v-if="hasExtruder"
-        class="heat__extruder"
+      <p
+        v-if="!materials.length"
+        class="heat__none"
       >
-        <div class="heat__extruder-head">
-          <h3>Extruder</h3>
-          <span>nozzle must be over {{ minExtrude }}°</span>
-        </div>
-        <div class="crow">
-          <span class="crow__name">Length</span>
-          <seg-picker
-            :options="lengthOptions"
-            :value="length"
-            label="Length"
-            @input="length = $event"
-          />
-        </div>
-        <div class="crow">
-          <span class="crow__name">Speed</span>
-          <number-field
-            :value="speed"
-            unit="mm/s"
-            :min="0.1"
-            :max="maxExtrudeSpeed"
-            :decimals="speed % 1 ? 1 : 0"
-            label="Extrude speed"
-            @change="speed = $event"
-          />
-        </div>
-        <div class="heat__extrude-buttons">
-          <button
-            type="button"
-            class="cbtn cbtn--grow"
-            :disabled="!canExtrude"
-            data-tid="retract"
-            @click="sendExtrudeGcode(-extrudeLength, speed)"
-          >
-            Retract
-          </button>
-          <button
-            type="button"
-            class="cbtn cbtn--grow"
-            :disabled="!canExtrude"
-            data-tid="extrude"
-            @click="sendExtrudeGcode(extrudeLength, speed)"
-          >
-            Extrude
-          </button>
-        </div>
-        <p
-          v-if="extrudeReason"
-          class="heat__reason"
+        No materials yet. Add them in Settings › Thermal presets.
+      </p>
+    </div>
+    <div
+      class="heat__steppers"
+    >
+      <div
+        v-for="h in steppers"
+        :key="`${panelTarget}|${h.heater.name}`"
+        class="heat__stepper"
+      >
+        <span class="heat__stepper-name">{{ h.label }} <span class="crow__sub">{{ deg1(h.heater.temperature) }} · power {{ Math.round((h.heater.power || 0) * 100) }}%</span></span>
+        <button
+          type="button"
+          class="heat__step"
+          :aria-label="`${h.label} cooler`"
+          :disabled="!ready || !h.heater.target"
+          @click="setHeater(h.heater, nextTarget(h, -1))"
         >
           <frame-icon
-            name="lock"
+            name="minus"
             small
           />
-          {{ extrudeReason }}
-        </p>
+        </button>
+        <number-field
+          :value="Math.round(h.heater.target)"
+          unit="°C"
+          :min="0"
+          :max="h.heater.maxTemp || 300"
+          :label="`${h.label} target`"
+          :disabled="!ready"
+          @change="setHeater(h.heater, $event)"
+        />
+        <button
+          type="button"
+          class="heat__step"
+          :aria-label="`${h.label} hotter`"
+          :disabled="!ready"
+          @click="setHeater(h.heater, nextTarget(h, 1))"
+        >
+          <frame-icon
+            name="plus"
+            small
+          />
+        </button>
       </div>
-    </template>
+    </div>
+    <button
+      type="button"
+      class="cbtn cbtn--wide"
+      :disabled="!ready"
+      @click="coolDown"
+    >
+      Cool down
+    </button>
+
+    <control-task-fold
+      v-if="otherTemperatures.length"
+      fold-key="heat.other"
+      title="Other temperatures"
+      :summary="`${otherTemperatures.length} sensors`"
+    >
+      <div
+        v-for="sensor in otherTemperatures"
+        :key="sensor.name"
+        class="crow"
+      >
+        <span class="crow__name">{{ sensor.prettyName || sensor.name }}</span>
+        <number-field
+          v-if="otherHeater(sensor.name)"
+          :key="panelTarget"
+          :value="sensor.target"
+          unit="°C"
+          :min="0"
+          :max="sensor.maxTemp || 300"
+          :label="`${sensor.prettyName || sensor.name} target`"
+          :disabled="!ready"
+          @change="setHeater(otherHeater(sensor.name), $event)"
+        />
+        <b class="crow__value">{{ deg1(sensor.temperature) }}</b>
+      </div>
+    </control-task-fold>
   </control-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import ControlMixin, { BED_FLOOR, NOZZLE_FLOOR } from '@/mixins/control'
-import { extrudeBlocked, extrudeLengths, stepTarget } from '@/services/control/model'
+import { stepTarget } from '@/services/control/model'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
-import type { Heater } from '@/store/printer/types'
+import type { Heater, Sensor } from '@/store/printer/types'
+
+import ControlTaskFold from './ControlTaskFold.vue'
 import ControlCard from './ControlCard.vue'
-import SegPicker, { type SegOption } from './SegPicker.vue'
 import NumberField from './NumberField.vue'
 
 interface Stepper {
@@ -223,21 +146,24 @@ interface Stepper {
 }
 
 /**
- * Heat. Simple: the printer's materials (U5), one press heats nozzle and
- * bed; − and + nudge each. Pro: each heater's exact target, the chamber's
- * reading, the materials as chips, and the extruder.
+ * Materials, nudges and exact targets share one panel at every width.
  */
-@Component({ components: { ControlCard, SegPicker, NumberField } })
+@Component({ components: { ControlCard, NumberField, ControlTaskFold } })
 export default class ControlHeat extends Mixins(ControlMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
 
-  length = this.$store.state.config.uiSettings.general.defaultExtrudeLength as number || 10
-  speed = this.$store.state.config.uiSettings.general.defaultExtrudeSpeed as number || 5
-
   get ready (): boolean {
-    return this.klippyReady
+    return this.controlReady
   }
+
+  get otherTemperatures (): Array<Sensor & Partial<Heater>> {
+    return [...this.heaters.filter(h => h.name !== this.nozzle?.name && h.name !== this.bed?.name),
+      ...((this.$store.getters['printer/getSensors'] as Sensor[]) ?? []),
+      ...this.fans.filter(f => typeof f.temperature === 'number').map(f => ({ ...f, temperature: f.temperature ?? 0 }))]
+  }
+
+  otherHeater (name: string): Heater | null { return this.heaters.find(h => h.name === name) ?? null }
 
   get steppers (): Stepper[] {
     const list: Stepper[] = []
@@ -261,33 +187,12 @@ export default class ControlHeat extends Mixins(ControlMixin) {
   get materialsLink (): string {
     return `${scopedPath('/settings', activeSlug())}#presets`
   }
-
-  get lengthOptions (): SegOption[] {
-    return extrudeLengths(this.maxExtrudeLength).map((v, i, all) => ({ value: v, label: i === all.length - 1 ? `${v} mm` : String(v) }))
-  }
-
-  /** The length chosen, kept within max_extrude_only_distance, which Klipper refuses past. */
-  get extrudeLength (): number {
-    return Math.min(this.length, this.maxExtrudeLength)
-  }
-
-  get minExtrude (): number {
-    return Math.round(this.activeExtruder?.min_extrude_temp ?? 170)
-  }
-
-  get extrudeReason (): string | null {
-    if (!this.ready) return null
-    if (this.busy) return 'Not while printing'
-    return extrudeBlocked(this.activeExtruder?.temperature ?? 0, this.minExtrude, this.activeExtruder?.can_extrude)
-  }
-
-  get canExtrude (): boolean {
-    return this.ready && !this.extrudeReason
-  }
 }
 </script>
 
 <style lang="scss" scoped>
+  .heat__more { position: relative; }
+  .heat__more .heat__edit { position: absolute; right: 0; top: 100%; z-index: 10; min-width: 140px; padding: 12px; border: 1px solid var(--m3d-border); border-radius: 12px; background: var(--m3d-surface); }
   .heat__edit {
     color: var(--m3d-text-muted) !important;
     font-size: 13px;
@@ -351,7 +256,7 @@ export default class ControlHeat extends Mixins(ControlMixin) {
 
   .heat__steppers {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 8px;
   }
 
@@ -359,7 +264,7 @@ export default class ControlHeat extends Mixins(ControlMixin) {
     display: flex;
     align-items: center;
     gap: 6px;
-    height: 48px;
+    min-height: 60px;
     padding: 0 6px 0 12px;
     border-radius: 14px;
     background: var(--m3d-surface-2);
@@ -369,6 +274,7 @@ export default class ControlHeat extends Mixins(ControlMixin) {
     flex: 1 1 auto;
     font-size: 14px;
     font-weight: 500;
+    .crow__sub { display: block; font-size: 11px; }
   }
 
   .heat__stepper-value {

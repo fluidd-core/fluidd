@@ -1,6 +1,7 @@
 <template>
   <section
     class="jt"
+    :class="`jt--${view}`"
     data-tid="jobs-table"
   >
     <div class="jt__head">
@@ -32,6 +33,12 @@
         </div>
       </div>
       <span class="jt__grow" />
+      <seg-picker
+        :options="filterOptions"
+        :value="filter"
+        label="Print history"
+        @input="filter = $event"
+      />
       <label class="jt__filter">
         <frame-icon
           name="search"
@@ -53,6 +60,7 @@
         type="button"
         class="cbtn"
         data-tid="jobs-new-folder"
+        :disabled="!controlReady"
         @click="folderDialog = true"
       >
         <frame-icon
@@ -65,6 +73,7 @@
         type="button"
         class="cbtn cbtn--primary"
         data-tid="jobs-upload"
+        :disabled="!controlReady"
         @click="pickUpload"
       >
         <frame-icon
@@ -84,6 +93,7 @@
       <button
         v-if="canQueue && selectedFiles.length === selected.length"
         type="button"
+        :disabled="!controlReady"
         @click="queueSelected"
       >
         {{ queueText }}
@@ -92,14 +102,16 @@
         v-if="changeable.length"
         type="button"
         data-tid="jobs-move"
-        @click="moveOpen = true"
+        :disabled="!controlReady"
+        @click="openMove"
       >
         Move to…
       </button>
       <button
         v-if="selected.length === 1 && changeable.length === 1"
         type="button"
-        @click="renameOpen = true"
+        :disabled="!controlReady"
+        @click="openRename"
       >
         Rename
       </button>
@@ -115,6 +127,7 @@
         type="button"
         class="jt__danger"
         data-tid="jobs-delete"
+        :disabled="!controlReady"
         @click="deleteRows(selectedRows)"
       >
         Delete
@@ -143,34 +156,45 @@
       role="grid"
       tabindex="0"
       aria-label="Files on the printer"
+      aria-describedby="jobs-table-hint"
       :aria-multiselectable="true"
-      :aria-rowcount="rows.length + 1"
+      :aria-rowcount="rows.length + 1 + (path ? 1 : 0)"
+      aria-colcount="9"
+      :aria-activedescendant="cursor ? rowId(cursor) : undefined"
       data-tid="jobs-table-grid"
       @keydown="onKey"
     >
       <div
         class="jt__row jt__row--head"
         role="row"
+        aria-rowindex="1"
       >
         <span
           class="jt__check"
           role="columnheader"
+          aria-colindex="1"
         >
-          <span
-            role="checkbox"
+          <input
+            type="checkbox"
             class="jt__box"
             :class="{ 'jt__box--on': allSelected, 'jt__box--some': selected.length && !allSelected }"
+            :checked="allSelected"
             :aria-checked="allSelected ? 'true' : selected.length ? 'mixed' : 'false'"
             aria-label="Select every row"
-            @click="toggleAll"
-          />
+            @click.stop="toggleAll"
+          >
         </span>
-        <span aria-hidden="true" />
+        <span
+          role="columnheader"
+          aria-colindex="2"
+          aria-hidden="true"
+        />
         <button
-          v-for="column in columns"
+          v-for="(column, columnIndex) in columns"
           :key="column.key"
           type="button"
           role="columnheader"
+          :aria-colindex="columnIndex + 3"
           class="jt__col"
           :class="[`jt__c-${column.key}`, { 'jt__col--on': sort.column === column.key }]"
           :aria-sort="sort.column === column.key ? (sort.desc ? 'descending' : 'ascending') : 'none'"
@@ -188,23 +212,43 @@
         v-if="path"
         class="jt__row jt__row--up"
         role="row"
+        aria-rowindex="2"
         @click="openFolder(parent)"
       >
-        <span />
-        <span class="jt__thumb jt__thumb--folder">
+        <span
+          role="gridcell"
+          aria-colindex="1"
+        />
+        <span
+          class="jt__thumb jt__thumb--folder"
+          role="gridcell"
+          aria-colindex="2"
+        >
           <frame-icon
             name="folderUp"
             small
           />
         </span>
-        <span class="jt__name">Up to {{ parent ? `${parent}/` : 'gcodes/' }}</span>
+        <span
+          class="jt__name"
+          role="gridcell"
+          aria-colindex="3"
+        >Up to {{ parent ? `${parent}/` : 'gcodes/' }}</span>
+        <span
+          v-for="column in 6"
+          :key="column"
+          role="gridcell"
+          :aria-colindex="column + 3"
+        />
       </div>
 
       <div
-        v-for="row in rows"
+        v-for="(row, rowIndex) in rows"
+        :id="rowId(row.key)"
         :key="row.key"
         :ref="`row-${row.key}`"
         role="row"
+        :aria-rowindex="rowIndex + 2 + (path ? 1 : 0)"
         class="jt__row"
         :class="{
           'jt__row--sel': selected.includes(row.key),
@@ -219,20 +263,23 @@
         <span
           class="jt__check"
           role="gridcell"
-          @click.stop="onCheck(row, $event)"
+          aria-colindex="1"
         >
-          <span
-            role="checkbox"
+          <input
+            type="checkbox"
             class="jt__box"
             :class="{ 'jt__box--on': selected.includes(row.key) }"
+            :checked="selected.includes(row.key)"
             :aria-checked="selected.includes(row.key) ? 'true' : 'false'"
             :aria-label="`Select ${row.name}`"
-          />
+            @click.stop="onCheck(row, $event)"
+          >
         </span>
         <span
           class="jt__thumb"
           :class="{ 'jt__thumb--folder': row.kind === 'folder' }"
           role="gridcell"
+          aria-colindex="2"
         >
           <frame-icon
             v-if="row.kind === 'folder'"
@@ -249,6 +296,7 @@
         <span
           class="jt__name"
           role="gridcell"
+          aria-colindex="3"
           :title="row.name"
         >
           <span class="jt__name-text">{{ row.name }}</span>
@@ -260,26 +308,32 @@
         <span
           class="jt__c-time"
           role="gridcell"
+          aria-colindex="4"
         >{{ row.kind === 'folder' ? '—' : time(row.time) }}</span>
         <span
           class="jt__c-filament"
           role="gridcell"
+          aria-colindex="5"
         >{{ row.filament ? `${row.filament.toFixed(1)} g` : '—' }}</span>
         <span
           class="jt__c-layer"
           role="gridcell"
+          aria-colindex="6"
         >{{ row.layer ? row.layer.toFixed(2) : '—' }}</span>
         <span
           class="jt__c-height"
           role="gridcell"
+          aria-colindex="7"
         >{{ row.height ? row.height.toFixed(1) : '—' }}</span>
         <span
           class="jt__c-modified"
           role="gridcell"
+          aria-colindex="8"
         >{{ date(row.modified) }}</span>
         <span
           class="jt__c-size"
           role="gridcell"
+          aria-colindex="9"
         >{{ row.kind === 'folder' ? folderSize(row.key) : size(row.size) }}</span>
       </div>
 
@@ -297,8 +351,11 @@
       </p>
     </div>
 
-    <p class="jt__hint">
-      Shift-click selects a range · Del deletes · Enter opens · Backspace goes up
+    <p
+      id="jobs-table-hint"
+      class="jt__hint"
+    >
+      Arrow keys move · Space selects · Shift+Arrow selects a range · Del deletes · Enter opens · Backspace goes up
       <template v-if="others">
         · {{ others }} other {{ others === 1 ? 'file' : 'files' }} here, in Files
       </template>
@@ -379,10 +436,11 @@ import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import type { AppDirectory, AppFileWithMeta, FileBrowserEntry } from '@/store/files/types'
 import {
-  fileSize, filterRows, isGcodeFile, nextSort, parentFolder, queueLabel, rangeSelect, shortDate, sortRows, tableTime, toggleKey,
-  type TableColumn, type TableRow, type TableSort
+  fileSize, filterJobs, filterRows, isGcodeFile, nextSort, parentFolder, queueLabel, rangeSelect, shortDate, sortRows, tableTime, toggleKey,
+  type JobFilter, type TableColumn, type TableRow, type TableSort
 } from '@/services/jobs/model'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
+import SegPicker, { type SegOption } from '@/components/control/SegPicker.vue'
 
 type Row = TableRow & { job?: JobFile }
 
@@ -399,19 +457,21 @@ function readSort (): TableSort {
 }
 
 /**
- * Pro's file table: the G-code on the printer with its folders, sorted by
+ * The G-code on the printer with its folders, sorted by
  * any column, filtered, and selected in ones or ranges for queueing,
  * moving, downloading or deleting together. The row with the cursor is
  * the one the viewer beside it shows; Enter or a double-click opens it.
  */
-@Component({ components: { FileNameDialog } })
+@Component({ components: { FileNameDialog, SegPicker } })
 export default class JobsTable extends Mixins(JobsMixin) {
+  @Prop({ type: String, default: 'table' }) readonly view!: 'pictures' | 'list' | 'table'
   /** The job the viewer shows, from outside: the table's cursor follows it. */
   @Prop({ type: String, default: null })
   readonly current!: string | null
 
   path = ''
   query = ''
+  filter: JobFilter = 'all'
   sort: TableSort = readSort()
   selected: string[] = []
   anchor: string | null = null
@@ -419,6 +479,18 @@ export default class JobsTable extends Mixins(JobsMixin) {
   folderDialog = false
   renameOpen = false
   moveOpen = false
+  dialogTarget: string | null = null
+
+  @Watch('commandTarget')
+  onCommandTarget () {
+    this.selected = []
+    this.anchor = null
+    this.cursor = null
+    this.renameOpen = false
+    this.moveOpen = false
+    this.folderDialog = false
+    this.dialogTarget = null
+  }
 
   get columns (): Array<{ key: TableColumn, label: string }> {
     return [
@@ -429,6 +501,14 @@ export default class JobsTable extends Mixins(JobsMixin) {
       { key: 'height', label: 'Height' },
       { key: 'modified', label: 'Modified' },
       { key: 'size', label: 'Size' }
+    ]
+  }
+
+  get filterOptions (): SegOption[] {
+    return [
+      { value: 'all', label: `All ${this.fileRows.length}` },
+      { value: 'never', label: 'Never printed' },
+      { value: 'before', label: 'Printed before' }
     ]
   }
 
@@ -493,7 +573,9 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   get rows (): Row[] {
-    return sortRows(filterRows([...this.folderRows, ...this.fileRows], this.query), this.sort)
+    const visible = new Set(filterJobs(this.fileRows.flatMap(row => row.job ? [row.job] : []), this.filter).map(job => job.key))
+    const files = this.fileRows.filter(row => visible.has(row.key))
+    return sortRows(filterRows([...this.folderRows, ...files], this.query), this.sort)
   }
 
   get order (): string[] {
@@ -581,6 +663,10 @@ export default class JobsTable extends Mixins(JobsMixin) {
     })
   }
 
+  rowId (key: string): string {
+    return `jobs-row-${encodeURIComponent(key)}`
+  }
+
   // -- clicking -----------------------------------------------------------------
 
   onRowClick (row: Row, event: MouseEvent) {
@@ -599,6 +685,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
     }
     this.anchor = row.key
     this.moveCursor(row.key)
+    if (this.view !== 'table') this.openRow(row)
   }
 
   onCheck (row: Row, event: MouseEvent) {
@@ -721,6 +808,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   async queueSelected () {
+    if (!this.controlReady) return
     await SocketActions.serverJobQueuePostJob(this.selectedFiles.map(f => f.path))
     this.clearSelection()
   }
@@ -730,6 +818,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   async deleteRows (all: Row[]) {
+    if (!this.controlReady) return
     const rows = all.filter(r => !r.job?.printing)
     if (!rows.length) return
     const files = rows.filter(r => r.kind === 'file').length
@@ -740,9 +829,11 @@ export default class JobsTable extends Mixins(JobsMixin) {
     ].filter(Boolean).join(' and ')
     const name = rows.length === 1 ? rows[0].name : what
     const note = folders ? ' A folder goes with everything in it.' : ''
+    const target = this.commandTarget
     const ok = await this.$confirm(`It's removed from ${this.printerName}.${note} This can't be undone.`, { title: `Delete ${name}?`, buttonTrueText: 'Delete', danger: true })
-    if (!ok) return
+    if (!ok || target !== this.commandTarget || !this.controlReady) return
     for (const row of rows) {
+      if (target !== this.commandTarget || !this.controlReady) return
       if (row.kind === 'folder') SocketActions.serverFilesDeleteDirectory(`${this.root}/${row.key}`, true)
       else SocketActions.serverFilesDeleteFile(`${this.root}/${row.key}`)
     }
@@ -761,8 +852,20 @@ export default class JobsTable extends Mixins(JobsMixin) {
       .sort((a, b) => a.localeCompare(b))
   }
 
+  openMove () {
+    this.dialogTarget = this.commandTarget
+    this.moveOpen = true
+  }
+
+  openRename () {
+    this.dialogTarget = this.commandTarget
+    this.renameOpen = true
+  }
+
   moveInto (folder: string) {
+    if (!this.controlReady || this.dialogTarget !== this.commandTarget) return
     for (const row of this.changeable) {
+      if (!this.controlReady || this.dialogTarget !== this.commandTarget) return
       SocketActions.serverFilesMove(`${this.root}/${row.key}`, `${this.root}/${folder ? `${folder}/` : ''}${row.name}`)
     }
     this.moveOpen = false
@@ -770,6 +873,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   rename (name: string) {
+    if (!this.controlReady || this.dialogTarget !== this.commandTarget) return
     const row = this.changeable[0]
     const clean = name.trim()
     if (!row || !clean || clean === row.name) return
@@ -778,6 +882,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   makeFolder (name: string) {
+    if (!this.controlReady) return
     const clean = name.trim()
     if (clean) SocketActions.serverFilesPostDirectory(`${this.dir}/${clean}`)
   }
@@ -790,6 +895,7 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   pickUpload () {
+    if (!this.controlReady) return
     (this.$refs.upload as HTMLInputElement).click()
   }
 
@@ -798,10 +904,19 @@ export default class JobsTable extends Mixins(JobsMixin) {
     const input = event.target as HTMLInputElement
     const files = [...(input.files ?? [])]
     input.value = ''
+    if (!this.controlReady) return
     if (!files.length) return
-    await this.uploadFiles(files, this.path, this.root, false)
+    const target = this.commandTarget
+    const path = this.path
+    const root = this.root
+    const stillCurrent = () => target === this.commandTarget && this.controlReady
+    const completed = await this.uploadFiles(files, path, root, false, stillCurrent)
+    if (!completed || !stillCurrent()) {
+      EventBus.$emit('Stopped: the printer changed', { type: 'warning', timeout: 5000 })
+      return
+    }
     if (files.length === 1 && isGcodeFile(files[0].name)) {
-      EventBus.bus.$emit('job-ready', this.path ? `${this.path}/${files[0].name}` : files[0].name)
+      EventBus.bus.$emit('job-ready', path ? `${path}/${files[0].name}` : files[0].name)
     }
   }
 
@@ -978,6 +1093,22 @@ export default class JobsTable extends Mixins(JobsMixin) {
     }
   }
 
+  .jt--list {
+    .jt__row { grid-template-columns: 28px 36px minmax(0, 1fr); }
+    .jt__row--head { display: none; }
+    .jt__row > :not(.jt__check):not(.jt__thumb):not(.jt__name) { display: none; }
+  }
+
+  .jt--pictures {
+    .jt__table { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; overflow: visible; background: transparent; }
+    .jt__row { position: relative; display: flex; flex-direction: column; justify-content: center; gap: 8px; height: 190px; padding: 16px; border: 0; border-radius: 20px; background: var(--m3d-surface); text-align: center; }
+    .jt__row--head { display: none; }
+    .jt__row > :not(.jt__check):not(.jt__thumb):not(.jt__name) { display: none; }
+    .jt__check { position: absolute; align-self: flex-start; height: auto; }
+    .jt__thumb { width: 92px; height: 92px; }
+    .jt__name { width: 100%; }
+  }
+
   .jt__row {
     display: grid;
     grid-template-columns: 28px 36px minmax(0, 2.4fr) 0.8fr 0.8fr 0.6fr 0.6fr 1fr 0.7fr;
@@ -1047,11 +1178,22 @@ export default class JobsTable extends Mixins(JobsMixin) {
   }
 
   .jt__box {
+    appearance: none;
     display: block;
+    flex: none;
     width: 16px;
     height: 16px;
+    margin: 0;
+    padding: 0;
+    border: 0;
     border-radius: 5px;
+    background: transparent;
     box-shadow: inset 0 0 0 1.5px var(--m3d-border-strong);
+
+    &:focus-visible {
+      outline: 2px solid var(--m3d-accent);
+      outline-offset: 2px;
+    }
 
     &.jt__box--on {
       background: var(--m3d-accent);
