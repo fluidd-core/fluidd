@@ -73,7 +73,7 @@ import type { ConsoleEntry } from '@/store/console/types'
 const SHOWN = 6
 
 /**
- * The console's last lines on Pro's Overview, with a line to send G-code
+ * The console's last lines on Overview, with a line to send G-code
  * from; the Console page has the rest.
  */
 @Component({})

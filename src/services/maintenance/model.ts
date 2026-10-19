@@ -177,7 +177,7 @@ export function probeCount (setting: unknown): [number, number] | null {
   return [counts[0], counts[1] ?? counts[0]]
 }
 
-// -- Pro's Bed mesh page ------------------------------------------------------
+// -- Bed mesh page ------------------------------------------------------------
 
 export interface ProbeAccuracy {
   maximum: number;

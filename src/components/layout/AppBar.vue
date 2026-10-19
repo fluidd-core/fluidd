@@ -149,23 +149,6 @@
           <span>Keyboard shortcuts <kbd>?</kbd></span>
         </v-tooltip>
 
-        <button
-          v-if="!sectionContext.foreign && proSwitchShown"
-          type="button"
-          role="switch"
-          class="app-header__pro"
-          :aria-checked="pro ? 'true' : 'false'"
-          :title="pro ? 'Pro is on: exact values and more rows' : 'Pro shows exact values and more rows'"
-          data-tid="pro-switch"
-          @click="togglePro"
-        >
-          <span class="app-header__pro-label">Pro</span>
-          <span
-            class="app-header__toggle"
-            :class="{ 'app-header__toggle--on': pro }"
-          />
-        </button>
-
         <cloud-account-menu />
       </div>
 
@@ -280,7 +263,6 @@ import { EventBus } from '@/eventBus'
 import type { OutputPin } from '@/store/printer/types'
 import type { Device } from '@/store/power/types'
 import { pageOfRoute } from '@/router/printerPagePaths'
-import { setProMode } from '@/services/pro-mode'
 
 /**
  * The header answers three questions in order: where am I (Muon3D, the
@@ -315,10 +297,6 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
     if (this.$route.name?.startsWith('Library')) return 'Library'
     if (this.$route.name?.startsWith('Account')) return 'Account'
     return this.$route.name ?? ''
-  }
-
-  togglePro () {
-    setProMode(!this.pro)
   }
 
   openKeys () {
@@ -779,55 +757,6 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
     &:hover {
       background: var(--m3d-hover);
       color: var(--m3d-text);
-    }
-  }
-
-  .app-header__pro {
-    display: inline-flex;
-    flex: none;
-    align-items: center;
-    gap: 8px;
-    height: 40px;
-    padding: 0 6px 0 12px;
-    border-radius: 12px;
-    color: var(--m3d-text-muted);
-    font-size: 13px;
-    font-weight: 600;
-
-    &:hover {
-      background: var(--m3d-hover);
-      color: var(--m3d-text);
-    }
-  }
-
-  .app-header__toggle {
-    position: relative;
-    flex: none;
-    width: 36px;
-    height: 22px;
-    border-radius: 11px;
-    background: var(--m3d-switch-off, var(--m3d-border-strong));
-    transition: background-color var(--m3d-duration-fast) var(--m3d-ease);
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
-      transition: left var(--m3d-duration-fast) var(--m3d-ease);
-    }
-  }
-
-  .app-header__toggle--on {
-    background: var(--m3d-accent);
-
-    &::after {
-      left: 16px;
     }
   }
 

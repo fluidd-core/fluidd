@@ -123,7 +123,7 @@ import ControlCard from '@/components/control/ControlCard.vue'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
 
 /**
- * Pro's mesh profiles: the saved ones with how uneven each is, loading and
+ * Saved mesh profiles with how uneven each is, loading and
  * removing them, measuring the bed (the same check as Maintenance, so it
  * counts there too), saving the mesh in use under a name, and saving to
  * printer.cfg when Klipper has results waiting.

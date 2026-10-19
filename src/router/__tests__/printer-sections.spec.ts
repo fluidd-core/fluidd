@@ -17,8 +17,8 @@ import {
 vi.mock('@/services/printer-pages', () => ({ activeSlug: () => 'local', isForeignSlug: (slug?: string) => slug === 'foreign' }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: {} }))
 
-const simple: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: true, foreign: false }
-const everything: SectionContext = { pro: true, slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true, foreign: false, bedMesh: true }
+const simple: SectionContext = { slicer: false, camera: null, history: true, timelapse: false, diagnostics: true, foreign: false }
+const everything: SectionContext = { slicer: true, camera: 'front', history: true, timelapse: true, diagnostics: true, foreign: false, bedMesh: true }
 
 const ids = (c: SectionContext) => visibleSections(c).map(s => s.id)
 
@@ -62,7 +62,7 @@ describe("a printer's sections", () => {
     expect(visiblePages(jobs, simple).map(p => p.path)).toEqual(['/jobs', '/preview', '/history'])
     const overview = SECTIONS.find(s => s.id === 'overview')!
     expect(visiblePages(overview, simple).map(p => p.path)).toEqual(['/', '/diagnostics'])
-    expect(visiblePages(overview, { ...simple, pro: true }).map(p => p.path)).toEqual(['/', '/diagnostics'])
+    expect(visiblePages(overview, simple).map(p => p.path)).toEqual(['/', '/diagnostics'])
     expect(visiblePages(overview, { ...everything, diagnostics: false }).map(p => p.path)).toEqual(['/'])
     expect(visiblePages(overview, everything).map(p => p.path)).toEqual(['/', '/diagnostics'])
     const maintenance = SECTIONS.find(s => s.id === 'maintenance')!

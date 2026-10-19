@@ -120,26 +120,6 @@
               class="app-more__chevron"
             />
           </router-link>
-
-          <button
-            v-if="proSwitchShown"
-            type="button"
-            role="switch"
-            class="app-more__row"
-            :aria-checked="pro ? 'true' : 'false'"
-            data-tid="more-pro"
-            @click="togglePro"
-          >
-            <frame-icon name="control" />
-            <span class="app-more__label">
-              Pro controls
-              <span class="app-more__hint">Exact values and more rows</span>
-            </span>
-            <span
-              class="app-more__toggle"
-              :class="{ 'app-more__toggle--on': pro }"
-            />
-          </button>
         </div>
         <div class="app-more__account">
           <cloud-account-menu />
@@ -153,7 +133,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import FrameMixin from '@/mixins/frame'
 import type { Section, SectionId } from '@/router/printerSections'
-import { setProMode } from '@/services/pro-mode'
 import { probeSlicer } from '@/services/slicer-bridge/slicerUrl'
 import CloudAccountMenu from '@/components/muon-cloud/CloudAccountMenu.vue'
 
@@ -186,10 +165,6 @@ export default class AppTabBar extends Mixins(FrameMixin) {
 
   get moreActive (): boolean {
     return !!this.currentSection && !this.tabs.includes(this.currentSection)
-  }
-
-  togglePro () {
-    setProMode(!this.pro)
   }
 }
 </script>
@@ -296,37 +271,6 @@ export default class AppTabBar extends Mixins(FrameMixin) {
     color: var(--m3d-text-muted);
     font-size: 12px;
   }
-
-  .app-more__toggle {
-    position: relative;
-    flex: none;
-    width: 44px;
-    height: 26px;
-    border-radius: 13px;
-    background: var(--m3d-switch-off, var(--m3d-border-strong));
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
-      transition: left var(--m3d-duration-fast) var(--m3d-ease);
-    }
-  }
-
-  .app-more__toggle--on {
-    background: var(--m3d-accent);
-
-    &::after {
-      left: 20px;
-    }
-  }
-
   .app-more__account {
     display: flex;
     justify-content: flex-end;

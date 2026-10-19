@@ -99,7 +99,7 @@ import ControlCard from '@/components/control/ControlCard.vue'
 import { plateCheckNeeded } from '@/services/jobs/plate'
 
 /**
- * Pro's probe: its Z offset, whether it's triggered when asked, and probe
+ * The probe's Z offset, whether it is triggered when asked, and probe
  * accuracy (ten probes in the middle of the bed) with how repeatable the
  * heights are. The result comes from Klipper's own line in the console.
  */

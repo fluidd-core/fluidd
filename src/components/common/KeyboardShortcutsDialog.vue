@@ -143,7 +143,6 @@ export default class KeyboardShortcutsDialog extends Mixins(BrowserMixin) {
           { keys: ['G', 'A'], what: 'Your account' },
           { keys: ['[', ']'], what: 'Previous or next printer, same page' },
           { keys: ['1', '–', '9'], what: 'On Printers: open that one' },
-          { keys: ['Shift', 'X'], what: 'Pro on or off' },
           { keys: ['Esc'], what: 'Close a sheet or a menu' }
         ]
       },

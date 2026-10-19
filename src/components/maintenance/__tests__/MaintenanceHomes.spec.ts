@@ -5,7 +5,6 @@ import Maintenance from '@/views/Maintenance.vue'
 import ControlTuning from '@/components/control/ControlTuning.vue'
 import ControlOutputs from '@/components/control/ControlOutputs.vue'
 import { panelStore, panelStubs, waits } from '@/components/control/__tests__/panel-fixture'
-import { proMode } from '@/services/pro-mode'
 
 const socket = vi.hoisted(() => ({ printerGcodeScript: vi.fn(), printerQueryEndstops: vi.fn() }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: socket }))
@@ -38,7 +37,7 @@ function show (phone = false) {
   })
   return { wrapper, store }
 }
-afterEach(() => { vi.clearAllMocks(); proMode.on = false })
+afterEach(() => { vi.clearAllMocks() })
 
 it.each([false, true])('opens Health results and diagnosis without a mode, phone=%s', async phone => {
   const { wrapper } = show(phone)

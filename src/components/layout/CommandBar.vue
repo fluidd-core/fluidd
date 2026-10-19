@@ -144,7 +144,6 @@ import { accountSections } from '@/services/account/model'
 import { activeSlug, foreignRecordForSlug, knownPrinters, printerHomePath, printerPath, samePageFor } from '@/services/printer-pages'
 import { cloudState } from '@/services/muon-cloud/state'
 import { savedName } from '@/services/muon-cloud/directory'
-import { setProMode } from '@/services/pro-mode'
 import { jobName } from '@/services/printers-page/model'
 import { plateCheckNeeded } from '@/services/jobs/plate'
 import { printerNameParts } from '@/util/printer-name'
@@ -324,18 +323,6 @@ export default class CommandBar extends Mixins(FrameMixin, BrowserMixin, TypedCo
         list.push({ id: 'reboot', group: 'Do', label: "Restart the printer's computer", words: 'reboot host power', icon: 'power', run: () => this.hostCommand('reboot', target) })
         list.push({ id: 'shutdown', group: 'Do', label: "Shut down the printer's computer", words: 'shutdown host power off', icon: 'power', run: () => this.hostCommand('shutdown', target) })
       }
-    }
-    // No Pro on a page with no mode (Slice): it would change nothing there.
-    if (this.proSwitchShown) {
-      list.push({
-        id: 'pro',
-        group: 'Do',
-        label: this.pro ? 'Turn Pro off' : 'Turn Pro on',
-        words: 'pro mode advanced exact raw',
-        keys: ['Shift', 'X'],
-        icon: 'control',
-        run: () => setProMode(!this.pro)
-      })
     }
     list.push({ id: 'keys', group: 'Do', label: 'Keyboard shortcuts', words: 'keys cheat sheet help', keys: ['?'], icon: 'keyboard', run: () => { EventBus.bus.$emit('keyboard-shortcuts') } })
     return list

@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Jobs from '../Jobs.vue'
-import { setProMode } from '@/services/pro-mode'
 import { SocketActions } from '@/api/socketActions'
 import { controlPreferenceStore } from '@/services/account/control-preferences'
 import Vue from 'vue'
@@ -35,10 +34,10 @@ function mountJobs (mobile = false, access: { control: boolean, target: string, 
 
 describe('Jobs one layout', () => {
   beforeEach(() => { vi.spyOn(SocketActions, 'serverFilesGetDirectory').mockImplementation(vi.fn() as any) })
-  afterEach(() => { setProMode(false); controlPreferenceStore.state.folds = {}; vi.restoreAllMocks() })
+  afterEach(() => { controlPreferenceStore.state.folds = {}; vi.restoreAllMocks() })
 
   it.each([false, true])('offers Pictures, List and Table with legacy Pro=%s', pro => {
-    setProMode(pro)
+    localStorage.setItem('muon3d.pro', pro ? '1' : '0')
     const wrapper = mountJobs()
     expect((wrapper.vm as any).viewOptions.map((v: any) => v.label)).toEqual(['Pictures', 'List', 'Table'])
     expect(wrapper.find('[data-tid="jobs-up-next"]').exists()).toBe(true)

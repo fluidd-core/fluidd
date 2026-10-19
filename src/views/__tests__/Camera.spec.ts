@@ -1,7 +1,6 @@
 import { shallowMount, type Wrapper } from '@vue/test-utils'
-import { afterEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import Camera, { redactCameraUrl } from '../Camera.vue'
-import { setProMode } from '@/services/pro-mode'
 import type { WebcamConfig } from '@/store/webcams/types'
 
 const front: WebcamConfig = {
@@ -50,29 +49,24 @@ function mountCamera (cameras: WebcamConfig[], cameraId = cameras[0]?.uid): Wrap
   })
 }
 
-afterEach(() => setProMode(false))
-
 describe('Camera stream details', () => {
-  for (const legacyPro of [false, true]) {
-    it(`makes details reachable when legacy Pro is ${legacyPro}`, async () => {
-      setProMode(legacyPro)
-      const wrapper = mountCamera([front])
-      const button = wrapper.get('[data-tid="camera-details-trigger"]')
-      expect(wrapper.get('[data-tid="camera-stage"]').classes()).not.toContain('camera-stage--pro')
-      expect(wrapper.text()).not.toContain('Pro shows')
-      expect(button.attributes('aria-expanded')).toBe('false')
-      expect(button.attributes('aria-controls')).toBe('camera-details')
+  it('makes details reachable without a mode-specific camera stage', async () => {
+    const wrapper = mountCamera([front])
+    expect(wrapper.get('[data-tid="camera-stage"]').classes()).not.toContain('camera-stage--pro')
+    const button = wrapper.get('[data-tid="camera-details-trigger"]')
+    expect(wrapper.text()).not.toContain('Pro shows')
+    expect(button.attributes('aria-expanded')).toBe('false')
+    expect(button.attributes('aria-controls')).toBe('camera-details')
 
-      await button.trigger('click')
+    await button.trigger('click')
 
-      expect(button.attributes('aria-expanded')).toBe('true')
-      expect(wrapper.get('#camera-details').text()).toContain('webrtc-go2rtc')
-      expect(wrapper.get('#camera-details').text()).toContain('30 fps, 5 idle')
-      expect(wrapper.get('#camera-details').text()).not.toContain('secret')
-      expect(wrapper.get('#camera-details').text()).not.toContain('private')
-      wrapper.destroy()
-    })
-  }
+    expect(button.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.get('#camera-details').text()).toContain('webrtc-go2rtc')
+    expect(wrapper.get('#camera-details').text()).toContain('30 fps, 5 idle')
+    expect(wrapper.get('#camera-details').text()).not.toContain('secret')
+    expect(wrapper.get('#camera-details').text()).not.toContain('private')
+    wrapper.destroy()
+  })
 
   it('closes with Escape and returns focus to its native trigger', async () => {
     const wrapper = mountCamera([front])

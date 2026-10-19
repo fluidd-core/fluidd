@@ -10,7 +10,6 @@ export type SectionId = 'overview' | 'jobs' | 'control' | 'slice' | 'camera' | '
 
 /** What decides whether a section or a page shows. */
 export interface SectionContext {
-  pro: boolean;
   slicer: boolean;
   camera: string | null;
   history: boolean;

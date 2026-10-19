@@ -4,7 +4,6 @@ import AppRail from '../AppRail.vue'
 import AppTabBar from '../AppTabBar.vue'
 import CommandBar from '../CommandBar.vue'
 import { sectionOf, type SectionContext } from '@/router/printerSections'
-import { proMode, setProMode } from '@/services/pro-mode'
 
 // Keep printer discovery, connection setup and account UI outside these navigation tests.
 vi.mock('@/api/socketActions', () => ({ SocketActions: {} }))
@@ -19,16 +18,17 @@ vi.mock('@/services/slicer-bridge/slicerUrl', () => ({ probeSlicer: () => Promis
 vi.mock('../NetworkQuickMenu.vue', () => ({ default: { template: '<div />' } }))
 vi.mock('@/components/muon-cloud/CloudAccountMenu.vue', () => ({ default: { template: '<div />' } }))
 
-const native: SectionContext = { pro: false, slicer: false, camera: null, history: true, timelapse: false, diagnostics: false, foreign: false }
+const native: SectionContext = { slicer: false, camera: null, history: true, timelapse: false, diagnostics: false, foreign: false }
 const link = { props: ['to'], template: '<a :href="to" @click.prevent><slot /></a>' }
 const sheet = { props: ['value'], template: '<div v-if="value"><slot /></div>' }
-const previousPro = proMode.on
 
 function show (component: typeof AppRail | typeof AppTabBar | typeof CommandBar, context = native, compact = false, fullPath = '/hazel-1234/configure') {
   return shallowMount(component, {
     computed: {
       sectionContext: () => context,
-      currentSection: () => sectionOf('/configure')
+      currentSection: () => sectionOf('/configure'),
+      isMobileViewport: () => compact,
+      compact: () => compact
     },
     mocks: {
       $store: {
@@ -53,12 +53,28 @@ function show (component: typeof AppRail | typeof AppTabBar | typeof CommandBar,
 
 afterEach(() => {
   vi.restoreAllMocks()
-  setProMode(previousPro)
 })
 
 describe('Tools navigation', () => {
+  it.each([AppTabBar, CommandBar])('%s renders no Pro switch or command', async component => {
+    const wrapper = show(component)
+    if (component === AppTabBar) await wrapper.find('[data-tid="tab-more"]').trigger('click')
+    if (component === CommandBar) {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('[data-tid="command-bar"]').exists()).toBe(true)
+      const commands = (wrapper.vm as CommandBar).commands
+      expect(commands.length).toBeGreaterThan(0)
+      expect(commands.every(command => !/\bpro\b/i.test(`${command.id} ${command.label}`))).toBe(true)
+    }
+    expect(wrapper.find('[data-tid="pro-switch"]').exists()).toBe(false)
+    expect(wrapper.find('[data-tid="more-pro"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Turn Pro')
+    expect(wrapper.text()).not.toContain('Pro controls')
+    wrapper.destroy()
+  })
+
   it.each([false, true])('keeps scoped tool links and the active page in the rail (compact: %s)', compact => {
-    setProMode(false)
     const wrapper = show(AppRail, native, compact)
     const files = wrapper.find('[data-tid="rail-files"]')
     expect(files.exists()).toBe(true)
@@ -70,7 +86,6 @@ describe('Tools navigation', () => {
   })
 
   it('puts Tools in phone More and closes the sheet when a tool is chosen', async () => {
-    setProMode(false)
     const wrapper = show(AppTabBar)
     await wrapper.find('[data-tid="tab-more"]').trigger('click')
     expect(wrapper.text()).toContain('Tools')
@@ -81,19 +96,16 @@ describe('Tools navigation', () => {
     expect(wrapper.find('[data-tid="tab-console"]').exists()).toBe(false)
     await files.trigger('click')
     expect(wrapper.find('[data-tid="more-files"]').exists()).toBe(false)
-    expect(proMode.on).toBe(false)
     wrapper.destroy()
   })
 
-  it.each(['console', 'files'])('opens %s from the palette without changing Pro', async id => {
-    setProMode(false)
+  it.each(['console', 'files'])('opens %s from the palette', async id => {
     const wrapper = show(CommandBar, native, false, '/hazel-1234')
     const command = (wrapper.vm as CommandBar).goCommands.find(c => c.id === `go-${id}`)!
     expect(command.keys).toEqual(['G', id === 'console' ? 'T' : 'F'])
     expect(command.hint).toBeUndefined()
     await command.run()
     expect(wrapper.vm.$router.push).toHaveBeenCalledWith(`/hazel-1234/${id === 'console' ? 'console' : 'configure'}`)
-    expect(proMode.on).toBe(false)
     wrapper.destroy()
   })
 

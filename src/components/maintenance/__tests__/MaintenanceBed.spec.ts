@@ -26,9 +26,9 @@ function show (managed = false) {
 }
 afterEach(() => { localStorage.clear(); cloudState.account = null; cloudState.activePrinterId = null; printerTransportBinding.remote = false })
 
-it.each([false, true])('offers Bed only on a capable printer regardless of mode=%s', pro => {
+it('offers Bed only on a capable printer', () => {
   const section = sectionOf('/maintenance')!
-  const context = { pro, slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: false, bedMesh: true }
+  const context = { slicer: false, camera: null, history: false, timelapse: false, diagnostics: false, foreign: false, bedMesh: true }
   expect(visiblePages(section, context).map(p => p.label)).toEqual(['Health', 'Bed'])
   expect(visiblePages(section, { ...context, bedMesh: false }).map(p => p.label)).toEqual(['Health'])
 })

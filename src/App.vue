@@ -149,7 +149,6 @@ import { consolePresence } from '@/services/muon-cloud/presence'
 import FrameMixin from '@/mixins/frame'
 import { ACCOUNT_KEY, ALL_PRINTERS_KEY, LIBRARY_KEY, PAGE_KEYS, sectionForKey } from '@/router/printerSections'
 import { scopedPath } from '@/router/printerPagePaths'
-import { setProMode } from '@/services/pro-mode'
 import { GoKeys } from '@/util/go-keys'
 import { isGcodeFile, isModelFile } from '@/services/jobs/model'
 import JobReadyDialog from './components/jobs/JobReadyDialog.vue'
@@ -795,13 +794,6 @@ export default class App extends Mixins(StateMixin, FrameMixin, FilesMixin, Brow
         }
         return
       }
-
-      case 'Shift+X':
-        // No Pro on a page with no mode (Slice): the key changes nothing there.
-        if (!this.proSwitchShown) return
-        event.preventDefault()
-        setProMode(!this.pro)
-        return
 
       case 'u':
         if (!this.foreignPrinterRoute && this.printerFrame && this.socketConnected) {

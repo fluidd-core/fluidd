@@ -176,7 +176,7 @@ import ViewerToggles from './ViewerToggles.vue'
 const AUTO_LOAD_MS = 600
 
 /**
- * Pro Jobs' G-code viewer: the file the table's cursor is on, its picture
+ * Jobs' G-code viewer: the file the table's cursor is on, its picture
  * until its layers are asked for (the whole file comes over the network,
  * which is slow on a printer's Wi-Fi), then its layers with a slider,
  * what's drawn, and following the print when it's the one printing.
