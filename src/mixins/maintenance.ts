@@ -120,6 +120,8 @@ const CHECKS: CheckInfo[] = [
  */
 @Component({})
 export default class MaintenanceMixin extends Mixins(ControlMixin) {
+  get maintenanceTarget (): string { return this.panelTarget }
+
   get gcodeCommands (): Record<string, unknown> {
     return (this.$store.state.printer.printer.gcode?.commands as Record<string, unknown> | undefined) ??
       (this.$store.getters['printer/getAvailableCommands'] as Record<string, unknown>) ?? {}
@@ -166,8 +168,9 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
 
   /** Why no check can start now, or '' when one can. */
   get checksBlocked (): string {
+    if (!this.controlReady) return this.controlLock
     if (!this.klippyReady) return 'The printer isn\'t ready.'
-    if (this.printerPrinting || this.printerPaused) return 'Not while printing.'
+    if (this.printerBusy || this.printerState === 'loading') return 'Wait until the printer is idle.'
     if (this.runningId) return 'Another check is running.'
     return ''
   }
@@ -181,19 +184,20 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
 
   async runCheck (row: CheckRow) {
     if (!row.gcode || this.checksBlocked) return
+    const target = this.maintenanceTarget
     // Levelling and first layer height drive the nozzle onto the plate: the plate check first, as for a print.
     const plateCheck = touchesPlate(row.id) && plateCheckNeeded(this.$store.state.history?.jobs)
     const ok = await this.$confirm(row.confirm, { title: row.title, buttonTrueText: 'Start', plateCheck })
     // Asked again: a print may have started from elsewhere while the question was open.
-    if (!ok || this.checksBlocked) return
-    running.check = { id: row.id, printer: activeSlug(), startedAt: Date.now(), before: this.evidence, homeFirst: /(^|\n)G28\b/.test(row.gcode) }
+    if (!ok || target !== this.maintenanceTarget || this.checksBlocked || this.checks.find(c => c.id === row.id)?.gcode !== row.gcode) return
+    running.check = { id: row.id, printer: activeSlug(), target, startedAt: Date.now(), before: this.evidence, homeFirst: /(^|\n)G28\b/.test(row.gcode) }
     this.sendGcode(row.gcode, row.wait)
   }
 
   /** Records the running check once Klipper has its result. */
   recordIfDone () {
     const check = running.check
-    if (!check || check.printer !== activeSlug()) return
+    if (!check || check.printer !== activeSlug() || check.target !== this.maintenanceTarget) return
     if (!checkProduced(check.id, check.before, this.evidence)) return
     running.check = null
     this.$store.dispatch('config/saveByPath', {
@@ -294,18 +298,15 @@ export default class MaintenanceMixin extends Mixins(ControlMixin) {
 
   /** Why Save can't run now, or '' when it can: SAVE_CONFIG restarts Klipper, which ends a print, paused or not. */
   get saveBlocked (): string {
+    if (!this.controlReady) return this.controlLock
+    if (this.restartRefusal) return this.restartRefusal
     if (this.printerPrinting || this.printerPaused) return 'Not while printing.'
     if (this.hasWait(this.$waits.onSaveConfig)) return 'Saving…'
     return ''
   }
 
   async saveResults () {
-    if (this.saveBlocked) return
-    const ok = await this.$confirm('Saving keeps the new results after a restart. Klipper restarts to save them, which takes a few seconds.', {
-      title: 'Save the results?',
-      buttonTrueText: 'Save and restart Klipper',
-      buttonFalseText: 'Not now'
-    })
-    if (ok && !this.saveBlocked) this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
+    if (!this.saveConfigPending || this.saveBlocked) return
+    if (await this.confirmCommandRestart('save') && this.saveConfigPending && !this.saveBlocked) this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }
 }
