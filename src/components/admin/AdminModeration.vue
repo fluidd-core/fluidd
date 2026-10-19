@@ -59,7 +59,9 @@
           v-for="notice in review.notices"
           :key="notice.id"
         >
-          Notice {{ notice.id }} · {{ notice.reason }} · {{ notice.complete ? 'Complete' : 'Needs notice details' }} · {{ notice.decision || 'No decision' }} <button
+          Notice {{ notice.id }} · {{ notice.reason }} · {{ notice.complete ? 'Complete' : 'Needs notice details' }} · {{ notice.decision || 'No decision' }}
+          <span v-if="notice.sender">Private reply contact: {{ notice.sender }}.</span>
+          <button
             v-if="!notice.complete"
             class="cbtn"
             :disabled="busy"
@@ -71,10 +73,84 @@
         <p>{{ review.id }} · {{ review.state }} · Version {{ review.version }}</p>
         <p>Assigned to {{ review.assignee === 'jack' ? 'Jack' : 'Harry' }}. Evidence and reporter details stay private.</p>
         <p>File previews are not loaded automatically. A case response never restores content on its own.</p>
+        <section
+          v-if="review.publication"
+          aria-label="Source review"
+        >
+          <h3>Source review</h3>
+          <p>{{ review.publication.licence }}</p>
+          <p v-if="review.publication.credit">
+            {{ review.publication.credit.author || 'Source work' }} on {{ review.publication.credit.site }}
+          </p>
+          <p>Fetch every file deliberately. Inspect the archive and remove private names, email, printer identity and history before accepting. A download alone is not a safety check. Files over 8 MiB stay pending.</p>
+          <div
+            v-for="file in review.publication.files"
+            :key="file.id"
+          >
+            <p>{{ file.role }} · {{ file.size_bytes }} bytes · SHA-256 {{ file.sha256 }}</p>
+            <button
+              class="cbtn"
+              :disabled="busy || file.size_bytes > 8 * 1024 * 1024"
+              @click="fetchSource(file)"
+            >
+              Fetch source for inspection
+            </button>
+            <a
+              v-if="sourceDownloads[file.id]"
+              :href="sourceDownloads[file.id]"
+              :download="'source-' + file.id + '.' + file.format + (file.encoding === 'gzip' ? '.gz' : '')"
+            >Download verified source</a>
+          </div>
+          <label><input
+            v-model="privacyChecked"
+            type="checkbox"
+          >I inspected the complete files, licence and credit, and checked for private information.</label>
+          <button
+            class="cbtn"
+            :disabled="busy || !privacyChecked || !allSourcesFetched"
+            @click="decide('accept-source', { manifest: review.publication.manifest, privacy_checked: true })"
+          >
+            Accept source snapshot · passkey
+          </button>
+          <p v-if="sourceAccepted">
+            Source accepted by you for this case version. Publication still needs a separate decision.
+          </p>
+        </section>
+        <section
+          v-if="review.profile"
+          aria-label="Profile evidence"
+        >
+          <h3>Current profile evidence</h3>
+          <p>{{ review.profile.content.name || 'Private identity' }} {{ review.profile.content.handle ? '@' + review.profile.content.handle : '' }}</p>
+          <p>{{ review.profile.content.bio }}</p>
+          <p
+            v-for="url in review.profile.content.links"
+            :key="url"
+          >
+            {{ url }}
+          </p>
+          <button
+            v-if="review.profile.content.avatar"
+            class="cbtn"
+            :disabled="busy"
+            @click="fetchProfilePhoto"
+          >
+            Fetch profile photo for inspection
+          </button>
+          <a
+            v-if="sourceDownloads['profile-avatar']"
+            :href="sourceDownloads['profile-avatar']"
+            download="profile-evidence.png"
+          >Download verified profile photo</a>
+          <label><input
+            v-model="privacyChecked"
+            type="checkbox"
+          >I inspected this current profile and its photo before restoration.</label>
+        </section>
         <div class="actions">
           <button
             class="cbtn"
-            :disabled="busy || review.state !== 'open'"
+            :disabled="busy || review.state !== 'open' || !review.publication || !sourceAccepted"
             @click="decide('approve')"
           >
             Approve public submission · passkey
@@ -88,7 +164,7 @@
           </button>
           <button
             class="cbtn"
-            :disabled="busy || review.state !== 'hidden' || review.hidden_by === actor || review.legal_hold || !!review.restore_after && review.restore_after * 1000 > Date.now()"
+            :disabled="busy || review.state !== 'hidden' || review.hidden_by === actor || !!review.publication && !sourceAccepted || !!review.profile && (!privacyChecked || !!review.profile.content.avatar && !sourceDownloads['profile-avatar']) || review.legal_hold || !!review.restore_after && review.restore_after * 1000 > Date.now()"
             @click="decide('restore')"
           >
             Restore · another reviewer required
@@ -185,7 +261,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { AdminError, newCommandId, staffCommand, isStaffMutation, type CaseSummary, type CaseDetail, type Reservation, type CommandResult } from '@/services/admin/client'
+import { AdminError, newCommandId, staffCommand, isStaffMutation, sourceBlob, type SourceFile, type CaseSummary, type CaseDetail, type Reservation, type CommandResult } from '@/services/admin/client'
 import { storedToken } from '@/services/muon-cloud/api'
 
 @Component
@@ -203,7 +279,42 @@ export default class AdminModeration extends Vue {
   pattern = ''
   owner = ''
   expiry = ''
-  beforeDestroy () { this.alive = false; this.revision++ }
+  sourceDownloads: Record<string, string> = {}
+  privacyChecked = false
+  get sourceAccepted () { return this.review?.publication?.reviewed_by === this.actor && this.review.publication.reviewed_version === this.review.version }
+  get allSourcesFetched () { return !!this.review?.publication?.files.length && this.review.publication.files.every(f => this.sourceDownloads[f.id]) }
+  clearSources () { Object.values(this.sourceDownloads).forEach(url => URL.revokeObjectURL(url)); this.sourceDownloads = {}; this.privacyChecked = false }
+  beforeDestroy () { this.alive = false; this.revision++; this.clearSources() }
+  async fetchSource (file: SourceFile) {
+    const review = this.review
+    if (!review?.publication) return
+    const result = await this.request('source', review.id, review.version, { file: file.id })
+    if (!result?.source) return
+    const revision = this.revision; const token = storedToken()
+    try {
+      const blob = await sourceBlob(result.source, file, review.publication.manifest)
+      if (!this.alive || revision !== this.revision || document.hidden || storedToken() !== token) return
+      if (this.sourceDownloads[file.id]) URL.revokeObjectURL(this.sourceDownloads[file.id])
+      this.$set(this.sourceDownloads, file.id, URL.createObjectURL(blob))
+      this.message = 'Source verified. Download and inspect the complete file before accepting.'
+    } catch (e) { if (this.alive && revision === this.revision) this.message = e instanceof Error ? e.message : 'Source could not be verified.' }
+  }
+
+  async fetchProfilePhoto () {
+    const review = this.review
+    if (!review?.profile) return
+    const result = await this.request('source', review.id, review.version, { profile_digest: review.profile.digest })
+    if (!result?.source) return
+    const revision = this.revision; const token = storedToken()
+    try {
+      const blob = await sourceBlob(result.source, result.source.file, review.profile.digest)
+      if (!this.alive || revision !== this.revision || document.hidden || storedToken() !== token) return
+      if (this.sourceDownloads['profile-avatar']) URL.revokeObjectURL(this.sourceDownloads['profile-avatar'])
+      this.$set(this.sourceDownloads, 'profile-avatar', URL.createObjectURL(blob))
+      this.message = 'Profile photo verified. Download and inspect it before restoration.'
+    } catch (e) { if (this.alive && revision === this.revision) this.message = e instanceof Error ? e.message : 'Photo could not be verified.' }
+  }
+
   date (at: number): string { return new Date(at * 1000).toLocaleString() }
   async request (action: string, target: string, version = 0, details: Record<string, unknown> = {}): Promise<CommandResult | null> {
     if (this.busy || this.reason.trim().length < 8) { this.message = 'Give a short reason before continuing.'; return null }
@@ -227,6 +338,7 @@ export default class AdminModeration extends Vue {
   }
 
   async read () {
+    this.clearSources()
     this.review = null; this.cases = []; this.reservations = []
     const result = await this.request(this.section === 'queue' ? 'queue' : 'reservations', 'all')
     if (!result) return
@@ -234,8 +346,8 @@ export default class AdminModeration extends Vue {
     if (!this.cases.length && !this.reservations.length) this.message = 'No work waiting.'
   }
 
-  async open (id: string) { const result = await this.request('case', id); if (result?.case) this.review = result.case }
-  async decide (action: string, details: Record<string, unknown> = {}) { if (this.review) await this.request(action, this.review.id, this.review.version, details) }
+  async open (id: string) { this.clearSources(); const result = await this.request('case', id); if (result?.case) this.review = result.case }
+  async decide (action: string, details: Record<string, unknown> = {}) { if (this.review) await this.request(action, this.review.id, this.review.version, { ...(this.review.profile ? { profile_digest: this.review.profile.digest, privacy_checked: this.privacyChecked } : {}), ...details }) }
   async release (row: Reservation) { await this.request('release', row.pattern, row.version) }
   async reserve () {
     const existing = this.reservations.find(r => r.pattern === this.pattern)
@@ -248,4 +360,5 @@ export default class AdminModeration extends Vue {
 .moderation { max-width: 860px; } form, article { padding: 20px; margin: 16px 0; border: 1px solid var(--m3d-border); border-radius: 6px; background: var(--m3d-surface); overflow-wrap: anywhere; }
 label { display: block; margin-bottom: 16px; } textarea, input { display: block; width: 100%; padding: 10px; border: 1px solid var(--m3d-border); border-radius: 4px; background: var(--m3d-inset); color: var(--m3d-text); font: inherit; }
 textarea { min-height: 80px; } .actions { display: flex; flex-wrap: wrap; gap: 10px; } li { margin: 16px 0; white-space: pre-wrap; } button { white-space: normal; max-width: 100%; } button:disabled { opacity: .5; } :focus-visible { outline: 2px solid var(--m3d-accent); outline-offset: 2px; }
+input[type="checkbox"] { display: inline-block; width: auto; margin-right: 8px; }
 </style>

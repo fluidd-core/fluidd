@@ -87,11 +87,21 @@ export async function readAudit (source: 'console' | 'community', before: number
 
 export interface StaffCommand { command: string; action: string; target: string; version: number; reason: string; details: Record<string, unknown> }
 export interface CaseSummary { id: string; title: string; kind: string; state: string; version: number; assignee: string; at: number }
-export interface CaseDetail extends CaseSummary { share_id: string; owner: string; hidden_by: string | null; action_due_at?: number | null; decision_due_at?: number | null; restore_after?: number | null; legal_hold?: boolean; resolved?: boolean; notices?: Array<{ id: number; reason: string; complete: boolean; decision: string | null }>; events: Array<{ id: number; actor: string; kind: string; text: string; at: number }> }
+export interface CaseDetail extends CaseSummary, CasePublication { share_id: string; owner: string; hidden_by: string | null; action_due_at?: number | null; decision_due_at?: number | null; restore_after?: number | null; legal_hold?: boolean; resolved?: boolean; notices?: Array<{ id: number; reason: string; complete: boolean; decision: string | null; sender?: string }>; events: Array<{ id: number; actor: string; kind: string; text: string; at: number }> }
 export interface Reservation { pattern: string; reason: string; managed: boolean; active: boolean; version: number; owner: string | null; expires_at: number | null }
-export interface CommandResult { cases?: CaseSummary[]; case?: CaseDetail; reservations?: Reservation[]; account?: Partial<AdminAccount>; saved?: boolean }
+export interface CommandResult extends SourceResult { cases?: CaseSummary[]; case?: CaseDetail; reservations?: Reservation[]; account?: Partial<AdminAccount>; saved?: boolean }
 export const newCommandId = (): string => crypto.randomUUID().replace(/-/g, '')
-export function isStaffMutation (action: string): boolean { return !['queue', 'case', 'reservations'].includes(action) }
+export interface SourceFile { id: string; role: string; format: string; encoding: string; size_bytes: number; sha256: string }
+interface CasePublication { publication?: { licence: string; credit: { author?: string; site: string } | null; files: SourceFile[]; manifest: string; reviewed_by: string | null; reviewed_version: number | null } | null; profile?: { content: { name: string | null; handle: string | null; bio: string | null; links: string[]; avatar: string | null }; digest: string } }
+interface SourceResult { source?: { file: SourceFile; manifest: string; bytes: string } }
+export function isStaffMutation (action: string): boolean { return !['queue', 'case', 'reservations', 'source'].includes(action) }
+export async function sourceBlob (source: NonNullable<CommandResult['source']>, expected: SourceFile, manifest: string): Promise<Blob> {
+  if (source.manifest !== manifest || source.file.id !== expected.id || source.file.sha256 !== expected.sha256 || source.bytes.length > 12 * 1024 * 1024 || expected.size_bytes > 8 * 1024 * 1024) throw new AdminError('Source snapshot changed. Reload this case.', 409)
+  const bytes = Uint8Array.from(atob(source.bytes), c => c.charCodeAt(0))
+  const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))).map(n => n.toString(16).padStart(2, '0')).join('')
+  if (bytes.length !== expected.size_bytes || digest !== expected.sha256) throw new AdminError('Source bytes did not match. Nothing was prepared.', 409)
+  return new Blob([bytes], { type: 'application/octet-stream' })
+}
 
 /** A fresh ceremony for every mutation. No write proof reaches this client and no mutation retries automatically. */
 export async function staffCommand (command: StaffCommand, account = false, current: () => boolean = () => true): Promise<CommandResult> {

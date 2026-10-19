@@ -63,3 +63,19 @@ budget. Browser captures in the project folder use fixture HTTP/passkeys;
 they do not establish real-service acceptance. Preserve exact consent #89,
 Library #36, phone signup parity and receiver-before-sender holds. Pause
 Fluidd publishing before later develop merges. No printer release is included.
+
+## Milestone 5 evidence workflow
+
+This follow-up stays on #90/#85/#84/#80. It needs the console source broker
+on cloud #47 (on #45/#44) and models #51 (on #48/#45/#39/#38/#37).
+Fetch each source deliberately, verify its complete size/SHA256, inspect it,
+then accept the manifest with a fresh passkey. Approval is a separate decision.
+Files over8MiB remain pending. A downloaded archive is not automatically safe
+or stripped of internal metadata. Verify file privacy before any public release.
+
+Profile cases display current text and a content digest. Deliberate photo
+inspection uses the same broker. Restoration binds that digest, inspection
+confirmation and another reviewer. Source object URLs are revoked on lock,
+navigation and destruction. No staff write credential or source bytes are saved
+in storage. Check desktop/phone, keyboard, changed bytes, revoked role, expired
+passkey, uncertain response and changed-profile conflicts on isolated services.
