@@ -34,6 +34,13 @@
         Nothing yet.
       </li>
     </ol>
+    <p
+      v-if="commandRefusal"
+      role="alert"
+      class="ov-console__empty"
+    >
+      {{ commandRefusal }}
+    </p>
     <form
       class="ov-console__send"
       @submit.prevent="send"
@@ -56,7 +63,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import { Globals } from '@/globals'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
@@ -66,11 +73,11 @@ import type { ConsoleEntry } from '@/store/console/types'
 const SHOWN = 6
 
 /**
- * The console's last lines on Pro's Overview, with a line to send G-code
+ * The console's last lines on Overview, with a line to send G-code
  * from; the Console page has the rest.
  */
 @Component({})
-export default class OverviewConsole extends Mixins(StateMixin) {
+export default class OverviewConsole extends Mixins(TypedCommandsMixin) {
   command = ''
 
   get consoleTo (): string {
@@ -88,10 +95,9 @@ export default class OverviewConsole extends Mixins(StateMixin) {
     }))
   }
 
-  send () {
+  async send () {
     const gcode = this.command.trim()
-    if (!gcode || !this.klippyReady) return
-    this.sendGcode(gcode)
+    if (!await this.sendTypedGcode(gcode)) return
     // The Console page's history: newest first, repeats kept (its suggestions count them), the same length.
     const history = (this.$store.state.console.commandHistory as string[]) ?? []
     this.$store.dispatch('console/onUpdateCommandHistory', [gcode, ...history].slice(0, Globals.CONSOLE_COMMAND_HISTORY))

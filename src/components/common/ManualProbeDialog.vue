@@ -5,7 +5,7 @@
     title="Bring the nozzle to the paper"
     max-width="480"
     persistent
-    close-label="Stop without saving"
+    :close-label="canStop ? 'Stop without saving' : 'Close'"
     data-tid="manual-probe"
     @close="sendAbort"
   >
@@ -18,7 +18,7 @@
       <span class="mp__z">{{ zPosition }}</span>
       <span class="mp__unit">mm</span>
       <span
-        v-if="pro && (manualProbe.z_position_lower != null || manualProbe.z_position_upper != null)"
+        v-if="manualProbe.z_position_lower != null || manualProbe.z_position_upper != null"
         class="mp__range"
       >
         tried {{ zPositionLower }} to {{ zPositionUpper }}
@@ -62,21 +62,33 @@
       </template>
     </div>
 
-    <div
-      v-if="pro"
-      class="mp__bisect"
-    >
-      <span class="m3-dlg__note">Halfway to the last height tried (TESTZ)</span>
-      <div class="mp__bisect-buttons">
+    <div class="mp__bisect">
+      <button
+        type="button"
+        class="cbtn"
+        data-tid="manual-probe-finer"
+        :aria-expanded="finer ? 'true' : 'false'"
+        aria-controls="manual-probe-finer-steps"
+        @click="finer = !finer"
+      >
+        Finer steps
+      </button>
+      <div
+        v-show="finer"
+        id="manual-probe-finer-steps"
+        class="mp__bisect-buttons"
+      >
         <button
           v-for="step in ['--', '-', '+', '++']"
           :key="step"
           type="button"
           class="cbtn"
           :disabled="!canMove"
+          :data-step="step"
+          :aria-label="stepLabel(step)"
           @click="sendTestZ(step)"
         >
-          {{ step }}
+          {{ stepLabel(step) }}
         </button>
       </div>
     </div>
@@ -88,12 +100,12 @@
         data-tid="manual-probe-abort"
         @click="sendAbort"
       >
-        Stop without saving
+        {{ canStop ? 'Stop without saving' : 'Close' }}
       </button>
       <button
         type="button"
         class="cbtn cbtn--primary"
-        :disabled="hasWait($waits.onManualProbe)"
+        :disabled="!canMove"
         data-tid="manual-probe-accept"
         @click="sendAccept"
       >
@@ -111,10 +123,12 @@
 
 <script lang="ts">
 import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import TypedCommandsMixin from '@/mixins/typed-commands'
 import ToolheadMixin from '@/mixins/toolhead'
-import { proMode } from '@/services/pro-mode'
+import { cloudState } from '@/services/muon-cloud/state'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
+
+const BISECT_MAX = 0.2
 
 /**
  * Klipper's manual probe (PROBE_CALIBRATE, Z_ENDSTOP_CALIBRATE): the paper
@@ -122,20 +136,30 @@ import M3Dialog from '@/components/ui/M3Dialog.vue'
  * the nozzle (TESTZ), by 1 mm down to the smallest step; Save this height
  * accepts it (ACCEPT), Stop without saving aborts (ABORT), as ✕ does: a
  * closed dialog with the probe still waiting left Klipper stuck in it. A
- * click outside does nothing, so a long test isn't lost to a stray tap. Pro
- * adds the heights tried and Klipper's halfway steps.
+ * click outside does nothing. Finer steps exposes Klipper's bracket steps.
  */
 @Component({ components: { M3Dialog } })
-export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin) {
+export default class ManualProbeDialog extends Mixins(TypedCommandsMixin, ToolheadMixin) {
   @VModel({ type: Boolean })
     open?: boolean
 
-  get pro (): boolean {
-    return proMode.on
+  finer = false
+  probeTarget: string | null = null
+
+  get probeContext (): string { return `${this.commandTarget}|${cloudState.account?.id ?? ''}` }
+
+  created () { this.probeTarget = this.probeContext }
+
+  @Watch('probeContext')
+  onTargetChanged () { this.open = false }
+
+  get canStop (): boolean {
+    return this.probeTarget === this.probeContext && this.commandControlAvailable &&
+      this.klippyReady && this.klippyConnected && this.isManualProbeActive && !this.hasWait(this.$waits.onManualProbe)
   }
 
   get canMove (): boolean {
-    return this.klippyReady && !this.printerPrinting
+    return this.canStop && !this.printerPrinting && !this.printerPaused && this.printerState !== 'loading'
   }
 
   get offsets () {
@@ -143,11 +167,11 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
       1,
       0.1,
       ...this.$store.state.config.uiSettings.general.zAdjustDistances
-    ])].sort((a, b) => b - a)
+    ])].filter(n => Number.isFinite(n) && n > 0).sort((a, b) => b - a)
   }
 
   get manualProbe () {
-    return this.$store.state.printer.printer.manual_probe
+    return this.$store.state.printer.printer.manual_probe ?? {}
   }
 
   get zPositionLower () {
@@ -170,15 +194,34 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
   }
 
   sendTestZ (zValue: string) {
-    this.sendGcode(`TESTZ Z=${zValue}`)
+    if (!this.canMove) return
+    const bracket = ['--', '-', '+', '++'].includes(zValue)
+    const numeric = /^[+-]\d+(?:\.\d+)?$/.test(zValue) && this.offsets.includes(Math.abs(Number(zValue)))
+    if (bracket || numeric) this.sendGcode(`TESTZ Z=${zValue}`, this.$waits.onManualProbe)
+  }
+
+  stepLabel (step: string): string {
+    const current = this.manualProbe.z_position
+    const lower = this.manualProbe.z_position_lower
+    const upper = this.manualProbe.z_position_upper
+    if (!Number.isFinite(current) || !['--', '-', '+', '++'].includes(step)) return step
+
+    const closer = step.startsWith('-')
+    const neighbour = closer ? lower : upper
+    let target = neighbour
+    if (target == null) target = closer ? -Number.MAX_VALUE : Number.MAX_VALUE
+    if (step.length === 1) target = (target + current) / 2
+    target = closer ? Math.max(target, current - BISECT_MAX) : Math.min(target, current + BISECT_MAX)
+    return `To ${target.toFixed(3)} mm (${closer ? 'closer' : 'away'})`
   }
 
   sendAbort () {
-    this.sendGcode('ABORT', this.$waits.onManualProbe)
+    if (this.canStop) this.sendGcode('ABORT', this.$waits.onManualProbe)
     this.open = false
   }
 
   sendAccept () {
+    if (!this.canMove) return
     this.sendGcode('ACCEPT', this.$waits.onManualProbe)
   }
 }
@@ -187,6 +230,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
 <style lang="scss" scoped>
   .mp__readout {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: 6px;
     padding: 4px 2px;
@@ -238,12 +282,12 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
 
   .mp__bisect-buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
 
     .cbtn {
       width: 100%;
-      font-family: var(--m3d-font-mono);
+      font-size: 13px;
     }
   }
 </style>

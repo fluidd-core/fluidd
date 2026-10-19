@@ -93,6 +93,7 @@ export default class JobsMixin extends Mixins(OverviewMixin) {
 
   /** Print now, or into the queue when the printer is busy and it has one. */
   async printOrQueue (job: JobFile) {
+    if (!this.controlReady) return
     if (this.busy) {
       if (this.canQueue) await this.addToQueue(job)
       return
@@ -101,12 +102,14 @@ export default class JobsMixin extends Mixins(OverviewMixin) {
   }
 
   async addToQueue (job: JobFile) {
+    if (!this.controlReady || !this.canQueue) return
     await SocketActions.serverJobQueuePostJob([job.path])
   }
 
   async removeJob (job: JobFile): Promise<boolean> {
+    const target = this.commandTarget
     const ok = await this.$confirm(`It's removed from ${this.printerName}. This can't be undone.`, { title: `Delete ${job.title}?`, buttonTrueText: 'Delete', danger: true })
-    if (!ok) return false
+    if (!ok || target !== this.commandTarget || !this.controlReady) return false
     SocketActions.serverFilesDeleteFile(`${this.root}/${job.path}`)
     return true
   }
