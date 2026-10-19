@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest'
-import { firstLayerAllowed, reserveNudge } from '../nudges'
+import { expectedCaughtUp, firstLayerAllowed, missingDatabaseKey, nudgeBudget, nudgeFits, readNudgeEntry } from '../nudges'
+
 it('allows only real M1 layers 1–3 with fresh printing, connection, homing and control', () => {
   const current = { m1: true, layer: 1, printing: true, ready: true, homed: true, waiting: false, identity: 'printer/job' }
   for (const layer of [0, 4, NaN]) expect(firstLayerAllowed({ ...current, layer })).toBe(false)
@@ -8,12 +9,30 @@ it('allows only real M1 layers 1–3 with fresh printing, connection, homing and
   expect(firstLayerAllowed({ ...current, waiting: true })).toBe(false)
   expect(firstLayerAllowed({ ...current, identity: '' })).toBe(false)
 })
-it('caps cumulative travel per identified print across remounts and counts opposite directions', () => {
-  localStorage.clear()
-  for (let i = 0; i < 5; i++) { expect(reserveNudge(localStorage, 'printer/job', -0.01)?.total).toBeCloseTo(-(i + 1) * 0.01) }
-  for (let i = 0; i < 5; i++) expect(reserveNudge(localStorage, 'printer/job', 0.01)).not.toBe(null)
-  expect(reserveNudge(localStorage, 'printer/job', 0.01)).toBe(null)
-  expect(reserveNudge(localStorage, 'printer/job', -0.01)).toBe(null)
-  expect(reserveNudge(localStorage, 'printer/new-job', 0.01)?.total).toBe(0.01)
-  expect(reserveNudge(localStorage, 'printer/job', 0.02)).toBe(null)
+
+it('recognises only Moonraker-style 404s as absent database keys', () => {
+  expect(missingDatabaseKey({ response: { status: 404, data: { error: { message: 'Database key not found' } } } })).toBe(true)
+  expect(missingDatabaseKey({ response: { status: 404, data: 'proxy not found' } })).toBe(false)
+  expect(missingDatabaseKey({ response: { status: 500 } })).toBe(false)
+  expect(missingDatabaseKey(new Error('offline'))).toBe(false)
+})
+
+it('judges both nudge directions relative to an off-grid starting offset', () => {
+  expect(expectedCaughtUp(0.247, 0.247, 0.237, 0.01)).toBe(true)
+  expect(expectedCaughtUp(0.227, 0.227, 0.237, -0.01)).toBe(true)
+  expect(expectedCaughtUp(0.237, 0.247, 0.237, 0.01)).toBe(false)
+})
+
+it('derives the shared total and cap from printer truth relative to the saved baseline', () => {
+  expect(nudgeBudget(0.03, 0)).toEqual({ total: 0.03, remaining: 0.07 })
+  expect(nudgeFits(0.09, 0, 0.01)).toBe(true)
+  expect(nudgeFits(0.1, 0, 0.01)).toBe(false)
+  expect(nudgeFits(0.1, 0, -0.01)).toBe(true)
+  expect(nudgeFits(NaN, 0, 0.01)).toBe(false)
+})
+
+it('validates structured shared entries', () => {
+  expect(readNudgeEntry({ baseline: 0.02, start_time: 10, filename: 'x' })?.baseline).toBe(0.02)
+  expect(readNudgeEntry({ baseline: '0.02', start_time: 10, filename: 'x' })).toBeNull()
+  expect(readNudgeEntry(undefined)).toBeUndefined()
 })
