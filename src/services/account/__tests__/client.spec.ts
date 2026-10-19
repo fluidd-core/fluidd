@@ -71,6 +71,17 @@ describe('the account client', () => {
     expect(fetchMock.mock.calls[2][1].headers.authorization).toBe('Bearer access-2')
   })
 
+  it('does not automatically retry a mutation after an ambiguous 401', async () => {
+    localStorage.setItem('muon.cloud.refresh', 'refresh-1')
+    fetchMock.mockResolvedValueOnce(answer(401, { error: 'sign in again' }))
+
+    const error = await accountApi.setPreferences({ email_news: true }).catch(e => e)
+
+    expect(error).toBeInstanceOf(AccountError)
+    expect(error.status).toBe(401)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
   it('never refreshes for a token passed in (the sign-in page\'s own)', async () => {
     localStorage.setItem('muon.cloud.refresh', 'refresh-1')
     fetchMock.mockResolvedValueOnce(answer(401, { error: 'that session has ended' }))
