@@ -143,6 +143,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { zAdjustCommand } from '@/services/control/z-adjust'
 import type { GcodeCommands } from '@/store/printer/types'
 
 @Component({})
@@ -190,8 +191,8 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
    */
   sendZAdjustGcode (direction: '+' | '-') {
     const zHomed = this.$store.getters['printer/getHomedAxes']('z')
-    const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${this.moveDistance} MOVE=${+zHomed}`
-    this.sendGcode(gcode, this.$waits.onZAdjust)
+    const gcode = zAdjustCommand(Number(`${direction}${this.moveDistance}`), zHomed)
+    if (gcode) this.sendGcode(gcode, this.$waits.onZAdjust)
   }
 
   handleZOffsetApply () {
