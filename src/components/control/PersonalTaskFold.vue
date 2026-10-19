@@ -1,6 +1,12 @@
 <template>
   <div>
+    <slot
+      v-if="choice"
+      :value="open"
+      :choose="choose"
+    />
     <task-fold
+      v-else
       :fold-id="foldId"
       :title="title"
       :summary="summary"
@@ -41,6 +47,7 @@ export default class PersonalTaskFold extends Vue {
   @Prop({ type: String, required: true }) readonly title!: string
   @Prop({ type: String, required: true }) readonly summary!: string
   @Prop({ type: Object }) readonly preferences?: ControlPreferenceStore
+  @Prop({ type: Boolean }) readonly choice?: boolean
 
   get store (): ControlPreferenceStore { return this.preferences ?? controlPreferenceStore }
 

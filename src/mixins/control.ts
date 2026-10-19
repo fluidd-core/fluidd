@@ -26,6 +26,7 @@ import {
   type MaterialChoice
 } from '@/services/control/model'
 import { presetCommands } from '@/util/temperature-preset'
+import { zAdjustCommand } from '@/services/control/z-adjust'
 import { fastPercent, materialMaxFlow, peakFlow, speedChoices, type SpeedChoice } from '@/services/control/speed'
 import type { Move } from '@/store/gcodePreview/types'
 
@@ -56,6 +57,12 @@ export const BED_FLOOR = 40
 export default class ControlMixin extends Mixins(TypedCommandsMixin, ToolheadMixin) {
   get controlReady (): boolean {
     return this.commandControlAvailable && this.klippyReady && this.klippyConnected
+  }
+
+  adjustZ (by: number) {
+    if (!this.controlReady || !this.isHomed('Z') || this.hasWait(this.$waits.onZAdjust)) return
+    const command = zAdjustCommand(by, true)
+    if (command) this.sendGcode(command, this.$waits.onZAdjust)
   }
 
   get panelTarget (): string {
