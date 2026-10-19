@@ -14,6 +14,7 @@
         type="button"
         class="ov-tile__door"
         :aria-expanded="openTile === tile.id ? 'true' : 'false'"
+        :aria-controls="tileControlsId(tile.id)"
         @click="openTile = openTile === tile.id ? null : tile.id"
       >
         <span class="ov-tile__head">
@@ -36,6 +37,7 @@
       </button>
       <number-field
         v-if="openTile === tile.id"
+        :id="tileControlsId(tile.id)"
         :value="targetFor(tile.id)"
         unit="°"
         :label="`${tile.label} target`"
@@ -111,6 +113,7 @@
           type="button"
           class="ov-tile__door"
           :aria-expanded="openTile === 'fan' ? 'true' : 'false'"
+          :aria-controls="tileControlsId('fan')"
           @click="openTile = openTile === 'fan' ? null : 'fan'"
         >
           <span class="ov-tile__head">
@@ -126,6 +129,7 @@
         <template v-if="openTile === 'fan'">
           <number-field
             v-for="context in [panelTarget]"
+            :id="tileControlsId('fan')"
             :key="context"
             :value="fanValue(partFan)"
             label="Part fan"
@@ -184,6 +188,7 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
   heaterFor (id: string) { return id === 'nozzle' ? this.nozzle : this.bed }
   targetFor (id: string): number { return this.heaterFor(id)?.target ?? 0 }
   limitFor (id: string): number { return this.heaterFor(id)?.maxTemp ?? 300 }
+  tileControlsId (id: string): string { return `overview-${id}-exact-value` }
 
   view (id: string, label: string, tile: HeaterTile | null): TileView | null {
     if (!tile) return null

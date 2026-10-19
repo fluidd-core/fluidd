@@ -1,11 +1,38 @@
 import { mount } from '@vue/test-utils'
 import { expect, it, vi } from 'vitest'
 import Control from '@/views/Control.vue'
+import AppPageTitle from '@/components/layout/AppPageTitle.vue'
 import { proMode } from '@/services/pro-mode'
 import { panelStore, panelStubs, waits } from './panel-fixture'
 
 vi.mock('@/api/socketActions', () => ({ SocketActions: { printerGcodeScript: vi.fn(), printerQueryEndstops: vi.fn() } }))
 vi.mock('@/services/printer-pages', () => ({ activeSlug: () => 'mock' }))
+
+const printerActions = ['motors-off', 'restart-klipper', 'restart-firmware', 'save-config']
+
+it.each([false, true])('renders each printer action once across the Control page and header on phone=%s', phone => {
+  const store = panelStore()
+  const mocks = { $store: store, $waits: waits, $route: { name: 'control', path: '/mock/control', params: { printer: 'mock' }, meta: { frame: 'printer' } }, $confirm: vi.fn() }
+  const page = mount(Control, { mocks, computed: { isMobileViewport: () => phone }, stubs: { ...panelStubs, MaterialPicker: true } })
+  const header = mount(AppPageTitle, {
+    mocks,
+    computed: {
+      currentSection: () => ({ id: 'control', label: 'Control', pages: [] }),
+      currentPage: () => '/control',
+      isMobileViewport: () => phone,
+      tabs: () => [],
+      subtitle: () => ''
+    },
+    stubs: { ...panelStubs, CameraTabs: true, OverviewActions: true, MaintenanceDue: true, CameraActions: true, TonePill: true }
+  })
+
+  for (const action of printerActions) {
+    expect(page.findAll(`[data-tid="${action}"]`).length + header.findAll(`[data-tid="${action}"]`).length).toBe(1)
+  }
+
+  page.destroy()
+  header.destroy()
+})
 
 it.each([false, true])('keeps all six task panels with either legacy setting on phone=%s', phone => {
   const store = panelStore()
@@ -17,7 +44,7 @@ it.each([false, true])('keeps all six task panels with either legacy setting on 
     expect(wrapper.find('[data-tid="control-shaper"]').exists()).toBe(false)
     expect(wrapper.find('[data-tid="control-endstops"]').exists()).toBe(false)
     expect(wrapper.findAll('[data-tid="control-retraction"]').length).toBe(0)
-    if (phone) expect(wrapper.find('[data-tid="control-actions"]').exists()).toBe(true)
+    expect(wrapper.find('[data-tid="control-actions"]').exists()).toBe(phone)
     wrapper.destroy()
   }
   proMode.on = false

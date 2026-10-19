@@ -25,6 +25,10 @@
       :disabled="disabled"
       @change="change"
     />
+    <span
+      v-if="reason"
+      class="crow__sub tuning-value__reason"
+    >{{ reason }}</span>
   </div>
 </template>
 
@@ -41,6 +45,7 @@ export default class TuningValue extends Vue {
   @Prop({ type: Number, default: Infinity }) readonly max!: number
   @Prop({ type: Number, default: 0 }) readonly decimals!: number
   @Prop({ type: Boolean }) readonly disabled?: boolean
+  @Prop({ type: String, default: '' }) readonly reason!: string
   @Prop({ type: String, required: true }) readonly context!: string
   previous: number | null = null
 
@@ -67,4 +72,5 @@ export default class TuningValue extends Vue {
 
 <style scoped>
 .tuning-value__back { color: var(--m3d-accent); font-size: 12px; margin-left: 8px; }
+.tuning-value__reason { flex-basis: 100%; }
 </style>
