@@ -330,6 +330,13 @@ export default class DeveloperModeSettings extends Vue {
     return typeof message === 'string' ? message : String(err)
   }
 
+  /** An older MuonOS has developer mode, but not the owner-confirmation route. */
+  missingOwnerConfirmation (err: unknown): boolean {
+    const status = (err as { status?: unknown, response?: { status?: unknown } })?.status ??
+      (err as { response?: { status?: unknown } })?.response?.status
+    return status === 404 || status === 501
+  }
+
   /** Asks the printer who may ask, and for the waiver turning on agrees to. Asks nothing of its screen. */
   async refreshAsking () {
     try {
@@ -405,7 +412,11 @@ export default class DeveloperModeSettings extends Vue {
       challenge = await askToChange(enabled)
     } catch (err) {
       this.loading = false
-      await this.refused(err)
+      if (this.missingOwnerConfirmation(err)) {
+        this.errorMessage = 'This printer software does not support owner confirmation yet. Developer mode was not changed.'
+      } else {
+        await this.refused(err)
+      }
       return
     }
     this.loading = false
