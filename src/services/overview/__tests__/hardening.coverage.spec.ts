@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { cardLayout, moveCard } from '../cards'
-import { firstLayerAllowed, readNudge, reserveNudge } from '../nudges'
+import { firstLayerAllowed, readNudgeEntry } from '../nudges'
 import { chartLines, chartWindows, defaultChartWindow, filamentFact, heaterTile, longDuration } from '../model'
 import { historyPath, observedEvents, retainedSamples, sampleAt } from '../timeline'
 
@@ -32,11 +32,9 @@ describe('Overview hardening branches', () => {
     expect(moveCard(['queue', 'temperatures'], 'missing', 1)).toEqual(['queue', 'temperatures'])
   })
 
-  it('rejects corrupt, over-budget, non-finite, or unwritable nudge records', () => {
-    const values = ['not json', '{"spent":0.11,"total":0}', '{"spent":0.02,"total":0.03}', '{"spent":null,"total":0}']
-    for (const value of values) expect(readNudge({ getItem: () => value }, 'print')).toBeNull()
-    expect(reserveNudge({ getItem: () => null, setItem: () => { throw new Error('full') } }, 'print', 0.01)).toBeNull()
-    expect(reserveNudge(localStorage, '', 0.01)).toBeNull()
+  it('rejects corrupt or non-finite nudge records', () => {
+    const values = [null, 'not an entry', {}, { baseline: Number.NaN, start_time: 1, filename: 'print' }, { baseline: 0, start_time: Number.NaN, filename: 'print' }, { baseline: 0, start_time: 1, filename: 4 }, { baseline: 0, start_time: 1, filename: 'print', expected: Number.NaN }, { baseline: 0, start_time: 1, filename: 'print', pending: { created: Number.NaN, from: 0 } }]
+    for (const value of values) expect(readNudgeEntry(value)).toBeNull()
   })
 
   it('drops invalid samples, breaks paths on reversed time, and ignores invalid layer events', () => {

@@ -30,12 +30,13 @@ describe('typed G-code hardening branches', () => {
     expect(inspectTypedGcode('RESTART\nSET_FILAMENT_SENSOR SENSOR=runout ENABLE=no', runout)).toEqual({
       refusal: 'Not sent. Check the sensor name and ENABLE value. Control cannot safely check this sensor command.',
       restarts: true,
-      onlyRestarts: false
+      onlyRestarts: false,
+      savesConfig: false
     })
   })
 
   it('does not treat restart-like prefixes or comments as restart commands', () => {
-    expect(inspectTypedGcode('; RESTART\nRESTART_NOW\nM105')).toEqual({ refusal: null, restarts: false, onlyRestarts: false })
+    expect(inspectTypedGcode('; RESTART\nRESTART_NOW\nM105')).toEqual({ refusal: null, restarts: false, onlyRestarts: false, savesConfig: false })
   })
 
   it('accepts numbered sensor commands without a checksum and with CRLF input', () => {
