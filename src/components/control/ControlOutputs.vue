@@ -32,6 +32,7 @@
             :min="0"
             :max="100"
             :label="out.label"
+            :value-text-formatter="percentValueText"
             :disabled="!controlReady"
             @change="setOutput(out, $event)"
           />
@@ -121,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { SocketActions } from '@/api/socketActions'
 import type { Endstop, Led, OutputPin, RunoutSensor } from '@/store/printer/types'
@@ -160,6 +161,10 @@ type Sensor = RunoutSensor & { prettyName: string; role: FilamentSensorRole }
 export default class ControlOutputs extends Mixins(ControlMixin) {
   @Prop({ type: Boolean }) readonly outputsOnly?: boolean
   @Prop({ type: Boolean }) readonly diagnosticsOnly?: boolean
+  percentValueText (value: number): string {
+    return `${value} percent`
+  }
+
   get outputs (): Output[] {
     const pins = ((this.$store.getters['printer/getPins'] as OutputPin[]) ?? [])
       .filter(p => p.controllable && p.name !== this.lightsPin?.name)
@@ -194,19 +199,35 @@ export default class ControlOutputs extends Mixins(ControlMixin) {
   }
 
   requested = false
+  requestGeneration = 0
+  requestedTarget = ''
+  endstopResult: Endstop[] = []
 
   get endstops (): Endstop[] {
-    if (!this.requested) return []
-    const endstops = [...((this.$store.getters['printer/getEndstops'] as Endstop[]) ?? [])]
     // Klipper says open, or TRIGGERED in capitals.
-    return endstops.map(e => ({ name: e.name === 'Probe' ? e.name : e.name.toUpperCase(), state: String(e.state).toLowerCase() }))
+    return this.endstopResult.map(e => ({ name: e.name === 'Probe' ? e.name : e.name.toUpperCase(), state: String(e.state).toLowerCase() }))
   }
 
-  checkEndstops () {
+  async checkEndstops () {
     if (!this.controlReady) return
+    const generation = ++this.requestGeneration
+    const target = this.panelTarget
     this.$store.commit('printer/setClearEndStops')
     this.requested = true
-    SocketActions.printerQueryEndstops()
+    this.requestedTarget = target
+    this.endstopResult = []
+    const response = await SocketActions.printerQueryEndstops() as Record<string, string> | undefined
+    if (generation !== this.requestGeneration || target !== this.panelTarget || target !== this.requestedTarget || !response) return
+    this.endstopResult = Object.keys(response).sort().map(name => ({ name, state: response[name] }))
+  }
+
+  @Watch('panelTarget')
+  clearEndstopRequest () {
+    this.requestGeneration++
+    this.requested = false
+    this.requestedTarget = ''
+    this.endstopResult = []
+    this.$store.commit('printer/setClearEndStops')
   }
 
   /** A reading goes stale: leaving the page clears it, as Fluidd's own panel does. */

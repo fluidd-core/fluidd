@@ -54,6 +54,7 @@
           class="fans__slider"
           :value="fanValue(fan)"
           :label="fan.prettyName"
+          :value-text-formatter="percentValueText"
           :disabled="!controlReady"
           @change="setFan(fan, $event)"
         />
@@ -68,6 +69,7 @@
           class="fans__slider"
           :value="lightsValue"
           label="Lights brightness"
+          :value-text-formatter="percentValueText"
           :disabled="!controlReady"
           @change="setLights"
         />
@@ -97,6 +99,10 @@ type FanMode = 'auto' | 'on' | 'off'
 export default class ControlFans extends Mixins(ControlMixin) {
   @Prop({ type: Boolean })
   readonly phone?: boolean
+
+  percentValueText (value: number): string {
+    return `${value} percent`
+  }
 
   get otherOutputCount (): number {
     const pins = ((this.$store.getters['printer/getPins'] as OutputPin[]) ?? []).filter(p => p.controllable && p.name !== this.lightsPin?.name)
