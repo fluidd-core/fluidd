@@ -12,12 +12,16 @@
     <p class="m3-dlg__text">
       {{ why }}
     </p>
-    <p
+    <button
       v-if="hasPasskey"
-      class="m3-dlg__note"
+      type="button"
+      class="cbtn cbtn--primary"
+      :disabled="busy"
+      data-tid="reauth-passkey"
+      @click="$emit('passkey')"
     >
-      Passkey confirmation: Coming soon. You can still use a fresh sign-in with a passkey.
-    </p>
+      Confirm with passkey
+    </button>
     <template v-if="hasPassword">
       <label class="m3-field">
         <span class="m3-field__label">Password</span>
@@ -52,7 +56,7 @@
       </label>
     </template>
     <p
-      v-else
+      v-else-if="!hasPasskey"
       class="m3-dlg__text"
     >
       This account has no password. Sign out and sign in again, then do this within ten minutes.
