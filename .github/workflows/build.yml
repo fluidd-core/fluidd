@@ -52,11 +52,15 @@ jobs:
         run: |
           npm run check:setup-budget
 
+      # Only the publish jobs below download this, and they never run on a
+      # pull request. Kept one day: it is a hand-off inside this run.
       - name: Upload fluidd.zip
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v4
         with:
           name: fluidd-${{ github.sha }}.zip
           path: ./dist
+          retention-days: 1
 
   publish-docker:
     name: Publish Docker Image
