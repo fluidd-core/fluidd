@@ -152,7 +152,7 @@ export default class ControlMixin extends Mixins(StateMixin, ToolheadMixin) {
 
   /**
    * The loaded filament's colour, when someone has said it: the printer's
-   * save_variables muon_material_color (set here, on Control and from the
+   * save_variables muon_material_colour (set here, on Control and from the
    * slicer), else, on a printer that can't remember one, the one set here.
    * Null when nobody has: a material's swatch is not its colour.
    */

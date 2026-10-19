@@ -138,9 +138,10 @@ export function colourName (colour: string | null): string {
   return FILAMENT_COLOURS.find(c => c.colour === normaliseColour(colour))?.name ?? 'Custom colour'
 }
 
-/** The colour the printer was told is loaded (save_variables muon_material_color), or null when nobody has said. */
+/** The loaded colour; see docs/loaded-filament.md. Legacy spelling is read only. */
 export function savedMaterialColour (variables: unknown): string | null {
-  return normaliseColour((variables as { muon_material_color?: unknown } | undefined)?.muon_material_color)
+  const vars = variables as Record<string, unknown> | undefined
+  return normaliseColour(vars && 'muon_material_colour' in vars ? vars.muon_material_colour : vars?.muon_material_color)
 }
 
 /**
@@ -151,7 +152,7 @@ export function savedMaterialColour (variables: unknown): string | null {
 export function saveMaterialColourCommand (colour: string): string {
   const hex = normaliseColour(colour)
   if (!hex) throw new Error(`not a colour: ${colour}`)
-  return `SAVE_VARIABLE VARIABLE=muon_material_color VALUE='"${hex.slice(1)}"'`
+  return `SAVE_VARIABLE VARIABLE=muon_material_colour VALUE='"${hex.slice(1)}"'`
 }
 
 /** The material whose temperatures the heaters are set to now, if any. */

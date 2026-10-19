@@ -17,7 +17,6 @@
         {{ spoolLoaded.text }}
       </span>
       <material-picker
-        v-else
         chip
       />
     </template>
@@ -122,11 +121,11 @@ export default class ControlFilament extends Mixins(ControlMixin) {
   }
 
   /**
-   * What is loaded, when Spoolman says: its spool, which then decides. Else
-   * the printer's own record (the material and its colour, muon_material and
-   * muon_material_color), shown and changed here as on Overview.
+   * Spool information is a fallback when no loaded record has been saved.
+   * The picker stays available to set the printer's material and colour.
    */
   get spoolLoaded (): { text: string, color: string } | null {
+    if (this.loadedMaterial) return null
     const spool = this.$store.getters['spoolman/getActiveSpool'] as Spool | null
     if (!spool?.filament) return null
     const f = spool.filament
