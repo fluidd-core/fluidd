@@ -22,7 +22,7 @@ Both signup surfaces send `declared_age` as an integer to `POST /v1/auth/sign-up
 
 ## Session and security guarantees
 
-“Sign out” is one click and ends this browser only; other devices are explicit actions on Devices. Console handoff accepts only its pinned origin, and the temporary sign-in session is ended once the handoff exists. Account mutations are never automatically replayed after an ambiguous 401; reads alone may refresh once. Deletion cannot be sent unless `/v1/me` proves grace-period support. Object URLs used for exports are revoked, and account/session changes abort Library downloads and stale account edits.
+“Sign out” is one click and ends this browser only; other devices are explicit actions on Devices. Console handoff accepts only its pinned origin, and the temporary sign-in session is ended once the handoff exists. The account-page client (`src/services/account/client.ts`) never replays a mutation after a 401; it retries only `GET` once after refreshing. The shared Muon Cloud client (`src/services/muon-cloud/api.ts`, used by printers, sign-out and assertion minting) refreshes the stored session once and retries the request, because a 401 is the console refusing the request before acting on it. Deletion cannot be sent unless `/v1/me` proves grace-period support. Object URLs used for exports are revoked, and account/session changes abort Library downloads and stale account edits.
 
 Features in the table must have their console routes deployed before this Control composition is published. Community profile and Library export also require models deployed first. Keep `FLUIDD_PAUSE_PUBLISH` set before merging into `develop`, through combined-head acceptance, and lift it only after those backends are live and the release is approved.
 
