@@ -298,6 +298,7 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
     if (this.$route.name?.startsWith('Account')) return 'Account'
     return this.$route.name ?? ''
   }
+
   openKeys () {
     EventBus.bus.$emit('keyboard-shortcuts')
   }
