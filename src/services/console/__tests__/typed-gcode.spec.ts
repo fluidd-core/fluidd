@@ -36,7 +36,12 @@ describe('Klipper typed sensor preflight', () => {
     expect(inspectTypedGcode(script, config).refusal).toBeNull()
   })
 
-  it.each(['RESTART', 'firmware_restart', 'N2 SAVE_CONFIG*34'])('recognises disruptive typed commands: %s', script => {
-    expect(inspectTypedGcode(script, config)).toEqual({ refusal: null, restarts: true, onlyRestarts: true })
+  it.each(['RESTART', 'firmware_restart'])('recognises recovery restarts: %s', script => {
+    expect(inspectTypedGcode(script, config)).toEqual({ refusal: null, restarts: true, onlyRestarts: true, savesConfig: false })
+  })
+
+  it('distinguishes SAVE_CONFIG from recovery-only batches', () => {
+    expect(inspectTypedGcode('N2 SAVE_CONFIG*34', config)).toEqual({ refusal: null, restarts: true, onlyRestarts: false, savesConfig: true })
+    expect(inspectTypedGcode('RESTART\nSAVE_CONFIG', config)).toEqual({ refusal: null, restarts: true, onlyRestarts: false, savesConfig: true })
   })
 })
