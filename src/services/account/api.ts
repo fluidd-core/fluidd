@@ -184,6 +184,8 @@ export const accountApi = {
 
   sessions: () => json<{ sessions: Session[] }>('GET', '/v1/me/sessions'),
   endSession: (id: string) => json<{ ok: boolean }>('DELETE', `/v1/me/sessions/${encodeURIComponent(id)}`),
+  /** Ends the named browser and all its clients, even when given a child session ID. */
+  endDevice: (id: string) => json<{ ok: boolean, ended: number }>('DELETE', `/v1/me/devices/${encodeURIComponent(id)}`),
   /** New: every session but this one (`others`), or every one (`all`). */
   endSessions: (scope: 'others' | 'all') => json<{ ok: boolean, ended?: number }>('DELETE', `/v1/me/sessions?scope=${scope}`),
   events: () => json<{ events: AccountEvent[] }>('GET', '/v1/me/events'),
@@ -227,12 +229,11 @@ export const accountApi = {
   retention: () => json<Record<string, unknown>>('GET', '/v1/retention'),
 
   /**
-   * Deletes the account: in 14 days on a console with the grace period
-   * (`delete_after` in the answer), or `now`. An older console deletes at once
-   * whatever is asked, and answers `{ ok, unlinked }`.
+   * Schedules deletion with a 14-day grace period. The page requires the
+   * console's grace-period capability before offering this action.
    */
-  deleteAccount: (reauth: Reauth, now = false) =>
-    json<{ ok: boolean, delete_after?: number, unlinked?: number }>('DELETE', '/v1/me', { ...reauth, ...(now ? { now: true } : {}) }),
+  deleteAccount: (reauth: Reauth) =>
+    json<{ ok: boolean, delete_after?: number, unlinked?: number }>('DELETE', '/v1/me', reauth),
   /** New. */
   cancelDeletion: () => json<{ ok: boolean, account?: AccountDetails }>('POST', '/v1/me/deletion/cancel'),
 

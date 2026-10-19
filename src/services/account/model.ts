@@ -160,8 +160,8 @@ export function shortKey (key: string | null | undefined): string | null {
 /**
  * The account's sessions as devices. A browser's central sign-in and the
  * Control and Slice sessions it opened are one device: grouped by
- * `parent_id` when the console says, else by the label the console gave the
- * browser. The session the old sign-in page left behind ("Muon3D sign-in")
+ * `parent_id`. Labels are descriptions, never device identities.
+ * The session the old sign-in page left behind ("Muon3D sign-in")
  * is its own row, marked, so it can still be signed out.
  */
 export function devicesFrom (sessions: Session[]): Device[] {
@@ -169,11 +169,8 @@ export function devicesFrom (sessions: Session[]): Device[] {
   const byParent = new Map<string, Device>()
   const ordered = [...sessions].sort((a, b) => (a.kind === 'browser' ? 0 : 1) - (b.kind === 'browser' ? 0 : 1) || a.created_at - b.created_at)
   for (const s of ordered) {
-    const parent = s.parent_id ? byParent.get(s.parent_id) : undefined
-    const sameBrowser = !parent && s.client_id && s.device_label
-      ? devices.find(d => d.kind === 'browser' && d.label === s.device_label && !d.leftover)
-      : undefined
-    const into = parent ?? sameBrowser
+    const root = s.parent_id || s.id
+    const into = byParent.get(root)
     const client = clientName(s.client_id)
     if (into) {
       into.sessionIds.push(s.id)
@@ -197,7 +194,7 @@ export function devicesFrom (sessions: Session[]): Device[] {
       leftover
     }
     devices.push(device)
-    if (s.kind === 'browser') byParent.set(s.id, device)
+    byParent.set(root, device)
   }
   // This device first, then the most recently used.
   return devices.sort((a, b) => Number(b.current) - Number(a.current) || (b.lastUsedAt ?? b.signedInAt) - (a.lastUsedAt ?? a.signedInAt))
