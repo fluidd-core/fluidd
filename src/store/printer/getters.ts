@@ -816,7 +816,10 @@ export const getters = {
         key.startsWith('temperature_sensor ') ||
         key.startsWith('temperature_probe ')
       ),
-      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => (
+        key.startsWith('tmc2240 ') ||
+        key.startsWith('tmc5262 ')
+      ),
       (key: string) => key === 'z_thermal_adjust'
     ]
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
@@ -834,7 +837,7 @@ export const getters = {
             const name = nameFromSplit || key
 
             if (!name.startsWith('_')) {
-              const prettyName = type === 'tmc2240'
+              const prettyName = /^tmc\d{4}$/.test(type)
                 ? i18n.t('app.general.label.stepper_driver',
                   {
                     name:
@@ -916,7 +919,10 @@ export const getters = {
         key.startsWith('temperature_sensor ') ||
         key.startsWith('temperature_probe ')
       ),
-      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => (
+        key.startsWith('tmc2240 ') ||
+        key.startsWith('tmc5262 ')
+      ),
       (key: string) => key === 'z_thermal_adjust'
     ]
 
