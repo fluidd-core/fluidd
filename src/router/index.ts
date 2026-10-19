@@ -271,6 +271,12 @@ const LEGACY_PRINTER_PAGES = [
 
 const routes: Array<RouteConfig> = [
   {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/views/Admin.vue'),
+    meta: { printerIndependent: true }
+  },
+  {
     // Every printer: printing now, your groups, those found on this network
     // and those offline, and a welcome with none. A printer's own address
     // opens that printer instead (U2): see main.ts. Loaded on its own: it
