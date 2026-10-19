@@ -46,9 +46,8 @@ function open (who: Me) {
 
 const tid = (w: ReturnType<typeof open>, id: string) => w.find(`[data-tid="${id}"]`)
 
-async function throughToStep2 (w: ReturnType<typeof open>, now = false) {
+async function throughToStep2 (w: ReturnType<typeof open>) {
   await tid(w, 'delete-open').trigger('click')
-  if (now) await tid(w, 'delete-now').trigger('click')
   await tid(w, 'delete-continue').trigger('click')
   await tid(w, 'delete-password').setValue('correct horse')
 }
@@ -65,7 +64,7 @@ describe('Delete account', () => {
     expect(tid(w, 'delete-confirm').exists()).toBe(true)
     await tid(w, 'delete-confirm').trigger('click')
     await new Promise(resolve => setTimeout(resolve))
-    expect(deleteAccount).toHaveBeenCalledWith({}, false)
+    expect(deleteAccount).toHaveBeenCalledWith({})
     expect(tid(w, 'delete-done').exists()).toBe(true)
     w.destroy()
   })
@@ -84,28 +83,26 @@ describe('Delete account', () => {
     expect(tid(w, 'delete-confirm').text()).toBe('Delete in 14 days')
     await tid(w, 'delete-confirm').trigger('click')
     await new Promise(resolve => setTimeout(resolve))
-    expect(deleteAccount).toHaveBeenCalledWith({ password: 'correct horse', code: undefined }, false)
+    expect(deleteAccount).toHaveBeenCalledWith({ password: 'correct horse', code: undefined })
     expect(w.find('.dialog h2').text()).toMatch(/^Your account will be deleted on /)
     await tid(w, 'delete-done').trigger('click')
     expect(signOutNow).toHaveBeenCalledWith('deleted')
   })
 
-  it('deletes at once when the person chooses it', async () => {
+  it('offers only the grace period when requesting deletion', async () => {
     const w = open(me())
-    await throughToStep2(w, true)
-    expect(tid(w, 'delete-confirm').text()).toBe('Delete now')
+    await throughToStep2(w)
+    expect(tid(w, 'delete-now').exists()).toBe(false)
+    expect(tid(w, 'delete-confirm').text()).toBe('Delete in 14 days')
     await tid(w, 'delete-confirm').trigger('click')
     await new Promise(resolve => setTimeout(resolve))
-    expect(deleteAccount).toHaveBeenCalledWith({ password: 'correct horse', code: undefined }, true)
+    expect(deleteAccount).toHaveBeenCalledWith({ password: 'correct horse', code: undefined })
   })
 
-  it('says at once, and offers no wait, on a console that deletes at once', async () => {
+  it('does not send a deletion to an old console without the grace period', async () => {
     const w = open(me('absent'))
-    expect(w.text()).toContain('Your account is deleted at once')
-    await tid(w, 'delete-open').trigger('click')
-    expect(tid(w, 'delete-later').exists()).toBe(false)
-    await tid(w, 'delete-continue').trigger('click')
-    expect(tid(w, 'delete-confirm').text()).toBe('Delete now')
+    expect(tid(w, 'delete-open').exists()).toBe(false)
+    expect(deleteAccount).not.toHaveBeenCalled()
   })
 
   it('shows a deletion that is waiting, and keeps the account', async () => {
@@ -115,17 +112,11 @@ describe('Delete account', () => {
     expect(cancelDeletion).toHaveBeenCalled()
   })
 
-  it('offers only "now" while a deletion waits', async () => {
+  it('offers no second deletion while a deletion waits', async () => {
     const w = open(me({ requested_at: 1_800_000_000, delete_after: 1_800_000_000 + 14 * DAY }))
-    expect(tid(w, 'delete-open').text()).toBe('Delete now…')
-    await tid(w, 'delete-open').trigger('click')
-    expect(tid(w, 'delete-later').exists()).toBe(false)
-    await tid(w, 'delete-continue').trigger('click')
-    await tid(w, 'delete-password').setValue('correct horse')
-    expect(tid(w, 'delete-confirm').text()).toBe('Delete now')
-    await tid(w, 'delete-confirm').trigger('click')
-    await new Promise(resolve => setTimeout(resolve))
-    expect(deleteAccount).toHaveBeenCalledWith({ password: 'correct horse', code: undefined }, true)
+    expect(tid(w, 'delete-open').exists()).toBe(false)
+    expect(tid(w, 'delete-keep').exists()).toBe(true)
+    expect(deleteAccount).not.toHaveBeenCalled()
   })
 
   it('keeps the dialog open with the console\'s words when the password is wrong', async () => {

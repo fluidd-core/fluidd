@@ -1,2 +1,4 @@
 # The lockfile hashes exact upstream bytes, including generated JS and notices.
 src/services/muon-cloud/vendor/muon-link-web/** -text -whitespace
+# Keep the generated customer promise byte-identical to the models source copy.
+src/services/library/profile-promise.ts text eol=lf

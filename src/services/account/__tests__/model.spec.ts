@@ -123,13 +123,23 @@ describe('devices from sessions', () => {
     expect(devicesLine(devices)).toBe("This browser and Jack's iPhone.")
   })
 
-  it('groups by the browser\'s label when the console gives no parent', () => {
+  it('keeps identically labelled sessions separate without a proven parent', () => {
     const devices = devicesFrom([
       session({ id: 'b1', kind: 'browser', device_label: 'Safari on a MacBook' }),
       session({ id: 'r1', kind: 'rotating', client_id: 'fluidd', device_label: 'Safari on a MacBook' })
     ])
-    expect(devices).toHaveLength(1)
-    expect(devices[0].uses).toBe('Control')
+    expect(devices).toHaveLength(2)
+    expect(devices.find(d => d.id === 'r1')?.sessionIds).toEqual(['r1'])
+  })
+
+  it('groups siblings by parent even if the browser session has expired', () => {
+    const devices = devicesFrom([
+      session({ id: 'slice', kind: 'rotating', client_id: 'slicer', parent_id: 'expired' }),
+      session({ id: 'control', kind: 'rotating', client_id: 'fluidd', parent_id: 'expired', current: true }),
+      session({ id: 'other', kind: 'rotating', client_id: 'fluidd', parent_id: 'elsewhere' })
+    ])
+    expect(devices).toHaveLength(2)
+    expect(devices[0]).toMatchObject({ current: true, sessionIds: ['slice', 'control'] })
   })
 
   it('keeps the old sign-in page\'s leftover session apart, marked, and out of the count', () => {
