@@ -12,7 +12,12 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
   commandRefusal = ''
 
   get commandTarget (): string {
-    return `${this.$store.state.config.apiUrl}|${cloudState.activePrinterId ?? ''}|${this.$route?.params?.printer ?? ''}`
+    return JSON.stringify([
+      this.$store.state.config.apiUrl,
+      cloudState.activePrinterId,
+      this.$route?.params?.printer ?? null,
+      cloudState.account?.id ?? null
+    ])
   }
 
   get commandControlAvailable (): boolean {
@@ -39,7 +44,7 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
       title: 'Restart Klipper?', buttonTrueText: 'Restart', buttonFalseText: 'Keep running', danger: true
     })
     if (!ok) return false
-    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer changed. Try again.' : this.restartRefusal
+    this.commandRefusal = target !== this.commandTarget ? 'Not sent. The selected printer or account changed. Try again.' : this.restartRefusal
     return !this.commandRefusal
   }
 
@@ -53,11 +58,19 @@ export default class TypedCommandsMixin extends Mixins(StateMixin) {
     const batch = inspectTypedGcode(gcode, this.$store.state.printer.printer.configfile)
     this.commandRefusal = batch.refusal ?? ''
     if (this.commandRefusal) return false
+    if (batch.savesConfig && (!this.klippyConnected || !this.klippyReady)) {
+      this.commandRefusal = 'Not sent. Klipper must be running to save settings.'
+      return false
+    }
     if (!this.klippyConnected && !(batch.restarts && batch.onlyRestarts)) {
       this.commandRefusal = 'Not sent. Klipper is not connected.'
       return false
     }
     if (batch.restarts && !await this.confirmCommandRestart()) return false
+    if (batch.savesConfig && (!this.klippyConnected || !this.klippyReady)) {
+      this.commandRefusal = 'Not sent. Klipper must be running to save settings.'
+      return false
+    }
     if (!this.klippyConnected && !batch.onlyRestarts) {
       this.commandRefusal = 'Not sent. Klipper is not connected.'
       return false
