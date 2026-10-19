@@ -1,136 +1,179 @@
 <template>
-  <control-card
-    class="mmesh"
-    title="The bed"
-    data-tid="maintenance-mesh"
+  <control-task-fold
+    fold-key="bed.numbers"
+    title="Bed view"
+    summary="Colours or Numbers"
+    choice
   >
-    <template #aside>
-      <span v-if="run">measuring</span>
-      <span v-else-if="measuredWhen">measured {{ measuredWhen }}</span>
-    </template>
-
-    <div
-      v-if="run"
-      class="mmesh__live"
-      data-tid="mesh-live"
-    >
-      <p
-        class="mmesh__phase"
-        aria-live="polite"
+    <template #default="{ value: numbers, choose }">
+      <control-card
+        class="mmesh"
+        title="The bed"
+        data-tid="maintenance-mesh"
       >
-        <span
-          class="mmesh__dot"
-          :class="`mmesh__dot--${run.progress.phase}`"
-        />
-        {{ run.progress.text }}
-      </p>
-      <div
-        class="mmesh__bar"
-        role="progressbar"
-        :aria-valuenow="run.progress.done"
-        :aria-valuemax="run.progress.total || undefined"
-      >
-        <span
-          class="mmesh__fill"
-          :class="{ 'mmesh__fill--unknown': !run.progress.total || !run.progress.done }"
-          :style="{ width: run.progress.total ? `${Math.round(100 * run.progress.done / run.progress.total)}%` : undefined }"
-        />
-      </div>
-    </div>
-
-    <div
-      v-if="grid.length"
-      class="mmesh__body"
-    >
-      <div
-        class="mmesh__grid"
-        :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
-        :aria-label="`Bed mesh, ${columns} × ${grid.length} points, back at the top`"
-        role="img"
-      >
-        <i
-          v-for="(cell, n) in cells"
-          :key="n"
-          class="mmesh__cell"
-          :class="{
-            'mmesh__cell--empty': cell === null,
-            'mmesh__cell--value': pro || !!run,
-            'mmesh__cell--new': !!run && n === newestCell
-          }"
-          :style="cell === null ? undefined : { background: colorOf(cell) }"
-          :title="cell === null ? undefined : `${cell.toFixed(3)} mm`"
-        >{{ (pro || run) && cell !== null ? meshValue(cell) : '' }}</i>
-      </div>
-
-      <dl class="mmesh__facts">
-        <template v-if="run">
-          <dt>Points measured</dt>
-          <dd>{{ measuredText }}</dd>
+        <template #aside>
+          <span v-if="run">measuring</span>
+          <span v-else-if="measuredWhen">measured {{ measuredWhen }}</span>
         </template>
-        <template v-if="range !== null">
-          <dt>{{ run ? 'Range so far' : 'Highest to lowest' }}</dt>
-          <dd>{{ range.toFixed(2) }} mm</dd>
-        </template>
-        <p
-          v-if="summary && !run"
-          class="mmesh__verdict"
-          :class="`mmesh__verdict--${summary.tone}`"
+
+        <div
+          v-if="run"
+          class="mmesh__live"
+          data-tid="mesh-live"
         >
-          {{ summary.verdict }}
+          <p
+            class="mmesh__phase"
+            aria-live="polite"
+          >
+            <span
+              class="mmesh__dot"
+              :class="`mmesh__dot--${run.progress.phase}`"
+            />
+            {{ run.progress.text }}
+          </p>
+          <div
+            class="mmesh__bar"
+            role="progressbar"
+            :aria-valuenow="run.progress.done"
+            :aria-valuemax="run.progress.total || undefined"
+          >
+            <span
+              class="mmesh__fill"
+              :class="{ 'mmesh__fill--unknown': !run.progress.total || !run.progress.done }"
+              :style="{ width: run.progress.total ? `${Math.round(100 * run.progress.done / run.progress.total)}%` : undefined }"
+            />
+          </div>
+        </div>
+
+        <div
+          class="mmesh__views"
+          role="group"
+          aria-label="Bed view"
+        >
+          <button
+            type="button"
+            class="cbtn"
+            data-tid="mesh-colours"
+            :aria-pressed="numbers ? 'false' : 'true'"
+            @click="choose(false)"
+          >
+            Colours
+          </button>
+          <button
+            type="button"
+            class="cbtn"
+            data-tid="mesh-numbers"
+            :aria-pressed="numbers ? 'true' : 'false'"
+            @click="choose(true)"
+          >
+            Numbers
+          </button>
+        </div>
+        <div
+          v-if="grid.length"
+          class="mmesh__body"
+        >
+          <div
+            class="mmesh__grid"
+            :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
+            :aria-label="`Bed mesh, ${columns} × ${grid.length} points, back at the top`"
+            role="table"
+          >
+            <div
+              v-for="(row, r) in displayRows"
+              :key="r"
+              role="row"
+              class="mmesh__row"
+            >
+              <i
+                v-for="(cell, c) in row"
+                :key="c"
+                role="cell"
+                class="mmesh__cell"
+                :class="{
+                  'mmesh__cell--empty': cell === null,
+                  'mmesh__cell--value': numbers,
+                  'mmesh__cell--new': !!run && r * columns + c === newestCell
+                }"
+                :style="cell === null ? undefined : { background: colorOf(cell) }"
+                :aria-label="cell === null ? 'Not measured' : `${cell.toFixed(3)} mm`"
+                :title="cell === null ? 'Not measured' : `${cell.toFixed(3)} mm`"
+              >{{ numbers && cell !== null ? meshValue(cell) : '' }}</i>
+            </div>
+          </div>
+
+          <dl class="mmesh__facts">
+            <template v-if="run">
+              <dt>Points measured</dt>
+              <dd>{{ measuredText }}</dd>
+            </template>
+            <template v-if="range !== null">
+              <dt>{{ run ? 'Range so far' : 'Highest to lowest' }}</dt>
+              <dd>{{ range.toFixed(2) }} mm</dd>
+            </template>
+            <p
+              v-if="summary && !run"
+              class="mmesh__verdict"
+              :class="`mmesh__verdict--${summary.tone}`"
+            >
+              {{ summary.verdict }}
+            </p>
+          </dl>
+        </div>
+
+        <div
+          v-else
+          class="mmesh__none"
+        >
+          <frame-icon name="mesh" />
+          <p v-if="run">
+            {{ run.progress.text }}…
+          </p>
+          <p v-else>
+            No measurement yet. Level the bed to measure the plate.
+          </p>
+        </div>
+
+        <p
+          v-if="grid.length"
+          class="mmesh__legend"
+        >
+          <span><i class="mmesh__key mmesh__key--low" />lower</span>
+          <span><i class="mmesh__key mmesh__key--level" />level</span>
+          <span><i class="mmesh__key mmesh__key--high" />higher</span>
+          <span class="mmesh__muted">· {{ columns }} × {{ grid.length }} points · back at the top</span>
         </p>
-      </dl>
-    </div>
 
-    <div
-      v-else
-      class="mmesh__none"
-    >
-      <frame-icon name="mesh" />
-      <p v-if="run">
-        {{ run.progress.text }}…
-      </p>
-      <p v-else>
-        No measurement yet. Level the bed to measure the plate.
-      </p>
-    </div>
+        <p class="mmesh__note">
+          <template v-if="run">
+            Keep the plate on and the nozzle clear while it measures.
+          </template>
+          <template v-else-if="mesh.length">
+            {{ meshInUse ? 'In use: the printer follows this mesh as it moves.' : 'Not loaded now. The printer loads a mesh when it needs one.' }}
+          </template>
+        </p>
 
-    <p
-      v-if="grid.length"
-      class="mmesh__legend"
-    >
-      <span><i class="mmesh__key mmesh__key--low" />lower</span>
-      <span><i class="mmesh__key mmesh__key--level" />level</span>
-      <span><i class="mmesh__key mmesh__key--high" />higher</span>
-      <span class="mmesh__muted">· {{ columns }} × {{ grid.length }} points · back at the top</span>
-    </p>
-
-    <p class="mmesh__note">
-      <template v-if="run">
-        Keep the plate on and the nozzle clear while it measures.
-      </template>
-      <template v-else-if="mesh.length">
-        {{ meshInUse ? 'In use: the printer follows this mesh as it moves.' : 'Not loaded now. The printer loads a mesh when it needs one.' }}
-      </template>
-    </p>
-
-    <router-link
-      v-if="pro && supportsBedMesh && linked"
-      :to="meshPageTo"
-      class="cbtn mmesh__more"
-    >
-      Mesh profiles and 3D view
-      <frame-icon
-        name="chevronRight"
-        small
-      />
-    </router-link>
-  </control-card>
+        <router-link
+          v-if="supportsBedMesh && linked"
+          :to="meshPageTo"
+          class="cbtn mmesh__more"
+        >
+          Open Bed · profiles and 3D view
+          <frame-icon
+            name="chevronRight"
+            small
+          />
+        </router-link>
+      </control-card>
+    </template>
+  </control-task-fold>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MaintenanceMixin from '@/mixins/maintenance'
 import ControlCard from '@/components/control/ControlCard.vue'
+import ControlTaskFold from '@/components/control/ControlTaskFold.vue'
 import { daysAgo, meshColor, meshValue } from '@/services/maintenance/model'
 import { backRowFirst } from '@/services/machine/orientation'
 import { scopedPath } from '@/router/printerPagePaths'
@@ -141,7 +184,7 @@ import { activeSlug } from '@/services/printer-pages'
  * far apart its highest and lowest points are. While the bed is measured,
  * the grid fills in point by point from Klipper's probe lines.
  */
-@Component({ components: { ControlCard } })
+@Component({ components: { ControlCard, ControlTaskFold } })
 export default class MaintenanceMesh extends Mixins(MaintenanceMixin) {
   /** With a link to Bed mesh, except on Bed mesh itself. */
   @Prop({ type: Boolean, default: true })
@@ -173,8 +216,8 @@ export default class MaintenanceMesh extends Mixins(MaintenanceMixin) {
 
   /** Rows by Y ascending: the mesh being measured, else the last one. */
   get grid (): Array<Array<number | null>> {
-    if (this.run) return this.run.points.length ? this.run.grid : []
-    return this.mesh
+    const grid = this.run ? (this.run.points.length ? this.run.grid : []) : this.mesh
+    return grid.map(row => row.map(value => typeof value === 'number' && Number.isFinite(value) ? value : null))
   }
 
   /** Where in `cells` the point measured last is, to show it arriving. */
@@ -190,8 +233,8 @@ export default class MaintenanceMesh extends Mixins(MaintenanceMixin) {
   }
 
   /** The cells to draw, back row first, as you'd see the plate from the front. */
-  get cells (): Array<number | null> {
-    return backRowFirst(this.grid).flat()
+  get displayRows (): Array<Array<number | null>> {
+    return backRowFirst(this.grid)
   }
 
   get values (): number[] {
@@ -223,6 +266,9 @@ export default class MaintenanceMesh extends Mixins(MaintenanceMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .mmesh__row { display: contents; }
+  .mmesh__views { display: flex; gap: 8px; }
+  .mmesh__views [aria-pressed="true"] { background: var(--m3d-accent-soft); color: var(--m3d-accent); }
   .mmesh__bar {
     position: relative;
     height: 6px;

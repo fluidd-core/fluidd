@@ -103,9 +103,9 @@ export function isGcodeFile (name: string): boolean {
   return GCODE.test(name)
 }
 
-// -- Pro's file table ---------------------------------------------------------
+// -- File table ---------------------------------------------------------------
 
-/** A row of Pro's file table: a folder, or a file in the folder that's open. */
+/** A row of the file table: a folder, or a file in the folder that's open. */
 export interface TableRow {
   /** Its path in gcodes/, which is also its key. */
   key: string;

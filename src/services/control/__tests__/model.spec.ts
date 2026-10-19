@@ -33,11 +33,14 @@ import {
 
 describe("the loaded filament's colour", () => {
   it('is kept on the printer beside the material, without the # a G-code reader could take for a comment', () => {
-    expect(saveMaterialColourCommand('#f07b22')).toBe('SAVE_VARIABLE VARIABLE=muon_material_color VALUE=\'"F07B22"\'')
+    expect(saveMaterialColourCommand('#f07b22')).toBe('SAVE_VARIABLE VARIABLE=muon_material_colour VALUE=\'"F07B22"\'')
     expect(() => saveMaterialColourCommand('orange')).toThrow()
   })
 
   it('is read back however it was written, and is nothing when nobody has said', () => {
+    expect(savedMaterialColour({ muon_material_colour: '2f63c6' })).toBe('#2F63C6')
+    expect(savedMaterialColour({ muon_material_colour: '2F63C6', muon_material_color: 'F07B22' })).toBe('#2F63C6')
+    expect(savedMaterialColour({ muon_material_colour: 'bad', muon_material_color: 'F07B22' })).toBeNull()
     expect(savedMaterialColour({ muon_material_color: 'F07B22' })).toBe('#F07B22')
     expect(savedMaterialColour({ muon_material_color: '"#f07b22"' })).toBe('#F07B22')
     expect(savedMaterialColour({ muon_material: 'PLA' })).toBeNull()

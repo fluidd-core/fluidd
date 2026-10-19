@@ -49,6 +49,7 @@ import { createFluiddLibrary } from '../library'
 import { notSignedIn } from '@/services/library/api'
 import { resetLibrary, setLibraryClient } from '@/services/library/store'
 import { fakeService } from '@/services/library/__tests__/fakeService'
+import { PROMISE_VERSION } from '@/services/library/promise'
 import { fakeMoonraker, newPrinter, type MoonrakerPrinter } from './moonraker'
 
 const account = vi.hoisted(() => ({ state: null as unknown as { account: { id: string } | null } }))
@@ -409,6 +410,9 @@ async function runScenario (c: { selected: string | null, capabilities?: string[
         got = await outcome(client.request('files.upload', { printer: params.printer, name: params.name, size: FILE.byteLength, checksum: await sha256(FILE), bytes }, [bytes], abort.signal))
       } else {
         const request = subst(step.request) as { op: string, params: Record<string, unknown> }
+        // The transport vectors use a sample date, not a customer promise.
+        // Specialize valid consent to the words served by this fixture.
+        if (request.op === 'library.save' && request.params.consent) request.params.consent = PROMISE_VERSION
         cancelRequest = () => abort.abort()
         // While a Library save is sending: the host switches printer.
         if (step.during && 'select' in step.during) service.whileUploading(() => { selected = step.during.select; host.printerChanged() })
