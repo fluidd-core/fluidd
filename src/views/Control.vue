@@ -8,6 +8,7 @@
     <control-actions
       v-if="isMobileViewport"
       class="area-actions"
+      phone
     />
     <control-heat
       class="area-heat"
@@ -58,6 +59,7 @@ export default class Control extends Mixins(BrowserMixin) {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-areas:
+      'actions actions actions actions actions actions'
       'move move move heat heat heat'
       'filament filament speed speed fans fans'
       'macros macros macros macros macros macros';
