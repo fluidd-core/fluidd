@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import AccountCommunity from '../AccountCommunity.vue'
+import communitySource from '../AccountCommunity.vue?raw'
 
 const identity = vi.hoisted(() => vi.fn())
 const saveIdentity = vi.hoisted(() => vi.fn())
@@ -102,11 +103,12 @@ describe('private community setup', () => {
     w.destroy()
   })
 
-  it('keeps the identity card within a 390px phone', async () => {
+  it('gives the identity card and its fields explicit shrink and wrapping rules', async () => {
     identity.mockResolvedValue(setup(18)); profile.mockResolvedValue(maker())
     const w = open(); await settle()
-    expect(w.find('.acct-card').attributes('style') ?? '').not.toContain('width')
     expect(w.find('.acct-card').classes()).toContain('account-community')
+    expect(communitySource).toMatch(/\.account-community\s*\{[^}]*min-width:\s*0;[^}]*max-width:\s*100%;[^}]*overflow-wrap:\s*anywhere;/)
+    expect(communitySource).toMatch(/\.account-community input, \.account-community select\s*\{[^}]*min-width:\s*0;[^}]*max-width:\s*100%;/)
     w.destroy()
   })
 })
