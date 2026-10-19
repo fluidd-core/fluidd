@@ -32,6 +32,19 @@ describe('staff requests', () => {
     ])
     expect(JSON.parse(fetch.mock.calls[3][1].body)).toEqual(command)
   })
+  it('does not refresh or repeat a staff mutation after a 401', async () => {
+    localStorage.setItem('muon.cloud.refresh', 'refresh-session')
+    const credential = { id: 'YQ', rawId: new Uint8Array([1]).buffer, type: 'public-key', response: { clientDataJSON: new Uint8Array([1]).buffer, authenticatorData: new Uint8Array([1]).buffer, signature: new Uint8Array([1]).buffer } }
+    const fetch = vi.fn().mockResolvedValueOnce(response({ ceremony_id: 'once', options: { publicKey: { challenge: 'YQ' } }, expires_at: Date.now() / 1000 + 60 }))
+      .mockResolvedValueOnce(response({ ok: true })).mockResolvedValueOnce(response({ actor: 'staff', staff_expires_at: Date.now() / 1000 + 120 }))
+      .mockResolvedValueOnce(response({ error: 'confirm staff access again' }, 401))
+    vi.stubGlobal('fetch', fetch); vi.stubGlobal('navigator', { credentials: { get: async () => credential } })
+    const command = { command: '0123456789abcdef0123456789abcdef', action: 'hide', target: 'case-1', version: 3, reason: 'Review unsafe content', details: {} }
+    await expect(staffCommand(command)).rejects.toMatchObject({ status: 401 })
+    expect(fetch).toHaveBeenCalledTimes(4)
+    expect(fetch.mock.calls.filter(c => c[0] === 'https://control.muon3d.com/v1/admin/community')).toHaveLength(1)
+    expect(fetch.mock.calls.some(c => c[0] === 'https://control.muon3d.com/token')).toBe(false)
+  })
   it('completes the staff-purpose ceremony before opening a staff session', async () => {
     const fetch = vi.fn().mockResolvedValueOnce(response({ ceremony_id: 'bound', options: { publicKey: { challenge: 'YQ', userVerification: 'required' } }, expires_at: Date.now() / 1000 + 60 }))
       .mockResolvedValueOnce(response({ ok: true }))
@@ -53,6 +66,7 @@ describe('staff requests', () => {
     for (const page of ['http://m1.local/admin', 'https://library.muon3d.com/admin', 'https://slicer.muon3d.com/admin']) {
       expect(adminAvailable(page, 'https://control.muon3d.com')).toBe(false)
     }
+    expect(adminAvailable('https://control.muon3d.com/admin', 'https://control.muon3d.com', true)).toBe(false)
   })
   it('keeps exact lookup and reason out of the URL and does not broaden results', async () => {
     const fetch = vi.fn().mockResolvedValue(response({ account: null, staff_expires_at: 300 }))
