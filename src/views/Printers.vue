@@ -729,8 +729,11 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import PrinterEntriesMixin from '@/mixins/printer-entries'
 import BrowserMixin from '@/mixins/browser'
 import FilesMixin from '@/mixins/files'
-import { cloudState, saveLayout } from '@/services/muon-cloud/state'
-import { discoverPrinters, discoveryState, lanAddresses, refreshKnownPrinters } from '@/services/muon-cloud/discovery'
+import { cloudPrinterConnection, cloudState, saveLayout } from '@/services/muon-cloud/state'
+import { discoverPrinters, discoveryState, lanAddresses, lanFetch, refreshCloudNearby, refreshKnownPrinters, refreshLanStatus } from '@/services/muon-cloud/discovery'
+import { afterFirstPaint } from '@/services/startup/idle'
+import { loadedRecord } from '@/services/muon-cloud/status'
+import { jobPicture } from '@/services/printers-page/pictures'
 import { foreignEntries, savedUpdates, type Directory, type DirectoryEntry } from '@/services/muon-cloud/directory'
 import { startNearby, stopNearby } from '@/services/muon-ble/nearby'
 import { printerHomePath, foreignSlugForId } from '@/services/printer-pages'
@@ -769,6 +772,8 @@ type View = 'cards' | 'list'
 
 /** How often the printers already known are asked again while the page is open. */
 const HEALTH_EVERY_MS = 15_000
+/** How often what the printers found on this network are doing is read again: a print moves. */
+const STATUS_EVERY_MS = 3_000
 const VIEW_KEY = 'muon3d.printers.view'
 
 function readView (): View {
@@ -809,6 +814,9 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   dropTarget: string | null = null
   renaming: string | null = null
   timer: number | null = null
+  /** Set on destroy, so a sweep still waiting for the first paint doesn't start. */
+  gone = false
+  statusTimer: number | null = null
 
   filters: Array<{ id: Filter, label: string }> = [
     { id: 'all', label: 'All' },
@@ -820,14 +828,24 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
   created () {
     loadForeign().then(() => connectAll()).catch(() => {})
     if (new URLSearchParams(location.search).get('addPrinter') === '1') this.instanceDialogOpen = true
-    discoverPrinters().catch(() => {})
+    // The console's list of printers on this network is one request, and its
+    // printers are read at once. The sweep is 500 and more (every address on
+    // two or three networks): it waits until the page has painted, so it
+    // doesn't hold up the first load's own requests (KAN-525, 14 Oct 2026).
+    refreshCloudNearby().catch(() => {})
+    afterFirstPaint(() => {
+      if (!this.gone) discoverPrinters(false, { nearby: false }).catch(() => {})
+    })
     startNearby().catch(() => {})
     this.timer = window.setInterval(() => { refreshKnownPrinters().catch(() => {}) }, HEALTH_EVERY_MS)
+    this.statusTimer = window.setInterval(() => { refreshLanStatus().catch(() => {}) }, STATUS_EVERY_MS)
     window.addEventListener('keydown', this.onDigit)
   }
 
   beforeDestroy () {
+    this.gone = true
     if (this.timer !== null) window.clearInterval(this.timer)
+    if (this.statusTimer !== null) window.clearInterval(this.statusTimer)
     window.removeEventListener('keydown', this.onDigit)
     stopNearby()
   }
@@ -875,7 +893,8 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
       layer: (this.$store.getters['printer/getPrintLayer'] as number) || null,
       layers: (this.$store.getters['printer/getPrintLayers'] as number) || null,
       nozzle: typeof printer.extruder?.temperature === 'number' ? Math.round(printer.extruder.temperature) : null,
-      bed: typeof printer.heater_bed?.temperature === 'number' ? Math.round(printer.heater_bed.temperature) : null
+      bed: typeof printer.heater_bed?.temperature === 'number' ? Math.round(printer.heater_bed.temperature) : null,
+      material: loadedRecord(printer.save_variables?.variables) ?? null
     }
   }
 
@@ -1032,12 +1051,24 @@ export default class Printers extends Mixins(PrinterEntriesMixin, BrowserMixin, 
     }
   }
 
-  /** The part's picture, for the printer Fluidd is on (its file is on that printer). */
+  /**
+   * The part's picture: for the printer Fluidd is on, from its own store;
+   * for any other, read from that printer (on this network, or through
+   * Muon3D) once per file.
+   */
   thumbnailFor (tile: PrinterTile): string | null {
-    if (!tile.entry.active) return null
-    const file = this.$store.state.printer.printer.current_file
-    if (!file?.thumbnails?.length) return null
-    return this.getThumbUrl(file, 'gcodes', file.path, true, file.modified) ?? null
+    if (tile.entry.active) {
+      const file = this.$store.state.printer.printer.current_file
+      if (!file?.thumbnails?.length) return null
+      return this.getThumbUrl(file, 'gcodes', file.path, true, file.modified) ?? null
+    }
+    const filename = tile.job?.file
+    if (!filename) return null
+    const lan = tile.entry.lan
+    if (lan && !tile.remote) return jobPicture(`lan:${lan.apiUrl}`, filename, path => lanFetch(`${lan.apiUrl}${path}`))
+    const cloud = tile.entry.cloud
+    if (cloud) return jobPicture(`cloud:${cloud.id}`, filename, async path => (await cloudPrinterConnection(cloud.id)).fetch(path))
+    return null
   }
 
   /** What Add a printer offers in one tap: the printers found here that it can open. */

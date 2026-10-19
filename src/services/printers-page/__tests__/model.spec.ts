@@ -293,3 +293,67 @@ describe('a job\'s name', () => {
     expect(jobName(null)).toBeNull()
   })
 })
+
+describe('a printer found on this network, printing', () => {
+  const walnut = entry('found:walnut', {
+    section: 'found',
+    name: 'Walnut · 8987',
+    health: 'printing',
+    detail: 'Printing · 192.168.137.73',
+    host: '192.168.137.73',
+    linkedTo: 'other',
+    lan: {
+      host: '192.168.137.73',
+      apiUrl: 'http://192.168.137.73',
+      name: 'Walnut · 8987',
+      endpointId: null,
+      link: { phase: 'linked' },
+      health: {
+        state: 'printing',
+        checkedAt: 1,
+        status: {
+          reachable: true,
+          state: 'printing',
+          filename: 'Harry/tray_v2_PETG.gcode',
+          progress: 0.56,
+          printDuration: 2900,
+          layer: 22,
+          totalLayers: 40,
+          extruder: { temperature: 239.6, target: 240 },
+          bed: { temperature: 79.8, target: 80 },
+          material: { name: 'PETG', colour: '#2F63C6' },
+          updatedAt: 1
+        }
+      }
+    } as never
+  })
+
+  it('leads the page with its job, progress, layer, temperatures and spool, before anyone opens it', () => {
+    // 14 Oct: Walnut showed only its name and "Printing" until Jack
+    // connected to it and came back.
+    const page = printersPage(sources({ directory: { cloud: [], local: [], found: [walnut] } }))
+
+    expect(names(page.printingNow)).toEqual(['Walnut'])
+    expect(page.printingNow[0].job).toEqual({
+      file: 'Harry/tray_v2_PETG.gcode',
+      progress: 56,
+      secondsLeft: expect.any(Number),
+      layer: 22,
+      layers: 40,
+      nozzle: 240,
+      bed: 80,
+      material: { name: 'PETG', colour: '#2F63C6' }
+    })
+    expect(page.printingNow[0].label).toBe('56%')
+    expect(page.printingNow[0].detail).toBe('tray_v2_PETG')
+  })
+
+  it('shows a cloud printer that the service cannot reach from what this network says', () => {
+    const boxwood = cloudEntry('b', 'Boxwood', { health: 'printing', lan: walnut.lan })
+    const page = printersPage(sources({
+      directory: { cloud: [boxwood], local: [], found: [] },
+      status: { b: { reachable: false, error: 'reconnecting', updatedAt: 1 } }
+    }))
+    expect(page.printingNow[0].job).toMatchObject({ file: 'Harry/tray_v2_PETG.gcode', progress: 56 })
+  })
+})

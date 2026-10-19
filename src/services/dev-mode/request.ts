@@ -74,6 +74,8 @@ export class DevModeRefused extends Error {
 
 /** The printer has no request route: its software predates KAN-547. */
 export class DevModeRequestUnavailable extends Error {
+  readonly status = 404
+
   constructor () {
     super("This printer's software can't take a developer-mode request. Update it, then try again.")
     this.name = 'DevModeRequestUnavailable'

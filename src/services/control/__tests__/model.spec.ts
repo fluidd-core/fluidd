@@ -25,16 +25,22 @@ import {
   colourName,
   normaliseColour,
   saveMaterialColourCommand,
-  savedMaterialColour
+  savedMaterialColour,
+  fileFilament,
+  loadedChoice,
+  materialChoices
 } from '../model'
 
 describe("the loaded filament's colour", () => {
   it('is kept on the printer beside the material, without the # a G-code reader could take for a comment', () => {
-    expect(saveMaterialColourCommand('#f07b22')).toBe('SAVE_VARIABLE VARIABLE=muon_material_color VALUE=\'"F07B22"\'')
+    expect(saveMaterialColourCommand('#f07b22')).toBe('SAVE_VARIABLE VARIABLE=muon_material_colour VALUE=\'"F07B22"\'')
     expect(() => saveMaterialColourCommand('orange')).toThrow()
   })
 
   it('is read back however it was written, and is nothing when nobody has said', () => {
+    expect(savedMaterialColour({ muon_material_colour: '2f63c6' })).toBe('#2F63C6')
+    expect(savedMaterialColour({ muon_material_colour: '2F63C6', muon_material_color: 'F07B22' })).toBe('#2F63C6')
+    expect(savedMaterialColour({ muon_material_colour: 'bad', muon_material_color: 'F07B22' })).toBeNull()
     expect(savedMaterialColour({ muon_material_color: 'F07B22' })).toBe('#F07B22')
     expect(savedMaterialColour({ muon_material_color: '"#f07b22"' })).toBe('#F07B22')
     expect(savedMaterialColour({ muon_material: 'PLA' })).toBeNull()
@@ -279,5 +285,27 @@ describe('filament sensors and the automatic load', () => {
 
   it('keeps on a sensor the settings do not name', () => {
     expect(sensorCommand('other', false, runoutOnly)).toBeNull()
+  })
+})
+
+describe('what is loaded, by its recorded name', () => {
+  const choices = materialChoices(materialsFrom([]))
+
+  it('is the table entry when the table lists it', () => {
+    expect(loadedChoice(choices, 'petg')).toMatchObject({ name: 'PETG', nozzle: 240 })
+  })
+
+  it('is still shown when the table does not list it, rather than "Not set"', () => {
+    expect(loadedChoice(choices, 'PLA+')).toMatchObject({ name: 'PLA+', nozzle: null, bed: null })
+    expect(loadedChoice(choices, null)).toBeNull()
+  })
+})
+
+describe('what the file printing was sliced for', () => {
+  it("is the slicer's filament type and colour, the first of several", () => {
+    expect(fileFilament({ filament_type: 'PETG;PLA', filament_colors: ['#2f63c6', '#ffffff'] })).toEqual({ name: 'PETG', colour: '#2F63C6' })
+    expect(fileFilament({ filament_name: 'Generic PLA' })).toEqual({ name: 'Generic PLA', colour: null })
+    expect(fileFilament({ size: 100 })).toBeNull()
+    expect(fileFilament(undefined)).toBeNull()
   })
 })

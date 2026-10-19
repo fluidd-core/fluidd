@@ -5,6 +5,7 @@ import axios, { AxiosError, type InternalAxiosRequestConfig, type AxiosResponse 
 import { Globals } from '@/globals'
 import type { Store } from 'vuex'
 import type { RootState } from '@/store/types'
+import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 
 const createHttpClient = (store: Store<RootState>) => {
   // Create a base instance with sane defaults.
@@ -81,7 +82,7 @@ const createHttpClient = (store: Store<RootState>) => {
     return response
   }
 
-  const errorInterceptor = (error: AxiosError<string | { error?: { message?: string} } | undefined>) => {
+  const errorInterceptor = (error: AxiosError<string | { error?: string | { message?: string} } | undefined>) => {
     let message: string | undefined
 
     // Check if its a network / server error.
@@ -92,15 +93,30 @@ const createHttpClient = (store: Store<RootState>) => {
       return Promise.reject(error)
     }
 
-    // All other errors
+    // All other errors. muon-link answers a refusal as {"error": "<why>"}.
     if (typeof error.response.data === 'object') {
-      message = error.response.data.error?.message
+      const answer = error.response.data.error
+      message = typeof answer === 'string' ? answer : answer?.message
     } else {
       message = error.response.data
     }
 
     const url = error.config?.url || ''
     const quiet = quietErrorRequests.includes(url)
+
+    // A cloud printer's gateway refuses what a remote session may never
+    // reach (Moonraker's users, the Aux API, updates). A read refused that
+    // way is expected, and the page shows the feature as unavailable; a
+    // toast on each one only said "Server error" (14 Oct 2026).
+    if (
+      error.response.status === 403 &&
+      isManagedApiUrl(store.state.config.apiUrl) &&
+      (error.config?.method ?? 'get').toLowerCase() === 'get' &&
+      /muon-link policy refused/.test(message ?? '')
+    ) {
+      consola.debug('Refused through Muon3D', url, message)
+      return Promise.reject(error)
+    }
     switch (error.response.status) {
       case 500:
         consola.debug(error.response.status, error.message, message)

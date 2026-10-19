@@ -5,10 +5,12 @@ import { MANAGED_API_URL } from '@/services/muon-cloud/origin'
 const http = vi.hoisted(() => ({
   accessCurrentUserGet: vi.fn(),
   accessUsersListGet: vi.fn(),
-  accessApiKeyGet: vi.fn()
+  accessApiKeyGet: vi.fn(),
+  defaults: { headers: { common: {} } }
 }))
 vi.mock('@/api/httpClientActions', () => ({ httpClientActions: http }))
-vi.mock('@/router', () => ({ default: {} }))
+const router = vi.hoisted(() => ({ currentRoute: { path: '/boxwood-367a' }, push: vi.fn() }))
+vi.mock('@/router', () => ({ default: router }))
 
 const init = (apiUrl: string) => {
   const commit = vi.fn()
@@ -44,5 +46,18 @@ describe('auth/init', () => {
     expect(commit).toHaveBeenCalledWith('setCurrentUser', { username: 'jack' })
     expect(commit).toHaveBeenCalledWith('setUsers', [])
     expect(commit).toHaveBeenCalledWith('setApiKey', 'key')
+  })
+})
+
+describe('auth/logout', () => {
+  it("never sends a cloud printer to Moonraker's login page", async () => {
+    // A 401 through the gateway used to close the socket and push /login,
+    // whose password muon-link refuses to every remote role.
+    const commit = vi.fn()
+    const logout = actions.logout as (context: object) => Promise<void>
+    await logout({ commit, rootState: { config: { apiUrl: MANAGED_API_URL } }, rootGetters: { 'config/getTokenKeys': {} } })
+
+    expect(commit).not.toHaveBeenCalledWith('setAuthenticated', false)
+    expect(router.push).not.toHaveBeenCalled()
   })
 })

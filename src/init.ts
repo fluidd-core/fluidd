@@ -209,7 +209,9 @@ const getMoorakerDatabase = async (apiConfig: ApiConfig, namespace: string) => {
 
         case 401:
           // The API is technically connected, but we're un-authenticated.
-          result.apiAuthenticated = false
+          // Not through Muon3D: the console's grant is the sign-in there, and
+          // Moonraker's own login is refused to every remote session.
+          if (!isManagedApiUrl(apiConfig.apiUrl)) result.apiAuthenticated = false
           break
 
         default:
@@ -226,9 +228,28 @@ const getMoorakerDatabase = async (apiConfig: ApiConfig, namespace: string) => {
   return result
 }
 
-export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<InitConfig> => {
+export interface AppInitOptions {
+  /**
+   * Whether the printer being loaded is still the one wanted. A switch that
+   * another replaced still finishes loading, but must not move the address
+   * or learn an identity for the printer Fluidd is on by then.
+   */
+  isCurrent?: () => boolean
+}
+
+export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig, options: AppInitOptions = {}): Promise<InitConfig> => {
+  const isCurrent = options.isCurrent ?? (() => true)
+
   // Reset the store to its default state.
   await store.dispatch('reset', undefined, { root: true })
+
+  // A reset leaves the API "connected" and the user signed out, which every
+  // view reads as "the printer answered and wants its login". Until the
+  // printer says so with a 401, Fluidd doesn't ask: over Muon3D the first
+  // answer takes seconds, and the login page came up for a printer that has
+  // none, then posted the password to an address muon-link always refuses
+  // (14 Oct 2026). A 401 below, or later from any request, signs out again.
+  store.commit('auth/setAuthenticated', true)
   // The setup state lives outside Vuex; drop the previous printer's too, or a
   // higher rev from it would win over the new printer's notifications.
   resetSetupState()
@@ -308,8 +329,14 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     await Promise.all(promises)
   }
 
+  // The printer answered, and wants its login.
+  if (apiConnected && !apiAuthenticated) store.commit('auth/setAuthenticated', false)
+
   // apiConfig could have empty strings, meaning we have no valid connection.
   await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
+
+  // Replaced by a later switch while it loaded: that one owns the address.
+  if (!isCurrent()) return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
 
   // After a switch, a page of the old printer becomes the same page of this
   // one: the address always names the printer shown.

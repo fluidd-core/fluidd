@@ -1,3 +1,5 @@
+import { colourName } from '@/services/control/model'
+
 /** A heater's tile: its temperature, its target, and in words how close it is. */
 export interface HeaterTile {
   temperature: number;
@@ -26,6 +28,16 @@ export function filamentFact (usedMm: number, totalMm: number | null, totalGrams
   }
   const m = (mm: number) => (mm / 1000).toFixed(2)
   return totalMm ? `${m(usedMm)} of ${m(totalMm)} m` : `${m(usedMm)} m`
+}
+
+/**
+ * The spool on the printer, in words: "PETG · Blue" as someone said, else
+ * "PLA · from the file" from the file being printed, else "Not set".
+ */
+export function spoolFact (loaded: string | null, loadedColour: string | null, fromFile: { name: string, colour: string | null } | null): string {
+  if (loaded) return [loaded, loadedColour ? colourName(loadedColour) : ''].filter(Boolean).join(' · ')
+  if (fromFile) return [fromFile.name, fromFile.colour ? colourName(fromFile.colour) : '', 'from the file'].filter(Boolean).join(' · ')
+  return 'Not set'
 }
 
 /** "10 min", "1 h 5 min": how long, for people. */

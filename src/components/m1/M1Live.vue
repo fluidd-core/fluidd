@@ -28,7 +28,7 @@ import { liveAccessories, sameAccessories, type Accessories } from '@/services/m
 import { plateTaps, screenFrom, type LedStrip, type PlateTap, type ScreenState } from '@/services/m1-3d/live-state'
 import { motionPathFrom, type MotionPath } from '@/services/m1-3d/motion'
 import { modelPose, samePose, type ModelPose } from '@/services/m1-3d/pose'
-import { partColour, segmentsDone, toolpathFrom, type Toolpath } from '@/services/m1-3d/toolpath'
+import { partColour, segmentsDone, toolpathFrom, toolpathFromGcode, type Toolpath } from '@/services/m1-3d/toolpath'
 import type { M1Viewer } from '@/services/m1-3d/viewer'
 import type { ThumbState } from '@/components/ui/PrinterThumb.vue'
 import type { Move } from '@/store/gcodePreview/types'
@@ -39,8 +39,14 @@ import { ACTIVE_PHASES } from '@/services/updates/model'
 import { updateWatch } from '@/services/updates/watch'
 import { afterFirstPaint } from '@/services/startup/idle'
 
-/** The biggest file the stage fetches by itself to draw the print: most prints, not a day-long one. */
+/** The biggest file the stage loads into the G-code preview by itself (the preview keeps every move as an object). */
 const AUTO_LOAD_BYTES = 16 * 1024 * 1024
+/**
+ * Bigger files are read for the part alone (`toolpathFromGcode`), up to
+ * this on this network and a third of it through Muon3D: without the file
+ * the stage could only lay the part from the moment it opened.
+ */
+const PART_ONLY_BYTES = 96 * 1024 * 1024
 /** Past this many moves the head isn't followed along the file (the path would cost a phone too much); the part is still drawn. */
 const MAX_FOLLOWED_MOVES = 2_000_000
 /** Marks of the plate's touches stay this long after the printer stops touching it. */
@@ -58,10 +64,11 @@ const PART_STATES = ['printing', 'paused', 'complete', 'cancelled', 'error']
  * leaves a mark coloured by the height it found; the LED strips show their
  * pixels; and the base's screen shows what the printer's panel shows.
  *
- * The part comes from Fluidd's G-code preview. While printing, the stage
- * loads the job's file into it when the printer is on this network and
- * the file is under 16 MB; through Muon3D it draws the part only once the
- * preview holds it, and lays the part from the reports until then. The
+ * The part comes from the job's file, from its first byte, so a print
+ * opened part-way through shows all that is already printed. While
+ * printing, the stage loads a file under 16 MB into Fluidd's G-code
+ * preview (on this network or through Muon3D), and reads a bigger one for
+ * the part alone; the reports lay the part only until the file is in. The
  * product shot shows until the model has drawn, and stays when the browser
  * can't draw it, when another live M1 is on screen, or while this one is
  * scrolled away.
@@ -96,6 +103,8 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   motionPath: Readonly<MotionPath> | null = null
   printPathFor = ''
   loadingFor = ''
+  /** A job whose part was read straight from its file, too big for the preview. */
+  partOnlyFor = ''
 
   /** The last pose and report passed on, so an unchanged one draws nothing. */
   lastPose: ModelPose | null = null
@@ -334,6 +343,7 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
       this.printPath = null
       this.motionPath = null
       this.printPathFor = ''
+      this.partOnlyFor = ''
     } else if (this.previewPath === this.jobPath && this.printPathFor !== this.jobPath) {
       const moves = this.$store.getters['gcodePreview/getMoves'] as Move[]
       this.printPath = Object.freeze(toolpathFrom(moves))
@@ -354,11 +364,19 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
   async loadJob () {
     const file = this.$store.state.printer.printer.current_file as { filename?: string, path?: string, size?: number } | undefined
     const job = this.jobPath
-    if (!this.live || !job || this.loadingFor === job || cloudState.activePrinterId) return
+    if (!this.live || !job || this.loadingFor === job || this.partOnlyFor === job) return
     if (this.printState !== 'printing' && this.printState !== 'paused') return
-    if (this.$store.state.gcodePreview.parserWorker || !file?.filename || !file.size || file.size > AUTO_LOAD_BYTES) return
+    if (!file?.filename || !file.size) return
+    const intoPreview = file.size <= AUTO_LOAD_BYTES
+    // The preview is busy with another file: onPrintFile tries again when it ends.
+    if (intoPreview && this.$store.state.gcodePreview.parserWorker) return
+    if (!intoPreview && file.size > (cloudState.activePrinterId ? PART_ONLY_BYTES / 3 : PART_ONLY_BYTES)) return
     this.loadingFor = job
     try {
+      if (!intoPreview) {
+        await this.loadPartOnly(job)
+        return
+      }
       const response = await httpClientActions.serverFilesGet<string>(`gcodes/${job}`, { responseType: 'text', transformResponse: [v => v] })
       if (this.jobPath !== job || !response?.data) return
       // Asked again after the download: another preview may have begun
@@ -375,6 +393,17 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
     }
   }
 
+  /** Reads a file too big for the preview, for the part alone: the head then follows the reports only. */
+  async loadPartOnly (job: string) {
+    const response = await httpClientActions.serverFilesGet<ArrayBuffer>(`gcodes/${job}`, { responseType: 'arraybuffer' })
+    if (this.jobPath !== job || !response?.data) return
+    this.printPath = Object.freeze(toolpathFromGcode(new Uint8Array(response.data)))
+    this.motionPath = null
+    this.printPathFor = job
+    this.partOnlyFor = job
+    this.drawPrint()
+  }
+
   /** The job's file once its metadata has come: a print that starts gets it a moment after its name. */
   get jobFileKnown (): string {
     const file = this.$store.state.printer.printer.current_file as { filename?: string, size?: number } | undefined
@@ -388,7 +417,7 @@ export default class M1Live extends Mixins(MaintenanceMixin) {
 
   /**
    * The filament's colour: the one set for what's loaded (Overview, Control
-   * or the slicer, kept on the printer as muon_material_color), since that is
+   * or the slicer, kept on the printer as muon_material_colour), since that is
    * what is in the nozzle; else the file's slicer settings.
    */
   get partColour (): number {

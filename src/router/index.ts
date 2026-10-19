@@ -5,7 +5,9 @@ import { readSignedOut } from '@/services/account/signed-out-note'
 import { activeSlugNow, foreignSlugNow } from './printerSlugSource'
 import { PRINTER_PAGE_PATHS } from './printerPagePaths'
 import { ROUTE_SLUG_PATTERN } from '@/services/printer-pages/slug'
+import { isManagedApiUrl } from '@/services/muon-cloud/origin'
 import Updating from '@/views/Updating.vue'
+import { isStaleChunkError, reloadForNewBuild } from '@/util/stale-build'
 
 // Views. Every route is lazy (KAN-525) but Updating, which stays in the main
 // chunk: while the printer restarts into an update it can't serve a chunk.
@@ -33,9 +35,11 @@ const JoinLanding = () => import('@/views/JoinLanding.vue')
 
 Vue.use(VueRouter)
 
+// A cloud printer is never asked for Moonraker's login (auth/logout).
 const isAuthenticated = () => (
   router.app.$store.getters['auth/getAuthenticated'] ||
-  !router.app.$store.state.socket.apiConnected
+  !router.app.$store.state.socket.apiConnected ||
+  isManagedApiUrl(router.app.$store.state.config.apiUrl)
 )
 
 /** The current printer's page, or Printers with no printer. */
@@ -464,11 +468,25 @@ const router = new VueRouter({
   }
 })
 
+// Where the navigation in flight is going, for a stale build's reload to land on.
+let pendingTarget: string | undefined
+
 router.beforeEach((to, from, next) => {
+  pendingTarget = to.fullPath
   const foreignRedirect = foreignPageRedirect(to)
   if (foreignRedirect) return next(foreignRedirect)
   router.app?.$store.commit('config/setContainerColumnCount', 2)
   next()
+})
+
+// KAN-562: every route is lazy, so a tab still running the build before a
+// deploy fails to load the next page it opens, and callers that swallow the
+// rejected push make that "nothing happens". Load the page afresh instead.
+router.onError((error) => {
+  if (isStaleChunkError(error)) reloadForNewBuild(pendingTarget)
+})
+window.addEventListener('vite:preloadError', (event) => {
+  if (reloadForNewBuild(pendingTarget)) event.preventDefault()
 })
 
 declare module 'vue-router' {
