@@ -87,6 +87,19 @@
               dense
             />
             <v-text-field
+              v-if="mode === 'sign-up'"
+              v-model="age"
+              label="Your age"
+              type="number"
+              min="13"
+              max="120"
+              hint="Private. Confirm once; accounts require age 13 or over."
+              persistent-hint
+              outlined
+              dense
+              data-tid="sign-up-age"
+            />
+            <v-text-field
               v-model="email"
               label="Email"
               type="email"
@@ -193,6 +206,7 @@ type Mode = 'sign-in' | 'sign-up' | 'code' | 'forgot' | 'sent'
 @Component({})
 export default class SignIn extends Vue {
   mode: Mode = 'sign-in'
+  age = ''
   name = ''
   email = ''
   password = ''
@@ -286,7 +300,7 @@ export default class SignIn extends Vue {
           await this.finish(await codeSignIn(this.mfaToken, this.code))
           return
         case 'sign-up':
-          await this.finish(await signUp(this.email.trim(), this.password, this.name.trim()))
+          await this.finish(await signUp(this.email.trim(), this.password, this.name.trim(), Number(this.age)))
           return
         default:
           await this.finish(await passwordSignIn(this.email.trim(), this.password))

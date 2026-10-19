@@ -256,13 +256,10 @@ export default class AccountSessions extends Vue {
     this.error = ''
     this.message = ''
     try {
-      // The browser's own session first: the console ends what it opened with it.
-      for (const id of device.sessionIds) {
-        await accountApi.endSession(id).catch((error) => {
-          // Already gone (it expired, or the browser's session took it with it).
-          if (!(error instanceof AccountError && error.status === 404)) throw error
-        })
-      }
+      await accountApi.endDevice(device.id).catch((error) => {
+        // Already ended by another device. A missing route is an upgrade gap.
+        if (!(error instanceof AccountError && error.status === 404 && !isMissing(error))) throw error
+      })
       this.message = `${device.label} is signed out.`
     } catch (error) {
       this.error = describe(error)
