@@ -67,3 +67,100 @@ it('drops a numeric draft when the printer changes and refuses the old field emi
   expect((wrapper.find('input[aria-label="Custom speed"]').element as HTMLInputElement).value).toBe('100')
   wrapper.destroy(); socket.printerGcodeScript.mockClear()
 })
+
+it.each([false, true])('shows each disconnected heater as a card and restores it on reconnection (phone=%s)', async (phone) => {
+  const f = fixture()
+  Vue.set(f.state.printer.printer, 'bed_removal_detector', { bedRemoved: true })
+  Vue.set(f.state.printer.printer, 'mcu toolhead', { non_critical_disconnected: false })
+  const wrapper = mount(OverviewTiles, { ...f, propsData: { phone } })
+  try {
+    const bed = () => wrapper.find('[data-tid="tile-bed"]')
+    const nozzle = () => wrapper.find('[data-tid="tile-nozzle"]')
+    expect(bed().text()).toContain('Bed disconnected')
+    expect(bed().classes()).toContain('ov-tile--disconnected')
+    expect(bed().find('.ov-tile__state').exists()).toBe(false)
+    expect(bed().find('.ov-tile__value').exists()).toBe(false)
+    expect((bed().find('button').element as HTMLButtonElement).disabled).toBe(true)
+    expect(nozzle().text()).not.toContain('disconnected')
+    expect(nozzle().find('.ov-tile__value').exists()).toBe(true)
+
+    await nozzle().find('button').trigger('click')
+    expect(nozzle().find('input').exists()).toBe(true)
+    f.state.printer.printer.bed_removal_detector.bedRemoved = false
+    f.state.printer.printer['mcu toolhead'].non_critical_disconnected = true
+    await Vue.nextTick()
+    expect(nozzle().text()).toContain('Nozzle disconnected')
+    expect(nozzle().classes()).toContain('ov-tile--disconnected')
+    expect(nozzle().find('.ov-tile__state').exists()).toBe(false)
+    expect(nozzle().find('.ov-tile__value').exists()).toBe(false)
+    expect(nozzle().find('input').exists()).toBe(false)
+    expect((nozzle().find('button').element as HTMLButtonElement).disabled).toBe(true)
+    expect(bed().text()).not.toContain('disconnected')
+    expect(bed().find('.ov-tile__value').exists()).toBe(true)
+
+    f.state.printer.printer['mcu toolhead'].non_critical_disconnected = false
+    await Vue.nextTick()
+    expect(nozzle().text()).not.toContain('disconnected')
+    expect(nozzle().classes()).not.toContain('ov-tile--disconnected')
+    expect(nozzle().find('.ov-tile__value').exists()).toBe(true)
+    expect((nozzle().find('button').element as HTMLButtonElement).disabled).toBe(false)
+  } finally {
+    wrapper.destroy()
+  }
+})
+
+it('keeps connected heaters with zero readings out of the disconnected state', () => {
+  const f = fixture()
+  f.getters['printer/getHeaters'].forEach((heater: any) => {
+    heater.temperature = 0
+    heater.target = 0
+  })
+  const wrapper = mount(OverviewTiles, f)
+  try {
+    for (const id of ['bed', 'nozzle']) {
+      const card = wrapper.find(`[data-tid="tile-${id}"]`)
+      expect(card.text()).not.toContain('disconnected')
+      expect(card.classes()).not.toContain('ov-tile--disconnected')
+      expect(card.find('.ov-tile__value').text()).toContain('0')
+      expect((card.find('button').element as HTMLButtonElement).disabled).toBe(false)
+    }
+  } finally {
+    wrapper.destroy()
+  }
+})
+
+it('keeps disconnected cards visible when heater objects are unavailable', () => {
+  const f = fixture()
+  f.getters['printer/getHeaters'] = []
+  Vue.set(f.state.printer.printer, 'bed_removal_detector', { bedRemoved: true })
+  Vue.set(f.state.printer.printer, 'mcu toolhead', { non_critical_disconnected: true })
+  const wrapper = mount(OverviewTiles, f)
+  try {
+    expect(wrapper.find('[data-tid="tile-bed"]').text()).toContain('Bed disconnected')
+    expect(wrapper.find('[data-tid="tile-nozzle"]').text()).toContain('Nozzle disconnected')
+  } finally {
+    wrapper.destroy()
+  }
+})
+
+it.each([
+  ['bed', 'bed_removal_detector', 'bedRemoved'],
+  ['nozzle', 'mcu toolhead', 'non_critical_disconnected']
+])('ignores an open %s target field event immediately after disconnection', async (id, object, signal) => {
+  const f = fixture()
+  Vue.set(f.state.printer.printer, object, { [signal]: false })
+  const wrapper = mount(OverviewTiles, f)
+  socket.printerGcodeScript.mockClear()
+  try {
+    const card = wrapper.find(`[data-tid="tile-${id}"]`)
+    await card.find('button').trigger('click')
+    const oldField = wrapper.findAllComponents({ name: 'NumberField' }).wrappers.find(field => field.props('label') === `${id === 'bed' ? 'Bed' : 'Nozzle'} target`)
+    if (!oldField) throw new Error(`${id} target field was not mounted`)
+    f.state.printer.printer[object][signal] = true
+    oldField.vm.$emit('change', 80)
+    expect(socket.printerGcodeScript).not.toHaveBeenCalled()
+  } finally {
+    wrapper.destroy()
+    socket.printerGcodeScript.mockClear()
+  }
+})
