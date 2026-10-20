@@ -65,7 +65,7 @@ declare namespace Moonraker.Peripherals {
 
   export interface LibcameraDevice {
     libcamera_id: string;
-    model: string;
+    model: string | null;
     modes: LibcameraDeviceMode[];
   }
 
