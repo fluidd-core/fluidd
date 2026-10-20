@@ -28,6 +28,7 @@ import { gunzip, isGzip } from './bytes'
 import { fitText, setupFit, type PrinterFacts } from './fit'
 import { cleanName } from './save'
 import { libraryClient, recordPrinted } from './store'
+import { rememberLibraryFile } from './runs'
 
 /** One of the account's printers, as Print on… lists it. */
 export interface PrintTarget {
@@ -224,6 +225,11 @@ export async function sendToPrinter (options: {
       setup: { printer_model: setup.printer_model, nozzle_mm: setup.nozzle_mm, material: setup.material },
       ...(typeof item.version === 'number' ? { version: item.version } : {})
     }).catch(() => {})
+    rememberLibraryFile(path, {
+      bytes,
+      item_id: item.id,
+      ...(typeof item.version === 'number' ? { version: item.version } : {})
+    })
   }
   if (mode === 'queue') {
     watchForStart(store, path, printed, QUEUE_WATCH_MS)
@@ -239,6 +245,7 @@ export async function sendToPrinter (options: {
     return
   }
   try {
+    rememberLibraryFile(path, { bytes, item_id: item.id, ...(typeof item.version === 'number' ? { version: item.version } : {}) })
     await httpClientActions.post('/printer/print/start', { filename: path }, { timeout: START_ANSWER_MS })
   } catch (error) {
     EventBus.$emit(`${target.name} didn't start ${item.name}. It's in its Jobs.`, { type: 'error', timeout: 0 })
