@@ -214,12 +214,12 @@ export async function setLibraryPreferences (patch: PreferencesPatch): Promise<v
 
 /** Turns the Library on with the promise this Fluidd shows (MSV-3). */
 export async function turnLibraryOn (version: string): Promise<void> {
+  requireCurrentPromise(version)
   try {
-    requireCurrentPromise(version)
     await client.consent(version)
   } catch (error) {
-    // Read the service's promise again, so Settings shows the words it wants
-    // now (or says this Control is too old to show them) instead of a reload loop.
+    // The service wants other words: read its promise again, so Settings shows them
+    // (or says this Control is too old to show them) instead of a reload loop.
     if (error instanceof LibraryError && error.code === 'promise_changed') await refreshLibrary()
     throw error
   }
