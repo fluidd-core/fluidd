@@ -75,7 +75,7 @@ export const actions = {
     if (!paths.filtered) {
       const existingFile = state.pathContent[paths.rootPath]?.files
         .find(file => file.filename === paths.filename)
-      const permissions = existingFile?.permissions ?? state.roots?.find(root => root.name === paths.root)?.permissions ?? 'r'
+      const permissions = existingFile?.permissions ?? 'r'
 
       const file: Moonraker.Files.FileWithMeta = {
         ...payload,
