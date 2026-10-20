@@ -72,6 +72,18 @@ describe('the Library store', () => {
     expect(service.calls).toEqual([])
   })
 
+  it('a promise that changed on the service is read again, so the new words are offered without a reload', async () => {
+    const service = fakeService({ enabled: false })
+    store.setLibraryClient(service.client())
+    await store.refreshLibrary()
+    expect(store.libraryStatus().promise?.version).toBe('2026-09-26')
+    service.queue(/^\/v1\/library\/consent$/, 409, { error: { code: 'promise_changed', message: 'The promise changed.' } })
+    service.queue(/^\/v1\/library$/, 200, { enabled: false, promise_version: '2026-10-13', account: null, used_bytes: 0, quota_bytes: 1e9 })
+    await expect(store.turnLibraryOn('2026-09-26')).rejects.toMatchObject({ code: 'promise_changed' })
+    expect(store.libraryState.promiseVersion).toBe('2026-10-13')
+    expect(store.libraryStatus().promise?.version).toBe('2026-10-13')
+  })
+
   it('refuses a slicer consent for words other than the current service promise', async () => {
     const service = fakeService({ enabled: false })
     store.setLibraryClient(service.client())

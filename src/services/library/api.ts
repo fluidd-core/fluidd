@@ -173,7 +173,7 @@ export function describeLibraryError (error: unknown): string {
     case 'offline': return 'Your Library can\'t be reached. Check this computer\'s internet connection.'
     case 'consent_required': return 'Your Library is off. Turn it on in Settings › Library.'
     case 'quota_exceeded': return `Your Library is full. ${error.message}`
-    case 'promise_changed': return 'The Library\'s promise has changed. Reload this page to read the new one.'
+    case 'promise_changed': return 'The Library\'s promise has changed. Read the new one in Settings › Library, then turn it on again.'
     default: return error.message
   }
 }
