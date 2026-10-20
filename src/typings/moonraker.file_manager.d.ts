@@ -5,7 +5,7 @@ declare namespace Moonraker.Files {
   export interface ListRootResponse extends Array<RootFile> {
   }
 
-  export interface FileWithMetaResponse extends FileWithMeta {
+  export interface FileWithMetaResponse extends Omit<FileWithMeta, 'permissions'> {
   }
 
   export interface ChangeResponse {
