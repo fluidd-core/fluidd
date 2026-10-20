@@ -8,7 +8,7 @@ function worker (initial: ServiceWorkerState) {
     postMessage: vi.fn(),
     change (state: ServiceWorkerState) {
       this.state = state
-      this.dispatchEvent(new Event('statechange'))
+      events.dispatchEvent(new Event('statechange'))
     }
   })
 }
