@@ -74,8 +74,8 @@ declare namespace Moonraker.Machine {
   }
 
   interface ServiceStateDetails {
-    active_state?: string;
-    sub_state?: string;
+    active_state: string;
+    sub_state: string;
   }
 
   export interface Virtualization {

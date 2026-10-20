@@ -11,7 +11,7 @@ declare namespace Moonraker.KlippyApis {
     process_id?: number;
     user_id?: number;
     group_id?: number;
-    log_file?: string;
+    log_file?: string | null;
     config_file?: string;
     software_version?: string;
     cpu_info?: string;
