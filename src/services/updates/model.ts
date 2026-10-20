@@ -147,10 +147,10 @@ export function updateSteps (phase: SessionPhase | 'offline' | 'late'): UpdateSt
   }
   const now = at[phase] ?? 0
   const labels: Record<UpdateStep['id'], string> = {
-    install: 'Writing the new version',
-    restart: 'Restarting into it',
-    check: 'Checking it works',
-    done: 'Done'
+    install: 'Installing',
+    restart: 'Restarting',
+    check: 'Verifying',
+    done: 'Complete'
   }
   return order.map((id, i) => ({ id, label: labels[id], state: i < now ? 'done' : i === now ? 'now' : 'next' }))
 }
@@ -160,27 +160,27 @@ export function updateHeadline (phase: SessionPhase | 'offline' | 'late', progre
   const version = to ? versionLabel(to).text : 'the new version'
   switch (phase) {
     case 'preparing':
-      return { title: 'Getting the update ready', text: `Checking ${version} before it is written.` }
+      return { title: 'Preparing update', text: `Verifying ${version} before installation.` }
     case 'installing':
       return progress !== null && progress >= 100
-        ? { title: 'Finishing up', text: 'The new version is written. The printer checks it, then restarts.' }
-        : { title: 'Updating', text: `Writing ${version}${progress !== null ? `: ${Math.round(progress)}%` : ''}. The printer keeps working meanwhile; it restarts at the end.` }
+        ? { title: 'Finishing installation', text: 'Installation is complete. The printer verifies the update, then restarts.' }
+        : { title: 'Installing update', text: `Installing ${version}${progress !== null ? `: ${Math.round(progress)}%` : ''}. The printer remains available during installation and restarts when it finishes.` }
     case 'rebooting':
     case 'offline':
-      return { title: 'Restarting to finish the update', text: 'The printer is starting its new version. This page reconnects by itself. Don\'t turn the printer off.' }
+      return { title: 'Restarting', text: 'The printer is restarting. This page will reconnect automatically. Keep the printer on.' }
     case 'late':
       return {
-        title: 'This is taking longer than expected',
-        text: 'If the printer\'s screen is dark or hasn\'t changed for a while, turn it off and on again. It will start on the version it had before, and you can try again.'
+        title: 'Restart delayed',
+        text: 'If the printer\'s screen is dark or has not changed for a while, turn it off and on again. The previous version will start. You can then retry the update.'
       }
     case 'verifying':
-      return { title: 'Checking the update', text: `${version} is running. The printer checks everything works before it keeps it; a restart now would undo it.` }
+      return { title: 'Verifying update', text: `${version} is running. The printer is verifying the update. Do not restart until verification finishes.` }
     case 'updated':
       return { title: 'Updated', text: `The printer is on ${version}.` }
     case 'rolled_back':
-      return { title: 'The update didn\'t complete', text: 'The printer went back to the version it had, so nothing changed. You can try again.' }
+      return { title: 'Previous version restored', text: 'The previous version has been restored. You can retry the update.' }
     case 'failed':
-      return { title: 'The update didn\'t install', text: 'Nothing changed on the printer. You can try again.' }
+      return { title: 'Update failed', text: 'The update was not installed. You can retry.' }
     default:
       return { title: 'Up to date', text: '' }
   }
