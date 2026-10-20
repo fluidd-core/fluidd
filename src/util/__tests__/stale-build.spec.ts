@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { isStaleChunkError, reloadForNewBuild, type ReloadDeps } from '../stale-build'
 
 const deps = (now = 100_000, stored: Record<string, string> = {}): ReloadDeps & { stored: Record<string, string> } => ({
+  buildId: 'old-build',
   stored,
   now: () => now,
   storage: {
@@ -29,6 +30,25 @@ describe('isStaleChunkError', () => {
 })
 
 describe('reloadForNewBuild', () => {
+  it('refreshes the browser worker before reloading a stale sign-in route', async () => {
+    let updated!: () => void
+    const d = deps()
+    const update = vi.fn(() => new Promise<void>(resolve => { updated = resolve }))
+    vi.stubGlobal('window', { sessionStorage: d.storage, location: { assign: d.assign, reload: d.reload } })
+    vi.stubGlobal('navigator', { serviceWorker: { getRegistration: async () => ({ update, waiting: null, installing: null }) } })
+    try {
+      const target = '/sign-in?continue=%2Fauthorize%3Fclient_id%3Dlibrary'
+      expect(reloadForNewBuild(target)).toBe(true)
+      expect(d.assign).not.toHaveBeenCalled()
+      await Promise.resolve()
+      expect(update).toHaveBeenCalledTimes(1)
+      updated()
+      await new Promise(resolve => setTimeout(resolve))
+      expect(d.assign).toHaveBeenCalledTimes(1)
+      expect(d.assign).toHaveBeenCalledWith(target)
+    } finally { vi.unstubAllGlobals() }
+  })
+
   it('loads the page it was going to', () => {
     const d = deps()
     expect(reloadForNewBuild('/gimlet-6741', d)).toBe(true)
@@ -50,11 +70,37 @@ describe('reloadForNewBuild', () => {
     expect(again.assign).not.toHaveBeenCalled()
   })
 
-  it('reloads again once the window has passed', () => {
+  it('does not loop when an old worker still serves the same build after ten seconds', () => {
     const first = deps(100_000)
     reloadForNewBuild('/a', first)
     const later = deps(111_000, first.stored)
-    expect(reloadForNewBuild('/a', later)).toBe(true)
+    expect(reloadForNewBuild('/a', later)).toBe(false)
+    expect(later.assign).not.toHaveBeenCalled()
+    expect(reloadForNewBuild('/a', { ...later, buildId: 'new-build' })).toBe(true)
+  })
+
+  it('updates the worker before returning to the full requested sign-in address', async () => {
+    let ready!: () => void
+    const prepareReload = vi.fn(() => new Promise<void>(resolve => { ready = resolve }))
+    const d = { ...deps(), prepareReload }
+    const target = '/sign-in?continue=%2Fauthorize%3Fclient_id%3Dlibrary'
+    expect(reloadForNewBuild(target, d)).toBe(true)
+    expect(prepareReload).toHaveBeenCalledTimes(1)
+    expect(d.assign).not.toHaveBeenCalled()
+    // Vite and the router can both report the same failed import.
+    expect(reloadForNewBuild(target, d)).toBe(false)
+    ready()
+    await new Promise(resolve => setTimeout(resolve))
+    expect(d.assign).toHaveBeenCalledTimes(1)
+    expect(d.assign).toHaveBeenCalledWith(target)
+  })
+
+  it('still reloads once when refreshing the worker fails', async () => {
+    const d = { ...deps(), prepareReload: () => Promise.reject(new Error('offline')) }
+    expect(reloadForNewBuild('/sign-in', d)).toBe(true)
+    await new Promise(resolve => setTimeout(resolve))
+    expect(d.assign).toHaveBeenCalledTimes(1)
+    expect(d.assign).toHaveBeenCalledWith('/sign-in')
   })
 
   it('does not reload when it has no storage to remember the reload in', () => {

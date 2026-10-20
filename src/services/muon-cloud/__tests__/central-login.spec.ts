@@ -52,6 +52,44 @@ describe('PKCE (RFC 7636, S256)', () => {
 })
 
 describe('/authorize', () => {
+  it('activates an updated worker before Library sign-in, retaining the Library return address', async () => {
+    const previous = window.location.href
+    window.history.replaceState(null, '', '/library?sort=recent')
+    const waiting = Object.assign(new EventTarget(), { state: 'installed', postMessage: vi.fn() })
+    let checked!: () => void
+    const workerChecked = new Promise<void>(resolve => { checked = resolve })
+    const getRegistration = vi.fn(async () => {
+      checked()
+      return { update: async () => {}, waiting, installing: null }
+    })
+    vi.stubGlobal('navigator', { serviceWorker: { getRegistration } })
+    const go = vi.fn()
+    try {
+      const signingIn = startCentralSignIn({ silent: false }, go)
+      await Promise.race([workerChecked, signingIn])
+      expect(getRegistration).toHaveBeenCalledTimes(1)
+      await new Promise(resolve => setTimeout(resolve))
+      expect(waiting.postMessage).toHaveBeenCalledWith({ type: 'SKIP_WAITING' })
+      expect(go).not.toHaveBeenCalled()
+      waiting.state = 'activated'
+      waiting.dispatchEvent(new Event('statechange'))
+      await signingIn
+      const url = new URL(go.mock.calls[0][0])
+      expect(url.pathname).toBe('/authorize')
+      const callback = `?code=library-code&state=${url.searchParams.get('state')}&iss=${encodeURIComponent(CONSOLE)}`
+      expect(takeCallback({ search: callback }, CONSOLE)).toMatchObject({ outcome: 'code', returnTo: '/library?sort=recent' })
+    } finally { window.history.replaceState(null, '', previous) }
+  })
+
+  it('does not wait for a worker update during the silent first try', async () => {
+    const getRegistration = vi.fn()
+    vi.stubGlobal('navigator', { serviceWorker: { getRegistration } })
+    const go = vi.fn()
+    await startCentralSignIn({ silent: true }, go)
+    expect(getRegistration).not.toHaveBeenCalled()
+    expect(go).toHaveBeenCalledTimes(1)
+  })
+
   it('asks for a code with an S256 challenge, and prompt=none only when silent', () => {
     const quiet = new URL(authorizeUrl(CONSOLE, { redirectUri: `${CONSOLE}/`, challenge: 'C', state: 'S', silent: true }))
     expect(quiet.origin + quiet.pathname).toBe(`${CONSOLE}/authorize`)
