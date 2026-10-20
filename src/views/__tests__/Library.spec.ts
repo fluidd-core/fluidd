@@ -79,9 +79,18 @@ describe('Library feed states', () => {
     libraryState.synced = true
     libraryState.items = {
       existing: {
-        id: 'existing', kind: 'plate', format: '3mf', name: 'Existing print', size_bytes: 10,
-        has_thumbnail: false, state: 'ready', rev: 1, created_at: '2026-10-12T10:00:00Z',
-        updated_at: '2026-10-12T10:00:00Z', deleted_at: null, versioned: true
+        id: 'existing',
+        kind: 'plate',
+        format: '3mf',
+        name: 'Existing print',
+        size_bytes: 10,
+        has_thumbnail: false,
+        state: 'ready',
+        rev: 1,
+        created_at: '2026-10-12T10:00:00Z',
+        updated_at: '2026-10-12T10:00:00Z',
+        deleted_at: null,
+        versioned: true
       }
     }
     libraryState.error = 'Offline'

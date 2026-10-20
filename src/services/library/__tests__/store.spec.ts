@@ -86,9 +86,18 @@ describe('Library feed outcomes', () => {
     store.setLibraryClient(client)
     await store.refreshLibrary()
     const item = {
-      id: 'existing', kind: 'plate', format: '3mf', name: 'Existing print', size_bytes: 10,
-      has_thumbnail: false, state: 'ready', rev: 1, created_at: '2026-10-12T10:00:00Z',
-      updated_at: '2026-10-12T10:00:00Z', deleted_at: null, versioned: true
+      id: 'existing',
+      kind: 'plate',
+      format: '3mf',
+      name: 'Existing print',
+      size_bytes: 10,
+      has_thumbnail: false,
+      state: 'ready',
+      rev: 1,
+      created_at: '2026-10-12T10:00:00Z',
+      updated_at: '2026-10-12T10:00:00Z',
+      deleted_at: null,
+      versioned: true
     }
     Vue.set(store.libraryState.items, item.id, item)
     const rev = store.libraryState.rev
