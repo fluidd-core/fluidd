@@ -47,29 +47,30 @@
     </section>
     <section
       v-else
-      class="lib-surface"
-      style="padding:24px"
+      class="lib-surface handoff"
     >
       <h2>{{ fileName }}</h2>
       <p v-if="facts">
         {{ facts }}
       </p>
-      <label>Printer
-        <select
-          v-model="chosen"
-          class="lib-field"
-          data-tid="handoff-printer"
-        >
-          <option
-            value=""
-            disabled
-          >Choose a printer</option>
-          <option
-            v-for="row in rows"
-            :key="row.id"
-            :value="row.id"
-          >{{ row.name }} — {{ row.status || row.detail }}</option>
-        </select>
+      <label class="handoff__label">
+        <span>Printer</span>
+        <span class="lib-field">
+          <select
+            v-model="chosen"
+            data-tid="handoff-printer"
+          >
+            <option
+              value=""
+              disabled
+            >Choose a printer</option>
+            <option
+              v-for="row in rows"
+              :key="row.id"
+              :value="row.id"
+            >{{ row.name }} — {{ row.status || row.detail }}</option>
+          </select>
+        </span>
       </label>
       <p
         v-for="warning in warnings"
@@ -100,6 +101,13 @@
       </button>
       <template v-else>
         <p>{{ fileName }} is on {{ selected && selected.name }}. It has not started.</p>
+        <p
+          v-if="selected && !selected.active"
+          class="library__warn"
+          data-tid="handoff-not-here"
+        >
+          This page is on another printer. Open {{ selected.name }} to start the print there.
+        </p>
         <button
           class="lib-btn lib-btn--pri"
           :disabled="busy || !canStart"
@@ -152,7 +160,8 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
   get fileName () { return this.item ? gcodeFileName(this.item) : '' }
   get warnings () { return handoffWarnings(this.selected, this.setup) }
   get canUpload () { return !!this.selected && this.selected.fit.kind === 'ready' && this.selected.action === 'print' }
-  get canStart () { return !!this.selected && !printingNow(this.$store) }
+  // Start goes to the printer Fluidd is on, so it must be the one chosen: never another printer's file.
+  get canStart () { return !!this.selected && this.selected.active && !printingNow(this.$store) }
   get facts () { return this.setup ? [this.setup.print_seconds ? `${Math.round(this.setup.print_seconds / 60)} min` : '', this.setup.filament_g ? `${this.setup.filament_g} g` : ''].filter(Boolean).join(' · ') : '' }
   get sliceUrl () { return `https://slicer.muon3d.com/?library=${encodeURIComponent(this.itemId)}&version=${this.version ?? ''}` }
 
@@ -201,3 +210,97 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .library {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 6px 12px 40px;
+    color: var(--m3d-text);
+  }
+
+  .library__head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+  }
+
+  .library__titles {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    h1 {
+      margin: 0;
+      font-family: var(--m3d-font-display);
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0;
+      color: var(--m3d-text-muted);
+      font-size: 14px;
+    }
+  }
+
+  .handoff {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 24px;
+
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--m3d-text-muted);
+    }
+
+    .library__warn {
+      color: var(--m3d-warning);
+    }
+
+    .m3-dlg__error {
+      color: var(--m3d-danger);
+    }
+  }
+
+  .handoff__label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    font-size: 13px;
+    color: var(--m3d-text-muted);
+
+    .lib-field {
+      color: var(--m3d-text);
+    }
+
+    select {
+      width: 100%;
+      min-width: 0;
+      color: var(--m3d-text);
+      text-overflow: ellipsis;
+    }
+
+    option {
+      color: initial;
+    }
+  }
+</style>
