@@ -892,15 +892,11 @@ export const SocketActions = {
     )
   },
 
-  serverExtensionsRequest<T = unknown> (agent: string, method: string, args?: Moonraker.MethodParams<'server.extensions.request'>['arguments'], options?: RequestOptions) {
+  serverExtensionsRequest<T = unknown> (params: Moonraker.MethodParams<'server.extensions.request'>, options?: RequestOptions) {
     return baseEmit<'server.extensions.request', T>(
       'server.extensions.request', {
         ...options,
-        params: {
-          agent,
-          method,
-          arguments: args
-        }
+        params
       }
     )
   },

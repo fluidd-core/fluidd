@@ -40,7 +40,7 @@ declare namespace Moonraker {
       params: {
         agent: string,
         method: string,
-        arguments?: unknown[] | Record<string, unknown> | null
+        arguments?: unknown[] | object | null
       },
       result: unknown
     }
