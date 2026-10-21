@@ -39,15 +39,15 @@ export const actions = {
       commit('setAgentConnected', payload.data)
     } else if (isAgentDisconnectedEvent(payload)) {
       commit('setAgentDisconnected', payload.agent)
-    } else {
-      const agent = Object.values<{ name: string, eventDispatch: string }>(Globals.MOONRAKER_AGENTS)
-        .find(agent => agent.name === payload.agent)
+    }
 
-      if (agent) {
-        await dispatch(agent.eventDispatch, payload, { root: true })
-      } else {
-        consola.debug('[Extensions] unhandled agent event', payload)
-      }
+    const agent = Object.values<{ name: string, eventDispatch: string }>(Globals.MOONRAKER_AGENTS)
+      .find(agent => agent.name === payload.agent)
+
+    if (agent) {
+      await dispatch(agent.eventDispatch, payload, { root: true })
+    } else {
+      consola.debug('[Extensions] unhandled agent event', payload)
     }
   }
 } satisfies ActionTree<ExtensionsState, RootState>
