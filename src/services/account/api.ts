@@ -5,6 +5,7 @@
  * console leaves them out, and the pages say "Coming soon" for them.
  */
 import { accountRequest } from './client'
+import type { CreatedToken, CreateTokenBody, PersonalToken } from './tokens'
 
 /** `GET /v1/me`'s account. */
 export interface AccountDetails {
@@ -236,6 +237,13 @@ export const accountApi = {
     json<{ ok: boolean, delete_after?: number, unlinked?: number }>('DELETE', '/v1/me', reauth),
   /** New. */
   cancelDeletion: () => json<{ ok: boolean, account?: AccountDetails }>('POST', '/v1/me/deletion/cancel'),
+
+  /** Personal access tokens (KAN-904): a signed-in session only. */
+  tokens: () => json<{ tokens: PersonalToken[] }>('GET', '/v1/tokens'),
+  /** The token is in the answer and nowhere else. `reauth` is the fresh two-step code a strong token takes. */
+  createToken: (body: CreateTokenBody, reauth: Reauth = {}) =>
+    json<CreatedToken>('POST', '/v1/tokens', Object.keys(reauth).length ? { ...body, reauth } : body),
+  revokeToken: (id: string) => json<{ id: string, revoked: boolean }>('DELETE', `/v1/tokens/${encodeURIComponent(id)}`),
 
   shares: (printerId: string) => json<{ shares: PrinterShare[] }>('GET', `/v1/printers/${encodeURIComponent(printerId)}/shares`),
   share: (printerId: string, email: string, role: string, endsAt: number | null) =>
