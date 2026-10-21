@@ -54,9 +54,16 @@ export const START_ANSWER_MS = 150_000
 export const QUEUE_WATCH_MS = 12 * 60 * 60_000
 
 /** The G-code's bytes, uncompressed: the Library keeps it gzip-compressed. */
-export async function downloadGcode (item: LibraryItem, setup: ItemSetup): Promise<Uint8Array> {
+export async function downloadGcode (item: Pick<LibraryItem, 'id'>, setup: ItemSetup): Promise<Uint8Array> {
   const client = libraryClient()
   const bytes = await client.get(await client.fileUrl(item.id, setup.file_id))
+  return isGzip(bytes) ? gunzip(bytes) : bytes
+}
+
+/** A live Community publication is read through its viewer-authorised share route. */
+export async function downloadSharedGcode (shareId: string, fileId: string): Promise<Uint8Array> {
+  const client = libraryClient()
+  const bytes = await client.get(await client.shareFileUrl(shareId, fileId))
   return isGzip(bytes) ? gunzip(bytes) : bytes
 }
 
@@ -185,7 +192,7 @@ export type SendMode = 'print' | 'queue' | 'save'
 export async function sendToPrinter (options: {
   router: VueRouter;
   store: AnyStore;
-  item: LibraryItem;
+  item: Pick<LibraryItem, 'id' | 'name' | 'version'>;
   setup: ItemSetup;
   target: PrintTarget;
   mode: SendMode;

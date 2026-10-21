@@ -143,7 +143,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { describeLibraryError, type ItemSetup, type LibraryItem } from '@/services/library/api'
 import { libraryClient } from '@/services/library/store'
 import { defaultPrintTarget, handoffWarnings } from '@/services/library/handoff'
-import { downloadGcode, gcodeFileName, uploadGcode, activePrinterFacts, printingNow, START_ANSWER_MS } from '@/services/library/print-on'
+import { downloadGcode, downloadSharedGcode, gcodeFileName, uploadGcode, activePrinterFacts, printingNow, START_ANSWER_MS } from '@/services/library/print-on'
 import { fitText, setupFit } from '@/services/library/fit'
 import { httpClientActions } from '@/api/httpClientActions'
 import { rememberLibraryFile } from '@/services/library/runs'
@@ -152,7 +152,7 @@ import '@/scss/muon3d-library.scss'
 
 @Component({ components: { CloudAccountDialog } })
 export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
-  item: LibraryItem | null = null
+  item: Pick<LibraryItem, 'id' | 'name' | 'setups' | 'version'> | null = null
   setup: ItemSetup | null = null
   chosen = ''
   uploadedPath = ''
@@ -166,6 +166,8 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
 
   get signedIn () { return cloudState.account !== null }
   get itemId () { return typeof this.$route.query.library === 'string' ? this.$route.query.library : '' }
+  get publicationId () { return typeof this.$route.query.publication === 'string' ? this.$route.query.publication : '' }
+  get isPublic () { return !!this.publicationId }
   get version () { const n = Number(this.$route.query.version); return Number.isInteger(n) && n > 0 ? n : null }
   get selected () { return this.rows.find(row => row.id === this.chosen) ?? null }
   get fileName () { return this.item ? gcodeFileName(this.item) : '' }
@@ -179,16 +181,26 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
 
   @Watch('signedIn', { immediate: true })
   async load () {
-    if (!this.signedIn || !this.itemId || !this.version) return
+    if (!this.signedIn || (!this.itemId && !this.publicationId) || !this.version) return
     try {
       const client = libraryClient()
-      const [item, answer] = await Promise.all([client.item(this.itemId), client.versions(this.itemId)])
-      const version = answer.versions.find(v => v.number === this.version)
-      if (!version) throw new Error('That version is no longer in your Library.')
       const requested = typeof this.$route.query.file === 'string' ? this.$route.query.file : null
-      const file = version.files.find(f => f.role === 'gcode' && (!requested || f.id === requested))
-      this.item = { ...item, version: version.number, setups: file?.setup ? [{ ...file.setup, file_id: file.id, print_seconds: file.print_seconds ?? null, filament_g: file.filament_g ?? null }] : [] }
-      this.setup = this.item.setups?.[0] ?? null
+      if (this.publicationId) {
+        if (!requested) throw new Error('That public print does not identify a G-code file.')
+        const publication = await client.publicPublication(this.publicationId)
+        if (publication.version !== this.version) throw new Error('That public version is no longer available.')
+        const file = publication.files.find(f => f.role === 'gcode' && f.id === requested)
+        if (!file) throw new Error('That G-code file is not in this public print.')
+        this.item = { id: this.publicationId, name: publication.title, setups: file.setup ? [{ ...file.setup, file_id: file.id, print_seconds: file.print_seconds ?? null, filament_g: file.filament_g ?? null }] : [] }
+      } else {
+        const [item, answer] = await Promise.all([client.item(this.itemId), client.versions(this.itemId)])
+        const version = answer.versions.find(v => v.number === this.version)
+        if (!version) throw new Error('That version is no longer in your Library.')
+        const file = version.files.find(f => f.role === 'gcode' && (!requested || f.id === requested))
+        if (requested && !file) throw new Error('That G-code file is not in this Library version.')
+        this.item = { id: item.id, name: item.name, version: version.number, setups: file?.setup ? [{ ...file.setup, file_id: file.id, print_seconds: file.print_seconds ?? null, filament_g: file.filament_g ?? null }] : [] }
+      }
+      this.setup = this.item?.setups?.[0] ?? null
       // Upload state is trusted only when produced by this component. URL values must never arm Start.
       this.uploadedPath = ''
       this.uploadedPrinterId = ''
@@ -211,7 +223,7 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
     if (!this.selected || this.selected.active || this.busy) return
     this.$router.push({
       path: printerPath(this.selected.slug, 'print'),
-      query: { library: this.itemId, version: String(this.version ?? ''), printer: this.selected.id }
+      query: { ...(this.isPublic ? { publication: this.publicationId, file: this.setup?.file_id ?? '' } : { library: this.itemId }), version: String(this.version ?? ''), printer: this.selected.id }
     }).catch(() => {})
   }
 
@@ -219,7 +231,9 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
     if (!this.item || !this.setup || !this.selected || !this.canUpload) return
     this.busy = true; this.actionError = ''
     try {
-      this.step = 'Downloading the G-code…'; this.bytes = await downloadGcode(this.item, this.setup)
+      this.step = 'Downloading the G-code…'; this.bytes = this.isPublic
+        ? await downloadSharedGcode(this.publicationId, this.setup.file_id)
+        : await downloadGcode(this.item, this.setup)
       const fit = setupFit(this.setup, activePrinterFacts(this.$store, this.modelOf(this.selected.id)))
       if (fit.kind !== 'ready') throw new Error(fitText(fit).label)
       if (printingNow(this.$store)) throw new Error(`${this.selected.name} is busy.`)
@@ -227,7 +241,7 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
       if (!target.active) return
       this.step = 'Uploading to the printer…'; this.uploadedPath = await uploadGcode(this.$store, this.fileName, this.bytes)
       this.uploadedPrinterId = target.id
-      rememberLibraryFile(this.uploadedPath, { bytes: this.bytes, item_id: this.item.id, version: this.version ?? undefined })
+      rememberLibraryFile(this.uploadedPath, { bytes: this.bytes, ...(!this.isPublic ? { item_id: this.item.id } : {}), version: this.version ?? undefined })
     } catch (error) { this.actionError = error instanceof Error ? error.message : String(error) } finally { this.busy = false; this.step = '' }
   }
 
@@ -235,7 +249,7 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
     if (!this.uploadedPath || !this.selected || !this.item || !this.canStart) return
     this.busy = true; this.actionError = ''
     try {
-      rememberLibraryFile(this.uploadedPath, { ...(this.bytes ? { bytes: this.bytes } : {}), item_id: this.item.id, version: this.version ?? undefined })
+      rememberLibraryFile(this.uploadedPath, { ...(this.bytes ? { bytes: this.bytes } : {}), ...(!this.isPublic ? { item_id: this.item.id } : {}), version: this.version ?? undefined })
       await httpClientActions.post('/printer/print/start', { filename: this.uploadedPath }, { timeout: START_ANSWER_MS })
       this.$router.push('/' + this.selected.slug).catch(() => {})
     } catch (error) { this.actionError = error instanceof Error ? error.message : String(error) } finally { this.busy = false }
