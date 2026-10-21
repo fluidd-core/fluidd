@@ -58,6 +58,7 @@
         <span class="lib-field">
           <select
             v-model="chosen"
+            :disabled="busy"
             data-tid="handoff-printer"
           >
             <option
@@ -92,7 +93,16 @@
         {{ actionError }}
       </p>
       <button
-        v-if="!uploadedPath"
+        v-if="selected && !selected.active"
+        class="lib-btn lib-btn--pri"
+        data-tid="handoff-open-printer"
+        :disabled="busy"
+        @click="openSelected"
+      >
+        Open {{ selected.name }}
+      </button>
+      <button
+        v-else-if="!uploadedPath"
         class="lib-btn lib-btn--pri"
         :disabled="!canUpload || busy"
         @click="upload"
@@ -133,7 +143,7 @@ import { cloudState } from '@/services/muon-cloud/state'
 import { describeLibraryError, type ItemSetup, type LibraryItem } from '@/services/library/api'
 import { libraryClient } from '@/services/library/store'
 import { defaultPrintTarget, handoffWarnings } from '@/services/library/handoff'
-import { downloadGcode, gcodeFileName, openPrinter, uploadGcode, activePrinterFacts, printingNow, START_ANSWER_MS } from '@/services/library/print-on'
+import { downloadGcode, gcodeFileName, uploadGcode, activePrinterFacts, printingNow, START_ANSWER_MS } from '@/services/library/print-on'
 import { fitText, setupFit } from '@/services/library/fit'
 import { httpClientActions } from '@/api/httpClientActions'
 import { rememberLibraryFile } from '@/services/library/runs'
@@ -146,6 +156,7 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
   setup: ItemSetup | null = null
   chosen = ''
   uploadedPath = ''
+  uploadedPrinterId = ''
   bytes: Uint8Array | null = null
   accountDialog = false
   busy = false
@@ -159,9 +170,10 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
   get selected () { return this.rows.find(row => row.id === this.chosen) ?? null }
   get fileName () { return this.item ? gcodeFileName(this.item) : '' }
   get warnings () { return handoffWarnings(this.selected, this.setup) }
-  get canUpload () { return !!this.selected && this.selected.fit.kind === 'ready' && this.selected.action === 'print' }
+  // The upload helper uses Fluidd's active HTTP client; it cannot address a row explicitly.
+  get canUpload () { return !!this.selected && this.selected.active && this.selected.fit.kind === 'ready' && this.selected.action === 'print' }
   // Start goes to the printer Fluidd is on, so it must be the one chosen: never another printer's file.
-  get canStart () { return !!this.selected && this.selected.active && !printingNow(this.$store) }
+  get canStart () { return !!this.selected && this.selected.active && this.uploadedPrinterId === this.selected.id && !!this.uploadedPath && !printingNow(this.$store) }
   get facts () { return this.setup ? [this.setup.print_seconds ? `${Math.round(this.setup.print_seconds / 60)} min` : '', this.setup.filament_g ? `${this.setup.filament_g} g` : ''].filter(Boolean).join(' · ') : '' }
   get sliceUrl () { return `https://slicer.muon3d.com/?library=${encodeURIComponent(this.itemId)}&version=${this.version ?? ''}` }
 
@@ -177,11 +189,30 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
       const file = version.files.find(f => f.role === 'gcode' && (!requested || f.id === requested))
       this.item = { ...item, version: version.number, setups: file?.setup ? [{ ...file.setup, file_id: file.id, print_seconds: file.print_seconds ?? null, filament_g: file.filament_g ?? null }] : [] }
       this.setup = this.item.setups?.[0] ?? null
-      this.uploadedPath = typeof this.$route.query.uploaded === 'string' ? this.$route.query.uploaded : ''
+      // Upload state is trusted only when produced by this component. URL values must never arm Start.
+      this.uploadedPath = ''
+      this.uploadedPrinterId = ''
       await this.$nextTick()
       const requestedPrinter = typeof this.$route.query.printer === 'string' ? this.$route.query.printer : ''
       this.chosen = this.rows.find(row => row.id === requestedPrinter)?.id ?? defaultPrintTarget(this.rows)?.id ?? ''
     } catch (error) { this.error = describeLibraryError(error) }
+  }
+
+  @Watch('chosen')
+  chosenChanged (next: string, previous: string) {
+    if (previous && next !== previous) {
+      this.uploadedPath = ''
+      this.uploadedPrinterId = ''
+      this.bytes = null
+    }
+  }
+
+  openSelected () {
+    if (!this.selected || this.selected.active || this.busy) return
+    this.$router.push({
+      path: printerPath(this.selected.slug, 'print'),
+      query: { library: this.itemId, version: String(this.version ?? ''), printer: this.selected.id }
+    }).catch(() => {})
   }
 
   async upload () {
@@ -189,13 +220,14 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
     this.busy = true; this.actionError = ''
     try {
       this.step = 'Downloading the G-code…'; this.bytes = await downloadGcode(this.item, this.setup)
-      this.step = `Opening ${this.selected.name}…`; await openPrinter(this.$router, this.$store, this.selected)
       const fit = setupFit(this.setup, activePrinterFacts(this.$store, this.modelOf(this.selected.id)))
       if (fit.kind !== 'ready') throw new Error(fitText(fit).label)
       if (printingNow(this.$store)) throw new Error(`${this.selected.name} is busy.`)
+      const target = this.selected
+      if (!target.active) return
       this.step = 'Uploading to the printer…'; this.uploadedPath = await uploadGcode(this.$store, this.fileName, this.bytes)
+      this.uploadedPrinterId = target.id
       rememberLibraryFile(this.uploadedPath, { bytes: this.bytes, item_id: this.item.id, version: this.version ?? undefined })
-      await this.$router.push({ path: printerPath(this.selected.slug, 'print'), query: { ...this.$route.query, printer: this.selected.id, uploaded: this.uploadedPath } }).catch(() => {})
     } catch (error) { this.actionError = error instanceof Error ? error.message : String(error) } finally { this.busy = false; this.step = '' }
   }
 
