@@ -35,10 +35,14 @@ export const actions = {
   },
 
   async onAgentEvent ({ commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
+    let reserved = true
+
     if (isAgentConnectedEvent(payload)) {
       commit('setAgentConnected', payload.data)
     } else if (isAgentDisconnectedEvent(payload)) {
       commit('setAgentDisconnected', payload.agent)
+    } else {
+      reserved = false
     }
 
     const agent = Object.values<{ name: string, eventDispatch: string }>(Globals.MOONRAKER_AGENTS)
@@ -46,7 +50,7 @@ export const actions = {
 
     if (agent) {
       await dispatch(agent.eventDispatch, payload, { root: true })
-    } else {
+    } else if (!reserved) {
       consola.debug('[Extensions] unhandled agent event', payload)
     }
   }
