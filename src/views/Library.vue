@@ -252,6 +252,41 @@
         </article>
       </div>
       <div
+        v-else-if="section === 'saved' && savedItems.length"
+        class="library__grid"
+      >
+        <article
+          v-for="item in savedItems"
+          :key="item.id"
+          class="library__saved lib-surface"
+          :data-tid="`library-saved-${item.id}`"
+        >
+          <a
+            v-if="item.available && item.url"
+            :href="item.url"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              v-if="item.thumbnailUrl"
+              :src="item.thumbnailUrl"
+              alt=""
+            >
+            <b>{{ item.title }}</b>
+          </a>
+          <div v-else>
+            <img
+              v-if="item.thumbnailUrl"
+              :src="item.thumbnailUrl"
+              alt=""
+            >
+            <b>{{ item.title }}</b>
+            <span>No longer available</span>
+          </div>
+          <small v-if="item.creator">{{ item.creator }}</small>
+        </article>
+      </div>
+      <div
         v-else-if="sectionItems.length"
         class="library__grid"
       >
@@ -418,7 +453,7 @@ import LibraryRecentCard from '@/components/library/LibraryRecentCard.vue'
 import PrintOnDialog from '@/components/library/PrintOnDialog.vue'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
 import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
-import { describeLibraryError, LibraryError, type LibraryItem, type LibraryRun, type LibrarySections } from '@/services/library/api'
+import { describeLibraryError, LibraryError, savedRows, type LibraryItem, type LibraryRun, type LibrarySections, type SavedRow } from '@/services/library/api'
 import { libraryClient } from '@/services/library/store'
 
 type Section = 'all' | 'printed' | 'sliced' | 'saved'
@@ -439,6 +474,7 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
   sections: LibrarySections | null = null
   runs: LibraryRun[] = []
   sectionItems: LibraryItem[] = []
+  savedItems: SavedRow[] = []
   sectionBusy = false
   sectionError = ''
   savedAvailable = true
@@ -475,10 +511,16 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
     this.sectionBusy = true
     this.sectionError = ''
     this.sectionItems = []
+    this.savedItems = []
+    this.runs = []
     try {
-      if (this.section === 'printed') this.runs = (await libraryClient().runs()).runs
-      else if (this.section === 'sliced') this.sectionItems = (await libraryClient().sliced()).items
-      else if (this.section === 'saved') this.sectionItems = (await libraryClient().saved()).items
+      if (this.section === 'printed') {
+        const page = await libraryClient().runs()
+        this.runs = Array.isArray(page.runs) ? page.runs : []
+      } else if (this.section === 'sliced') {
+        const page = await libraryClient().sliced()
+        this.sectionItems = Array.isArray(page.items) ? page.items : []
+      } else if (this.section === 'saved') this.savedItems = savedRows(await libraryClient().saved())
     } catch (error) {
       if (this.section === 'saved' && error instanceof LibraryError && error.status === 404) {
         this.savedAvailable = false

@@ -171,8 +171,48 @@ export interface LibraryRun {
 
 export interface LibraryRunsPage {
   runs: LibraryRun[];
-  cursor?: string | null;
-  next_cursor?: string | null;
+  next_cursor: string | null;
+}
+
+/** A person's bookmark as returned by `GET /v1/community/saves`. */
+export interface CommunitySave {
+  id: string;
+  target: { kind: string } & Record<string, unknown>;
+  card: {
+    title: string;
+    thumbnail_url?: string | null;
+    creator?: string | null;
+    url?: string | null;
+    available: boolean;
+  };
+  created_at: string;
+}
+
+export interface CommunitySavesPage {
+  saves: CommunitySave[];
+  next_cursor: string | null;
+}
+
+/** The deliberately small display model for a community save. */
+export interface SavedRow {
+  id: string;
+  title: string;
+  thumbnailUrl: string | null;
+  creator: string | null;
+  url: string | null;
+  available: boolean;
+}
+
+export function savedRows (page: CommunitySavesPage): SavedRow[] {
+  if (!Array.isArray(page.saves)) return []
+  return page.saves.map(({ id, card }) => ({
+    id,
+    title: card.title,
+    thumbnailUrl: card.thumbnail_url ?? null,
+    creator: card.creator ?? null,
+    url: card.url ?? null,
+    available: card.available
+  }))
 }
 
 /**
@@ -303,7 +343,7 @@ export function createLibraryClient (options: LibraryClientOptions) {
     sections: () => request<LibrarySections>('GET', '/v1/library/sections'),
     runs: (cursor = '', limit = 50) => request<LibraryRunsPage>('GET', `/v1/library/runs?cursor=${encodeURIComponent(cursor)}&limit=${limit}`),
     sliced: () => request<FeedPage>('GET', '/v1/items?origin=slice'),
-    saved: () => request<FeedPage>('GET', '/v1/community/saves'),
+    saved: () => request<CommunitySavesPage>('GET', '/v1/community/saves'),
     createPrint: (body: VersionBody & { name: string }) => request<Created>('POST', '/v1/prints', body),
     createVersion: (id: string, body: VersionBody) => request<Created>('POST', `${item(id)}/versions`, body),
     complete: (id: string, version: number) =>
