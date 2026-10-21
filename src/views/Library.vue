@@ -556,6 +556,10 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
       color: var(--m3d-text-muted);
       font-size: 14px;
     }
+
+    a {
+      align-self: flex-start;
+    }
   }
 
   .library--phone .library__titles h1 {
