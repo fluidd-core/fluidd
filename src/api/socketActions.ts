@@ -883,6 +883,28 @@ export const SocketActions = {
     )
   },
 
+  serverExtensionsList (options?: RequestOptions) {
+    return baseEmit(
+      'server.extensions.list', {
+        dispatch: 'extensions/onExtensionsList',
+        ...options
+      }
+    )
+  },
+
+  serverExtensionsRequest<T = unknown> (agent: string, method: string, args?: Moonraker.MethodParams<'server.extensions.request'>['arguments'], options?: RequestOptions) {
+    return baseEmit<'server.extensions.request', T>(
+      'server.extensions.request', {
+        ...options,
+        params: {
+          agent,
+          method,
+          arguments: args
+        }
+      }
+    )
+  },
+
   serverWebcamsList (options?: RequestOptions) {
     return baseEmit(
       'server.webcams.list', {
@@ -1097,7 +1119,7 @@ export const SocketActions = {
     )
   },
 
-  serverSpoolmanProxyGet<T> (path: string, options?: RequestOptions) {
+  serverSpoolmanProxyGet<T = unknown> (path: string, options?: RequestOptions) {
     return baseEmit<'server.spoolman.proxy', Moonraker.Spoolman.ProxyResponse<T>>(
       'server.spoolman.proxy', {
         ...options,

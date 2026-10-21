@@ -15,6 +15,7 @@ import type { layout } from './layout'
 import type { mesh } from './mesh'
 import type { notifications } from './notifications'
 import type { announcements } from './announcements'
+import type { extensions } from './extensions'
 import type { auth } from './auth'
 import type { timelapse } from './timelapse'
 import type { wait } from './wait'
@@ -48,6 +49,7 @@ type RootModulesType = {
   mesh: typeof mesh,
   notifications: typeof notifications,
   announcements: typeof announcements,
+  extensions: typeof extensions,
   wait: typeof wait,
   gcodePreview: typeof gcodePreview,
   timelapse: typeof timelapse,
