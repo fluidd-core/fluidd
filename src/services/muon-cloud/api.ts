@@ -203,27 +203,108 @@ async function tokenRequest (form: Record<string, string>, signal?: AbortSignal)
 
 let refreshing: Promise<boolean> | null = null
 
+/** The lock and channel name every tab of this origin shares. */
+const REFRESH_LOCK = 'muon.cloud.refresh'
+/** Longest a tab waits on another tab's refresh before looking at storage itself. */
+const REFRESH_WAIT_MS = 15000
+
 /**
- * Swaps the stored refresh token for a new pair, once at a time: a refresh
- * token used twice ends its session, so two requests that both met a 401
- * must share one refresh. False when there is nothing to refresh with, or
- * the console refused, and then both tokens are dropped.
+ * What to try when the console refuses a refresh, before the session is
+ * dropped: the central login registers a silent `/authorize?prompt=none`
+ * check. True when it stored a new pair.
+ */
+let recoverSession: (() => Promise<boolean>) | null = null
+
+export function setSessionRecovery (recover: (() => Promise<boolean>) | null) {
+  recoverSession = recover
+}
+
+/**
+ * Runs `work` with no other tab of this origin refreshing: a refresh token
+ * used twice ends its session, and the tokens sit in localStorage that every
+ * tab shares. `navigator.locks` where there is one; else a BroadcastChannel
+ * claim, where the lowest id wins and the others wait for its `done`.
+ */
+export async function withRefreshLock<T> (work: () => Promise<T>): Promise<T> {
+  const locks = typeof navigator !== 'undefined' ? (navigator as any).locks : undefined
+  if (locks && typeof locks.request === 'function') {
+    return locks.request(REFRESH_LOCK, work) as Promise<T>
+  }
+  if (typeof BroadcastChannel === 'undefined') return work()
+  return channelLock(work)
+}
+
+async function channelLock<T> (work: () => Promise<T>): Promise<T> {
+  const channel = new BroadcastChannel(REFRESH_LOCK)
+  const id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+  const rivals = new Set<string>()
+  let others: ((value: void) => void) | null = null
+  channel.onmessage = (event: MessageEvent) => {
+    const message = event.data as { type?: string, id?: string } | null
+    if (!message || message.id === id) return
+    if (message.type === 'claim' && message.id) {
+      rivals.add(message.id)
+      // Say who we are, for a claimant that started after us.
+      channel.postMessage({ type: 'claim', id })
+    } else if (message.type === 'done' && message.id) {
+      rivals.delete(message.id)
+      if (others && rivals.size === 0) others()
+    }
+  }
+  try {
+    channel.postMessage({ type: 'claim', id })
+    // Let rivals' claims arrive.
+    await new Promise(resolve => setTimeout(resolve, 50))
+    const winner = [id, ...rivals].sort()[0] === id
+    if (!winner) {
+      await new Promise<void>((resolve) => {
+        others = resolve
+        setTimeout(resolve, REFRESH_WAIT_MS)
+      })
+    }
+    return await work()
+  } finally {
+    channel.postMessage({ type: 'done', id })
+    channel.close()
+  }
+}
+
+/**
+ * Swaps the stored refresh token for a new pair, once at a time across every
+ * tab: a refresh token used twice ends its session, so two requests (here or
+ * in another tab) that both met a 401 must share one refresh. Under the lock
+ * the stored pair is read again; if another tab already rotated it, that new
+ * pair is used and nothing is spent. When the console refuses, a silent
+ * sign-in is tried once before both tokens are dropped. False when there is
+ * nothing to refresh with, or nothing worked.
  */
 export function refreshSession (): Promise<boolean> {
   const refreshToken = storedRefreshToken()
   if (!refreshToken) return Promise.resolve(false)
   if (!refreshing) {
-    refreshing = tokenRequest({ grant_type: 'refresh_token', refresh_token: refreshToken, client_id: CLIENT_ID })
-      .then((session) => {
+    refreshing = withRefreshLock(async () => {
+      const current = storedRefreshToken()
+      if (current !== refreshToken) {
+        // Rotated by another tab while this one waited for the lock.
+        return current !== null && storedToken() !== null
+      }
+      try {
+        const session = await tokenRequest({ grant_type: 'refresh_token', refresh_token: refreshToken, client_id: CLIENT_ID })
         storeToken(session.access_token)
         storeRefreshToken(session.refresh_token)
         return true
-      })
-      .catch(() => {
+      } catch (error) {
+        // An unreachable console says nothing about the session.
+        if (error instanceof CloudError && error.status === 0) return false
+        try {
+          if (recoverSession && await recoverSession()) return true
+        } catch { /* fall through to dropping */ }
         storeToken(null)
         storeRefreshToken(null)
         return false
-      })
+      }
+    })
+      .catch(() => false)
       .finally(() => { refreshing = null })
   }
   return refreshing
