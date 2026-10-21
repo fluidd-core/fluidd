@@ -93,7 +93,7 @@
           data-tid="updating-reload"
           @click="reload"
         >
-          Open the new version
+          Reload
         </button>
         <button
           v-if="tone === 'bad' || stage === 'updated'"
