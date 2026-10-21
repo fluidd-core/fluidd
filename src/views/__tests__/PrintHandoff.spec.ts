@@ -8,6 +8,11 @@ const mocks = vi.hoisted(() => ({
   rows: [] as any[],
   upload: vi.fn(async () => 'part.gcode'),
   download: vi.fn(async () => new Uint8Array([1, 2, 3])),
+  downloadShared: vi.fn(async () => new Uint8Array([4, 5, 6])),
+  item: vi.fn(),
+  versions: vi.fn(),
+  publication: vi.fn(),
+  remember: vi.fn(),
   start: vi.fn(async () => {})
 }))
 
@@ -21,6 +26,7 @@ vi.mock('@/services/muon-cloud/state', async () => {
 })
 vi.mock('@/services/library/print-on', () => ({
   downloadGcode: mocks.download,
+  downloadSharedGcode: mocks.downloadShared,
   uploadGcode: mocks.upload,
   gcodeFileName: () => 'part.gcode',
   activePrinterFacts: () => ({ online: true, model: 'Muon3D M1', nozzleMm: 0.4, material: 'PLA' }),
@@ -28,7 +34,8 @@ vi.mock('@/services/library/print-on', () => ({
   START_ANSWER_MS: 150000
 }))
 vi.mock('@/api/httpClientActions', () => ({ httpClientActions: { post: mocks.start } }))
-vi.mock('@/services/library/runs', () => ({ rememberLibraryFile: vi.fn() }))
+vi.mock('@/services/library/runs', () => ({ rememberLibraryFile: mocks.remember }))
+vi.mock('@/services/library/store', () => ({ libraryClient: () => ({ item: mocks.item, versions: mocks.versions, publicPublication: mocks.publication }) }))
 
 const setup = { printer_model: 'Muon3D M1', nozzle_mm: 0.4, material: 'PLA', file_id: 'file', print_seconds: 60, filament_g: 2 }
 const row = (id: string, active: boolean) => ({ id, name: id, slug: `${id}-slug`, active, fit: { kind: 'ready', setup }, status: 'Ready', detail: '', note: '', action: 'print', reslice: '', tone: 'ok' })
@@ -50,10 +57,41 @@ function mount (query: Record<string, string> = {}) {
 
 beforeEach(() => {
   mocks.rows = [row('active', true), row('other', false)]
-  mocks.upload.mockClear(); mocks.download.mockClear(); mocks.start.mockClear()
+  mocks.upload.mockClear(); mocks.download.mockClear(); mocks.downloadShared.mockClear(); mocks.start.mockClear()
+  mocks.remember.mockClear()
+  mocks.item.mockReset().mockResolvedValue({ id: 'item', name: 'Owner part' })
+  mocks.versions.mockReset().mockResolvedValue({ versions: [{ number: 3, files: [{ id: 'file', role: 'gcode', setup, size_bytes: 3, format: 'gcode', encoding: 'identity', sha256: 'a'.repeat(64) }] }] })
+  mocks.publication.mockReset().mockResolvedValue({ title: 'Community part', version: 3, files: [{ id: 'public-file', role: 'gcode', setup, size_bytes: 3, format: 'gcode', encoding: 'identity', sha256: 'b'.repeat(64) }] })
 })
 
 describe('Print hand-off target safety', () => {
+  it('loads an owner Library hand-off from its item and version', async () => {
+    const { vm } = mount({ library: 'item', version: '3', file: 'file' })
+    await vm.load()
+    expect(mocks.item).toHaveBeenCalledWith('item')
+    expect(mocks.versions).toHaveBeenCalledWith('item')
+    expect(vm.item.name).toBe('Owner part')
+    expect(vm.setup.file_id).toBe('file')
+  })
+
+  it('loads and downloads a public hand-off through its publication share', async () => {
+    const { vm } = mount({ publication: 'share', version: '3', file: 'public-file' })
+    await vm.load()
+    expect(mocks.publication).toHaveBeenCalledWith('share')
+    expect(mocks.item).not.toHaveBeenCalled()
+    expect(vm.item.name).toBe('Community part')
+    vm.chosen = 'active'; await Vue.nextTick(); await vm.upload()
+    expect(mocks.downloadShared).toHaveBeenCalledWith('share', 'public-file')
+    expect(mocks.download).not.toHaveBeenCalled()
+    expect(mocks.remember).toHaveBeenCalledWith('part.gcode', { bytes: new Uint8Array([4, 5, 6]), version: 3 })
+  })
+
+  it('rejects a file id that is not in the selected version', async () => {
+    const { vm } = mount({ publication: 'share', version: '3', file: 'unknown' })
+    await vm.load()
+    expect(vm.error).toBe('That G-code file is not in this public print.')
+  })
+
   it('disables upload and start for a non-active chosen printer', async () => {
     const { vm } = mount()
     vm.chosen = 'other'

@@ -16,11 +16,20 @@ export interface RunStart {
 
 export type RunOutcome = 'finished' | 'cancelled' | 'failed'
 type AnyStore = Pick<Store<any>, 'state' | 'watch'>
+type PrintSnapshot = [state: string, filename: string, printDuration: number, totalDuration: number]
 const RETRIES = 2
 let consentStopped = false
 const libraryFiles = new Map<string, Omit<RunStart, 'printer_id' | 'printer_name' | 'file_name'>>()
 
-export function resetRunReportingForTests () { consentStopped = false }
+export function resetRunReportingForTests () { consentStopped = false; libraryFiles.clear() }
+
+const printSnapshot = (state: any): PrintSnapshot => {
+  const stats = state.printer?.printer?.print_stats
+  return [stats?.state ?? '', stats?.filename ?? '', stats?.print_duration ?? 0, stats?.total_duration ?? 0]
+}
+
+const printerId = (store: AnyStore): string | undefined => cloudState.activePrinterId ?? ((store.state.config?.instances ?? []) as InstanceConfig[])
+  .find(instance => instance.apiUrl === store.state.config?.apiUrl)?.endpointId
 
 /** Attach Library metadata to the next observed start of this uploaded path. */
 export function rememberLibraryFile (path: string, start: Pick<RunStart, 'bytes' | 'item_id' | 'version'>) {
@@ -69,12 +78,15 @@ export async function createRun (start: RunStart, fetcher: typeof fetch = fetch)
   }, key, fetcher)
 }
 
-export function watchRunEnd (store: AnyStore, id: string, startedAt = Date.now(), fetcher: typeof fetch = fetch): () => void {
+export function watchRunEnd (store: AnyStore, id: string, startedAt = Date.now(), fetcher: typeof fetch = fetch, expectedPrinterId = printerId(store)): () => void {
   const stop = store.watch(
-    (state: any) => state.printer?.printer?.print_stats,
-    (stats: any, before: any) => {
-      if (!before || !['printing', 'paused'].includes(before.state) || ['printing', 'paused'].includes(stats?.state)) return
-      const outcome: RunOutcome = stats?.state === 'complete' ? 'finished' : stats?.state === 'cancelled' || stats?.state === 'standby' ? 'cancelled' : 'failed'
+    printSnapshot,
+    ([state], [beforeState]) => {
+      // A delayed create response must not attach this run to whichever printer
+      // the user has opened in the meantime.
+      if (printerId(store) !== expectedPrinterId) return stop()
+      if (!['printing', 'paused'].includes(beforeState) || !['complete', 'cancelled', 'error'].includes(state)) return
+      const outcome: RunOutcome = state === 'complete' ? 'finished' : state === 'cancelled' ? 'cancelled' : 'failed'
       const progress = Number(store.state.printer?.printer?.virtual_sdcard?.progress)
       stop()
       request(`/v1/library/runs/${encodeURIComponent(id)}`, 'PATCH', {
@@ -89,23 +101,22 @@ export function watchRunEnd (store: AnyStore, id: string, startedAt = Date.now()
 
 /** Fire-and-forget by design: model-service latency must never delay a print. */
 export function reportStartedRun (store: AnyStore, start: RunStart): void {
-  createRun(start).then(run => { if (run?.id) watchRunEnd(store, run.id) }).catch(() => {})
+  createRun(start).then(run => { if (run?.id && printerId(store) === start.printer_id) watchRunEnd(store, run.id, Date.now(), fetch, start.printer_id) }).catch(() => {})
 }
 
 /** Observe every job Control sees start, including files started from Jobs or the panel. */
 export function observePrintRuns (store: AnyStore): () => void {
   return store.watch(
-    (state: any) => state.printer?.printer?.print_stats,
-    (stats: any, before: any) => {
-      if (stats?.state !== 'printing' || before?.state === 'printing' || !stats.filename) return
-      const id = cloudState.activePrinterId ?? ((store.state.config?.instances ?? []) as InstanceConfig[])
-        .find(instance => instance.apiUrl === store.state.config?.apiUrl)?.endpointId
+    printSnapshot,
+    ([state, filename], [beforeState]) => {
+      if (state !== 'printing' || !['standby', 'complete', 'cancelled', 'error'].includes(beforeState) || !filename) return
+      const id = printerId(store)
       if (!id) return
       const account = cloudState.printers.find(printer => printer.id === id)
       const name = printerNameParts(account?.name ?? store.state.config?.displayName ?? 'Printer').name
-      const library = libraryFiles.get(stats.filename)
-      libraryFiles.delete(stats.filename)
-      reportStartedRun(store, { printer_id: id, printer_name: name, file_name: stats.filename, ...library })
+      const library = libraryFiles.get(filename)
+      libraryFiles.delete(filename)
+      reportStartedRun(store, { printer_id: id, printer_name: name, file_name: filename, ...library })
     }
   )
 }
