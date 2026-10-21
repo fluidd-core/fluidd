@@ -60,6 +60,8 @@ describe('the Library store', () => {
     expect(store.libraryStatus().promise?.summary).toContain('Your public name comes from the name you choose in Control.')
     await store.turnLibraryOn('2026-10-13')
     expect(service.calls[0]).toMatchObject({ path: '/v1/library/consent', body: { promise_version: '2026-10-13' } })
+    expect(store.libraryState).toMatchObject({ enabled: true, synced: true })
+    expect(service.calls.some(call => call.path.startsWith('/v1/items?since='))).toBe(true)
   })
 
   it('refuses unknown or stale consent before any request is sent', async () => {

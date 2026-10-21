@@ -141,6 +141,40 @@ export interface PrintedEvent {
   version?: number;
 }
 
+export interface LibrarySections {
+  all: number;
+  printed: number;
+  sliced: number;
+  uploads: number;
+  saved: number;
+  imported: number;
+  designs: number;
+}
+
+export type LibraryRunOutcome = 'running' | 'finished' | 'cancelled' | 'failed' | 'unknown'
+
+export interface LibraryRun {
+  id: string;
+  item_id: string | null;
+  version: number | null;
+  printer_id: string;
+  printer_name: string;
+  file_name: string;
+  started_at: string;
+  ended_at: string | null;
+  outcome: LibraryRunOutcome;
+  progress_pct: number | null;
+  duration_s: number | null;
+  in_library: boolean;
+  item?: LibraryItem | null;
+}
+
+export interface LibraryRunsPage {
+  runs: LibraryRun[];
+  cursor?: string | null;
+  next_cursor?: string | null;
+}
+
 /**
  * A refusal or a failure, by the service's stable code (`consent_required`,
  * `quota_exceeded`, `not_found`, …), or one of Fluidd's own: `not-signed-in`
@@ -266,6 +300,10 @@ export function createLibraryClient (options: LibraryClientOptions) {
     preferences: () => request<Preferences>('GET', '/v1/library/preferences'),
     setPreferences: (patch: PreferencesPatch) => request<Preferences>('PUT', '/v1/library/preferences', patch),
     feed: (since: number) => request<FeedPage>('GET', `/v1/items?since=${since}`),
+    sections: () => request<LibrarySections>('GET', '/v1/library/sections'),
+    runs: (cursor = '', limit = 50) => request<LibraryRunsPage>('GET', `/v1/library/runs?cursor=${encodeURIComponent(cursor)}&limit=${limit}`),
+    sliced: () => request<FeedPage>('GET', '/v1/items?origin=slice'),
+    saved: () => request<FeedPage>('GET', '/v1/community/saves'),
     createPrint: (body: VersionBody & { name: string }) => request<Created>('POST', '/v1/prints', body),
     createVersion: (id: string, body: VersionBody) => request<Created>('POST', `${item(id)}/versions`, body),
     complete: (id: string, version: number) =>
