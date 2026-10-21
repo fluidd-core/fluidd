@@ -10,8 +10,6 @@ export interface ServerState {
   system_cpu_usage: Record<string, number> | null;
   system_uptime: number | null;
   websocket_connections: number | null;
-  agents: string[];
-  agentsLoaded: boolean;
 }
 
 export interface ServiceInfo {

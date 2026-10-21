@@ -275,7 +275,7 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
   }
 
   refreshAgents () {
-    this.$typedDispatch('server/refreshAgents')
+    this.$typedDispatch('extensions/refresh')
   }
 
   updateOne (name: string) {

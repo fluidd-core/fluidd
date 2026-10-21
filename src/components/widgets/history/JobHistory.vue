@@ -11,6 +11,25 @@
         :headers="configurableHeaders"
       />
 
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            icon
+            text
+            :loading="hasWait($waits.onHistoryExport)"
+            :disabled="history.length === 0"
+            v-bind="attrs"
+            v-on="on"
+            @click="handleExportCsv"
+          >
+            <v-icon>
+              $fileExport
+            </v-icon>
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.btn.export_csv') }}</span>
+      </v-tooltip>
+
       <div
         style="max-width: 160px;"
         class="ms-1 my-1"
@@ -141,6 +160,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
+import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
 import type { HistoryItem } from '@/store/history/types'
@@ -148,13 +168,18 @@ import { SocketActions } from '@/api/socketActions'
 import type { AppDataTableHeader } from '@/types'
 import type { DataTableHeader } from 'vuetify'
 import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
+import { consola } from 'consola'
+import { get } from 'lodash-es'
+import { EventBus } from '@/eventBus'
+import toCsv from '@/util/csv'
+import downloadUrl from '@/util/download-url'
 
 @Component({
   components: {
     JobHistoryItemStatus
   }
 })
-export default class JobHistory extends Mixins(FilesMixin) {
+export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
   search = ''
 
   get auxiliaryDataHeaders (): AppDataTableHeader[] {
@@ -457,6 +482,73 @@ export default class JobHistory extends Mixins(FilesMixin) {
     if (result) {
       SocketActions.serverHistoryDeleteJob(job.job_id)
     }
+  }
+
+  async handleExportCsv () {
+    this.$typedDispatch('wait/addWait', this.$waits.onHistoryExport)
+
+    try {
+      if (!this.allLoaded) {
+        await SocketActions.serverHistoryList({ limit: 0 })
+      }
+
+      const columns = [
+        {
+          text: this.$tc('app.general.table.header.name'),
+          value: 'filename'
+        },
+        ...this.configurableHeaders
+          .filter(header => header.visible !== false)
+      ]
+
+      const csv = toCsv([
+        columns
+          .map(column => column.text),
+        ...this.history
+          .map(job => columns
+            .map(column => this.getExportValue(job, column.value))
+          )
+      ])
+
+      // The BOM makes Excel read the file as UTF-8
+      const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+
+      const instanceName = this.$typedState.config.uiSettings.general.instanceName
+
+      downloadUrl(`print-history-${instanceName}.csv`, url)
+
+      // Deferred, as revoking right after the click can cancel the download
+      setTimeout(() => URL.revokeObjectURL(url), 1000)
+    } catch (e) {
+      consola.error('[History] export failed', e)
+
+      EventBus.$emit(this.$t('app.history.msg.export_failed').toString(), { type: 'error' })
+    } finally {
+      this.$typedDispatch('wait/removeWait', this.$waits.onHistoryExport)
+    }
+  }
+
+  // Raw values in their base units (seconds, millimeters, grams, °C, bytes)
+  getExportValue (item: HistoryItem, key: string): unknown {
+    if (key.startsWith('auxiliary_data.')) {
+      const auxiliaryDataItemName = key.substring(15)
+
+      return item.auxiliary_data?.find(x => x.name === auxiliaryDataItemName)?.value
+    }
+
+    const value: unknown = get(item, key)
+
+    if (typeof value === 'number') {
+      switch (key) {
+        case 'start_time':
+        case 'end_time':
+        case 'metadata.modified':
+          return new Date(value * 1000)
+      }
+    }
+
+    return value
   }
 
   handleJobThumbnailError (job: HistoryItem) {

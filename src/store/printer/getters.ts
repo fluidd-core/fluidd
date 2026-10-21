@@ -277,7 +277,7 @@ export const getters = {
     const totalDuration = state.printer.print_stats?.total_duration ?? 0
     const printDuration = state.printer.print_stats?.print_duration ?? 0
 
-    const fileLeft = printDuration > 0 && fileProgress > 0
+    const fileLeft = printDuration > 0 && fileProgress >= 0.01
       ? printDuration / fileProgress - printDuration
       : 0
 
@@ -519,18 +519,35 @@ export const getters = {
   getRunoutSensors: (state): RunoutSensor[] => {
     return Object.keys(state.printer)
       .filter(key => (
+        key === 'hall_filament_width_sensor' ||
         key.startsWith('filament_switch_sensor ') ||
         key.startsWith('filament_motion_sensor ')
       ))
-      .map(key => {
+      .map((key): RunoutSensor | null => {
+        const sensor = state.printer[key]
+
+        if (sensor?.filament_detected == null) {
+          return null
+        }
+
         const name = key.trim().split(/\s+/).pop() || ''
 
+        const diameter = (
+          'is_active' in sensor &&
+          sensor.is_active &&
+          'Diameter' in sensor
+        )
+          ? sensor.Diameter
+          : undefined
+
         return {
-          ...state.printer[key],
+          ...sensor,
           name,
           prettyName: Vue.$filters.prettyCase(name),
+          diameter
         }
       })
+      .filter(sensor => sensor !== null)
   },
 
   getEndstops: (state): Endstop[] => {
@@ -799,7 +816,10 @@ export const getters = {
         key.startsWith('temperature_sensor ') ||
         key.startsWith('temperature_probe ')
       ),
-      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => (
+        key.startsWith('tmc2240 ') ||
+        key.startsWith('tmc5262 ')
+      ),
       (key: string) => key === 'z_thermal_adjust'
     ]
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
@@ -817,7 +837,7 @@ export const getters = {
             const name = nameFromSplit || key
 
             if (!name.startsWith('_')) {
-              const prettyName = type === 'tmc2240'
+              const prettyName = /^tmc\d{4}$/.test(type)
                 ? i18n.t('app.general.label.stepper_driver',
                   {
                     name:
@@ -870,6 +890,7 @@ export const getters = {
       si7013: 'htu21d',
       si7020: 'htu21d',
       si7021: 'htu21d',
+      temperature_combined: 'temperature_combined',
     } as const
 
     if (isKeyOf(sensorType, supportedSensors)) {
@@ -898,7 +919,10 @@ export const getters = {
         key.startsWith('temperature_sensor ') ||
         key.startsWith('temperature_probe ')
       ),
-      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => (
+        key.startsWith('tmc2240 ') ||
+        key.startsWith('tmc5262 ')
+      ),
       (key: string) => key === 'z_thermal_adjust'
     ]
 

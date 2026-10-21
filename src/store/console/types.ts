@@ -38,14 +38,22 @@ export interface PromptDialog {
   open: boolean;
   title?: string;
   items: PromptDialogItem[];
-  footerButtons: PromptDialogButton[]
+  pendingItems: PromptDialogItem[] | null;
+  footerButtons: PromptDialogButton[];
 }
 
-export type PromptDialogItem = PromptDialogItemText | PromptDialogItemButton
+export type PromptDialogItem = PromptDialogItemText | PromptDialogItemButtonGroup | PromptDialogItemButton
 
 export interface PromptDialogItemText {
   type: 'text';
+  id: number;
   text: string;
+}
+
+export interface PromptDialogItemButtonGroup {
+  type: 'button_group';
+  id: number;
+  buttons: PromptDialogButton[];
 }
 
 export interface PromptDialogItemButton extends PromptDialogButton {
@@ -53,6 +61,7 @@ export interface PromptDialogItemButton extends PromptDialogButton {
 }
 
 export interface PromptDialogButton {
+  id: number;
   text: string;
   command?: string;
   color?: string;

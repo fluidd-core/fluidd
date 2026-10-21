@@ -444,32 +444,13 @@ export const SocketActions = {
     )
   },
 
-  serverExtensionsList (options?: RequestOptions) {
-    return baseEmit(
-      'server.extensions.list', {
-        dispatch: 'server/onExtensionsList',
-        suppressError: true,
-        ...options
-      }
-    )
-  },
-
-  serverExtensionsRequest<T = unknown> (agent: string, method: string, args: Moonraker.MethodParams<'server.extensions.request'>['arguments'] = null, options?: RequestOptions) {
-    return baseEmit<'server.extensions.request', T>(
-      'server.extensions.request', {
-        ...options,
-        params: {
-          agent,
-          method,
-          arguments: args
-        }
-      }
-    )
-  },
-
   aldisStatus (options?: RequestOptions) {
     return SocketActions.serverExtensionsRequest<Aldis.StatusResponse>(
-      'aldis', 'status', null, {
+      {
+        agent: 'aldis',
+        method: 'status'
+      },
+      {
         dispatch: 'firmware/onStatus',
         wait: Waits.onFirmwareRefresh,
         suppressError: true,
@@ -480,7 +461,12 @@ export const SocketActions = {
 
   aldisUpdate (args: Aldis.UpdateArguments, options?: RequestOptions) {
     return SocketActions.serverExtensionsRequest<Aldis.UpdateResult>(
-      'aldis', 'update', args, {
+      {
+        agent: 'aldis',
+        method: 'update',
+        arguments: args
+      },
+      {
         suppressError: true,
         ...options
       }
@@ -926,6 +912,24 @@ export const SocketActions = {
     )
   },
 
+  serverExtensionsList (options?: RequestOptions) {
+    return baseEmit(
+      'server.extensions.list', {
+        dispatch: 'extensions/onExtensionsList',
+        ...options
+      }
+    )
+  },
+
+  serverExtensionsRequest<T = unknown> (params: Moonraker.MethodParams<'server.extensions.request'>, options?: RequestOptions) {
+    return baseEmit<'server.extensions.request', T>(
+      'server.extensions.request', {
+        ...options,
+        params
+      }
+    )
+  },
+
   serverWebcamsList (options?: RequestOptions) {
     return baseEmit(
       'server.webcams.list', {
@@ -1140,7 +1144,7 @@ export const SocketActions = {
     )
   },
 
-  serverSpoolmanProxyGet<T> (path: string, options?: RequestOptions) {
+  serverSpoolmanProxyGet<T = unknown> (path: string, options?: RequestOptions) {
     return baseEmit<'server.spoolman.proxy', Moonraker.Spoolman.ProxyResponse<T>>(
       'server.spoolman.proxy', {
         ...options,

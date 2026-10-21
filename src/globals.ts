@@ -113,6 +113,7 @@ import {
   mdiRestore,
   mdiMenu,
   mdiFileCancel,
+  mdiFileExportOutline,
   mdiCancel,
   mdiCircleSlice3,
   mdiCodeJson,
@@ -278,7 +279,8 @@ export const Globals = Object.freeze({
     webcams: { name: 'webcam', dispatch: 'webcams/init' },
     jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' },
     spoolman: { name: 'spoolman', dispatch: 'spoolman/init' },
-    sensors: { name: 'sensor', dispatch: 'sensors/init' }
+    sensors: { name: 'sensor', dispatch: 'sensors/init' },
+    extensions: { name: 'extensions', dispatch: 'extensions/init' }
   },
   MOONRAKER_AGENTS: {
     aldis: {
@@ -433,6 +435,7 @@ export const Icons = Object.freeze({
   file: mdiFile,
   fileLock: mdiFileLock,
   fileCancel: mdiFileCancel,
+  fileExport: mdiFileExportOutline,
   pause: mdiPause,
   cancel: mdiWindowClose,
   cancelled: mdiCancel,
@@ -644,6 +647,7 @@ export const Waits = Object.freeze({
   onFileSystem: 'onFileSystem',
   onFileSystemRoots: 'onFileSystemRoots',
   onJobQueue: 'onJobQueue',
+  onHistoryExport: 'onHistoryExport',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
   onProbeCalibrate: 'onProbeCalibrate',
@@ -690,7 +694,7 @@ export const SupportedLocales = Object.freeze([
   { name: 'Afrikaans', code: 'af' },
   { name: 'Čeština', code: 'cs' },
   { name: '简体中文', code: 'zh-CN' },
-  { name: '繁體中文', code: 'zh-HK' },
+  { name: '繁體中文（香港）', code: 'zh-HK' },
   { name: 'Deutsch', code: 'de' },
   { name: 'Español', code: 'es' },
   { name: 'Français', code: 'fr' },
@@ -699,6 +703,7 @@ export const SupportedLocales = Object.freeze([
   { name: 'Nederlands', code: 'nl' },
   { name: 'Polski', code: 'pl' },
   { name: 'Português', code: 'pt' },
+  { name: 'Português (Brasil)', code: 'pt-BR' },
   { name: 'Русский', code: 'ru' },
   { name: 'Slovenščina', code: 'sl' },
   { name: 'Türkçe', code: 'tr' },

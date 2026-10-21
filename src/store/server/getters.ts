@@ -24,10 +24,6 @@ export const getters = {
     return (state.info.components.includes(component))
   },
 
-  agentSupport: (state) => (agent: string) => {
-    return state.agents.includes(agent)
-  },
-
   /**
    * Return a list of services.
    * (will come from state.system_info with a moonraker update..)

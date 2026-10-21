@@ -13,6 +13,7 @@ export const createState = (): ConsoleState => {
     promptDialog: {
       open: false,
       items: [],
+      pendingItems: null,
       footerButtons: []
     },
     consoleFilters: [],

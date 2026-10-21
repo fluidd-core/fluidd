@@ -69,14 +69,18 @@ export const actions = {
   /**
    * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileMetaData ({ commit, dispatch }, payload: Moonraker.Files.FileWithMetaResponse) {
+  async onFileMetaData ({ commit, dispatch, state }, payload: Moonraker.Files.FileWithMetaResponse) {
     const paths = getFilePaths(payload.filename, 'gcodes')
 
     if (!paths.filtered) {
-      // We need to update filename here as it can contain a relative path
+      const existingFile = state.pathContent[paths.rootPath]?.files
+        .find(file => file.filename === paths.filename)
+      const permissions = existingFile?.permissions ?? 'r'
+
       const file: Moonraker.Files.FileWithMeta = {
         ...payload,
-        filename: paths.filename
+        permissions,
+        filename: paths.filename,
       }
 
       commit('setFileUpdate', { paths, file })
@@ -105,6 +109,10 @@ export const actions = {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
+      const file = itemAsMoonrakerFile(payload.item, paths)
+
+      commit('setFileUpdate', { paths, file })
+
       if (
         paths.root === 'gcodes' &&
         getters.getRootProperties('gcodes').accepts.includes(paths.extension)
@@ -120,12 +128,7 @@ export const actions = {
           dispatch('gcodePreview/reset', undefined, { root: true })
         }
 
-        // For gcode files, get the metadata and the meta update will take care of the rest.
         SocketActions.serverFilesMetadata(paths.pathFilename)
-      } else {
-        const file = itemAsMoonrakerFile(payload.item, paths)
-
-        commit('setFileUpdate', { paths, file })
       }
     }
   },

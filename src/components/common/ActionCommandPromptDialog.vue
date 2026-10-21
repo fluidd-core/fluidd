@@ -7,20 +7,33 @@
   >
     <v-card-text>
       <v-row
-        v-for="(item, index) in dialog.items"
-        :key="`item-${index}`"
+        v-for="item in dialog.items"
+        :key="`item::${item.id}`"
       >
         <v-col v-if="item.type === 'text'">
           {{ item.text }}
         </v-col>
         <v-col v-else-if="item.type === 'button'">
-          <v-btn
+          <app-btn
             :color="item.color"
             block
             @click="handleClick(item)"
           >
             {{ item.text }}
-          </v-btn>
+          </app-btn>
+        </v-col>
+        <v-col
+          v-else-if="item.type === 'button_group'"
+          class="prompt-button-group"
+        >
+          <app-btn
+            v-for="button in item.buttons"
+            :key="`button::${button.id}`"
+            :color="button.color"
+            @click="handleClick(button)"
+          >
+            {{ button.text }}
+          </app-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -29,8 +42,8 @@
       <v-spacer />
 
       <app-btn
-        v-for="(button, index) in dialog.footerButtons"
-        :key="`button-${index}`"
+        v-for="button in dialog.footerButtons"
+        :key="`button::${button.id}`"
         :color="button.color ?? 'primary'"
         type="button"
         @click="handleClick(button)"
@@ -67,3 +80,15 @@ export default class ActionCommandPromptDialog extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .prompt-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .v-btn {
+      flex: 1 1 0;
+    }
+  }
+</style>

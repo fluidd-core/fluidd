@@ -11,23 +11,19 @@ export const getters = {
     return state.jobs
       .map((job): HistoryItem => {
         const { metadata, ...restOfJob } = job
+        const { filament_name, filament_type, ...restOfMetadata } = metadata
 
-        const item: HistoryItem = restOfJob
+        const item: HistoryItem = {
+          ...restOfJob,
+          metadata: restOfMetadata
+        }
 
-        if (metadata != null) {
-          const { filament_name, filament_type, ...restOfMetadata } = metadata
+        if (filament_name != null) {
+          item.metadata.filament_name = Vue.$filters.getStringArray(filament_name)
+        }
 
-          item.metadata = {
-            ...restOfMetadata
-          }
-
-          if (filament_name != null) {
-            item.metadata.filament_name = Vue.$filters.getStringArray(filament_name)
-          }
-
-          if (filament_type != null) {
-            item.metadata.filament_type = Vue.$filters.getStringArray(filament_type)
-          }
+        if (filament_type != null) {
+          item.metadata.filament_type = Vue.$filters.getStringArray(filament_type)
         }
 
         return item

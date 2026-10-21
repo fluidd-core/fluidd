@@ -45,6 +45,7 @@
                   <div class="secondary--text">
                     <!-- https://github.com/Klipper3D/klipper/commits?author=KevinOConnor -->
                     <a
+                      v-if="baseUrl"
                       class="secondary--text"
                       :href="`${baseUrl}/commits/${component.branch}`"
                       target="_blank"
@@ -52,6 +53,7 @@
                     >
                       <strong>{{ commit.author }}</strong>
                     </a>
+                    <strong v-else>{{ commit.author }}</strong>
                     <v-tooltip bottom>
                       <template #activator="{ on, attrs }">
                         <span
@@ -67,6 +69,7 @@
                 </div>
                 <div>
                   <app-btn
+                    v-if="baseUrl"
                     small
                     outlined
                     color="secondary"
@@ -76,6 +79,10 @@
                   >
                     <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
                   </app-btn>
+                  <span
+                    v-else
+                    class="primary--text"
+                  >{{ commit.sha.substring(0, 7) }}</span>
                 </div>
               </li>
             </template>
@@ -123,9 +130,17 @@ export default class VersionInformationDialog extends Vue {
   }
 
   get baseUrl () {
-    if ('owner' in this.component) {
-      return `https://github.com/${this.component.owner}/${this.component.repo_name || this.component.name}`
+    if ('remote_url' in this.component) {
+      const [, owner, repo] = /^https?:\/\/(?:www\.)?github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/i.exec(this.component.remote_url) ?? []
+
+      if (
+        owner &&
+        repo
+      ) {
+        return `https://github.com/${owner}/${repo}`
+      }
     }
+
     return ''
   }
 }

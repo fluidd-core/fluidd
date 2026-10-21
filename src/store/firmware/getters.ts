@@ -7,8 +7,8 @@ import { SUPPORTED_API_VERSION, updatableMcus } from './helpers'
 export const AGENT_NAME = 'aldis'
 
 export const getters = {
-  isSupported: (_, __, ___, rootGetters): boolean => {
-    return rootGetters['server/agentSupport'](AGENT_NAME)
+  isSupported: (_, __, rootState): boolean => {
+    return rootState.extensions.agents.some(agent => agent.name === AGENT_NAME)
   },
 
   isRegistered: (_, __, rootState): boolean => {

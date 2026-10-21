@@ -10,9 +10,10 @@ describe('loadVuetifyLocaleAsync', () => {
   it.each([
     ['de', 'Schließen'],
     ['pt', 'Fechar'],
-    ['pt_BR', 'Fechar'],
+    ['pt-BR', 'Fechar'],
     ['zh-CN', '关闭'],
-    ['zh-HK', '關閉']
+    ['zh-HK', '關閉'],
+    ['zh-TW', '關閉']
   ])('loads and applies the vuetify locale (%s)', async (locale, close) => {
     await loadVuetifyLocaleAsync(locale)
 

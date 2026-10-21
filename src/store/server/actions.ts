@@ -47,49 +47,6 @@ export const actions = {
     }
   },
 
-  async initAgents ({ state, dispatch }) {
-    const promises = Object.values(Globals.MOONRAKER_AGENTS)
-      .filter(agent => state.agents.includes(agent.name))
-      .map(agent => dispatch(agent.dispatch, undefined, { root: true }))
-
-    await Promise.all(promises)
-  },
-
-  async onExtensionsList ({ commit, dispatch }, payload: Moonraker.Server.ExtensionsListResponse) {
-    commit('setAgents', payload.agents.map(agent => agent.name))
-
-    await dispatch('initAgents')
-  },
-
-  async refreshAgents () {
-    await SocketActions.serverExtensionsList().catch(() => undefined)
-  },
-
-  async onKlippyStateChanged ({ state, dispatch }) {
-    const promises = Object.values(Globals.MOONRAKER_AGENTS)
-      .filter(agent => agent.klippyDispatch && state.agents.includes(agent.name))
-      .map(agent => dispatch(agent.klippyDispatch, undefined, { root: true }))
-
-    await Promise.all(promises)
-  },
-
-  async onAgentConnected ({ commit, dispatch }, name: string) {
-    commit('setAgentConnected', { name, connected: true })
-
-    await dispatch('initAgents')
-  },
-
-  async onAgentDisconnected ({ commit, dispatch }, name: string) {
-    commit('setAgentConnected', { name, connected: false })
-
-    const agent = Object.values(Globals.MOONRAKER_AGENTS)
-      .find(agent => agent.name === name)
-
-    if (agent?.disconnectDispatch) {
-      await dispatch(agent.disconnectDispatch, undefined, { root: true })
-    }
-  },
-
   async notifyOldMoonraker ({ dispatch }) {
     await dispatch('notifications/pushNotification', {
       id: 'old-moonraker',
@@ -140,11 +97,8 @@ export const actions = {
 
     commit('setServerInfo', payload)
 
-    if (!state.agentsLoaded) {
-      commit('setAgentsLoaded', true)
-      SocketActions.serverExtensionsList().catch(() => undefined)
-    } else if (klippyStateChanged) {
-      dispatch('onKlippyStateChanged')
+    if (klippyStateChanged) {
+      dispatch('extensions/onKlippyStateChanged', undefined, { root: true })
     }
 
     dispatch('checkMoonrakerMinVersion')

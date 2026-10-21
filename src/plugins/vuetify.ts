@@ -22,7 +22,7 @@ const locales: Record<string, () => Promise<{ default: VuetifyLocale }>> = {
   nl: () => import('vuetify/lib/locale/nl'),
   pl: () => import('vuetify/lib/locale/pl'),
   pt: () => import('vuetify/lib/locale/pt'),
-  pt_BR: () => import('vuetify/lib/locale/pt'),
+  'pt-BR': () => import('vuetify/lib/locale/pt'),
   ru: () => import('vuetify/lib/locale/ru'),
   sl: () => import('vuetify/lib/locale/sl'),
   sv: () => import('vuetify/lib/locale/sv'),
@@ -30,7 +30,8 @@ const locales: Record<string, () => Promise<{ default: VuetifyLocale }>> = {
   tr: () => import('vuetify/lib/locale/tr'),
   uk: () => import('vuetify/lib/locale/uk'),
   'zh-CN': () => import('vuetify/lib/locale/zh-Hans'),
-  'zh-HK': () => import('vuetify/lib/locale/zh-Hant')
+  'zh-HK': () => import('vuetify/lib/locale/zh-Hant'),
+  'zh-TW': () => import('vuetify/lib/locale/zh-Hant')
 }
 
 Vue.use(Vuetify, {

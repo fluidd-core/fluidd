@@ -21,6 +21,7 @@ import { firmware } from './firmware'
 import { mesh } from './mesh'
 import { notifications } from './notifications'
 import { announcements } from './announcements'
+import { extensions } from './extensions'
 import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
@@ -55,6 +56,7 @@ export const storeOptions = {
     mesh,
     notifications,
     announcements,
+    extensions,
     wait,
     gcodePreview,
     timelapse,

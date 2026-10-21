@@ -51,9 +51,10 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - `Moonraker.Methods` maps every JSON-RPC method Fluidd calls to `{ params, result }`, built by declaration merging: each `src/typings/moonraker.*.d.ts` adds its entries in a separate `declare namespace Moonraker { interface Methods { … } }` block. Every entry declares both fields — `params: undefined` when the method takes none. Params are typed from the Moonraker docs, not from what Fluidd sends. Helpers: `Moonraker.Method`, `MethodParams<M>`, `MethodResult<M>`
 - `skipLibCheck` hides errors in `.d.ts` files, so an entry missing `params` or `result` only fails via `CheckedMethods` in `socketClient.ts` — the error does not name the method. A conflicting duplicate method key is **not** caught at all
 - Params are required in `EmitOptions<M>` when the method has a required param, optional when all are optional, and rejected when it takes none. `RequestOptions` itself carries no `params`. A response reaches the store only through `dispatch` — there is no `commit` option
-- Generic results (`server.database.*_item`, `server.spoolman.proxy`) are `unknown` in the map; narrow at the call site with `baseEmit<'method', Narrower>(…)` — `Narrower` must extend the map's result
+- Generic results (`server.database.*_item`, `server.spoolman.proxy`, `server.extensions.request`) are `unknown` in the map; narrow at the call site with `baseEmit<'method', Narrower>(…)` — `Narrower` must extend the map's result
 - Dispatched handlers type their payload as `ObjectWithRequest<'method'>`, which types both the result and `__request__.params` (optional params may be `undefined`; default them to Moonraker's documented defaults). A string result is dispatched as `{ result }`
 - `Moonraker.Notifications` maps each JSON-RPC notification Fluidd handles to its params tuple (`undefined` when Moonraker sends none — it omits `params` entirely), merged per `moonraker.*.d.ts` like `Methods`. `socketClient.ts` dispatches `socket/<camelCase(method)>` with the **first** param only (`notify_status_update` excepted: it is cached and flushed every second, using its `eventtime`); the `socket/` handlers type it as `Moonraker.NotificationPayload<'notify_…'>` (so they follow the map; helpers: `Moonraker.Notification`, `NotificationPayload<N>`, `NotificationAction<N>` — the `socket/` action name, via `TSHelpers.SnakeToCamelCase`), while the module actions they forward to name the concrete type — both spellings are intentional. `CheckedNotificationHandlers` (`src/store/socket/actions.ts`) fails type-check, naming the handler, when an entry has no `socket/` action; `CheckedNotifications` (`socketClient.ts`) checks the entry shape. Notifications outside the map (`notify_sudo_alert`, `notify_button_event`, …) still reach `dispatch` and are dropped as unknown actions
+- Moonraker agents: the `extensions` module holds connected agents, updated by `notify_agent_event`'s reserved `connected` / `disconnected` events; every agent event, reserved ones included, is then routed to the matching `Globals.MOONRAKER_AGENTS` entry's `eventDispatch`. Entries (`MoonrakerAgent`, `src/store/extensions/types.ts`) also carry `dispatch` (run for each connected agent after `server.extensions.list` and on every `connected` event), optional `disconnectDispatch`, and optional `klippyDispatch` (run when `server/onServerInfo` sees `klippy_state` change, and on `notify_klippy_disconnected`). `Extensions.AgentEvent`'s catch-all `event: string` defeats discriminant narrowing — narrow with type predicates
 - Payload types used **only** by notifications end in `Event`, named after the notification with the namespace prefix dropped (`notify_job_queue_changed` → `JobQueue.ChangedEvent`, `notify_proc_stat_update` → `ProcStats.UpdateEvent`). A type shared with a method result keeps its `Response` name. `*Event` types are standalone interfaces — declare every field, never `extends`/alias/`Pick` a `Response`, even when the shape matches (`Announcements.DismissedEvent` vs `DismissResponse`). `Authorization.UserEvent` is the one content-named exception, shared by the three user notifications
 - `notify_user_logged_out` / `notify_user_deleted` are broadcast to every client, but Moonraker only de-authenticates that user's connections — `auth/onUserLoggedOut` and `auth/onUserDeleted` log out only when the `username` is the current user. `access.get_user` answers `{ username: null, … }` for a connection with no user; `auth/setCurrentUser` stores that as `null`. `auth.currentUser` and `auth.users` are `AppUser` (`src/store/auth/types.ts`, no `created_on`): neither the `access.login` response nor `notify_user_created` carries it. `notify_user_created` only fires for users created through the API, which Moonraker restricts to the `moonraker` source, so `setAddUser` sets that `source` itself
 - Use `wait` parameter for UI loading states: `wait: Waits.onPrintStart`
@@ -145,7 +146,7 @@ src/
 
 ### Icons & Theming
 
-- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~233 mappings)
+- MDI icons via `@mdi/js` — mapped in `src/globals.ts` (`Icons` object, ~234 mappings)
 - Usage: `<v-icon>{{ $globals.Icons.close }}</v-icon>`
 - Vuetify theme with custom dark/light overrides in `src/scss/variables.scss`
 - PWA support with service worker in `src/sw.ts` (Workbox, injectManifest strategy)
@@ -278,6 +279,8 @@ src/
 - A job referenced by a file in the loaded file listing but outside the loaded history window is back-filled individually: `history/fetchMissingJobs` diffs against loaded jobs and `state.unresolvedJobIds`, then calls `SocketActions.serverHistoryGetJob` per missing id, suppressing not-found errors (`suppressError: isMoonrakerNotFoundError`) since a file can reference a job Moonraker has since pruned
 - Those requests go out in chunks of `Globals.JOB_HISTORY_FETCH_CHUNK`, and each chunk lands as **one** `setUpdateHistoryJobs` commit. `serverHistoryGetJob` deliberately has no `dispatch` — a per-response commit re-runs `getHistory` and `files/getDirectory` and re-renders the file table once per job, which froze large directories. `unresolvedJobIds` holds ids both in flight and confirmed not-found — a success or any other failure removes the id, a not-found leaves it. `onHistoryList` deliberately never clears it: that would re-send in-flight requests and re-ask pruned jobs
 - Job lookups go through `history/getHistoryByIdMap` (a memoized `Map`), not a linear scan of `getHistory`
+- CSV export (`JobHistory.handleExportCsv`) always exports the **whole** history — it awaits `serverHistoryList({ limit: 0 })` first when `!allLoaded` (the emit resolves after `history/onHistoryList` has committed) — with filename plus the columns visible in the column picker, ignoring the search box. `getExportValue` returns raw values in base units, with no units in the headers, and a `Date` for the date columns. `Waits.onHistoryExport` is added/removed by hand rather than via the request's `wait`, as it spans the fetch, the build and the download
+- `toCsv` (`src/util/csv.ts`, import-free) owns every cell representation: RFC 4180 quoting, CRLF rows, `Date` → local `YYYY-MM-DD HH:mm:ss` (strict ISO with `T`/`Z` is not parsed as a date by Excel), arrays joined with `; ` element by element, and a leading `'` on formula-like **strings** (`=`, `+`, `-`, `@`) — numbers are exempt so negatives still sum. Callers pass raw values and prepend a `\uFEFF` BOM to the `Blob` so Excel reads UTF-8
 
 ### Component Communication
 
@@ -293,10 +296,14 @@ src/
 - Views also dynamically imported in `src/router/index.ts` via `() => import('@/views/X.vue')`
 - `src/plugins/vuetify.ts` holds a private `locales` map of `() => import('vuetify/lib/locale/*')`
   thunks, keyed by **Fluidd** locale code, so the map doubles as the code translation
-  (`zh-CN` → `zh-Hans`, `zh-HK` → `zh-Hant`, `pt_BR` → `pt`); a missing key (`ta`) leaves
-  `$vuetify.lang` on `en`. `config/onLocaleChange` drives it via `loadVuetifyLocaleAsync`, which
-  `Vue.set`s the locale into `lang.locales` **before** assigning `lang.current` — the `current`
-  write is what re-renders. These `import()`s do not actually code-split: `vuetify/lib/presets/default`
+  (`zh-CN` → `zh-Hans`, `zh-HK`/`zh-TW` → `zh-Hant`, `pt-BR` → `pt`); a missing key (`ta`)
+  leaves `$vuetify.lang` on `en`. Locale files and codes are **BCP 47 with regions, hyphenated**
+  (`pt-BR`, `zh-TW`) — what `navigator.languages` sends and `Intl` accepts; `pt_BR` makes `Intl`
+  throw. The Weblate component must use the matching hyphen language-code style. `SupportedLocales`
+  (`src/globals.ts`) is hand-maintained with hardcoded native labels — a locale file without an
+  entry there (`sv`, `th`, `zh-TW`) exists for Weblate but is not selectable.
+  `config/onLocaleChange` drives it via `loadVuetifyLocaleAsync`, which `Vue.set`s the locale into
+  `lang.locales` **before** assigning `lang.current` — the `current` write is what re-renders. These `import()`s do not actually code-split: `vuetify/lib/presets/default`
   statically imports the `lib/locale` barrel, so every referenced locale lands in the eager
   `vuetify` chunk regardless of `codeSplitting` groups
 - `loadLocaleMessagesAsync(locale?)` (`src/plugins/i18n.ts`) defaults to `getStartingLocale()` when

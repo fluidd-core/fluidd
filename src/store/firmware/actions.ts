@@ -8,6 +8,11 @@ import { SUPPORTED_API_VERSION, agentErrorMessage, apiVersionOf, applyEvent, isS
 
 const NOTIFICATION_ID = 'firmware-updates-available'
 
+const isAgentCustomEvent = (event: Moonraker.Extensions.AgentEvent): event is Moonraker.Extensions.AgentCustomEvent => (
+  event.event !== 'connected' &&
+  event.event !== 'disconnected'
+)
+
 const runStateOf = (state: FirmwareState): FirmwareRunState => ({
   busy: state.busy,
   runId: state.runId,
@@ -109,8 +114,9 @@ export const actions = {
     }
   },
 
-  async onAgentEvent ({ state, commit, dispatch }, payload: Moonraker.Server.AgentEvent) {
+  async onAgentEvent ({ state, commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
     if (
+      !isAgentCustomEvent(payload) ||
       payload.event !== 'update_response' ||
       !isUpdateResponse(payload.data)
     ) {

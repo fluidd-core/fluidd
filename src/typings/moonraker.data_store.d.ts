@@ -7,7 +7,7 @@ declare namespace Moonraker.DataStore {
   }
 
   export interface TemperatureStoreEntry {
-    temperatures: (number | null)[];
+    temperatures?: (number | null)[];
     targets?: (number | null)[];
     powers?: (number | null)[];
     speeds?: (number | null)[];

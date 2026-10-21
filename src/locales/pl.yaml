@@ -346,6 +346,7 @@ app:
       clear: Wyczyść
       scroll_to_latest: Przewiń do najnowszych
       reset_to_default: Przywróć domyślne
+      export_csv: Eksportuj CSV
     title:
       home: Pulpit
       camera: Kamera | Kamery
@@ -882,6 +883,7 @@ app:
       awake_time: czas czuwania
       memory_used: użycie pamięci
       non_critical_connection: Połączenie niekrytyczne
+      build_configuration: Konfiguracja kompilacji
     msg:
       canbus_warning: Wykrywane mogą być tylko nieprzypisane węzły magistrali 
         CAN.<br> Zaleca się podłączenie tylko jednego nieprzypisanego urządzenia
@@ -897,6 +899,7 @@ app:
       confirm_jobs: Czy na pewno? Spowoduje to wyczyszczenie wszystkich zadań.
       confirm_stats: Czy na pewno? Spowoduje to wyczyszczenie wszystkich 
         statystyk.
+      export_failed: Nie udało się wyeksportować historii drukowania
     tooltip:
       help: Po połączeniu ładowane są tylko najnowsze zadania. Użyj „Załaduj 
         wszystko”, aby pobrać pełną historię.
