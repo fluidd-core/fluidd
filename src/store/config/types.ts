@@ -117,6 +117,8 @@ export interface GeneralConfig {
   loadedMaterial: string | null;
   /** Its colour, "#RRGGBB", likewise (the M1 keeps it as muon_material_color). */
   loadedMaterialColour: string | null;
+  /** Material picker favorites; null uses the common-material defaults, [] deliberately pins none. */
+  pinnedMaterials: string[] | null;
 }
 
 export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
