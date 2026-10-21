@@ -45,6 +45,23 @@ beforeEach(() => {
 })
 
 describe('Library feed states', () => {
+  it('shows an error without the off panel when the Library is disabled', () => {
+    Object.assign(libraryState, {
+      enabled: false,
+      synced: false,
+      errorCode: 'consent_required',
+      error: 'Sign in again.'
+    })
+    const wrapper = renderLibrary()
+    try {
+      expect(wrapper.text()).toContain('Sign in again.')
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid="library-turn-on"]').exists()).toBe(false)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
   it.each([
     ['not-signed-in', 'Sign in again.'],
     ['offline', "Your Library can't be reached. Check this computer's internet connection."],

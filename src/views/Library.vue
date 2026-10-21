@@ -108,7 +108,7 @@
 
     <!-- Off: what it keeps, and turning it on. -->
     <section
-      v-else-if="state.checked && !state.enabled"
+      v-else-if="state.checked && !state.enabled && !state.error"
       class="lib-empty lib-surface library__state"
       data-tid="library-off"
     >
