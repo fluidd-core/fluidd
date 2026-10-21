@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import type { MutationTree } from 'vuex'
 import { createState } from './state'
 import type { ExtensionsState } from './types'
@@ -15,13 +16,22 @@ export const mutations = {
   },
 
   setAgentConnected (state, payload: Moonraker.Extensions.AgentInfo) {
-    state.agents = [
-      ...state.agents.filter(agent => agent.name !== payload.name),
-      payload
-    ]
+    const index = state.agents
+      .findIndex(agent => agent.name === payload.name)
+
+    if (index >= 0) {
+      Vue.set(state.agents, index, payload)
+    } else {
+      state.agents.push(payload)
+    }
   },
 
   setAgentDisconnected (state, payload: string) {
-    state.agents = state.agents.filter(agent => agent.name !== payload)
+    const index = state.agents
+      .findIndex(agent => agent.name === payload)
+
+    if (index >= 0) {
+      state.agents.splice(index, 1)
+    }
   }
 } satisfies MutationTree<ExtensionsState>
