@@ -119,6 +119,7 @@ export interface GeneralConfig {
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
+  enableFirmwareNotifications: boolean;
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;

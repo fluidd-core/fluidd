@@ -282,7 +282,15 @@ export const Globals = Object.freeze({
     sensors: { name: 'sensor', dispatch: 'sensors/init' },
     extensions: { name: 'extensions', dispatch: 'extensions/init' }
   },
-  MOONRAKER_AGENTS: {},
+  MOONRAKER_AGENTS: {
+    aldis: {
+      name: 'aldis',
+      dispatch: 'firmware/init',
+      eventDispatch: 'firmware/onAgentEvent',
+      disconnectDispatch: 'firmware/onAgentDisconnected',
+      klippyDispatch: 'firmware/onKlippyStateChanged'
+    }
+  },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
     { filename: 'moonraker.conf', service: 'moonraker', link: 'https://moonraker.readthedocs.io/en/latest/configuration/' },
@@ -648,6 +656,7 @@ export const Waits = Object.freeze({
   onQueryEndstops: 'onQueryEndstops',
   onQueryProbe: 'onQueryProbe',
   onVersionRefresh: 'onVersionRefresh',
+  onFirmwareRefresh: 'onFirmwareRefresh',
   onSyncExtruder: 'onSyncExtruder',
   onStepperEnable: 'onStepperEnable',
   onMachinePeripheralsUsb: 'onMachinePeripheralsUsb',

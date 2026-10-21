@@ -444,6 +444,35 @@ export const SocketActions = {
     )
   },
 
+  aldisStatus (options?: RequestOptions) {
+    return SocketActions.serverExtensionsRequest<Aldis.StatusResponse>(
+      {
+        agent: 'aldis',
+        method: 'status'
+      },
+      {
+        dispatch: 'firmware/onStatus',
+        wait: Waits.onFirmwareRefresh,
+        suppressError: true,
+        ...options
+      }
+    )
+  },
+
+  aldisUpdate (args: Aldis.UpdateArguments, options?: RequestOptions) {
+    return SocketActions.serverExtensionsRequest<Aldis.UpdateResult>(
+      {
+        agent: 'aldis',
+        method: 'update',
+        arguments: args
+      },
+      {
+        suppressError: true,
+        ...options
+      }
+    )
+  },
+
   serverConnectionIdentify (params: Moonraker.MethodParams<'server.connection.identify'>, options?: RequestOptions) {
     return baseEmit(
       'server.connection.identify', {

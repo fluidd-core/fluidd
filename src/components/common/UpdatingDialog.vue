@@ -1,7 +1,7 @@
 <template>
   <app-dialog
     v-model="open"
-    :title="updating ? $t('app.version.status.updating') : $t('app.version.status.finished')"
+    :title="updating ? titleUpdating : titleFinished"
     :loading="updating"
     :close-button-disabled="updating"
     max-width="650"
@@ -38,18 +38,18 @@
         :disabled="updating"
         @click="open = false"
       >
-        {{ updating ? $t('app.version.status.updating') : $t('app.version.btn.finish') }}
+        {{ updating ? titleUpdating : $t('app.version.btn.finish') }}
       </app-btn>
     </template>
   </app-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ConsoleBrowser from '@/components/widgets/console/ConsoleBrowser.vue'
 import BrowserMixin from '@/mixins/browser'
-import type { UpdateResponse } from '@/store/version/types'
+import type { ConsoleLogEntry } from '@/store/console/types'
 
 @Component({
   components: {
@@ -59,6 +59,18 @@ import type { UpdateResponse } from '@/store/version/types'
 export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
   @Ref('consoleBrowser')
   readonly consoleBrowserElement!: ConsoleBrowser
+
+  @Prop({ type: Boolean, required: true })
+  readonly updating!: boolean
+
+  @Prop({ type: Array, required: true })
+  readonly responses!: ConsoleLogEntry[]
+
+  @Prop({ type: String, required: true })
+  readonly titleUpdating!: string
+
+  @Prop({ type: String, required: true })
+  readonly titleFinished!: string
 
   invokedDialog = false
   autoScrollPaused = false
@@ -76,16 +88,19 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
   set open (value: boolean) {
     if (!value) {
       this.invokedDialog = false
-      this.$typedCommit('version/setClearUpdateResponse')
+      this.$emit('close')
     }
   }
 
-  get updating (): boolean {
-    return this.$typedState.version.status?.busy ?? false
+  get endedWithNothingToShow (): boolean {
+    return !this.updating && this.responses.length === 0
   }
 
-  get responses (): UpdateResponse[] {
-    return this.$typedGetters['version/getResponses']
+  @Watch('endedWithNothingToShow')
+  onEndedWithNothingToShow (ended: boolean) {
+    if (ended) {
+      this.invokedDialog = false
+    }
   }
 }
 </script>

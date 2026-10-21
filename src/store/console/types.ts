@@ -19,6 +19,11 @@ export interface ConsoleEntry {
   type: 'command' | 'response' | 'action';
 }
 
+export interface ConsoleLogEntry {
+  id: number;
+  message: string;
+}
+
 export type ConsoleFilterType = 'contains' | 'starts-with' | 'expression'
 
 export interface ConsoleFilter {
