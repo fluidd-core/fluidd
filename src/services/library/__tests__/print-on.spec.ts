@@ -4,7 +4,9 @@
 import Vue from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { saveToLibrary } from '../save'
-import { gcodeFileName, sendToPrinter, watchForStart, type PrintTarget, type SendMode } from '../print-on'
+import { createLibraryClient } from '../api'
+import { gzip, sha256Hex } from '../bytes'
+import { downloadSharedGcode, gcodeFileName, sendToPrinter, watchForStart, type PrintTarget, type SendMode } from '../print-on'
 import { resetLibrary, setLibraryClient } from '../store'
 import { fakeService } from './fakeService'
 
@@ -211,5 +213,33 @@ describe('Print on…', () => {
     expect(gcodeFileName({ name: 'Hinge bracket' })).toBe('Hinge bracket.gcode')
     expect(gcodeFileName({ name: '../config/printer.cfg' })).toBe('config-printer.cfg.gcode')
     expect(gcodeFileName({ name: 'a/b\\c:d*e?f"g<h>i|j' })).toBe('a-b-c-d-e-f-g-h-i-j.gcode')
+  })
+})
+
+describe('downloadSharedGcode', () => {
+  function serve (response: () => Response) {
+    const fetcher = vi.fn<[string, RequestInit], Promise<Response>>(async () => response())
+    setLibraryClient(createLibraryClient({ baseUrl: 'https://models.invalid', assertion: { get: async () => 'a', drop: () => {} }, fetch: fetcher as unknown as typeof fetch }))
+    return fetcher
+  }
+
+  it('POSTs {} and returns the served G-code, unzipped, after checking the listed hash and size', async () => {
+    const text = new TextEncoder().encode(GCODE)
+    const stored = await gzip(text)
+    const fetcher = serve(() => new Response(stored))
+    const bytes = await downloadSharedGcode('share', 'file', { sha256: await sha256Hex(stored), size_bytes: stored.byteLength })
+    expect(bytes).toEqual(text)
+    expect(JSON.parse((fetcher.mock.calls[0][1] as RequestInit).body as string)).toEqual({})
+  })
+
+  it('refuses bytes that do not match the listing', async () => {
+    const stored = await gzip(new TextEncoder().encode(GCODE))
+    serve(() => new Response(stored))
+    await expect(downloadSharedGcode('share', 'file', { sha256: 'f'.repeat(64), size_bytes: stored.byteLength })).rejects.toThrow('did not match')
+  })
+
+  it('surfaces a 4xx refusal', async () => {
+    serve(() => new Response(JSON.stringify({ error: { code: 'not_found', message: 'Not found' } }), { status: 404 }))
+    await expect(downloadSharedGcode('share', 'file')).rejects.toMatchObject({ code: 'not_found' })
   })
 })
