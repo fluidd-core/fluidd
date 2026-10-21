@@ -154,6 +154,8 @@ import '@/scss/muon3d-library.scss'
 export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
   item: Pick<LibraryItem, 'id' | 'name' | 'setups' | 'version'> | null = null
   setup: ItemSetup | null = null
+  /** The public file's listed size and SHA-256, which the downloaded bytes must match. */
+  expected: { sha256: string, size_bytes: number } | null = null
   chosen = ''
   uploadedPath = ''
   uploadedPrinterId = ''
@@ -191,6 +193,7 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
         if (publication.version !== this.version) throw new Error('That public version is no longer available.')
         const file = publication.files.find(f => f.role === 'gcode' && f.id === requested)
         if (!file) throw new Error('That G-code file is not in this public print.')
+        this.expected = { sha256: file.sha256, size_bytes: file.size_bytes }
         this.item = { id: this.publicationId, name: publication.title, setups: file.setup ? [{ ...file.setup, file_id: file.id, print_seconds: file.print_seconds ?? null, filament_g: file.filament_g ?? null }] : [] }
       } else {
         const [item, answer] = await Promise.all([client.item(this.itemId), client.versions(this.itemId)])
@@ -232,7 +235,7 @@ export default class PrintHandoff extends Mixins(PrinterRowsMixin) {
     this.busy = true; this.actionError = ''
     try {
       this.step = 'Downloading the G-code…'; this.bytes = this.isPublic
-        ? await downloadSharedGcode(this.publicationId, this.setup.file_id)
+        ? await downloadSharedGcode(this.publicationId, this.setup.file_id, this.expected ?? undefined)
         : await downloadGcode(this.item, this.setup)
       const fit = setupFit(this.setup, activePrinterFacts(this.$store, this.modelOf(this.selected.id)))
       if (fit.kind !== 'ready') throw new Error(fitText(fit).label)

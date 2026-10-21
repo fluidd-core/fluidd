@@ -24,7 +24,7 @@ import { isActiveSlug, printerPath } from '@/services/printer-pages'
 import { cloudPrinterConnection } from '@/services/muon-cloud/state'
 import { savedMaterialName } from '@/services/control/model'
 import type { ItemSetup, LibraryItem } from './api'
-import { gunzip, isGzip } from './bytes'
+import { gunzip, isGzip, sha256Hex } from './bytes'
 import { fitText, setupFit, type PrinterFacts } from './fit'
 import { cleanName } from './save'
 import { libraryClient, recordPrinted } from './store'
@@ -60,10 +60,16 @@ export async function downloadGcode (item: Pick<LibraryItem, 'id'>, setup: ItemS
   return isGzip(bytes) ? gunzip(bytes) : bytes
 }
 
-/** A live Community publication is read through its viewer-authorised share route. */
-export async function downloadSharedGcode (shareId: string, fileId: string): Promise<Uint8Array> {
-  const client = libraryClient()
-  const bytes = await client.get(await client.shareFileUrl(shareId, fileId))
+/**
+ * A live Community publication's G-code, read through its viewer-authorised
+ * share route: the service answers the stored bytes (gzip), which are checked
+ * against the size and SHA-256 the publication lists before anything uses them.
+ */
+export async function downloadSharedGcode (shareId: string, fileId: string, expected?: { sha256: string, size_bytes: number }): Promise<Uint8Array> {
+  const bytes = await libraryClient().shareFile(shareId, fileId)
+  if (expected && (bytes.byteLength !== expected.size_bytes || await sha256Hex(bytes) !== expected.sha256)) {
+    throw new Error('The shared G-code did not match its listing. Nothing was sent to the printer.')
+  }
   return isGzip(bytes) ? gunzip(bytes) : bytes
 }
 

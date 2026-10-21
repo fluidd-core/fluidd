@@ -81,7 +81,7 @@ describe('Print hand-off target safety', () => {
     expect(mocks.item).not.toHaveBeenCalled()
     expect(vm.item.name).toBe('Community part')
     vm.chosen = 'active'; await Vue.nextTick(); await vm.upload()
-    expect(mocks.downloadShared).toHaveBeenCalledWith('share', 'public-file')
+    expect(mocks.downloadShared).toHaveBeenCalledWith('share', 'public-file', { sha256: 'b'.repeat(64), size_bytes: 3 })
     expect(mocks.download).not.toHaveBeenCalled()
     expect(mocks.remember).toHaveBeenCalledWith('part.gcode', { bytes: new Uint8Array([4, 5, 6]), version: 3 })
   })
