@@ -576,9 +576,25 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
 
   .library__tabs {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 24px;
+    gap: 0 24px;
     border-bottom: 1px solid var(--m3d-border);
+  }
+
+  // Four tabs and the storage line do not fit a phone side by side: the
+  // storage line goes under the tabs instead of widening the page.
+  .library--phone .library__tabs {
+    gap: 0 16px;
+  }
+
+  .library--phone .library__grow {
+    display: none;
+  }
+
+  .library--phone .library__storage {
+    flex: 1 0 100%;
+    padding: 2px 0 10px;
   }
 
   .library__tab {
