@@ -157,9 +157,12 @@ export default defineConfig(async ({ command, mode }) => {
     preprocessorOptions: {
       css: { charset: false },
       scss: {
+        // sass is pinned at 1.32, which has no modern API (Vite 6 default)
+        api: 'legacy',
         additionalData: '@import "@/scss/variables";\n'
       },
       sass: {
+        api: 'legacy',
         additionalData: '@import "@/scss/variables.scss"\n'
       }
     }
