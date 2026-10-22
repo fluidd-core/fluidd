@@ -4,6 +4,7 @@ import {
   BYPASS_SOON,
   SCOPE_GROUPS,
   SOON_SCOPES,
+  changesThings,
   createBody,
   endsText,
   modeText,
@@ -145,5 +146,18 @@ describe('token errors', () => {
   it('keep the console words otherwise', () => {
     expect(fail(400, { error: 'x' }).text).toBe('Console words.')
     expect(tokenFailure(new Error('boom')).text).toMatch(/try again/i)
+  })
+})
+
+describe('wording that must stay true', () => {
+  it('knows which scopes change things', () => {
+    expect(changesThings(['printers:read', 'library:read'])).toBe(false)
+    expect(changesThings(['printers:read', 'printers:queue'])).toBe(true)
+  })
+
+  it('does not say a token can start prints and not heat or move in the same breath', () => {
+    const change = SCOPE_GROUPS.find(g => g.id === 'change')!
+    expect(change.blurb).toMatch(/outside a print/i)
+    expect(change.blurb).not.toMatch(/^.*stop a print\. Can't heat/)
   })
 })

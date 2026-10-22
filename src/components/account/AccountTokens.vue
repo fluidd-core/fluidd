@@ -177,7 +177,7 @@
           >
           <span class="tok__option-text">
             <span>All my printers</span>
-            <span class="acct-field__note">Including ones you add later.</span>
+            <span class="acct-field__note">{{ allPrintersNote }}</span>
           </span>
         </label>
         <label class="tok__option">
@@ -540,6 +540,7 @@ import {
   createBody,
   endsText,
   modeText,
+  changesThings,
   needsTwoStep,
   orderTokens,
   printersText,
@@ -635,6 +636,12 @@ export default class AccountTokens extends Mixins(AccountReauthMixin) {
   get hasTwoStep (): boolean {
     const me = accountState.me
     return me ? (me.sign_in?.two_step ?? me.account.two_step ?? false) : false
+  }
+
+  get allPrintersNote (): string {
+    return changesThings(this.form.scopes)
+      ? 'The printers you have now. A token that can change things does not cover printers you add later.'
+      : 'Including ones you add later.'
   }
 
   get needsTwoStep (): boolean {

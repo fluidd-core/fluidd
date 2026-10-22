@@ -54,7 +54,7 @@ export const SCOPE_GROUPS: ScopeGroup[] = [
   {
     id: 'change',
     title: 'Make changes',
-    blurb: 'Can add, edit and delete your things, and stop a print. Can\'t heat or move a printer.',
+    blurb: 'Can add, edit and delete your things, and start and stop prints. A print heats and moves the printer as part of its job. Can\'t heat or move a printer outside a print.',
     scopes: [
       { id: 'printers:files', label: 'Upload and delete print files', twoStep: true },
       { id: 'printers:queue', label: 'Line up and start prints', twoStep: true },
@@ -93,6 +93,13 @@ export const BYPASS_SOON = true
 
 /** Ticked when the form opens. */
 export const DEFAULT_SCOPES = ['printers:read']
+
+/** Scopes that only look. A token with any other scope changes things. */
+export const READ_ONLY_SCOPES = ['printers:read', 'library:read', 'design:read', 'account:read']
+
+export function changesThings (scopes: string[]): boolean {
+  return scopes.some(s => !READ_ONLY_SCOPES.includes(s))
+}
 
 export const EXPIRY_CHOICES = [
   { days: 7, label: '7 days' },
