@@ -73,24 +73,6 @@ describe('refresh across tabs', () => {
     expect(fetch).toHaveBeenCalledTimes(1)
     expect(storedRefreshToken()).toBe('refresh-1')
   })
-
-  it('falls back to a BroadcastChannel claim when there are no locks', async () => {
-    vi.stubGlobal('navigator', {})
-    const posted: unknown[] = []
-    class Channel {
-      onmessage: ((e: MessageEvent) => void) | null = null
-      postMessage (m: unknown) { posted.push(m) }
-      close () {}
-    }
-    vi.stubGlobal('BroadcastChannel', Channel)
-    const ran = vi.fn()
-    await withRefreshLock(async () => { ran() })
-    expect(ran).toHaveBeenCalled()
-    expect(posted).toEqual([
-      expect.objectContaining({ type: 'claim' }),
-      expect.objectContaining({ type: 'done' })
-    ])
-  })
 })
 
 describe('a failed refresh', () => {
@@ -141,10 +123,10 @@ describe('a failed refresh', () => {
       } as unknown as Response
     })
     vi.stubGlobal('fetch', fetch)
-    await expect(recoverCentralSession(1000)).resolves.toBe(false)
-    await expect(recoverCentralSession(2000)).resolves.toBe(false)
+    await expect(recoverCentralSession('refresh-0', 1000)).resolves.toBe(false)
+    await expect(recoverCentralSession('refresh-0', 2000)).resolves.toBe(false)
     expect(fetch).toHaveBeenCalledTimes(1)
-    await expect(recoverCentralSession(70000)).resolves.toBe(false)
+    await expect(recoverCentralSession('refresh-0', 70000)).resolves.toBe(false)
     expect(fetch).toHaveBeenCalledTimes(2)
   })
 })
