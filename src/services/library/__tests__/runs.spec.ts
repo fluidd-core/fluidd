@@ -104,14 +104,14 @@ describe('Library run reporting', () => {
       modules: { printer: { namespaced: true, state: defaultState(), mutations } },
       state: { config: { apiUrl: 'http://pine', instances: [{ apiUrl: 'http://pine', endpointId: 'p1' }], displayName: 'Pine' } }
     })
-    const fetcher = vi.fn(async (_url: string, _init: RequestInit) => reply(201, { id: 'run-1' }))
+    const fetcher = vi.fn(async () => reply(201, { id: 'run-1' }))
     vi.stubGlobal('fetch', fetcher)
     const stop = observePrintRuns(store)
     store.commit('printer/setSocketNotify', { key: 'print_stats', payload: { state: 'standby', filename: '' } }); await Vue.nextTick()
     store.commit('printer/setSocketNotify', { key: 'print_stats', payload: { state: 'printing', filename: 'from-panel.gcode' } })
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1))
-    expect(fetcher.mock.calls.map(([, init]) => init.method)).toEqual(['POST'])
-    expect(JSON.parse(fetcher.mock.calls[0][1].body as string)).toEqual({ printer_id: 'p1', printer_name: 'Pine', file_name: 'from-panel.gcode', reporter: 'control' })
+    expect((fetcher.mock.calls as any[]).map(([, init]) => init.method)).toEqual(['POST'])
+    expect(JSON.parse((fetcher.mock.calls as any)[0][1].body as string)).toEqual({ printer_id: 'p1', printer_name: 'Pine', file_name: 'from-panel.gcode', reporter: 'control' })
     stop()
   })
 
