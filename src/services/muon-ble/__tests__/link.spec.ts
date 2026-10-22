@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { bluetoothRouteFor, openBleLink, stopUsingBluetoothFor, takesBleLinks, useBluetoothFor } from '../link'
+import { bluetoothRouteFor, cappedSegment, MAX_WRITE_SEGMENT, openBleLink, stopUsingBluetoothFor, takesBleLinks, useBluetoothFor } from '../link'
 import { EID, fakeEndpoint, fakePrinter, info, OTHER_EID } from './fakes'
 
 afterEach(() => {
@@ -18,6 +18,22 @@ describe('openBleLink', () => {
     expect(links[0].received).toEqual([new Uint8Array([2])])
     expect(link.isOpen()).toBe(true)
     await link.disconnect()
+  })
+
+  it('caps the segment size at 244 even when INFO says 512 (BlueZ drops 512-byte writes)', async () => {
+    const printer = fakePrinter({ infoValue: info(0, 512) })
+    const { endpoint } = fakeEndpoint()
+    const link = await openBleLink(endpoint, printer.device)
+    expect(endpoint.addLink).toHaveBeenCalledWith('central', MAX_WRITE_SEGMENT)
+    expect(MAX_WRITE_SEGMENT).toBe(244)
+    await link.disconnect()
+  })
+
+  it('keeps a smaller INFO segment size, and leaves an unknown one to the endpoint', () => {
+    expect(cappedSegment(182)).toBe(182)
+    expect(cappedSegment(244)).toBe(244)
+    expect(cappedSegment(245)).toBe(244)
+    expect(cappedSegment(0)).toBeUndefined()
   })
 
   it('hangs up with BYE, then drops the GATT connection', async () => {

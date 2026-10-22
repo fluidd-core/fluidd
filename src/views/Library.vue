@@ -69,6 +69,24 @@
       >{{ storage }}</span>
     </div>
 
+    <section
+      v-if="signedIn && state.error"
+      class="lib-empty lib-surface library__state"
+      role="alert"
+    >
+      <h2>Your Library didn't answer</h2>
+      <p>{{ state.error }}</p>
+      <div class="lib-empty__actions">
+        <button
+          type="button"
+          class="lib-btn"
+          @click="refresh"
+        >
+          Try again
+        </button>
+      </div>
+    </section>
+
     <!-- Signed out: the Library is the account's. -->
     <section
       v-if="!signedIn"
@@ -97,30 +115,17 @@
     </section>
 
     <section
-      v-else-if="!state.checked"
+      v-else-if="!state.error && (!state.checked || (state.enabled && !state.synced))"
       class="lib-empty lib-surface library__state"
     >
-      <template v-if="state.error">
-        <h2>Your Library didn't answer</h2>
-        <p>{{ state.error }}</p>
-        <div class="lib-empty__actions">
-          <button
-            type="button"
-            class="lib-btn"
-            @click="refresh"
-          >
-            Try again
-          </button>
-        </div>
-      </template>
-      <p v-else>
+      <p>
         Reading your Library…
       </p>
     </section>
 
     <!-- Off: what it keeps, and turning it on. -->
     <section
-      v-else-if="!state.enabled"
+      v-else-if="state.checked && !state.enabled && !state.error"
       class="lib-empty lib-surface library__state"
       data-tid="library-off"
     >
@@ -163,7 +168,7 @@
 
     <!-- On, and nothing in it yet. -->
     <section
-      v-else-if="section === 'all' && !everything.length"
+      v-else-if="section === 'all' && state.synced && !everything.length && !state.error"
       class="lib-empty lib-surface library__state"
       data-tid="library-empty"
     >
@@ -314,7 +319,7 @@
       </div>
     </section>
 
-    <template v-else>
+    <template v-else-if="state.synced && everything.length > 0">
       <section
         v-if="recent.length"
         class="library__recent"

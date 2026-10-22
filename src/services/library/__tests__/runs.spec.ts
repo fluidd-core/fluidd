@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { createRun, observePrintRuns, resetRunReportingForTests } from '../runs'
+import { createRun, observePrintRuns, rememberLibraryFile, resetRunReportingForTests } from '../runs'
+import { gzip, sha256Hex } from '../bytes'
 import { mutations } from '@/store/printer/mutations'
 import { defaultState } from '@/store/printer/state'
 import { cloudState } from '@/services/muon-cloud/state'
@@ -18,12 +19,31 @@ describe('Library run reporting', () => {
     vi.unstubAllGlobals()
   })
 
-  it('sends a digest and stable fields with an idempotency key', async () => {
+  // POST /v1/library/runs, per the contract: printer_id, printer_name, reporter 'control', at least one of
+  // gcode_sha256 (64 lowercase hex, the STORED bytes) or file_name; item_id+version together; publication_id.
+  it('sends the stored-bytes hash and own item+version with an idempotency key', async () => {
+    const stored = await gzip(new TextEncoder().encode('G28\nG1 X10 E1\n'.repeat(40)))
+    const gcode_sha256 = await sha256Hex(stored)
     const fetcher = vi.fn().mockImplementation(() => reply(201, { id: 'run-1' }))
-    await createRun({ printer_id: 'p1', printer_name: 'Pine', file_name: 'cube.gcode', bytes: new Uint8Array([1, 2]), item_id: 'item', version: 3 }, fetcher)
-    const [, init] = fetcher.mock.calls[0]
+    await createRun({ printer_id: 'p1', printer_name: 'Pine', file_name: 'cube.gcode', gcode_sha256, item_id: 'item', version: 3 }, fetcher)
+    const [url, init] = fetcher.mock.calls[0]
+    expect(url).toMatch(/\/v1\/library\/runs$/)
     expect(init.headers['Idempotency-Key']).toMatch(/^control:p1:/)
-    expect(JSON.parse(init.body)).toMatchObject({ printer_id: 'p1', printer_name: 'Pine', file_name: 'cube.gcode', reporter: 'control', item_id: 'item', version: 3, gcode_sha256: expect.stringMatching(/^[0-9a-f]{64}$/) })
+    expect(JSON.parse(init.body)).toEqual({ printer_id: 'p1', printer_name: 'Pine', gcode_sha256, file_name: 'cube.gcode', reporter: 'control', item_id: 'item', version: 3 })
+  })
+
+  it('sends a public print with its publication_id and no item_id or version', async () => {
+    const gcode_sha256 = 'c'.repeat(64)
+    const fetcher = vi.fn().mockImplementation(() => reply(201, { id: 'run-1' }))
+    await createRun({ printer_id: 'p1', printer_name: 'Pine', file_name: 'shared.gcode', gcode_sha256, publication_id: 'share-id' }, fetcher)
+    expect(JSON.parse(fetcher.mock.calls[0][1].body)).toEqual({ printer_id: 'p1', printer_name: 'Pine', gcode_sha256, file_name: 'shared.gcode', reporter: 'control', publication_id: 'share-id' })
+  })
+
+  it('never sends item_id without a version, or a version without item_id', async () => {
+    const fetcher = vi.fn().mockImplementation(() => reply(201, { id: 'run-1' }))
+    await createRun({ printer_id: 'p1', printer_name: 'Pine', file_name: 'a.gcode', item_id: 'item' }, fetcher)
+    await createRun({ printer_id: 'p1', printer_name: 'Pine', file_name: 'b.gcode', version: 2 }, fetcher)
+    for (const [, init] of fetcher.mock.calls) expect(Object.keys(JSON.parse(init.body)).sort()).toEqual(['file_name', 'printer_id', 'printer_name', 'reporter'])
   })
 
   it('stops permanently for this page after consent_required', async () => {
@@ -75,6 +95,46 @@ describe('Library run reporting', () => {
     const patches = fetcher.mock.calls.filter(([, init]) => init.method === 'PATCH')
     expect(posts.map(([, init]) => JSON.parse(init.body as string).file_name)).toEqual(['one.gcode', 'two.gcode', 'three.gcode'])
     expect(patches.map(([, init]) => JSON.parse(init.body as string).outcome)).toEqual(['finished', 'cancelled', 'failed'])
+    stop()
+  })
+
+  it('reports a file Control did not upload by name only: no hash, and nothing is downloaded to get one', async () => {
+    Vue.use(Vuex)
+    const store = new Vuex.Store<any>({
+      modules: { printer: { namespaced: true, state: defaultState(), mutations } },
+      state: { config: { apiUrl: 'http://pine', instances: [{ apiUrl: 'http://pine', endpointId: 'p1' }], displayName: 'Pine' } }
+    })
+    const fetcher = vi.fn(async () => reply(201, { id: 'run-1' }))
+    vi.stubGlobal('fetch', fetcher)
+    const stop = observePrintRuns(store)
+    store.commit('printer/setSocketNotify', { key: 'print_stats', payload: { state: 'standby', filename: '' } }); await Vue.nextTick()
+    store.commit('printer/setSocketNotify', { key: 'print_stats', payload: { state: 'printing', filename: 'from-panel.gcode' } })
+    await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1))
+    expect((fetcher.mock.calls as any[]).map(([, init]) => init.method)).toEqual(['POST'])
+    expect(JSON.parse((fetcher.mock.calls as any)[0][1].body as string)).toEqual({ printer_id: 'p1', printer_name: 'Pine', file_name: 'from-panel.gcode', reporter: 'control' })
+    stop()
+  })
+
+  it('attaches the remembered Library hand-off to the next start of that file, once', async () => {
+    Vue.use(Vuex)
+    const store = new Vuex.Store<any>({
+      modules: { printer: { namespaced: true, state: defaultState(), mutations } },
+      state: { config: { apiUrl: 'http://pine', instances: [{ apiUrl: 'http://pine', endpointId: 'p1' }], displayName: 'Pine' } }
+    })
+    const fetcher = vi.fn(async () => reply(201, { id: 'run-1' }))
+    vi.stubGlobal('fetch', fetcher)
+    const gcode_sha256 = await sha256Hex(await gzip(new TextEncoder().encode('G28\n'.repeat(50))))
+    rememberLibraryFile('cube.gcode', { gcode_sha256, publication_id: 'share-id' })
+    const stop = observePrintRuns(store)
+    const set = async (payload: Record<string, unknown>) => { store.commit('printer/setSocketNotify', { key: 'print_stats', payload }); await Vue.nextTick() }
+    await set({ state: 'standby', filename: '' })
+    await set({ state: 'printing', filename: 'cube.gcode' })
+    await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(1))
+    expect(JSON.parse((fetcher.mock.calls as any)[0][1].body)).toEqual({ printer_id: 'p1', printer_name: 'Pine', gcode_sha256, file_name: 'cube.gcode', reporter: 'control', publication_id: 'share-id' })
+    await set({ state: 'complete' })
+    await set({ state: 'printing', filename: 'cube.gcode' })
+    await vi.waitFor(() => expect(fetcher.mock.calls.filter(([, init]: any) => init.method === 'POST')).toHaveLength(2))
+    expect(JSON.parse((fetcher.mock.calls as any).filter(([, init]: any) => init.method === 'POST')[1][1].body)).not.toHaveProperty('gcode_sha256')
     stop()
   })
 

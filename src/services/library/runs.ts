@@ -9,9 +9,13 @@ export interface RunStart {
   printer_id: string;
   printer_name: string;
   file_name: string;
-  bytes?: Uint8Array;
+  /** SHA-256 of the G-code as the Library stores it (the gzip bytes when it is gzip), never of unzipped bytes. */
+  gcode_sha256?: string;
+  /** Your own item and version; sent together or not at all. */
   item_id?: string;
   version?: number;
+  /** A public print: the share id. */
+  publication_id?: string;
 }
 
 export type RunOutcome = 'finished' | 'cancelled' | 'failed'
@@ -32,13 +36,8 @@ const printerId = (store: AnyStore): string | undefined => cloudState.activePrin
   .find(instance => instance.apiUrl === store.state.config?.apiUrl)?.endpointId
 
 /** Attach Library metadata to the next observed start of this uploaded path. */
-export function rememberLibraryFile (path: string, start: Pick<RunStart, 'bytes' | 'item_id' | 'version'>) {
+export function rememberLibraryFile (path: string, start: Pick<RunStart, 'gcode_sha256' | 'item_id' | 'version' | 'publication_id'>) {
   libraryFiles.set(path, start)
-}
-
-export async function sha256Hex (bytes: Uint8Array): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', bytes)
-  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('')
 }
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -64,8 +63,9 @@ async function request (path: string, method: string, body: object, key?: string
 }
 
 export async function createRun (start: RunStart, fetcher: typeof fetch = fetch): Promise<{ id: string } | null> {
-  const gcode_sha256 = start.bytes ? await sha256Hex(start.bytes) : undefined
+  const { gcode_sha256 } = start
   if (!gcode_sha256 && !start.file_name) return null
+  // Not de-duplicated across browsers: every Control tab watching this printer reports its own run.
   const key = `control:${start.printer_id}:${gcode_sha256 ?? start.file_name}:${Date.now()}`
   return request('/v1/library/runs', 'POST', {
     printer_id: start.printer_id,
@@ -73,11 +73,16 @@ export async function createRun (start: RunStart, fetcher: typeof fetch = fetch)
     ...(gcode_sha256 ? { gcode_sha256 } : {}),
     file_name: start.file_name,
     reporter: 'control',
-    ...(start.item_id ? { item_id: start.item_id } : {}),
-    ...(start.version !== undefined ? { version: start.version } : {})
+    ...(start.item_id && start.version !== undefined ? { item_id: start.item_id, version: start.version } : {}),
+    ...(start.publication_id ? { publication_id: start.publication_id } : {})
   }, key, fetcher)
 }
 
+/**
+ * Closes the run when the print ends. It stops for good if the page moves to
+ * another printer first: a run left running by switching away mid-print is
+ * never closed (a known limitation).
+ */
 export function watchRunEnd (store: AnyStore, id: string, startedAt = Date.now(), fetcher: typeof fetch = fetch, expectedPrinterId = printerId(store)): () => void {
   const stop = store.watch(
     printSnapshot,
@@ -104,7 +109,11 @@ export function reportStartedRun (store: AnyStore, start: RunStart): void {
   createRun(start).then(run => { if (run?.id && printerId(store) === start.printer_id) watchRunEnd(store, run.id, Date.now(), fetch, start.printer_id) }).catch(() => {})
 }
 
-/** Observe every job Control sees start, including files started from Jobs or the panel. */
+/**
+ * Observe every job Control sees start. A file Control did not upload itself
+ * (started from Jobs or the panel) is reported by name only, with no hash:
+ * its file is never downloaded just to hash it.
+ */
 export function observePrintRuns (store: AnyStore): () => void {
   return store.watch(
     printSnapshot,

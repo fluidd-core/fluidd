@@ -70,8 +70,8 @@ describe('what the Updating page says', () => {
 
   it('says what is happening in plain words', () => {
     expect(updateHeadline('installing', 43, TO).text).toMatch(/12 October 2026 · abc1234: 43%/)
-    expect(updateHeadline('installing', 100, TO).title).toBe('Finishing up')
-    expect(updateHeadline('offline', null, TO).text).toMatch(/Don't turn the printer off/)
-    expect(updateHeadline('late', null, TO).title).toBe('This is taking longer than expected')
+    expect(updateHeadline('installing', 100, TO).title).toBe('Finishing installation')
+    expect(updateHeadline('offline', null, TO).text).toMatch(/Keep the printer on/)
+    expect(updateHeadline('late', null, TO).title).toBe('Restart delayed')
   })
 })
