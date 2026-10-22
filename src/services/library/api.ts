@@ -166,7 +166,8 @@ export interface LibraryRun {
   version: number | null;
   printer_id: string;
   printer_name: string;
-  file_name: string;
+  /** Absent when the run was reported by its hash alone. */
+  file_name: string | null;
   started_at: string;
   ended_at: string | null;
   outcome: LibraryRunOutcome;
@@ -176,9 +177,10 @@ export interface LibraryRun {
   item?: LibraryItem | null;
 }
 
+/** `GET /v1/library/runs` answers `{runs, cursor}`: `cursor` is the last run's start, to pass back for the next page. */
 export interface LibraryRunsPage {
   runs: LibraryRun[];
-  next_cursor: string | null;
+  cursor: string | null;
 }
 
 /** A person's bookmark as returned by `GET /v1/community/saves`. */
@@ -348,7 +350,8 @@ export function createLibraryClient (options: LibraryClientOptions) {
     setPreferences: (patch: PreferencesPatch) => request<Preferences>('PUT', '/v1/library/preferences', patch),
     feed: (since: number) => request<FeedPage>('GET', `/v1/items?since=${since}`),
     sections: () => request<LibrarySections>('GET', '/v1/library/sections'),
-    runs: (cursor = '', limit = 50) => request<LibraryRunsPage>('GET', `/v1/library/runs?cursor=${encodeURIComponent(cursor)}&limit=${limit}`),
+    // An empty cursor is left out: the service reads a present-but-empty one as a malformed timestamp.
+    runs: (cursor = '', limit = 50) => request<LibraryRunsPage>('GET', `/v1/library/runs?${cursor ? `cursor=${encodeURIComponent(cursor)}&` : ''}limit=${limit}`),
     sliced: () => request<FeedPage>('GET', '/v1/items?origin=slice'),
     saved: () => request<CommunitySavesPage>('GET', '/v1/community/saves'),
     createPrint: (body: VersionBody & { name: string }) => request<Created>('POST', '/v1/prints', body),

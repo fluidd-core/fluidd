@@ -232,7 +232,7 @@
           :data-outcome="run.outcome"
         >
           <div class="library__run-main">
-            <b>{{ run.item && run.item.name ? run.item.name : run.file_name }}</b>
+            <b>{{ run.item && run.item.name ? run.item.name : run.file_name || 'A print' }}</b>
             <span>{{ run.printer_name }} · {{ relativeTime(run.started_at) }}</span>
             <small v-if="!run.in_library">Not in your Library</small>
           </div>
@@ -241,7 +241,7 @@
             :class="`library__outcome--${run.outcome}`"
           >{{ run.outcome }}</span>
           <router-link
-            v-if="run.item_id"
+            v-if="canPrintAgain(run)"
             class="lib-btn lib-btn--sm lib-btn--pri"
             :to="printAgain(run)"
           >
@@ -512,7 +512,12 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
     if (section !== 'all') this.loadSection()
   }
 
+  /** The newest load of a section: an older, slower answer must not overwrite it. */
+  private sectionLoad = 0
+
   async loadSection () {
+    const load = ++this.sectionLoad
+    const section = this.section
     this.sectionBusy = true
     this.sectionError = ''
     this.sectionItems = []
@@ -521,23 +526,35 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
     try {
       if (this.section === 'printed') {
         const page = await libraryClient().runs()
+        if (load !== this.sectionLoad) return
         this.runs = Array.isArray(page.runs) ? page.runs : []
       } else if (this.section === 'sliced') {
         const page = await libraryClient().sliced()
-        this.sectionItems = Array.isArray(page.items) ? page.items : []
-      } else if (this.section === 'saved') this.savedItems = savedRows(await libraryClient().saved())
+        if (load !== this.sectionLoad) return
+        this.sectionItems = Array.isArray(page.items) ? page.items.filter(item => item.state !== 'deleted' && !item.deleted_at) : []
+      } else if (this.section === 'saved') {
+        const saved = savedRows(await libraryClient().saved())
+        if (load !== this.sectionLoad) return
+        this.savedItems = saved
+      }
     } catch (error) {
-      if (this.section === 'saved' && error instanceof LibraryError && error.status === 404) {
+      if (load !== this.sectionLoad) return
+      if (section === 'saved' && error instanceof LibraryError && error.status === 404) {
         this.savedAvailable = false
         this.section = 'all'
       } else this.sectionError = describeLibraryError(error)
     } finally {
-      this.sectionBusy = false
+      if (load === this.sectionLoad) this.sectionBusy = false
     }
   }
 
+  /** Only a run whose print is still in the Library, and whose version is known, can be printed again. */
+  canPrintAgain (run: LibraryRun): boolean {
+    return !!run.item_id && run.in_library && (run.version ?? run.item?.version ?? null) !== null
+  }
+
   printAgain (run: LibraryRun) {
-    return { path: '/print', query: { library: run.item_id as string, ...(run.version === null ? {} : { version: String(run.version) }) } }
+    return { path: '/print', query: { library: run.item_id as string, version: String(run.version ?? run.item?.version) } }
   }
 
   relativeTime (value: string): string {

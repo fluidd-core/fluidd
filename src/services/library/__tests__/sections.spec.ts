@@ -28,7 +28,7 @@ describe('Library sections client', () => {
       if (path.endsWith('/runs')) {
         return response({
           runs: [{ id: 'run-1', item_id: 'item-1', version: 3, printer_id: 'printer-1', printer_name: 'Workshop', file_name: 'bracket.gcode', started_at: '2026-10-20T11:00:00Z', ended_at: '2026-10-20T12:00:00Z', outcome: 'finished', progress_pct: 100, duration_s: 3600, in_library: true, item }],
-          next_cursor: null
+          cursor: '2026-10-20T11:00:00Z'
         })
       }
       if (path.endsWith('/saves')) {
@@ -47,12 +47,17 @@ describe('Library sections client', () => {
     })
 
     await expect(client.sections()).resolves.toMatchObject({ all: 8, printed: 5, sliced: 2, saved: 1 })
+    await expect(client.runs()).resolves.toMatchObject({ runs: [{ id: 'run-1' }], cursor: '2026-10-20T11:00:00Z' })
+    await expect(client.runs('', 20)).resolves.toMatchObject({ runs: [{ id: 'run-1' }] })
     await expect(client.runs('next page', 20)).resolves.toMatchObject({ runs: [{ id: 'run-1', outcome: 'finished' }] })
     await expect(client.sliced()).resolves.toMatchObject({ items: [{ id: 'item-1' }], rev: 3, reset: false, more: false })
     await expect(client.saved()).resolves.toMatchObject({ saves: [{ id: 'save-1', card: { title: 'Desk hook', available: true } }], next_cursor: null })
 
     expect(fetchSpy.mock.calls.map(call => String(call[0]))).toEqual([
       'https://models.example/v1/library/sections',
+      // No cursor key at all when there is none: the service rejects an empty one.
+      'https://models.example/v1/library/runs?limit=50',
+      'https://models.example/v1/library/runs?limit=20',
       'https://models.example/v1/library/runs?cursor=next%20page&limit=20',
       'https://models.example/v1/items?origin=slice',
       'https://models.example/v1/community/saves'
