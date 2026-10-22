@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { createLibraryClient, type PublicPublication } from '../api'
 
+// The model service's GET /v1/public/publications/:id lists each file as
+// {id, role, format, encoding, size_bytes, sha256, setup}; sha256 is of the bytes as stored and served
+// (the gzip bytes when encoding is "gzip").
 const publication: PublicPublication = {
   title: 'Community bracket',
   version: 4,
@@ -11,9 +14,7 @@ const publication: PublicPublication = {
     encoding: 'gzip',
     size_bytes: 42,
     sha256: 'a'.repeat(64),
-    setup: { printer_model: 'Muon3D M1', nozzle_mm: 0.4, material: 'PLA' },
-    print_seconds: 600,
-    filament_g: 12
+    setup: { printer_model: 'Muon3D M1', nozzle_mm: 0.4, material: 'PLA' }
   }]
 }
 const assertion = () => ({ get: vi.fn().mockResolvedValue('console-assertion'), drop: vi.fn() })

@@ -7,8 +7,8 @@ import PrintHandoff from '../PrintHandoff.vue'
 const mocks = vi.hoisted(() => ({
   rows: [] as any[],
   upload: vi.fn(async () => 'part.gcode'),
-  download: vi.fn(async () => new Uint8Array([1, 2, 3])),
-  downloadShared: vi.fn(async () => new Uint8Array([4, 5, 6])),
+  fetchOwn: vi.fn(async () => ({ bytes: new Uint8Array([1, 2, 3]), stored_sha256: 'a'.repeat(64) })),
+  downloadShared: vi.fn(async () => ({ bytes: new Uint8Array([4, 5, 6]), stored_sha256: 'b'.repeat(64) })),
   item: vi.fn(),
   versions: vi.fn(),
   publication: vi.fn(),
@@ -25,7 +25,7 @@ vi.mock('@/services/muon-cloud/state', async () => {
   return { cloudState: Vue.observable({ account: { id: 'account' } }) }
 })
 vi.mock('@/services/library/print-on', () => ({
-  downloadGcode: mocks.download,
+  fetchGcode: mocks.fetchOwn,
   downloadSharedGcode: mocks.downloadShared,
   uploadGcode: mocks.upload,
   gcodeFileName: () => 'part.gcode',
@@ -57,7 +57,7 @@ function mount (query: Record<string, string> = {}) {
 
 beforeEach(() => {
   mocks.rows = [row('active', true), row('other', false)]
-  mocks.upload.mockClear(); mocks.download.mockClear(); mocks.downloadShared.mockClear(); mocks.start.mockClear()
+  mocks.upload.mockClear(); mocks.fetchOwn.mockClear(); mocks.downloadShared.mockClear(); mocks.start.mockClear()
   mocks.remember.mockClear()
   mocks.item.mockReset().mockResolvedValue({ id: 'item', name: 'Owner part' })
   mocks.versions.mockReset().mockResolvedValue({ versions: [{ number: 3, files: [{ id: 'file', role: 'gcode', setup, size_bytes: 3, format: 'gcode', encoding: 'identity', sha256: 'a'.repeat(64) }] }] })
@@ -74,6 +74,23 @@ describe('Print hand-off target safety', () => {
     expect(vm.setup.file_id).toBe('file')
   })
 
+  it('downloads an owner print checked against its version metadata, and reports the stored hash with item and version', async () => {
+    const { vm } = mount({ library: 'item', version: '3', file: 'file' })
+    await vm.load()
+    vm.chosen = 'active'; await Vue.nextTick(); await vm.upload()
+    expect(mocks.fetchOwn).toHaveBeenCalledWith(expect.objectContaining({ id: 'item' }), expect.objectContaining({ file_id: 'file' }), { sha256: 'a'.repeat(64), size_bytes: 3, encoding: 'identity' })
+    expect(mocks.downloadShared).not.toHaveBeenCalled()
+    expect(mocks.remember).toHaveBeenCalledWith('part.gcode', { gcode_sha256: 'a'.repeat(64), item_id: 'item', version: 3 })
+  })
+
+  it('refuses a public print whose listing has no checksum, before any download', async () => {
+    mocks.publication.mockResolvedValue({ title: 'Old', version: 3, files: [{ id: 'public-file', role: 'gcode', setup, size_bytes: 3, format: 'gcode', encoding: 'identity' }] })
+    const { vm } = mount({ publication: 'share', version: '3', file: 'public-file' })
+    await vm.load()
+    expect(vm.error).toBe('That public print does not list a checksum for its G-code.')
+    expect(mocks.downloadShared).not.toHaveBeenCalled()
+  })
+
   it('loads and downloads a public hand-off through its publication share', async () => {
     const { vm } = mount({ publication: 'share', version: '3', file: 'public-file' })
     await vm.load()
@@ -81,9 +98,10 @@ describe('Print hand-off target safety', () => {
     expect(mocks.item).not.toHaveBeenCalled()
     expect(vm.item.name).toBe('Community part')
     vm.chosen = 'active'; await Vue.nextTick(); await vm.upload()
-    expect(mocks.downloadShared).toHaveBeenCalledWith('share', 'public-file', { sha256: 'b'.repeat(64), size_bytes: 3 })
-    expect(mocks.download).not.toHaveBeenCalled()
-    expect(mocks.remember).toHaveBeenCalledWith('part.gcode', { bytes: new Uint8Array([4, 5, 6]), version: 3 })
+    expect(mocks.downloadShared).toHaveBeenCalledWith('share', 'public-file', { sha256: 'b'.repeat(64), size_bytes: 3, encoding: 'identity' })
+    expect(mocks.fetchOwn).not.toHaveBeenCalled()
+    // A public print reports its share id, and no item or version.
+    expect(mocks.remember).toHaveBeenCalledWith('part.gcode', { gcode_sha256: 'b'.repeat(64), publication_id: 'share' })
   })
 
   it('rejects a file id that is not in the selected version', async () => {
@@ -142,6 +160,6 @@ describe('Print hand-off target safety', () => {
     const { vm, router } = mount({ library: 'item', version: '3', uploaded: 'evil.gcode' })
     vm.chosen = 'other'
     await vm.openSelected()
-    expect(router.push).toHaveBeenCalledWith({ path: '/other-slug/print', query: { library: 'item', version: '3', printer: 'other' } })
+    expect(router.push).toHaveBeenCalledWith({ path: '/other-slug/print', query: { library: 'item', file: 'file', version: '3', printer: 'other' } })
   })
 })
