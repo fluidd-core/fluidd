@@ -1,4 +1,4 @@
-import type { ActionTree } from 'vuex'
+import type { ActionTree, Dispatch } from 'vuex'
 import type { ExtensionsState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
@@ -13,12 +13,32 @@ const isAgentDisconnectedEvent = (event: Moonraker.Extensions.AgentEvent): event
   event.event === 'disconnected'
 )
 
+const findAgent = (name: string) => Object.values<{ name: string, eventDispatch: string }>(Globals.MOONRAKER_AGENTS)
+  .find(agent => agent.name === name)
+
+const dispatchAgentEvent = (dispatch: Dispatch, event: Moonraker.Extensions.AgentEvent) => {
+  const agent = findAgent(event.agent)
+
+  return agent
+    ? dispatch(agent.eventDispatch, event, { root: true })
+    : undefined
+}
+
 export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset ({ commit, dispatch, state }) {
+    // Synthesized: Moonraker can't tell us once the socket is gone
+    const promises = state.agents
+      .map(info => dispatchAgentEvent(dispatch, {
+        agent: info.name,
+        event: 'disconnected'
+      }))
+
     commit('setReset')
+
+    await Promise.all(promises)
   },
 
   /**
@@ -28,9 +48,19 @@ export const actions = {
     SocketActions.serverExtensionsList()
   },
 
-  async onExtensionsList ({ commit }, payload: Moonraker.Extensions.ListResponse) {
+  async onExtensionsList ({ commit, dispatch }, payload: Moonraker.Extensions.ListResponse) {
     if (payload) {
       commit('setAgents', payload.agents)
+
+      // Synthesized: these connected before we were listening
+      const promises = payload.agents
+        .map(info => dispatchAgentEvent(dispatch, {
+          agent: info.name,
+          event: 'connected',
+          data: info
+        }))
+
+      await Promise.all(promises)
     }
   },
 
@@ -45,11 +75,10 @@ export const actions = {
       reserved = false
     }
 
-    const agent = Object.values<{ name: string, eventDispatch: string }>(Globals.MOONRAKER_AGENTS)
-      .find(agent => agent.name === payload.agent)
+    const promise = dispatchAgentEvent(dispatch, payload)
 
-    if (agent) {
-      await dispatch(agent.eventDispatch, payload, { root: true })
+    if (promise) {
+      await promise
     } else if (!reserved) {
       consola.debug('[Extensions] unhandled agent event', payload)
     }
