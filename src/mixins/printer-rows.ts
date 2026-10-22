@@ -28,13 +28,13 @@ export const FACTS_MS = 15_000
 @Component
 export default class PrinterRowsMixin extends Vue {
   @Prop({ type: Object, default: null })
-  readonly item!: LibraryItem | null
+  readonly item!: Pick<LibraryItem, 'id' | 'name' | 'setups' | 'version'> | null
 
   /** What each other printer has, as it answered: undefined while asked, null when it didn't. */
   loaded: Record<string, Loaded | null> = {}
 
   @Watch('item', { immediate: true })
-  onItemForRows (item: LibraryItem | null, before?: LibraryItem | null) {
+  onItemForRows (item: Pick<LibraryItem, 'id' | 'name' | 'setups' | 'version'> | null, before?: Pick<LibraryItem, 'id' | 'name' | 'setups' | 'version'> | null) {
     if (item && item.id !== before?.id) this.readPrinters()
   }
 

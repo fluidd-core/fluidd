@@ -8,6 +8,13 @@
       <div class="library__titles">
         <h1>Library</h1>
         <p>Everything you've sliced and saved, ready on any of your printers.</p>
+        <a
+          href="https://library.muon3d.com/library"
+          target="_blank"
+          rel="noopener"
+          class="lib-btn lib-btn--sm lib-btn--ghost"
+          data-tid="library-full"
+        >Open full Library ↗</a>
       </div>
       <label
         v-if="listing"
@@ -378,6 +385,10 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
       margin: 0;
       color: var(--m3d-text-muted);
       font-size: 14px;
+    }
+
+    a {
+      align-self: flex-start;
     }
   }
 

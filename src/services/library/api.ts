@@ -88,6 +88,13 @@ export interface Version {
   files: VersionFile[];
 }
 
+/** The live, immutable version exposed by `GET /v1/public/publications/:id`. */
+export interface PublicPublication {
+  title: string;
+  version: number;
+  files: VersionFile[];
+}
+
 export type SaveOrigin = 'save' | 'autosave' | 'card' | 'print-check'
 
 export interface VersionBody {
@@ -272,6 +279,21 @@ export function createLibraryClient (options: LibraryClientOptions) {
       request<{ item?: LibraryItem, version?: Version }>('POST', `${item(id)}/versions/${version}/complete`),
     item: (id: string) => request<LibraryItem>('GET', item(id)),
     versions: (id: string) => request<{ versions: Version[] }>('GET', `${item(id)}/versions`),
+    publicPublication: (id: string) => request<PublicPublication>('GET', `/v1/public/publications/${encodeURIComponent(id)}`),
+    /** The raw bytes of a shared file: `POST /v1/shares/:id/files/:file` takes `{key?}` and answers the bytes, or a JSON refusal. */
+    async shareFile (id: string, fileId: string, key?: string): Promise<Uint8Array> {
+      const response = await authorised(`${base}/v1/shares/${encodeURIComponent(id)}/files/${encodeURIComponent(fileId)}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(key === undefined ? {} : { key })
+      })
+      if (!response.ok) {
+        let data: unknown = null
+        try { data = await response.json() } catch { /* nothing readable */ }
+        throw libraryErrorFrom(response.status, data)
+      }
+      return new Uint8Array(await response.arrayBuffer())
+    },
     restore: (id: string, version: number) => request<{ item: LibraryItem, version: Version }>('POST', `${item(id)}/versions/${version}/restore`),
     rename: (id: string, name: string) => request<LibraryItem>('PATCH', item(id), { name }),
     remove: (id: string) => request<LibraryItem>('DELETE', item(id)),
