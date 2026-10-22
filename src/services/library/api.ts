@@ -148,6 +148,82 @@ export interface PrintedEvent {
   version?: number;
 }
 
+export interface LibrarySections {
+  all: number;
+  printed: number;
+  sliced: number;
+  uploads: number;
+  saved: number;
+  imported: number;
+  designs: number;
+}
+
+export type LibraryRunOutcome = 'running' | 'finished' | 'cancelled' | 'failed' | 'unknown'
+
+export interface LibraryRun {
+  id: string;
+  item_id: string | null;
+  version: number | null;
+  printer_id: string;
+  printer_name: string;
+  /** Absent when the run was reported by its hash alone. */
+  file_name: string | null;
+  started_at: string;
+  ended_at: string | null;
+  outcome: LibraryRunOutcome;
+  progress_pct: number | null;
+  duration_s: number | null;
+  in_library: boolean;
+  item?: LibraryItem | null;
+}
+
+/** `GET /v1/library/runs` answers `{runs, cursor}`: `cursor` is the last run's start, to pass back for the next page. */
+export interface LibraryRunsPage {
+  runs: LibraryRun[];
+  cursor: string | null;
+}
+
+/** A person's bookmark as returned by `GET /v1/community/saves`. */
+export interface CommunitySave {
+  id: string;
+  target: { kind: string } & Record<string, unknown>;
+  card: {
+    title: string;
+    thumbnail_url?: string | null;
+    creator?: string | null;
+    url?: string | null;
+    available: boolean;
+  };
+  created_at: string;
+}
+
+export interface CommunitySavesPage {
+  saves: CommunitySave[];
+  next_cursor: string | null;
+}
+
+/** The deliberately small display model for a community save. */
+export interface SavedRow {
+  id: string;
+  title: string;
+  thumbnailUrl: string | null;
+  creator: string | null;
+  url: string | null;
+  available: boolean;
+}
+
+export function savedRows (page: CommunitySavesPage): SavedRow[] {
+  if (!Array.isArray(page.saves)) return []
+  return page.saves.map(({ id, card }) => ({
+    id,
+    title: card.title,
+    thumbnailUrl: card.thumbnail_url ?? null,
+    creator: card.creator ?? null,
+    url: card.url ?? null,
+    available: card.available
+  }))
+}
+
 /**
  * A refusal or a failure, by the service's stable code (`consent_required`,
  * `quota_exceeded`, `not_found`, …), or one of Fluidd's own: `not-signed-in`
@@ -273,6 +349,11 @@ export function createLibraryClient (options: LibraryClientOptions) {
     preferences: () => request<Preferences>('GET', '/v1/library/preferences'),
     setPreferences: (patch: PreferencesPatch) => request<Preferences>('PUT', '/v1/library/preferences', patch),
     feed: (since: number) => request<FeedPage>('GET', `/v1/items?since=${since}`),
+    sections: () => request<LibrarySections>('GET', '/v1/library/sections'),
+    // An empty cursor is left out: the service reads a present-but-empty one as a malformed timestamp.
+    runs: (cursor = '', limit = 50) => request<LibraryRunsPage>('GET', `/v1/library/runs?${cursor ? `cursor=${encodeURIComponent(cursor)}&` : ''}limit=${limit}`),
+    sliced: () => request<FeedPage>('GET', '/v1/items?origin=slice'),
+    saved: () => request<CommunitySavesPage>('GET', '/v1/community/saves'),
     createPrint: (body: VersionBody & { name: string }) => request<Created>('POST', '/v1/prints', body),
     createVersion: (id: string, body: VersionBody) => request<Created>('POST', `${item(id)}/versions`, body),
     complete: (id: string, version: number) =>
