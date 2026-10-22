@@ -31,10 +31,10 @@ export default class UpdateBanner extends Vue {
 
   get text (): string {
     const r = updateWatch.remembered
-    const to = r?.to ? ` to the ${versionLabel(r.to).text.split(' · ')[0]} version` : ''
-    if (r?.phase === 'verifying') return 'Checking the update'
-    if (r?.phase === 'rebooting') return 'The printer is restarting into its update'
-    return `Updating${to}${this.percent !== null ? `: ${this.percent}%` : ''}`
+    const to = r?.to ? ` (${versionLabel(r.to).text.split(' · ')[0]})` : ''
+    if (r?.phase === 'verifying') return 'Verifying update'
+    if (r?.phase === 'rebooting') return 'Restarting'
+    return `Installing update${to}${this.percent !== null ? `: ${this.percent}%` : ''}`
   }
 
   get to (): string {

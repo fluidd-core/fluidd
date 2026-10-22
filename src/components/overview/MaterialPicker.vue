@@ -71,9 +71,10 @@
         role="listbox"
         aria-label="Material"
         class="matp__list"
+        data-tid="material-shortlist"
       >
         <button
-          v-for="m in materialChoices"
+          v-for="m in pinnedChoices"
           :key="m.name"
           type="button"
           role="option"
@@ -97,6 +98,92 @@
           />
         </button>
       </div>
+      <p
+        v-if="!pinnedChoices.length"
+        class="matp__note"
+      >
+        Pin materials from See all to build your shortlist.
+      </p>
+      <button
+        type="button"
+        class="matp__browse"
+        data-tid="material-see-all"
+        @click="showAll = true"
+      >
+        See all materials
+      </button>
+      <v-dialog
+        v-model="showAll"
+        max-width="420"
+        aria-label="All materials"
+      >
+        <div class="matp__panel">
+          <h3>All materials</h3>
+          <input
+            v-model="search"
+            type="search"
+            class="matp__search"
+            aria-label="Search materials"
+            placeholder="Search materials"
+          >
+          <div data-tid="material-catalog">
+            <ul class="matp__list matp__catalog">
+              <li
+                v-for="m in filteredMaterials"
+                :key="m.name"
+                class="matp__catalog-row"
+              >
+                <button
+                  type="button"
+                  class="matp__row"
+                  :class="{ 'matp__row--on': loadedMaterial && loadedMaterial.name === m.name }"
+                  :aria-pressed="loadedMaterial && loadedMaterial.name === m.name ? 'true' : 'false'"
+                  :disabled="busy"
+                  :data-tid="`catalog-material-${m.name}`"
+                  @click="choose(m)"
+                >
+                  <span
+                    class="matp__swatch"
+                    :style="{ background: m.colour }"
+                  />
+                  <b>{{ m.name }}</b>
+                  <span class="matp__temps">{{ temps(m) }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="matp__pin"
+                  :aria-label="`${isPinned(m) ? 'Unpin' : 'Pin'} ${m.name}`"
+                  :aria-pressed="isPinned(m) ? 'true' : 'false'"
+                  @click="togglePin(m)"
+                >
+                  {{ isPinned(m) ? 'Unpin' : 'Pin' }}
+                </button>
+              </li>
+            </ul>
+            <p
+              v-if="!filteredMaterials.length"
+              class="matp__note"
+              role="status"
+            >
+              No materials found.
+            </p>
+          </div>
+          <p
+            v-if="busy"
+            class="matp__note"
+          >
+            Material selection is locked while printing or paused.
+          </p>
+          <button
+            type="button"
+            class="matp__browse"
+            data-tid="material-catalog-done"
+            @click="showAll = false"
+          >
+            Done
+          </button>
+        </div>
+      </v-dialog>
       <p
         v-if="busy"
         class="matp__note"
@@ -198,7 +285,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import ControlMixin from '@/mixins/control'
 import { FILAMENT_COLOURS, colourName, normaliseColour, type MaterialChoice } from '@/services/control/model'
 import { scopedPath } from '@/router/printerPagePaths'
@@ -222,8 +309,50 @@ export default class MaterialPicker extends Mixins(ControlMixin) {
   readonly chip?: boolean
 
   open = false
+  showAll = false
+  search = ''
 
   colours = FILAMENT_COLOURS
+
+  get pinnedMaterialNames (): string[] {
+    return this.$store.state.config.uiSettings.general.pinnedMaterials ?? ['PLA', 'PETG', 'ABS', 'ASA', 'TPU']
+  }
+
+  get pinnedChoices (): MaterialChoice[] {
+    return this.pinnedMaterialNames
+      .map(name => this.materialChoices.find(m => m.name.trim().toLowerCase() === name.trim().toLowerCase()))
+      .filter((m): m is MaterialChoice => m !== undefined)
+  }
+
+  get filteredMaterials (): MaterialChoice[] {
+    const query = this.search.trim().toLowerCase()
+    return this.materialChoices.filter(m => m.name.toLowerCase().includes(query))
+  }
+
+  isPinned (m: MaterialChoice): boolean {
+    return this.pinnedMaterialNames.some(name => name.trim().toLowerCase() === m.name.trim().toLowerCase())
+  }
+
+  togglePin (m: MaterialChoice) {
+    const names = this.isPinned(m)
+      ? this.pinnedMaterialNames.filter(name => name.trim().toLowerCase() !== m.name.trim().toLowerCase())
+      : [...this.pinnedMaterialNames, m.name]
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.pinnedMaterials', value: names, server: true
+    })
+  }
+
+  @Watch('showAll')
+  resetSearch (showAll: boolean) {
+    if (!showAll) this.search = ''
+  }
+
+  @Watch('panelTarget')
+  resetPicker () {
+    this.open = false
+    this.showAll = false
+    this.search = ''
+  }
 
   /** What the tile names: what's loaded, else what the print running was sliced for. */
   get shown (): { name: string, colour: string | null } | null {
@@ -280,6 +409,7 @@ export default class MaterialPicker extends Mixins(ControlMixin) {
   choose (m: MaterialChoice) {
     if (this.busy) return
     this.setLoadedMaterial(m)
+    this.showAll = false
   }
 
   heat () {
@@ -490,6 +620,48 @@ export default class MaterialPicker extends Mixins(ControlMixin) {
       opacity: 0.6;
     }
   }
+.matp__browse {
+  min-height: 36px;
+  padding: 8px;
+  border: 1px solid var(--m3d-border);
+  border-radius: 10px;
+  color: var(--m3d-text);
+  &:hover { background: var(--m3d-hover); }
+}
+.matp__search {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--m3d-border);
+  border-radius: 10px;
+  background: var(--m3d-surface-2);
+  color: var(--m3d-text);
+}
+.matp__catalog {
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.matp__catalog-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  .matp__row {
+    flex: 1 1 auto;
+    min-width: 0;
+    b { overflow-wrap: anywhere; }
+  }
+}
+.matp__pin {
+  flex: 0 0 auto;
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--m3d-text);
+  &[aria-pressed="true"] { background: var(--m3d-surface-2); }
+  &:hover { background: var(--m3d-hover); }
+}
 </style>
 
 <style lang="scss">

@@ -8,23 +8,29 @@
       v-for="tile in heaterTiles"
       :key="tile.context + tile.id"
       class="ov-tile"
+      :class="{ 'ov-tile--disconnected': tile.disconnected }"
       :data-tid="`tile-${tile.id}`"
     >
       <button
         type="button"
         class="ov-tile__door"
-        :aria-expanded="openTile === tile.id ? 'true' : 'false'"
+        :disabled="tile.disconnected"
+        :aria-expanded="!tile.disconnected && openTile === tile.id ? 'true' : 'false'"
         :aria-controls="tileControlsId(tile.id)"
         @click="openTile = openTile === tile.id ? null : tile.id"
       >
         <span class="ov-tile__head">
           <span>{{ tile.label }}</span>
           <span
+            v-if="!tile.disconnected"
             class="ov-tile__state"
             :class="`ov-tile__state--${tile.tone}`"
           >{{ tile.state }}</span>
         </span>
-        <span class="ov-tile__value">
+        <span
+          v-if="!tile.disconnected"
+          class="ov-tile__value"
+        >
           {{ tile.value }}<small v-if="tile.target"> / {{ tile.target }}</small>
         </span>
         <span
@@ -36,7 +42,7 @@
         /></span>
       </button>
       <number-field
-        v-if="openTile === tile.id"
+        v-if="openTile === tile.id && !tile.disconnected"
         :id="tileControlsId(tile.id)"
         :value="targetFor(tile.id)"
         unit="°"
@@ -158,6 +164,7 @@ interface TileView {
   context: string;
   id: string;
   label: string;
+  disconnected: boolean;
   value: string;
   target: string;
   state: string;
@@ -181,7 +188,16 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
   resetTile () { this.openTile = null }
 
   // Each keyed field captures its render target, including detached callbacks.
-  commitTarget (context: string, heater: Heater | null, value: number) { if (context === this.panelTarget) this.setHeater(heater, value) }
+  get isBedDisconnected (): boolean { return !!this.$store.state.printer.printer?.bed_removal_detector?.bedRemoved }
+  get isToolheadDisconnected (): boolean { return !!this.$store.state.printer.printer?.['mcu toolhead']?.non_critical_disconnected }
+
+  commitTarget (context: string, heater: Heater | null, value: number) {
+    if (context !== this.panelTarget) return
+    if (heater?.name === 'heater_bed' && this.isBedDisconnected) return
+    if (heater?.name === 'extruder' && this.isToolheadDisconnected) return
+    this.setHeater(heater, value)
+  }
+
   commitSpeed (context: string, value: number) { if (context === this.panelTarget) this.setSpeed(value) }
   commitFan (context: string, fan: Fan, value: number) { if (context === this.panelTarget) this.setFan(fan, value) }
 
@@ -190,16 +206,30 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
   limitFor (id: string): number { return this.heaterFor(id)?.maxTemp ?? 300 }
   tileControlsId (id: string): string { return `overview-${id}-exact-value` }
 
-  view (id: string, label: string, tile: HeaterTile | null): TileView | null {
+  view (id: string, label: string, tile: HeaterTile | null, disconnected = false): TileView | null {
+    if (disconnected) {
+      return {
+        context: this.panelTarget,
+        id,
+        label: `${label} disconnected`,
+        disconnected: true,
+        value: '',
+        target: '',
+        state: '',
+        tone: 'off',
+        bar: null
+      }
+    }
     if (!tile) return null
     const deg = `${Math.round(tile.temperature)}°`
     if (tile.status === 'off') {
-      return { context: this.panelTarget, id, label, value: deg, target: '', state: this.busy ? 'off' : 'Off · tap to heat', tone: 'off', bar: null }
+      return { context: this.panelTarget, id, label, disconnected: false, value: deg, target: '', state: this.busy ? 'off' : 'Off · tap to heat', tone: 'off', bar: null }
     }
     return {
       context: this.panelTarget,
       id,
       label,
+      disconnected: false,
       value: deg,
       target: String(Math.round(tile.target)),
       state: tile.status,
@@ -209,7 +239,10 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
   }
 
   get heaterTiles (): TileView[] {
-    return [this.view('nozzle', 'Nozzle', this.nozzleTile), this.view('bed', 'Bed', this.bedTile)].filter((t): t is TileView => !!t)
+    return [
+      this.view('nozzle', 'Nozzle', this.nozzleTile, this.isToolheadDisconnected),
+      this.view('bed', 'Bed', this.bedTile, this.isBedDisconnected)
+    ].filter((t): t is TileView => !!t)
   }
 
   get speedOptions (): SegOption[] {
@@ -247,6 +280,15 @@ export default class OverviewTiles extends Mixins(OverviewMixin) {
     &:hover:not(.ov-tile--static) {
       box-shadow: inset 0 0 0 1px var(--m3d-border-strong);
     }
+  }
+
+  .ov-tiles :deep(.ov-tile--disconnected) {
+    outline: 1px solid var(--m3d-danger);
+    outline-offset: -1px;
+  }
+
+  .ov-tiles :deep(.ov-tile__door:disabled) {
+    cursor: default;
   }
 
   .ov-tiles :deep(.ov-tile--static) {
