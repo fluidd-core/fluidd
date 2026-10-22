@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { AccountError } from '../client'
 import {
+  BYPASS_SOON,
   SCOPE_GROUPS,
+  SOON_SCOPES,
   createBody,
   endsText,
   modeText,
@@ -35,8 +37,26 @@ describe('token scopes', () => {
     expect(otherScopes([...grantable, 'robot:dance'])).toEqual(['robot:dance'])
   })
 
-  it('need a code for control, publish and Bypass only', () => {
-    expect(needsTwoStep(['printers:read', 'printers:queue'], 'ask')).toBe(false)
+  it('keep Emergency stop out of the look-only group', () => {
+    const group = (id: string) => SCOPE_GROUPS.find(g => g.scopes.some(s => s.id === id))?.id
+    expect(group('printers:estop')).toBe('change')
+    expect(SCOPE_GROUPS.find(g => g.id === 'read')?.scopes.map(s => s.id)).not.toContain('printers:estop')
+  })
+
+  it('list control as coming soon, with Bypass', () => {
+    expect(SOON_SCOPES).toEqual(['printers:control'])
+    expect(BYPASS_SOON).toBe(true)
+  })
+
+  it('promise no protection nobody enforces', () => {
+    const words = JSON.stringify(SCOPE_GROUPS)
+    expect(words).not.toMatch(/still needs your OK/i)
+  })
+
+  it('need a code for queue, files, control, publish and Bypass only', () => {
+    expect(needsTwoStep(['printers:read', 'library:write'], 'ask')).toBe(false)
+    expect(needsTwoStep(['printers:queue'], 'ask')).toBe(true)
+    expect(needsTwoStep(['printers:files'], 'ask')).toBe(true)
     expect(needsTwoStep(['printers:control'], 'ask')).toBe(true)
     expect(needsTwoStep(['library:publish'], 'ask')).toBe(true)
     expect(needsTwoStep(['printers:read'], 'bypass')).toBe(true)
@@ -81,7 +101,7 @@ describe('token words', () => {
   })
 
   it('say Ask or Bypass, and that a spent Bypass is back to Ask', () => {
-    expect(modeText({ ask_mode: 'ask' }, NOW)).toBe('Asks first')
+    expect(modeText({ ask_mode: 'ask' }, NOW)).toBe('Ask mode')
     expect(modeText({ ask_mode: 'bypass', bypass_until: null }, NOW)).toBe('Skips the click')
     expect(modeText({ ask_mode: 'bypass', bypass_until: S + 3600 }, NOW)).toMatch(/^Skips the click until /)
     expect(modeText({ ask_mode: 'bypass', bypass_until: S - 3600 }, NOW)).toContain('Bypass ended')
@@ -111,6 +131,15 @@ describe('token errors', () => {
   it('say to wait on 429 and to revoke one at the limit', () => {
     expect(fail(429, { code: 'rate_limited' }).text).toMatch(/wait/i)
     expect(fail(409, { code: 'too_many_tokens' }).text).toMatch(/revoke/i)
+  })
+
+  it('say plainly that a refused option is not available yet (409 not_available_yet)', () => {
+    for (const body of [{ code: 'not_available_yet' }, { type: 'urn:x:not_available_yet' }, { error: 'not_available_yet' }]) {
+      const out = fail(409, body)
+      expect(out.kind).toBe('soon')
+      expect(out.text).toMatch(/isn't available yet/)
+    }
+    expect(fail(409, { code: 'too_many_tokens' }).kind).toBe('limit')
   })
 
   it('keep the console words otherwise', () => {

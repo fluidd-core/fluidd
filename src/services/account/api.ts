@@ -5,7 +5,7 @@
  * console leaves them out, and the pages say "Coming soon" for them.
  */
 import { accountRequest } from './client'
-import type { CreatedToken, CreateTokenBody, PersonalToken } from './tokens'
+import type { CreatedToken, CreateTokenBody, PersonalToken } from './tokenTypes'
 
 /** `GET /v1/me`'s account. */
 export interface AccountDetails {

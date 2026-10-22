@@ -138,10 +138,21 @@
               type="checkbox"
               class="acct-checkbox"
               :value="scope.id"
+              :disabled="isSoon(scope.id)"
               :data-tid="`tokens-scope-${scope.id}`"
             >
             <span class="tok__option-text">
-              <span>{{ scope.label }}</span>
+              <span>{{ scope.label }}
+                <span
+                  v-if="isSoon(scope.id)"
+                  class="lib-pill"
+                  :data-tid="`tokens-soon-${scope.id}`"
+                >Coming soon</span>
+                <span
+                  v-else-if="scope.twoStep"
+                  class="lib-pill lib-pill--warn"
+                >Needs a two-step code</span>
+              </span>
               <span
                 v-if="scope.note"
                 class="acct-field__note"
@@ -251,7 +262,7 @@
           >
           <span>
             <b>Ask me first</b>
-            <span class="acct-field__note tok__block">You get a prompt on Control, the phone app and the printer's panel. A click on any of them counts.</span>
+            <span class="acct-field__note tok__block">Saved on the token. Ask and Bypass aren't enforced yet, and no token can start or move a printer today.</span>
           </span>
         </label>
         <label
@@ -264,10 +275,15 @@
             class="acct-radio"
             name="tok-mode"
             :value="true"
+            :disabled="bypassSoon"
             data-tid="tokens-mode-bypass"
           >
           <span>
-            <b>Bypass: don't ask</b>
+            <b>Bypass: don't ask <span
+              v-if="bypassSoon"
+              class="lib-pill"
+              data-tid="tokens-soon-bypass"
+            >Coming soon</span></b>
             <span class="acct-field__note tok__block">Off unless you choose it.</span>
           </span>
         </label>
@@ -282,8 +298,8 @@
           />
           <span>
             <b>Anyone holding this token can act without your click.</b>
-            With Bypass the token can start prints and heat or move a printer on its own, with nobody there. If it leaks, treat it as a person at your printer.
-            Temperature limits, the rate limits and emergency stop still apply. You'll be asked for a fresh two-step code.
+            Bypass is saved on the token but not enforced yet. When it is, the token will be able to start prints and heat or move a printer on its own, with nobody there, so treat a leaked one as a person at your printer.
+            You'll be asked for a fresh two-step code.
           </span>
         </div>
         <div
@@ -308,7 +324,7 @@
             >{{ choice.label }}
           </label>
         </div>
-        <span class="acct-field__note">Nothing starts prints from a token yet. This is stored now and takes effect when it can.</span>
+        <span class="acct-field__note">Ask and Bypass are saved but not enforced yet. Nothing starts prints from a token today.</span>
       </fieldset>
 
       <div
@@ -320,7 +336,7 @@
           name="shield"
           small
         />
-        <span>A token that can heat, move, publish or skip the click needs two-step sign-in. <router-link
+        <span>A token that can start prints, upload files, heat, move, publish or skip the click needs two-step sign-in. <router-link
           :to="linkTo('security')"
           class="acct-link"
         >Turn it on</router-link>, or leave those out.</span>
@@ -391,7 +407,7 @@
               <span
                 v-else
                 class="lib-pill lib-pill--ok"
-              >Asks first</span>
+              >Ask mode</span>
             </span>
             <span class="tok__chips">
               <span
@@ -518,7 +534,9 @@ import {
   DEFAULT_SCOPES,
   EXPIRY_CHOICES,
   SCOPE_GROUPS,
+  BYPASS_SOON,
   SENSITIVE_SCOPES,
+  SOON_SCOPES,
   createBody,
   endsText,
   modeText,
@@ -557,6 +575,9 @@ export default class AccountTokens extends Mixins(AccountReauthMixin) {
   formError = ''
   message = ''
   form = this.blankForm()
+  /** Scopes and Bypass the console won't make yet: shown as "Coming soon". */
+  soonScopes: string[] = [...SOON_SCOPES]
+  bypassSoon = BYPASS_SOON
 
   readonly groups = SCOPE_GROUPS
   readonly expiries = EXPIRY_CHOICES
@@ -623,9 +644,14 @@ export default class AccountTokens extends Mixins(AccountReauthMixin) {
   get canMake (): boolean {
     const f = this.form
     if (!f.name.trim() || !f.scopes.length) return false
+    if (f.scopes.some(s => this.isSoon(s)) || (f.bypass && this.bypassSoon)) return false
     if (!f.allPrinters && !f.printerIds.length) return false
     if (this.needsTwoStep && !this.hasTwoStep) return false
     return true
+  }
+
+  isSoon (scope: string): boolean {
+    return this.soonScopes.includes(scope)
   }
 
   isSensitive (scope: string): boolean {
@@ -680,7 +706,7 @@ export default class AccountTokens extends Mixins(AccountReauthMixin) {
         {
           action: 'Make token',
           why: strong
-            ? 'A token that can heat, move, publish or skip the click needs a fresh sign-in and a code from your authenticator app.'
+            ? 'A token that can start prints, upload files, heat, move, publish or skip the click needs a fresh sign-in and a code from your authenticator app.'
             : undefined
         }
       )
@@ -694,9 +720,22 @@ export default class AccountTokens extends Mixins(AccountReauthMixin) {
       // The list without the secret.
       await this.refresh()
     } catch (error) {
-      this.formError = tokenFailure(error).text
+      const failure = tokenFailure(error)
+      if (failure.kind === 'soon') this.learnSoon()
+      this.formError = failure.text
     } finally {
       this.busy = false
+    }
+  }
+
+  /** The console said "not available yet": stop offering what the form asked for. */
+  learnSoon () {
+    const asked = this.form.scopes.filter(s => s === 'printers:control')
+    this.soonScopes = [...new Set([...this.soonScopes, ...asked])]
+    this.form.scopes = this.form.scopes.filter(s => !this.soonScopes.includes(s))
+    if (this.form.bypass) {
+      this.bypassSoon = true
+      this.form.bypass = false
     }
   }
 

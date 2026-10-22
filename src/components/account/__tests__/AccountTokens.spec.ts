@@ -80,7 +80,7 @@ describe('Access tokens', () => {
     expect(text).toContain('Laptop scripts')
     expect(text).toContain('mpat_Ab3')
     expect(text).toContain('Boxwood')
-    expect(text).toContain('Asks first')
+    expect(text).toContain('Ask mode')
     expect(text).toContain('Used 10 minutes ago')
     await w.find('[data-tid="tokens-revoke"]').trigger('click')
     await settle()
@@ -160,6 +160,7 @@ describe('Access tokens', () => {
     accountState.me = { account: { id: 'a', email: 'a@b.c', name: 'A', created_at: 0, two_step: false } } as never
     const { w } = open()
     await startForm(w)
+    await w.setData({ bypassSoon: false })
     expect(w.find('[data-tid="tokens-bypass-warning"]').exists()).toBe(false)
     await w.find('[data-tid="tokens-mode-bypass"]').setChecked(true)
     expect(w.find('[data-tid="tokens-bypass-warning"]').text()).toContain('without your click')
@@ -171,6 +172,7 @@ describe('Access tokens', () => {
     createToken.mockResolvedValue({ ...token({ ask_mode: 'bypass' }), token: SECRET } as CreatedToken)
     const { w } = open()
     await startForm(w)
+    await w.setData({ bypassSoon: false })
     await w.find('[data-tid="tokens-mode-bypass"]').setChecked(true)
     await w.find('[data-tid="tokens-create"]').trigger('click')
     await settle()
@@ -194,5 +196,48 @@ describe('Access tokens', () => {
     await w.find('[data-tid="tokens-create"]').trigger('click')
     await settle()
     expect(w.find('[data-tid="tokens-form-error"]').text()).toContain('signed-in browser')
+  })
+
+  it('shows Bypass and Heat/move as Coming soon, disabled, with no promise nobody keeps', async () => {
+    const { w } = open()
+    await startForm(w)
+    expect(w.find('[data-tid="tokens-soon-bypass"]').text()).toBe('Coming soon')
+    expect(w.find('[data-tid="tokens-mode-bypass"]').attributes('disabled')).toBeTruthy()
+    expect(w.find('[data-tid="tokens-soon-printers:control"]').text()).toBe('Coming soon')
+    expect(w.find('[data-tid="tokens-scope-printers:control"]').attributes('disabled')).toBeTruthy()
+    const text = w.find('[data-tid="tokens-form"]').text()
+    expect(text).toContain('not enforced yet')
+    expect(text).not.toMatch(/still needs your OK|Temperature limits|You get a prompt/)
+  })
+
+  it('files Emergency stop under Make changes, not Look only', async () => {
+    const { w } = open()
+    await startForm(w)
+    expect(w.find('[data-tid="tokens-group-read"] [data-tid="tokens-scope-printers:estop"]').exists()).toBe(false)
+    expect(w.find('[data-tid="tokens-group-change"] [data-tid="tokens-scope-printers:estop"]').exists()).toBe(true)
+    expect(w.find('[data-tid="tokens-group-change"]').text()).toContain('ends the print')
+  })
+
+  it('asks for the two-step code when the token can queue or upload', async () => {
+    accountState.me = { account: { id: 'a', email: 'a@b.c', name: 'A', created_at: 0, two_step: false } } as never
+    const { w } = open()
+    await startForm(w)
+    expect(w.find('[data-tid="tokens-needs-two-step"]').exists()).toBe(false)
+    await w.find('[data-tid="tokens-scope-printers:queue"]').setChecked(true)
+    expect(w.find('[data-tid="tokens-needs-two-step"]').exists()).toBe(true)
+    expect(w.find('[data-tid="tokens-create"]').attributes('disabled')).toBeTruthy()
+  })
+
+  it('handles 409 not_available_yet with a plain message and stops offering the scope', async () => {
+    createToken.mockRejectedValue(new AccountError('x', 409, { type: 'https://x/not_available_yet', code: 'not_available_yet' }))
+    const { w } = open()
+    await startForm(w)
+    await w.setData({ soonScopes: [], bypassSoon: false })
+    await w.find('[data-tid="tokens-scope-printers:control"]').setChecked(true)
+    await w.find('[data-tid="tokens-create"]').trigger('click')
+    await settle()
+    expect(w.find('[data-tid="tokens-form-error"]').text()).toContain('isn\'t available yet')
+    expect(w.find('[data-tid="tokens-scope-printers:control"]').attributes('disabled')).toBeTruthy()
+    expect((w.find('[data-tid="tokens-scope-printers:control"]').element as HTMLInputElement).checked).toBe(false)
   })
 })

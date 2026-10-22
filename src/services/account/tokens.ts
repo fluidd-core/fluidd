@@ -10,44 +10,9 @@
  */
 import { AccountError } from './client'
 import { agoText, dayText } from './model'
+import type { AskMode, CreateTokenBody, PersonalToken } from './tokenTypes'
 
-export type TokenStatus = 'active' | 'expired' | 'revoked'
-export type AskMode = 'ask' | 'bypass'
-
-/** One token as `GET /v1/tokens` lists it. No secret. Times are seconds. */
-export interface PersonalToken {
-  id: string;
-  name: string;
-  /** The first 8 characters: `mpat_Ab3`. */
-  prefix: string;
-  scopes: string[];
-  /** null: every printer the account owns. [] : none. */
-  printer_ids: string[] | null;
-  ask_mode: AskMode;
-  bypass_until?: number | null;
-  expires_at: number;
-  created_at: number;
-  last_used_at?: number | null;
-  last_used_ip?: string | null;
-  revoked_at?: number | null;
-  status: TokenStatus;
-}
-
-/** The create call's answer: the token, with the secret. Shown once. */
-export interface CreatedToken extends PersonalToken {
-  token: string;
-}
-
-export interface CreateTokenBody {
-  name: string;
-  scopes: string[];
-  /** Absent: every printer the account owns. */
-  printer_ids?: string[];
-  expires_in_days: number;
-  ask_mode: AskMode;
-  /** With Bypass: 1 or 8. Absent: until the token ends. */
-  bypass_hours?: 1 | 8;
-}
+export type { TokenStatus, AskMode, PersonalToken, CreatedToken, CreateTokenBody } from './tokenTypes'
 
 export interface ScopeInfo {
   id: string;
@@ -55,6 +20,8 @@ export interface ScopeInfo {
   label: string;
   /** A second line, when one helps. */
   note?: string;
+  /** Putting this one on a token takes a fresh two-step code. */
+  twoStep?: boolean;
 }
 
 export interface ScopeGroup {
@@ -81,17 +48,17 @@ export const SCOPE_GROUPS: ScopeGroup[] = [
       { id: 'printers:read', label: 'See your printers and how they\'re doing' },
       { id: 'library:read', label: 'Read your Library' },
       { id: 'design:read', label: 'Open your Design files' },
-      { id: 'account:read', label: 'See your name and sign-in details' },
-      { id: 'printers:estop', label: 'Emergency stop', note: 'Always safe. Stops a printer at once.' }
+      { id: 'account:read', label: 'See your name and sign-in details' }
     ]
   },
   {
     id: 'change',
     title: 'Make changes',
-    blurb: 'Can add, edit and delete your things. Can\'t start or move a printer.',
+    blurb: 'Can add, edit and delete your things, and stop a print. Can\'t heat or move a printer.',
     scopes: [
-      { id: 'printers:files', label: 'Upload and delete print files' },
-      { id: 'printers:queue', label: 'Line up prints', note: 'Adds to the queue. Starting one still needs your OK.' },
+      { id: 'printers:files', label: 'Upload and delete print files', twoStep: true },
+      { id: 'printers:queue', label: 'Line up and start prints', twoStep: true },
+      { id: 'printers:estop', label: 'Emergency stop', note: 'Stops a printer at once and ends the print it is running.' },
       { id: 'library:write', label: 'Add to your Library' },
       { id: 'design:write', label: 'Change your Design files' },
       { id: 'design:export', label: 'Export from Design' },
@@ -112,7 +79,17 @@ export const SCOPE_GROUPS: ScopeGroup[] = [
 ]
 
 /** Scopes that take a fresh two-step code to put on a token. */
-export const SENSITIVE_SCOPES = ['printers:control', 'library:publish']
+export const SENSITIVE_SCOPES = ['printers:control', 'printers:queue', 'printers:files', 'library:publish']
+
+/**
+ * Scopes the console won't put on a token yet (it answers `409
+ * not_available_yet`), because Ask and Bypass aren't enforced. The page shows
+ * them as "Coming soon". The console sends no availability field today, so
+ * this list is the default and the 409 teaches the page more.
+ */
+export const SOON_SCOPES = ['printers:control']
+/** Bypass is also refused for now. */
+export const BYPASS_SOON = true
 
 /** Ticked when the form opens. */
 export const DEFAULT_SCOPES = ['printers:read']
@@ -177,10 +154,10 @@ export function usedText (token: Pick<PersonalToken, 'last_used_at'>, now: numbe
   return ago === 'now' ? 'Used just now' : `Used ${ago}`
 }
 
-/** "Asks first", "Skips the click for 8 hours" (Bypass), "Skips the click". */
+/** "Ask mode", "Skips the click for 8 hours" (Bypass), "Skips the click". Neither is enforced yet. */
 export function modeText (token: Pick<PersonalToken, 'ask_mode' | 'bypass_until'>, now: number = Date.now()): string {
-  if (token.ask_mode !== 'bypass') return 'Asks first'
-  if (token.bypass_until && token.bypass_until <= now / 1000) return 'Asks first (Bypass ended)'
+  if (token.ask_mode !== 'bypass') return 'Ask mode'
+  if (token.bypass_until && token.bypass_until <= now / 1000) return 'Ask mode (Bypass ended)'
   if (token.bypass_until) return `Skips the click until ${dayText(token.bypass_until, now)}`
   return 'Skips the click'
 }
@@ -212,13 +189,25 @@ export function createBody (form: {
   return body
 }
 
+/** A `409 not_available_yet` problem+json, whichever field carries the name. */
+export function isNotAvailableYet (error: unknown): boolean {
+  if (!(error instanceof AccountError) || error.status !== 409) return false
+  return ['code', 'error', 'type', 'title'].some(k => {
+    const v = error.body[k]
+    return typeof v === 'string' && v.includes('not_available_yet')
+  })
+}
+
 /**
  * A token call's error in the page's words. The console's own sentence is used
  * when it is already plain. `kind` tells the page what to do about it.
  */
-export function tokenFailure (error: unknown): { text: string, kind: 'interactive' | 'two-step' | 'limit' | 'busy' | 'other' } {
+export function tokenFailure (error: unknown): { text: string, kind: 'interactive' | 'two-step' | 'limit' | 'busy' | 'soon' | 'other' } {
   if (!(error instanceof AccountError)) return { text: 'Something went wrong. Try again.', kind: 'other' }
   const code = typeof error.body.code === 'string' ? error.body.code : ''
+  if (error.status === 409 && isNotAvailableYet(error)) {
+    return { text: 'That option isn\'t available yet. Ask and Bypass are saved but not enforced yet, so the console won\'t make a token that can heat or move a printer, or one that skips the click. Take it off and try again.', kind: 'soon' }
+  }
   if (error.status === 403 && code === 'interactive_only') {
     return { text: 'Tokens are made and revoked from a signed-in browser, never with a token. Sign in here and try again.', kind: 'interactive' }
   }
