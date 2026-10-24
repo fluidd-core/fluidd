@@ -1,6 +1,6 @@
 import type { MoveStore } from '@/store/gcodePreview/types'
-import { MoveFlags } from '@/store/gcodePreview/types'
-import { binarySearch, buildLayerPaths } from '../gcode-preview'
+import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
+import { binarySearch, buildLayerPaths, speedBucket } from '../gcode-preview'
 
 const searchIn = (values: readonly number[], target: number): number => {
   return binarySearch(values.length, index => target - values[index])
@@ -85,6 +85,8 @@ interface TestMove {
   j?: number
   tool?: number
   flags?: number
+  role?: number
+  speed?: number
 }
 
 const createMoveStore = (moves: readonly TestMove[]): MoveStore => ({
@@ -95,6 +97,8 @@ const createMoveStore = (moves: readonly TestMove[]): MoveStore => ({
   j: Float32Array.from(moves, move => move.j ?? 0),
   tool: Uint8Array.from(moves, move => move.tool ?? 0),
   flags: Uint8Array.from(moves, move => move.flags ?? 0),
+  role: Uint8Array.from(moves, move => move.role ?? 0),
+  speed: Uint16Array.from(moves, move => move.speed ?? 0),
   filePosition: Uint32Array.from(moves, (_, index) => index * 10),
   length: moves.length
 })
@@ -229,5 +233,53 @@ describe('buildLayerPaths', () => {
 
     expect(() => buildLayerPaths(store, -3, 99)).not.toThrow()
     expect(() => buildLayerPaths(store, 99, 200)).not.toThrow()
+  })
+
+  it('groups extrusions by role', () => {
+    const paths = buildLayerPaths(createMoveStore([
+      { x: 0, y: 0 },
+      { x: 10, y: 0, role: ExtrusionRole.ExternalPerimeter, flags: MoveFlags.Extruding },
+      { x: 20, y: 0, role: ExtrusionRole.InternalInfill, flags: MoveFlags.Extruding },
+      { x: 30, y: 0, role: ExtrusionRole.ExternalPerimeter, flags: MoveFlags.Extruding }
+    ]), 0, 3, { colorBy: 'role' })
+
+    expect(paths.extrusions).toEqual({
+      R2: 'M0,0L10,0M20,0L30,0',
+      R4: 'M10,0L20,0'
+    })
+  })
+
+  it('groups extrusions by speed bucket', () => {
+    const paths = buildLayerPaths(createMoveStore([
+      { x: 0, y: 0 },
+      { x: 10, y: 0, speed: 0, flags: MoveFlags.Extruding },
+      { x: 20, y: 0, speed: 1100, flags: MoveFlags.Extruding },
+      { x: 30, y: 0, speed: 1100, flags: MoveFlags.Extruding }
+    ]), 0, 3, { colorBy: 'speed', speedRange: { min: 0, max: 1100 } })
+
+    expect(paths.extrusions).toEqual({
+      S0: 'M0,0L10,0',
+      S10: 'M10,0L20,0L30,0'
+    })
+  })
+})
+
+describe('speedBucket', () => {
+  it.each([
+    [0, 0],
+    [99, 0],
+    [100, 1],
+    [550, 5],
+    [1099, 10],
+    [1100, 10],
+    [-50, 0],
+    [2000, 10]
+  ])('maps %i to bucket %i', (speed, expected) => {
+    expect(speedBucket(speed, { min: 0, max: 1100 })).toBe(expected)
+  })
+
+  it('uses the first bucket for an empty or missing range', () => {
+    expect(speedBucket(1000, { min: 1000, max: 1000 })).toBe(0)
+    expect(speedBucket(1000, null)).toBe(0)
   })
 })

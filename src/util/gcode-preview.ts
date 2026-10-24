@@ -1,6 +1,20 @@
-import type { BuildLayerPathsOptions, LayerPaths, MoveStore, Point, Tool } from '@/store/gcodePreview/types'
+import type { BuildLayerPathsOptions, LayerPaths, MinMax, MoveStore, Point } from '@/store/gcodePreview/types'
 import { MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from './decimal-round'
+
+export const SPEED_BUCKETS = 11
+
+export const speedBucket = (speed: number, range: Readonly<MinMax> | null | undefined): number => {
+  if (!range || range.max <= range.min) {
+    return 0
+  }
+
+  const bucket = Math.floor(((speed - range.min) / (range.max - range.min)) * SPEED_BUCKETS)
+
+  return Math.min(SPEED_BUCKETS - 1, Math.max(0, bucket))
+}
+
+const TRAVELING = -1
 
 export const binarySearch = (length: number, comp: (index: number) => number): number => {
   let topBound = length - 1
@@ -91,10 +105,18 @@ export const buildLayerPaths = (
     includeExtrusions = true,
     includeMoves = false,
     includeRetractions = false,
-    includeTools = false
+    includeTools = false,
+    colorBy = 'tool',
+    speedRange
   } = options ?? {}
 
-  const { x, y, tool, flags: moveFlags, length } = moves
+  const { x, y, tool, role, speed, flags: moveFlags, length } = moves
+
+  const groupPrefix = colorBy === 'role'
+    ? 'R'
+    : colorBy === 'speed'
+      ? 'S'
+      : 'T'
 
   const startIndex = Math.min(startMove, length - 1)
 
@@ -108,8 +130,7 @@ export const buildLayerPaths = (
   const retractions: Point[] = []
   const unretractions: Point[] = []
 
-  // tool currently laying down extrusions, or -1 while traveling
-  let activeTool = -1
+  let activeGroup = TRAVELING
   let currentTool = 0
   let activePath: string[] = []
 
@@ -121,35 +142,41 @@ export const buildLayerPaths = (
     const flags = moveFlags[index]
 
     if ((flags & MoveFlags.Extruding) !== 0) {
-      if (includeRetractions && activeTool < 0) {
+      if (includeRetractions && activeGroup === TRAVELING) {
         unretractions.push({
           x: formatCoordinate(toolheadX),
           y: formatCoordinate(toolheadY)
         })
       }
 
-      if (includeExtrusions) {
-        if (activeTool !== currentTool) {
-          activePath = extrusionPaths.get(currentTool) ?? []
+      const group = colorBy === 'role'
+        ? role[index]
+        : colorBy === 'speed'
+          ? speedBucket(speed[index], speedRange)
+          : currentTool
 
-          extrusionPaths.set(currentTool, activePath)
+      if (includeExtrusions) {
+        if (activeGroup !== group) {
+          activePath = extrusionPaths.get(group) ?? []
+
+          extrusionPaths.set(group, activePath)
           activePath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
         }
 
         activePath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
       }
 
-      activeTool = currentTool
+      activeGroup = group
     } else {
       if (includeMoves) {
-        if (activeTool >= 0) {
+        if (activeGroup !== TRAVELING) {
           movesPath.push(`M${formatCoordinate(toolheadX)},${formatCoordinate(toolheadY)}`)
         }
 
         movesPath.push(moveToSVGPath(moves, index, toolheadX, toolheadY))
       }
 
-      activeTool = -1
+      activeGroup = TRAVELING
 
       if (includeRetractions && (flags & MoveFlags.Retracting) !== 0) {
         retractions.push({
@@ -163,10 +190,10 @@ export const buildLayerPaths = (
     toolheadY = y[index]
   }
 
-  const extrusions = {} as Record<Tool, string>
+  const extrusions: Record<string, string> = {}
 
-  for (const [toolIndex, path] of extrusionPaths) {
-    extrusions[`T${toolIndex}`] = path.join('')
+  for (const [group, path] of extrusionPaths) {
+    extrusions[`${groupPrefix}${group}`] = path.join('')
   }
 
   return Object.freeze({

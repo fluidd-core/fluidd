@@ -1,6 +1,7 @@
 <template>
   <app-focusable-container
     ref="container"
+    class="gcode-preview"
     :disabled="disabled"
     @focus="focused = true"
     @blur="focused = false"
@@ -177,10 +178,10 @@
           class="layer"
         >
           <path
-            v-for="(extrusion, tool) in svgPathCurrent.extrusions"
-            :key="tool"
+            v-for="(extrusion, group) in svgPathCurrent.extrusions"
+            :key="group"
             :d="extrusion"
-            :stroke="toolColors[tool]"
+            :stroke="extrusionColors[group]"
             :stroke-width="extrusionLineWidth"
             :shape-rendering="shapeRendering"
           />
@@ -315,17 +316,38 @@
           <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
         </v-btn>
       </div>
-      <div
-        v-if="tools.length > 0"
-        class="mt-1"
-      >
-        <gcode-preview-tool
-          v-for="(color, tool) in toolColors"
-          :key="tool"
-          :tool="tool"
-          :color="color"
-          :active="svgPathCurrent.tool === tool"
+      <div class="mt-1">
+        <gcode-preview-select
+          v-model="colorMode"
+          :items="colorModes"
         />
+      </div>
+      <div class="legend my-1">
+        <template v-if="colorMode === 'role' && hasRoles">
+          <gcode-preview-tool
+            v-for="role in roles"
+            :key="`role:${role}`"
+            :label="$t(`app.gcode.role.${roleNames[role]}`).toString()"
+            :color="extrusionColors[`R${role}`]"
+          />
+        </template>
+        <template v-else-if="colorMode === 'speed' && speedBuckets.length > 0">
+          <gcode-preview-tool
+            v-for="bucket in speedBuckets"
+            :key="`speed:${bucket.color}`"
+            :label="speedLabel(bucket)"
+            :color="bucket.color"
+          />
+        </template>
+        <template v-else-if="tools.length > 0">
+          <gcode-preview-tool
+            v-for="(color, tool) in toolColors"
+            :key="tool"
+            :label="tool"
+            :color="color"
+            :active="svgPathCurrent.tool === tool"
+          />
+        </template>
       </div>
     </div>
     <div
@@ -343,10 +365,13 @@ import { markRaw } from 'vue'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, BuildLayerPathsOptions, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
+import type { BBox, BuildLayerPathsOptions, ColorMode, Layer, LayerPaths, SpeedBucket, Tool } from '@/store/gcodePreview/types'
+import { ExtrusionRole } from '@/store/gcodePreview/types'
+import { snakeCase } from 'lodash-es'
 import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
+import GcodePreviewSelect from './GcodePreviewSelect.vue'
 import GcodePreviewTool from './GcodePreviewTool.vue'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { BedSize } from '@/store/printer/types'
@@ -355,6 +380,7 @@ import type { BedSize } from '@/store/printer/types'
   components: {
     ExcludeObjects,
     GcodePreviewButton,
+    GcodePreviewSelect,
     GcodePreviewTool
   }
 })
@@ -520,6 +546,72 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
+  get colorMode (): ColorMode {
+    return this.$typedGetters['gcodePreview/getColorMode']
+  }
+
+  set colorMode (value: ColorMode) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.colorMode',
+      value,
+      server: true
+    })
+  }
+
+  get colorModes () {
+    return [
+      {
+        text: this.$t('app.gcode.label.color_by_tool').toString(),
+        value: 'tool'
+      },
+      {
+        text: this.$t('app.gcode.label.color_by_feature').toString(),
+        value: 'role',
+        disabled: !this.hasRoles
+      },
+      {
+        text: this.$t('app.gcode.label.color_by_speed').toString(),
+        value: 'speed',
+        disabled: this.speedBuckets.length === 0
+      }
+    ]
+  }
+
+  get roles (): readonly ExtrusionRole[] {
+    return this.$typedState.gcodePreview.roles
+  }
+
+  get hasRoles (): boolean {
+    return this.roles
+      .some(role => role !== ExtrusionRole.None)
+  }
+
+  get roleNames (): Record<number, string> {
+    return Object.entries(ExtrusionRole)
+      .reduce<Record<number, string>>((names, [name, role]) => {
+        names[role] = snakeCase(name)
+
+        return names
+      }, {})
+  }
+
+  get speedBuckets (): readonly SpeedBucket[] {
+    return this.$typedGetters['gcodePreview/getSpeedBuckets']
+  }
+
+  speedLabel (bucket: SpeedBucket): string {
+    const min = Math.round(bucket.min)
+    const max = Math.round(bucket.max)
+
+    return min === max
+      ? `${min} mm/s`
+      : `${min} - ${max} mm/s`
+  }
+
+  get extrusionColors (): Record<string, string> {
+    return this.$typedGetters['gcodePreview/getExtrusionColors']
+  }
+
   get shapeRendering () {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
@@ -628,6 +720,8 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
     const options: BuildLayerPathsOptions = {
+      colorBy: this.colorMode,
+      speedRange: this.$typedState.gcodePreview.speedRange,
       includeExtrusions: this.showExtrusions,
       includeMoves: this.showMoves,
       includeRetractions: this.showRetractions,
@@ -835,6 +929,12 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     top: 0;
     border-bottom-right-radius: 4px;
   }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 280px;
+  }
+
   .preview-name {
     bottom: 0;
     border-top-right-radius: 4px;
@@ -847,7 +947,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  :deep(.v-input__slot) {
+  .gcode-preview :deep(.app-focusable-container__slot) {
     overflow: hidden;
     max-height: calc(100vh - 398px);
     max-height: calc(100svh - 398px);

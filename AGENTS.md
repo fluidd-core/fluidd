@@ -168,8 +168,17 @@ src/
 - Parsed in `src/workers/parseGcode.worker.ts` → `parseGcode.ts` — streamed via `fetch` +
   `ReadableStream`, reporting progress by file position
 - Result is a **columnar `MoveStore`** of typed arrays, not `Move` objects (`src/store/gcodePreview/types.ts`):
-  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags` `Uint8Array`, `filePosition` `Uint32Array`,
-  plus a `length` — every column is indexed by the same move index
+  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags`/`role` `Uint8Array`, `speed` `Uint16Array`,
+  `filePosition` `Uint32Array`, plus a `length` — every column is indexed by the same move index
+- `role` is an `ExtrusionRole` (PrusaSlicer's 15-role enum, Brim folded into Skirt), sticky from the
+  last role comment. `src/workers/gcode-extrusion-roles.ts` maps every slicer's tags through one
+  tag-agnostic dictionary (no tag value collides across slicers) — no slicer detection.
+  `parseLine` returns whole-line comments as a separate `comment` type; slicers never put a role
+  tag after a command
+- `speed` is the sticky feedrate in **mm/min**, clamped to `0xffff` (`MAX_SPEED`) — a typed array
+  write wraps rather than saturates. The UI shows mm/s
+- The result also carries `roles` (sorted distinct roles of extruding moves) and `speedRange`
+  (min/max over extruding moves, whole file — keeps the speed legend stable across layers)
 - `x`/`y`/`z` are **forward-filled** absolute positions after each move — there are no `undefined`
   axes to fall back through
 - `i`/`j` are arc centre offsets, **truncated after the last `Arc` move** — only read them when
@@ -185,6 +194,10 @@ src/
 - SVG path data is built by `buildLayerPaths` in `src/util/gcode-preview.ts` (extracted from the old
   `getPaths` getter, which now just delegates). Every emitted `d` **must** start with a moveto — a
   `d` beginning with `L` or `A` renders nothing
+- `LayerPaths.extrusions` is keyed by colour group, chosen by `colorBy`
+  (`uiSettings.gcodePreview.colorMode`): `T<tool>`, `R<role>` or `S<bucket>`, where `speedBucket`
+  splits `speedRange` into `SPEED_BUCKETS` (11). Colours come from `gcodePreview/getExtrusionColors`;
+  only the current layer is coloured, the other layers stay grey
 - Oversized files are truncated by the parser, which sets `truncated` on the result;
   `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
   (`app.general.msg.gcode_preview_truncated`)

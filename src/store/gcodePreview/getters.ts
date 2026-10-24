@@ -1,13 +1,39 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, Tool } from './types'
-import { MoveFlags } from './types'
+import type { BBox, BuildLayerPathsOptions, ColorMode, GcodePreviewState, Layer, LayerPaths, Part, SpeedBucket, Tool } from './types'
+import { ExtrusionRole, MoveFlags } from './types'
 import type { RootState } from '../types'
-import { binarySearch, buildLayerPaths } from '@/util/gcode-preview'
+import { binarySearch, buildLayerPaths, SPEED_BUCKETS } from '@/util/gcode-preview'
 import decimalRound from '@/util/decimal-round'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
 const lightDefaultColors = Object.freeze(['#000', ...defaultColors])
 const darkDefaultColors = Object.freeze(['#FFF', ...defaultColors])
+
+const roleColors = [
+  '#E6B3B3', // None
+  '#FFE64D', // Perimeter
+  '#FF7D38', // ExternalPerimeter
+  '#1F1FFF', // OverhangPerimeter
+  '#B03029', // InternalInfill
+  '#9654CC', // SolidInfill
+  '#F04040', // TopSolidInfill
+  '#FF8C69', // Ironing
+  '#4D80BA', // BridgeInfill
+  '#FFFFFF', // GapFill
+  '#00876E', // Skirt
+  '#00FF00', // SupportMaterial
+  '#008000', // SupportMaterialInterface
+  '#B3E3AB', // WipeTower
+  '#5ED194' // Custom
+]
+const darkRoleColors = Object.freeze(roleColors)
+// white gap fill disappears on a light background
+const lightRoleColors = Object.freeze(roleColors.map((color, role) => role === ExtrusionRole.GapFill ? '#333333' : color))
+
+const speedColors = Object.freeze([
+  '#0B2C7A', '#135985', '#1C8891', '#04D60F', '#AAF200', '#FCF903',
+  '#F5CE0A', '#D16830', '#C2523C', '#942616', '#6B1B0F'
+])
 
 export const getters = {
   getLayers: (state, getters, rootState): readonly Layer[] => {
@@ -170,7 +196,84 @@ export const getters = {
         return tools
       }, {})
 
-    return tools
+    return Object.freeze(tools)
+  },
+
+  getColorMode: (state, getters, rootState): ColorMode => {
+    return rootState.config.uiSettings.gcodePreview.colorMode
+  },
+
+  getRoleColors: (state, getters, rootState): Record<string, string> => {
+    const colors = rootState.config.uiSettings.theme.isDark
+      ? darkRoleColors
+      : lightRoleColors
+
+    return Object.freeze(
+      colors
+        .reduce<Record<string, string>>((roles, color, role) => {
+          roles[`R${role}`] = color
+
+          return roles
+        }, {})
+    )
+  },
+
+  getSpeedBuckets: (state): readonly SpeedBucket[] => {
+    const range = state.speedRange
+
+    if (!range) {
+      return []
+    }
+
+    const min = range.min / 60
+    const max = range.max / 60
+
+    if (max <= min) {
+      return [
+        {
+          min,
+          max,
+          color: speedColors[0]
+        }
+      ]
+    }
+
+    const step = (max - min) / SPEED_BUCKETS
+
+    return Object.freeze(
+      speedColors
+        .map((color, index) => ({
+          min: min + step * index,
+          max: min + step * (index + 1),
+          color
+        }))
+    )
+  },
+
+  getSpeedColors: (state, getters): Record<string, string> => {
+    const buckets: readonly SpeedBucket[] = getters.getSpeedBuckets
+
+    return Object.freeze(
+      buckets
+        .reduce<Record<string, string>>((colors, bucket, index) => {
+          colors[`S${index}`] = bucket.color
+
+          return colors
+        }, {})
+    )
+  },
+
+  getExtrusionColors: (state, getters): Record<string, string> => {
+    const colorMode: ColorMode = getters.getColorMode
+
+    switch (colorMode) {
+      case 'role':
+        return getters.getRoleColors
+      case 'speed':
+        return getters.getSpeedColors
+      default:
+        return getters.getToolColors
+    }
   },
 
   getPaths: (state) => (startMove: number, endMove: number, options?: BuildLayerPathsOptions): Readonly<LayerPaths> => {
