@@ -316,13 +316,12 @@
           <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
         </v-btn>
       </div>
-      <div class="mt-1">
-        <gcode-preview-select
-          v-model="colorMode"
-          :items="colorModes"
-        />
-      </div>
-      <div class="legend my-1">
+      <gcode-preview-select
+        v-model="colorMode"
+        :items="colorModes"
+        class="mt-1"
+      />
+      <div class="legend mb-1">
         <template v-if="colorMode === 'role' && hasRoles">
           <gcode-preview-tool
             v-for="role in roles"
