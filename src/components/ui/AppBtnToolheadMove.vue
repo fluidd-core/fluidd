@@ -8,7 +8,7 @@
         :disabled="disabled"
         min-width="40"
         :color="color"
-        class="px-2"
+        class="app-btn-toolhead-move px-2"
         v-bind="{...$attrs, ...attrs}"
         v-on="{...$listeners, ...on}"
       >

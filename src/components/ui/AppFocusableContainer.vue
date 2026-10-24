@@ -1,5 +1,6 @@
 <template>
   <div
+    class="app-focusable-container"
     @focusin="hasFocus = true"
     @focusout="hasFocus = false"
   >
@@ -14,7 +15,7 @@
       <div class="v-input__control">
         <div
           ref="input-slot"
-          class="v-input__slot"
+          class="app-focusable-container__slot v-input__slot"
           :tabindex="disabled ? undefined : 0"
         >
           <slot />
@@ -59,13 +60,15 @@ export default class AppFocusableContainer extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-input__slot) {
-    padding: 0px !important;
-    outline: none !important;
-    cursor: default !important;
+  .app-focusable-container {
+    .app-focusable-container__slot {
+      padding: 0px !important;
+      outline: none !important;
+      cursor: default !important;
 
-    fieldset {
-      top: 0px !important;
+      fieldset {
+        top: 0px !important;
+      }
     }
   }
 </style>

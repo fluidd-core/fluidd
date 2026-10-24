@@ -7,6 +7,7 @@
     :outlined="outlined"
     :text="text"
     :plain="plain"
+    class="app-btn"
     :class="{
       'grey--text text--darken-3': colorIsLight
     }"

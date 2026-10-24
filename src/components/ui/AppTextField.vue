@@ -7,6 +7,7 @@
     <v-text-field
       v-bind="$attrs"
       v-model="currentValue"
+      class="app-text-field"
       :class="{
         'v-input--width-small': small,
         'v-input--width-x-small': xSmall
