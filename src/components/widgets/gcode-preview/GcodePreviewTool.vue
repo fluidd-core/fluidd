@@ -11,18 +11,17 @@
         background: color
       }"
     />
-    {{ tool }}
+    {{ label }}
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import type { Tool } from '@/store/gcodePreview/types'
 
 @Component({})
 export default class GcodePreviewTool extends Vue {
-  @Prop({ type: String, required: true })
-  readonly tool!: Tool
+  @Prop({ type: [String, Number], required: true })
+  readonly label!: string | number
 
   @Prop({ type: String, required: true })
   readonly color!: string
@@ -47,6 +46,8 @@ export default class GcodePreviewTool extends Vue {
     border-radius: 6px;
     align-items: center;
     padding: 0 4px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
 
     &.active {
       border-color: map-deep-get($material-dark, 'text', 'primary');

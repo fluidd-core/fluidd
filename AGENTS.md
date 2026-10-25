@@ -168,8 +168,22 @@ src/
 - Parsed in `src/workers/parseGcode.worker.ts` → `parseGcode.ts` — streamed via `fetch` +
   `ReadableStream`, reporting progress by file position
 - Result is a **columnar `MoveStore`** of typed arrays, not `Move` objects (`src/store/gcodePreview/types.ts`):
-  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags` `Uint8Array`, `filePosition` `Uint32Array`,
-  plus a `length` — every column is indexed by the same move index
+  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags`/`role`/`fan` `Uint8Array`, `speed` `Uint16Array`,
+  `filePosition` `Uint32Array`, plus a `length` — every column is indexed by the same move index
+- `role` is an `ExtrusionRole` (PrusaSlicer's 15-role enum, Brim folded into Skirt), sticky from the
+  last role comment. `src/workers/gcode-extrusion-roles.ts` merges per-slicer tag lists, taken from
+  each slicer's source, into one case-insensitive dictionary — no slicer detection. A spec
+  ensures a tag shared by two slicers maps to the same role; the code assumes it does.
+  `parseLine` returns whole-line comments as a separate `comment` type; slicers never put a role
+  tag after a command
+- `speed` is the sticky feedrate in **mm/min**, clamped to `0xffff` (`MAX_SPEED`) — a typed array
+  write wraps rather than saturates. The UI shows mm/s
+- `fan` is the sticky part cooling fan as the raw **`M106 S` value (0–255)**, with Klipper's
+  `M106` semantics: a missing `S` is 255, `P` is ignored, `M107` is 0; `SET_FAN_SPEED` only drives
+  `[fan_generic]`, so it is ignored
+- The result also carries `roles` (sorted distinct roles of extruding moves) plus `speedRange` and
+  `fanRange` (`ValueRange`: min/max over extruding moves, whole file — keeps the legends stable
+  across layers — plus PrusaSlicer's `count`, exact only up to 2 distinct values)
 - `x`/`y`/`z` are **forward-filled** absolute positions after each move — there are no `undefined`
   axes to fall back through
 - `i`/`j` are arc centre offsets, **truncated after the last `Arc` move** — only read them when
@@ -185,6 +199,15 @@ src/
 - SVG path data is built by `buildLayerPaths` in `src/util/gcode-preview.ts` (extracted from the old
   `getPaths` getter, which now just delegates). Every emitted `d` **must** start with a moveto — a
   `d` beginning with `L` or `A` renders nothing
+- `LayerPaths.extrusions` is keyed by colour group, chosen by `colorBy`
+  (`uiSettings.gcodePreview.colorMode`): `T<tool>`, `R<role>`, `S<bucket>` or `F<bucket>`, where
+  `rangeBucket` rounds to the nearest of the 11 evenly spaced `rangeColors` stops over
+  `speedRange` / `fanRange`, using PrusaSlicer's range palette. The legends list the stop values
+  like PrusaSlicer's (mm/s, and percent for the fan), or just the values when there are 1 or 2
+  distinct ones. Colours come from
+  `gcodePreview/getExtrusionColors`; only the current layer is coloured, the other layers stay grey
+- There is no colour-mode fallback: a file without role tags or extruding moves draws in one
+  colour (`R0` / `S0` / `F0`) with an empty legend
 - Oversized files are truncated by the parser, which sets `truncated` on the result;
   `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
   (`app.general.msg.gcode_preview_truncated`)
@@ -356,6 +379,9 @@ src/
 - ESLint enforced: `neostandard` + `pluginVue.configs['flat/vue2-recommended']` + `pluginRegexp` + `@vue/eslint-config-typescript`
 - `.editorconfig` rules: 2 spaces, LF line endings, UTF-8, trim trailing whitespace, max line 100 (code)
 - camelCase for variables/methods, PascalCase for components
+- `src/components/ui/` components put a kebab-case class named after the component on their main
+  element (`AppInlineChart` → `app-inline-chart`), with BEM `__element` classes for inner parts
+  (`app-inline-chart__label`). Their scoped styles target these classes, not Vuetify's
 - Any link opening a new tab (`target="_blank"`) **must** also set `rel="noopener noreferrer"` — applies to `<a>`, `<v-btn>`/`<app-btn>` with `:href`, and any HTML strings rendered via `v-safe-html` (e.g. `src/util/link-external-urls.ts`)
 - Use `consola` for logging, not `console.log` (configured in `src/setupConsola.ts` — warn in prod, verbose in dev)
 - Type imports: `import type { ... }` for types only (`verbatimModuleSyntax: true`)

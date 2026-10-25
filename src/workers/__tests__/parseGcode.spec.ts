@@ -1,5 +1,5 @@
 import parseGcode from '../parseGcode'
-import { MoveFlags } from '@/store/gcodePreview/types'
+import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
 
 // a trailing newline is required; the reader only emits complete lines
 const encode = (lines: readonly string[]) => new TextEncoder().encode(`${lines.join('\n')}\n`)
@@ -35,7 +35,7 @@ describe('parseGcode', () => {
 
     expect(moves.length).toBe(4)
 
-    for (const column of [moves.x, moves.y, moves.z, moves.tool, moves.flags, moves.filePosition]) {
+    for (const column of [moves.x, moves.y, moves.z, moves.tool, moves.flags, moves.role, moves.speed, moves.fan, moves.filePosition]) {
       expect(column).toHaveLength(moves.length)
     }
 
@@ -172,6 +172,9 @@ describe('parseGcode', () => {
     expect(result.layers).toHaveLength(0)
     expect(result.parts).toHaveLength(0)
     expect(result.tools).toHaveLength(0)
+    expect(result.roles).toHaveLength(0)
+    expect(result.speedRange).toBeNull()
+    expect(result.fanRange).toBeNull()
     expect(result.bounds).toBeNull()
     expect(result.truncated).toBe(false)
   })
@@ -183,5 +186,108 @@ describe('parseGcode', () => {
     await parse(lines, onProgress)
 
     expect(onProgress).toHaveBeenLastCalledWith(encode(lines).length)
+  })
+
+  it.each([
+    ['TYPE:External perimeter', ExtrusionRole.ExternalPerimeter],
+    [' FEATURE: Outer wall', ExtrusionRole.ExternalPerimeter],
+    ['@AreaBegin "Skirt" 1', ExtrusionRole.Skirt],
+    ['TYPE:Something new', ExtrusionRole.None]
+  ])('records the role set by ;%s', async (comment, role) => {
+    const { moves, roles } = await parse([
+      `;${comment}`,
+      'G1 X10 E1',
+      'G1 X20 E2'
+    ])
+
+    expect([...moves.role]).toEqual([role, role])
+    expect(roles).toEqual([role])
+  })
+
+  it.each([
+    'LAYER_CHANGE',
+    '\'quoted text\''
+  ])('keeps the current role on ;%s', async (comment) => {
+    const { moves } = await parse([
+      ';TYPE:Solid infill',
+      `;${comment}`,
+      'G1 X10 E1'
+    ])
+
+    expect([...moves.role]).toEqual([ExtrusionRole.SolidInfill])
+  })
+
+  it('collects only the roles of extruding moves', async () => {
+    const { moves, roles } = await parse([
+      ';TYPE:Solid infill',
+      'G1 X10 E1',
+      ';TYPE:Perimeter',
+      'G1 X20',
+      ';TYPE:Skirt/Brim',
+      'G1 X30 E2 ; trailing comment',
+      '; not a role',
+      'G1 X40 E3'
+    ])
+
+    expect([...moves.role]).toEqual([
+      ExtrusionRole.SolidInfill,
+      ExtrusionRole.Perimeter,
+      ExtrusionRole.Skirt,
+      ExtrusionRole.Skirt
+    ])
+    expect(roles).toEqual([ExtrusionRole.SolidInfill, ExtrusionRole.Skirt])
+  })
+
+  it('ignores role comments trailing a command', async () => {
+    const { moves } = await parse([
+      ';TYPE:Solid infill',
+      'G1 X10 E1 ;TYPE:Perimeter',
+      'G1 X20 E2'
+    ])
+
+    expect([...moves.role]).toEqual([ExtrusionRole.SolidInfill, ExtrusionRole.SolidInfill])
+  })
+
+  it('records sticky feedrates and the extruding speed range', async () => {
+    const { moves, speedRange } = await parse([
+      'G1 F1200',
+      'G1 X10 E1',
+      'G0 X20 F9000',
+      'G1 X30 E2 F600',
+      'G2 X40 Y0 I5 J0 E3 F1800',
+      'G1 X50 F70000'
+    ])
+
+    expect([...moves.speed]).toEqual([1200, 9000, 600, 1800, 65535])
+    expect(speedRange).toEqual({ min: 600, max: 1800, count: 3 })
+  })
+
+  it.each([
+    [['G1 X10 E1 F600', 'G1 X20 E2'], { min: 600, max: 600, count: 1 }],
+    [['G1 X10 E1 F600', 'G1 X20 E2 F1200', 'G1 X30 E3 F600'], { min: 600, max: 1200, count: 2 }]
+  ])('counts few distinct extruding speeds exactly', async (lines, expected) => {
+    const { speedRange } = await parse(lines)
+
+    expect(speedRange).toEqual(expected)
+  })
+
+  it('records sticky fan speeds like Klipper', async () => {
+    const { moves, fanRange } = await parse([
+      'G1 X10 E1',
+      'M106 S127',
+      'G1 X20 E2',
+      'G0 X30',
+      'M106',
+      'G1 X40 E3',
+      'M106 P2 S0',
+      'G1 X50 E4',
+      'M106 S255',
+      'G0 X60',
+      'M107',
+      'G1 X70 E5'
+    ])
+
+    expect([...moves.fan]).toEqual([0, 127, 127, 255, 0, 255, 0])
+    expect(fanRange).toEqual({ min: 0, max: 255, count: 3 })
   })
 })

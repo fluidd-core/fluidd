@@ -119,7 +119,8 @@ export const createState = (): ConfigState => {
         showExtrusions: true,
         showRetractions: true,
         showParts: true,
-        followProgress: false
+        followProgress: false,
+        colorMode: 'tool'
       },
       fileSystem: {
         activeFilters: {},

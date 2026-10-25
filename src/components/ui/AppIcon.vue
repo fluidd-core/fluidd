@@ -1,5 +1,5 @@
 <template>
-  <div class="logo-wrapper">
+  <div class="app-icon">
     <inline-svg
       :src="logoSrc"
     />
@@ -23,7 +23,7 @@ export default class AppIcon extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .logo-wrapper {
+  .app-icon {
     display: flex;
   }
 </style>

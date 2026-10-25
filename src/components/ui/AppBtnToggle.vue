@@ -1,6 +1,7 @@
 <template>
   <v-btn-toggle
     v-model="inputValue"
+    class="app-btn-toggle"
     :class="{
       'elevation-2': !disabled
     }"

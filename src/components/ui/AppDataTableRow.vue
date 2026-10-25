@@ -1,6 +1,7 @@
 <template>
   <tr
     v-bind="$attrs"
+    class="app-data-table-row"
     :class="{
       'v-data-table__selected': isSelected
     }"

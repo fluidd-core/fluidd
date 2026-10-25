@@ -1,7 +1,7 @@
 <template>
   <v-text-field
     v-model="inputValue"
-    class="app-text-field"
+    class="app-text-field-with-copy"
     v-bind="$attrs"
     v-on="$listeners"
   >
@@ -15,7 +15,7 @@
           <app-btn
             v-bind="attrs"
             icon
-            class="btn-copy"
+            class="app-text-field-with-copy__btn-copy"
             @click="handleCopy"
             v-on="on"
           >
@@ -23,7 +23,7 @@
               <v-icon
                 :key="hasCopied"
                 dense
-                class="icon-copy"
+                class="app-text-field-with-copy__icon-copy"
               >
                 {{ hasCopied ? '$check' : '$contentCopy' }}
               </v-icon>
@@ -72,13 +72,13 @@ export default class AppTextFieldWithCopy extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .app-text-field {
-    .btn-copy {
+  .app-text-field-with-copy {
+    .app-text-field-with-copy__btn-copy {
       margin-top: -8px;
       margin-right: -2px;
     }
 
-    .icon-copy {
+    .app-text-field-with-copy__icon-copy {
       position: absolute;
     }
   }
