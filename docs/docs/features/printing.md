@@ -30,8 +30,8 @@ Less common options can be found on Fluidd's settings page.
 
 ### Color Modes
 
-The dropdown below the display options picks how the current layer's
-extrusions are colored:
+The menu above the legend picks how the current layer's extrusions are
+colored:
 
 - **Tool** — one color per tool, using the filament colors from the file
   metadata when available
@@ -39,11 +39,14 @@ extrusions are colored:
   support, wipe tower, etc.), read from the comments your slicer writes into
   the G-code
 - **Speed (mm/s)** — a blue-to-red gradient across the file's range of extrusion
-  speeds, with the legend showing each color's range in mm/s
+  speeds, with the legend showing each color's range in mm/s. This is the
+  feedrate the G-code commands, not the speed reached after acceleration
 
 Feature coloring recognizes the comments written by PrusaSlicer, SuperSlicer,
 OrcaSlicer, Bambu Studio, Cura, ideaMaker, Simplify3D, KISSlicer, and
-CraftWare. It is unavailable for files without feature comments.
+CraftWare. For files without feature comments it is unavailable, and the
+preview falls back to Tool coloring while keeping your choice for the next
+file.
 
 ### Exclude Object
 

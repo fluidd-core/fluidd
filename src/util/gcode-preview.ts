@@ -1,5 +1,5 @@
-import type { BuildLayerPathsOptions, LayerPaths, MinMax, MoveStore, Point } from '@/store/gcodePreview/types'
-import { MoveFlags } from '@/store/gcodePreview/types'
+import type { BuildLayerPathsOptions, ColorMode, LayerPaths, MinMax, MoveStore, Point } from '@/store/gcodePreview/types'
+import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from './decimal-round'
 
 export const SPEED_BUCKETS = 11
@@ -12,6 +12,22 @@ export const speedBucket = (speed: number, range: Readonly<MinMax> | null | unde
   const bucket = Math.floor(((speed - range.min) / (range.max - range.min)) * SPEED_BUCKETS)
 
   return Math.min(SPEED_BUCKETS - 1, Math.max(0, bucket))
+}
+
+export const hasExtrusionRoles = (roles: readonly ExtrusionRole[]): boolean => {
+  return roles
+    .some(role => role !== ExtrusionRole.None)
+}
+
+export const effectiveColorMode = (colorMode: ColorMode, roles: readonly ExtrusionRole[], speedRange: Readonly<MinMax> | null): ColorMode => {
+  switch (colorMode) {
+    case 'role':
+      return hasExtrusionRoles(roles) ? colorMode : 'tool'
+    case 'speed':
+      return speedRange ? colorMode : 'tool'
+    default:
+      return colorMode
+  }
 }
 
 const TRAVELING = -1

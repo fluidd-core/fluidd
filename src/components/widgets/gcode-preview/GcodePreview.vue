@@ -322,7 +322,7 @@
         class="mt-1"
       />
       <div class="legend mb-1">
-        <template v-if="colorMode === 'role' && hasRoles">
+        <template v-if="colorMode === 'role'">
           <gcode-preview-tool
             v-for="role in roles"
             :key="`role:${role}`"
@@ -330,7 +330,7 @@
             :color="extrusionColors[`R${role}`]"
           />
         </template>
-        <template v-else-if="colorMode === 'speed' && speedBuckets.length > 0">
+        <template v-else-if="colorMode === 'speed'">
           <gcode-preview-tool
             v-for="bucket in speedBuckets"
             :key="`speed:${bucket.color}`"
@@ -581,8 +581,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get hasRoles (): boolean {
-    return this.roles
-      .some(role => role !== ExtrusionRole.None)
+    return this.$typedGetters['gcodePreview/getHasRoles']
   }
 
   get roleNames (): Record<number, string> {
