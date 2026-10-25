@@ -576,19 +576,23 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return [
       {
         text: this.$t('app.gcode.label.color_by_tool').toString(),
-        value: 'tool'
+        value: 'tool',
+        icon: '$printer3dNozzle'
       },
       {
         text: this.$t('app.gcode.label.color_by_feature').toString(),
-        value: 'role'
+        value: 'role',
+        icon: '$featureType'
       },
       {
         text: this.$t('app.gcode.label.color_by_speed').toString(),
-        value: 'speed'
+        value: 'speed',
+        icon: '$speedometer'
       },
       {
         text: this.$t('app.gcode.label.color_by_fan').toString(),
-        value: 'fan'
+        value: 'fan',
+        icon: '$fan'
       }
     ]
   }

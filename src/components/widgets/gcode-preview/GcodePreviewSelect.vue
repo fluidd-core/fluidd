@@ -34,6 +34,11 @@
           :key="item.value"
           :value="item.value"
         >
+          <v-list-item-icon v-if="item.icon">
+            <v-icon>
+              {{ item.icon }}
+            </v-icon>
+          </v-list-item-icon>
           <v-list-item-title>
             {{ item.text }}
           </v-list-item-title>
@@ -49,7 +54,8 @@ import BrowserMixin from '@/mixins/browser'
 
 type GcodePreviewSelectItem = {
   text: string,
-  value: string
+  value: string,
+  icon?: string
 }
 
 @Component({})
