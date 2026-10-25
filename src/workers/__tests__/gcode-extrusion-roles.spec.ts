@@ -13,6 +13,7 @@ describe('parseExtrusionRoleComment', () => {
     ['FEATURE: Brim', ExtrusionRole.Skirt],
     ['FEATURE: Bottom surface', ExtrusionRole.SolidInfill],
     ['TYPE:Internal bridge', ExtrusionRole.BridgeInfill],
+    ['TYPE:Internal Bridge', ExtrusionRole.BridgeInfill],
     ['FEATURE: Support transition', ExtrusionRole.None],
     ['TYPE:FILL', ExtrusionRole.InternalInfill],
     ['TYPE:SKIN', ExtrusionRole.SolidInfill],

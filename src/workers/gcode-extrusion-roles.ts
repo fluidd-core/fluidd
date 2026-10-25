@@ -1,8 +1,13 @@
 import { ExtrusionRole } from '@/store/gcodePreview/types'
 
+// tags are matched case-insensitively
+const roleMap = (entries: [string, ExtrusionRole][]) => new Map(
+  entries.map(([tag, role]) => [tag.toLowerCase(), role])
+)
+
 // Based on PrusaSlicer's ProcessorImpl.cpp tables, except "Bottom surface" and
 // "Internal bridge", which PrusaSlicer maps to None
-const typeRoles = new Map<string, ExtrusionRole>([
+const typeRoles = roleMap([
   ['Perimeter', ExtrusionRole.Perimeter],
   ['External perimeter', ExtrusionRole.ExternalPerimeter],
   ['Overhang perimeter', ExtrusionRole.OverhangPerimeter],
@@ -37,19 +42,16 @@ const typeRoles = new Map<string, ExtrusionRole>([
   ['FILL', ExtrusionRole.InternalInfill],
   ['PRIME-TOWER', ExtrusionRole.WipeTower],
   ['SKIN', ExtrusionRole.SolidInfill],
-  ['SKIRT', ExtrusionRole.Skirt],
-  ['SUPPORT', ExtrusionRole.SupportMaterial],
   ['SUPPORT-INTERFACE', ExtrusionRole.SupportMaterialInterface],
   ['WALL-OUTER', ExtrusionRole.ExternalPerimeter],
   ['WALL-INNER', ExtrusionRole.Perimeter],
-  ['BRIDGE', ExtrusionRole.BridgeInfill],
   ['GAP-FILL', ExtrusionRole.GapFill],
   ['RAFT', ExtrusionRole.Skirt],
   ['SOLID-FILL', ExtrusionRole.SolidInfill],
   ['TOP-SURFACE', ExtrusionRole.TopSolidInfill]
 ])
 
-const simplify3dRoles = new Map<string, ExtrusionRole>([
+const simplify3dRoles = roleMap([
   ['bridge', ExtrusionRole.BridgeInfill],
   ['dense support', ExtrusionRole.SupportMaterialInterface],
   ['gap fill', ExtrusionRole.GapFill],
@@ -63,7 +65,7 @@ const simplify3dRoles = new Map<string, ExtrusionRole>([
   ['support', ExtrusionRole.SupportMaterial]
 ])
 
-const kisslicerRoles = new Map<string, ExtrusionRole>([
+const kisslicerRoles = roleMap([
   ['Perimeter', ExtrusionRole.ExternalPerimeter],
   ['Raft', ExtrusionRole.Skirt],
   ['Sparse Infill', ExtrusionRole.SolidInfill],
@@ -73,7 +75,7 @@ const kisslicerRoles = new Map<string, ExtrusionRole>([
   ['Travel/Ironing', ExtrusionRole.Ironing]
 ])
 
-const craftwareRoles = new Map<string, ExtrusionRole>([
+const craftwareRoles = roleMap([
   ['Bridge', ExtrusionRole.BridgeInfill],
   ['Brim', ExtrusionRole.Skirt],
   ['Infill', ExtrusionRole.InternalInfill],
@@ -91,27 +93,27 @@ const craftwareRegExp = /^@AreaBegin\s*"([^"]*)"/
 
 export const parseExtrusionRoleComment = (comment: string): ExtrusionRole | undefined => {
   if (comment.startsWith('TYPE:')) {
-    return typeRoles.get(comment.substring(5).trim()) ?? ExtrusionRole.None
+    return typeRoles.get(comment.substring(5).trim().toLowerCase()) ?? ExtrusionRole.None
   }
 
   if (comment.startsWith('FEATURE:')) {
-    return typeRoles.get(comment.substring(8).trim()) ?? ExtrusionRole.None
+    return typeRoles.get(comment.substring(8).trim().toLowerCase()) ?? ExtrusionRole.None
   }
 
   if (comment.startsWith('feature ')) {
-    return simplify3dRoles.get(comment.substring(8).trim()) ?? ExtrusionRole.None
+    return simplify3dRoles.get(comment.substring(8).trim().toLowerCase()) ?? ExtrusionRole.None
   }
 
   if (comment.startsWith('\'')) {
     const match = kisslicerRegExp.exec(comment)
 
     if (match) {
-      return kisslicerRoles.get(match[1]) ?? ExtrusionRole.None
+      return kisslicerRoles.get(match[1].toLowerCase()) ?? ExtrusionRole.None
     }
   } else if (comment.startsWith('@AreaBegin')) {
     const match = craftwareRegExp.exec(comment)
 
-    return (match && craftwareRoles.get(match[1])) ?? ExtrusionRole.None
+    return (match && craftwareRoles.get(match[1].toLowerCase())) ?? ExtrusionRole.None
   }
 
   return undefined
