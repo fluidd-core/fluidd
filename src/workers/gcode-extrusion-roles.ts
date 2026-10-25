@@ -1,13 +1,14 @@
 import { ExtrusionRole } from '@/store/gcodePreview/types'
 
+type RoleTags = [tag: string, role: ExtrusionRole][]
+
 // tags are matched case-insensitively
-const roleMap = (entries: [string, ExtrusionRole][]) => new Map(
-  entries.map(([tag, role]) => [tag.toLowerCase(), role])
+const roleMap = (...tables: RoleTags[]) => new Map(
+  tables.flat().map(([tag, role]) => [tag.toLowerCase(), role])
 )
 
-// Based on PrusaSlicer's ProcessorImpl.cpp tables, except "Bottom surface" and
-// "Internal bridge", which PrusaSlicer maps to None
-const typeRoles = roleMap([
+// "Skirt" is from 2.3.1 and earlier
+const prusaSlicerTags: RoleTags = [
   ['Perimeter', ExtrusionRole.Perimeter],
   ['External perimeter', ExtrusionRole.ExternalPerimeter],
   ['Overhang perimeter', ExtrusionRole.OverhangPerimeter],
@@ -22,34 +23,100 @@ const typeRoles = roleMap([
   ['Support material', ExtrusionRole.SupportMaterial],
   ['Support material interface', ExtrusionRole.SupportMaterialInterface],
   ['Wipe tower', ExtrusionRole.WipeTower],
-  ['Custom', ExtrusionRole.Custom],
+  ['Custom', ExtrusionRole.Custom]
+]
 
-  ['Bottom surface', ExtrusionRole.SolidInfill],
-  ['Bridge', ExtrusionRole.BridgeInfill],
-  ['Brim', ExtrusionRole.Skirt],
-  ['Gap infill', ExtrusionRole.GapFill],
+// PrusaSlicer extrudes thin walls as external perimeters
+const superSlicerTags: RoleTags = [
+  ['Internal perimeter', ExtrusionRole.Perimeter],
+  ['External perimeter', ExtrusionRole.ExternalPerimeter],
+  ['Overhang perimeter', ExtrusionRole.OverhangPerimeter],
+  ['Internal infill', ExtrusionRole.InternalInfill],
+  ['Solid infill', ExtrusionRole.SolidInfill],
+  ['Top solid infill', ExtrusionRole.TopSolidInfill],
+  ['Ironing', ExtrusionRole.Ironing],
+  ['Bridge infill', ExtrusionRole.BridgeInfill],
+  ['Internal bridge infill', ExtrusionRole.BridgeInfill],
+  ['Thin wall', ExtrusionRole.ExternalPerimeter],
+  ['Gap fill', ExtrusionRole.GapFill],
+  ['Skirt', ExtrusionRole.Skirt],
+  ['Support material', ExtrusionRole.SupportMaterial],
+  ['Support material interface', ExtrusionRole.SupportMaterialInterface],
+  ['Wipe tower', ExtrusionRole.WipeTower],
+  ['Custom', ExtrusionRole.Custom]
+]
+
+// PrusaSlicer maps "Bottom surface" and "Internal Bridge" to None
+const orcaSlicerTags: RoleTags = [
   ['Inner wall', ExtrusionRole.Perimeter],
-  ['Internal bridge', ExtrusionRole.BridgeInfill],
-  ['Internal solid infill', ExtrusionRole.SolidInfill],
   ['Outer wall', ExtrusionRole.ExternalPerimeter],
   ['Overhang wall', ExtrusionRole.OverhangPerimeter],
-  ['Prime tower', ExtrusionRole.WipeTower],
   ['Sparse infill', ExtrusionRole.InternalInfill],
+  ['Internal solid infill', ExtrusionRole.SolidInfill],
+  ['Top surface', ExtrusionRole.TopSolidInfill],
+  ['Bottom surface', ExtrusionRole.SolidInfill],
+  ['Ironing', ExtrusionRole.Ironing],
+  ['Bridge', ExtrusionRole.BridgeInfill],
+  ['Internal Bridge', ExtrusionRole.BridgeInfill],
+  ['Gap infill', ExtrusionRole.GapFill],
+  ['Skirt', ExtrusionRole.Skirt],
+  ['Brim', ExtrusionRole.Skirt],
   ['Support', ExtrusionRole.SupportMaterial],
   ['Support interface', ExtrusionRole.SupportMaterialInterface],
-  ['Top surface', ExtrusionRole.TopSolidInfill],
+  ['Prime tower', ExtrusionRole.WipeTower],
+  ['Custom', ExtrusionRole.Custom]
+]
 
-  ['FILL', ExtrusionRole.InternalInfill],
-  ['PRIME-TOWER', ExtrusionRole.WipeTower],
-  ['SKIN', ExtrusionRole.SolidInfill],
-  ['SUPPORT-INTERFACE', ExtrusionRole.SupportMaterialInterface],
+const bambuStudioTags: RoleTags = [
+  ['Inner wall', ExtrusionRole.Perimeter],
+  ['Outer wall', ExtrusionRole.ExternalPerimeter],
+  ['Overhang wall', ExtrusionRole.OverhangPerimeter],
+  ['Sparse infill', ExtrusionRole.InternalInfill],
+  ['Floating vertical shell', ExtrusionRole.SolidInfill],
+  ['Internal solid infill', ExtrusionRole.SolidInfill],
+  ['Top surface', ExtrusionRole.TopSolidInfill],
+  ['Bottom surface', ExtrusionRole.SolidInfill],
+  ['Ironing', ExtrusionRole.Ironing],
+  ['Support ironing', ExtrusionRole.Ironing],
+  ['Bridge', ExtrusionRole.BridgeInfill],
+  ['Gap infill', ExtrusionRole.GapFill],
+  ['Skirt', ExtrusionRole.Skirt],
+  ['Brim', ExtrusionRole.Skirt],
+  ['Support', ExtrusionRole.SupportMaterial],
+  ['Support interface', ExtrusionRole.SupportMaterialInterface],
+  ['Prime tower', ExtrusionRole.WipeTower],
+  ['Custom', ExtrusionRole.Custom]
+]
+
+const curaTags: RoleTags = [
   ['WALL-OUTER', ExtrusionRole.ExternalPerimeter],
   ['WALL-INNER', ExtrusionRole.Perimeter],
+  ['SKIN', ExtrusionRole.SolidInfill],
+  ['SUPPORT', ExtrusionRole.SupportMaterial],
+  ['SKIRT', ExtrusionRole.Skirt],
+  ['FILL', ExtrusionRole.InternalInfill],
+  ['SUPPORT-INTERFACE', ExtrusionRole.SupportMaterialInterface],
+  ['PRIME-TOWER', ExtrusionRole.WipeTower]
+]
+
+// from PrusaSlicer's ProcessorImpl.cpp, except "BOTTOM-SURFACE", which it maps to None
+const ideaMakerTags: RoleTags = [
+  ['BOTTOM-SURFACE', ExtrusionRole.SolidInfill],
+  ['BRIDGE', ExtrusionRole.BridgeInfill],
+  ['FILL', ExtrusionRole.InternalInfill],
   ['GAP-FILL', ExtrusionRole.GapFill],
   ['RAFT', ExtrusionRole.Skirt],
   ['SOLID-FILL', ExtrusionRole.SolidInfill],
-  ['TOP-SURFACE', ExtrusionRole.TopSolidInfill]
-])
+  ['SKIRT', ExtrusionRole.Skirt],
+  ['SUPPORT', ExtrusionRole.SupportMaterial],
+  ['TOP-SURFACE', ExtrusionRole.TopSolidInfill],
+  ['WALL-OUTER', ExtrusionRole.ExternalPerimeter],
+  ['WALL-INNER', ExtrusionRole.Perimeter]
+]
+
+export const typeRoleTags = [prusaSlicerTags, superSlicerTags, orcaSlicerTags, bambuStudioTags, curaTags, ideaMakerTags]
+
+const typeRoles = roleMap(...typeRoleTags)
 
 const simplify3dRoles = roleMap([
   ['bridge', ExtrusionRole.BridgeInfill],

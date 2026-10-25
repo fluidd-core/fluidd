@@ -1,4 +1,4 @@
-import { parseExtrusionRoleComment } from '../gcode-extrusion-roles'
+import { parseExtrusionRoleComment, typeRoleTags } from '../gcode-extrusion-roles'
 import { ExtrusionRole } from '@/store/gcodePreview/types'
 
 describe('parseExtrusionRoleComment', () => {
@@ -14,11 +14,14 @@ describe('parseExtrusionRoleComment', () => {
     ['FEATURE: Bottom surface', ExtrusionRole.SolidInfill],
     ['TYPE:Internal bridge', ExtrusionRole.BridgeInfill],
     ['TYPE:Internal Bridge', ExtrusionRole.BridgeInfill],
+    ['TYPE:Internal perimeter', ExtrusionRole.Perimeter],
+    ['TYPE:Thin wall', ExtrusionRole.ExternalPerimeter],
+    ['FEATURE: Floating vertical shell', ExtrusionRole.SolidInfill],
     ['FEATURE: Support transition', ExtrusionRole.None],
     ['TYPE:FILL', ExtrusionRole.InternalInfill],
     ['TYPE:SKIN', ExtrusionRole.SolidInfill],
     ['TYPE:WALL-OUTER', ExtrusionRole.ExternalPerimeter],
-    ['TYPE:BOTTOM-SURFACE', ExtrusionRole.None],
+    ['TYPE:BOTTOM-SURFACE', ExtrusionRole.SolidInfill],
     ['feature outer perimeter', ExtrusionRole.ExternalPerimeter],
     ['feature dense support', ExtrusionRole.SupportMaterialInterface],
     ['\'Perimeter Path\'', ExtrusionRole.ExternalPerimeter],
@@ -39,5 +42,17 @@ describe('parseExtrusionRoleComment', () => {
     '\'quoted text\''
   ])('ignores %s', (comment) => {
     expect(parseExtrusionRoleComment(comment)).toBeUndefined()
+  })
+
+  it('maps every tag shared by several slicers to the same role', () => {
+    const roles = new Map<string, ExtrusionRole>()
+
+    for (const [tag, role] of typeRoleTags.flat()) {
+      const key = tag.toLowerCase()
+
+      expect(roles.get(key) ?? role, tag).toBe(role)
+
+      roles.set(key, role)
+    }
   })
 })

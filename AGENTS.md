@@ -171,9 +171,9 @@ src/
   `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags`/`role`/`fan` `Uint8Array`, `speed` `Uint16Array`,
   `filePosition` `Uint32Array`, plus a `length` — every column is indexed by the same move index
 - `role` is an `ExtrusionRole` (PrusaSlicer's 15-role enum, Brim folded into Skirt), sticky from the
-  last role comment. `src/workers/gcode-extrusion-roles.ts` maps every slicer's tags through one
-  tag-agnostic, case-insensitive dictionary (no tag value collides across slicers) — no slicer
-  detection.
+  last role comment. `src/workers/gcode-extrusion-roles.ts` merges per-slicer tag lists, taken from
+  each slicer's source, into one case-insensitive dictionary — no slicer detection. A spec
+  ensures a tag shared by two slicers maps to the same role; the code assumes it does.
   `parseLine` returns whole-line comments as a separate `comment` type; slicers never put a role
   tag after a command
 - `speed` is the sticky feedrate in **mm/min**, clamped to `0xffff` (`MAX_SPEED`) — a typed array
