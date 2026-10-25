@@ -33,7 +33,6 @@
           v-for="item in items"
           :key="item.value"
           :value="item.value"
-          :disabled="item.disabled"
         >
           <v-list-item-title>
             {{ item.text }}
@@ -50,8 +49,7 @@ import BrowserMixin from '@/mixins/browser'
 
 type GcodePreviewSelectItem = {
   text: string,
-  value: string,
-  disabled?: boolean
+  value: string
 }
 
 @Component({})

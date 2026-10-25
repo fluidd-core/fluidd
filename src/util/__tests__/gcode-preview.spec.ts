@@ -1,6 +1,6 @@
 import type { MoveStore } from '@/store/gcodePreview/types'
 import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
-import { binarySearch, buildLayerPaths, effectiveColorMode, speedBucket } from '../gcode-preview'
+import { binarySearch, buildLayerPaths, speedBucket } from '../gcode-preview'
 
 const searchIn = (values: readonly number[], target: number): number => {
   return binarySearch(values.length, index => target - values[index])
@@ -281,20 +281,5 @@ describe('speedBucket', () => {
   it('uses the first bucket for an empty or missing range', () => {
     expect(speedBucket(1000, { min: 1000, max: 1000 })).toBe(0)
     expect(speedBucket(1000, null)).toBe(0)
-  })
-})
-
-describe('effectiveColorMode', () => {
-  const speedRange = { min: 600, max: 1800 }
-
-  it.each([
-    ['tool', [], null, 'tool'],
-    ['role', [ExtrusionRole.Perimeter], null, 'role'],
-    ['role', [ExtrusionRole.None], speedRange, 'tool'],
-    ['role', [], speedRange, 'tool'],
-    ['speed', [], speedRange, 'speed'],
-    ['speed', [ExtrusionRole.Perimeter], null, 'tool']
-  ] as const)('%s with roles %j and range %j is %s', (colorMode, roles, range, expected) => {
-    expect(effectiveColorMode(colorMode, roles, range)).toBe(expected)
   })
 })

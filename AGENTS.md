@@ -198,9 +198,8 @@ src/
   (`uiSettings.gcodePreview.colorMode`): `T<tool>`, `R<role>` or `S<bucket>`, where `speedBucket`
   splits `speedRange` into `SPEED_BUCKETS` (11). Colours come from `gcodePreview/getExtrusionColors`;
   only the current layer is coloured, the other layers stay grey
-- `gcodePreview/getColorMode` is the **effective** mode (`effectiveColorMode`): a saved `role` or
-  `speed` the file has no data for falls back to `tool`, without overwriting the saved preference.
-  Drawing, legend and menu all read it — never read `uiSettings.gcodePreview.colorMode` directly
+- There is no colour-mode fallback: a file without role tags or extruding moves draws in one
+  colour (`R0` / `S0`) with an empty legend
 - Oversized files are truncated by the parser, which sets `truncated` on the result;
   `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
   (`app.general.msg.gcode_preview_truncated`)

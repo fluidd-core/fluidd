@@ -546,7 +546,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get colorMode (): ColorMode {
-    return this.$typedGetters['gcodePreview/getColorMode']
+    return this.$typedState.config.uiSettings.gcodePreview.colorMode
   }
 
   set colorMode (value: ColorMode) {
@@ -565,23 +565,21 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       },
       {
         text: this.$t('app.gcode.label.color_by_feature').toString(),
-        value: 'role',
-        disabled: !this.hasRoles
+        value: 'role'
       },
       {
         text: this.$t('app.gcode.label.color_by_speed').toString(),
-        value: 'speed',
-        disabled: this.speedBuckets.length === 0
+        value: 'speed'
       }
     ]
   }
 
   get roles (): readonly ExtrusionRole[] {
-    return this.$typedState.gcodePreview.roles
-  }
+    const roles = this.$typedState.gcodePreview.roles
 
-  get hasRoles (): boolean {
-    return this.$typedGetters['gcodePreview/getHasRoles']
+    return roles.some(role => role !== ExtrusionRole.None)
+      ? roles
+      : []
   }
 
   get roleNames (): Record<number, string> {

@@ -44,9 +44,8 @@ colored:
 
 Feature coloring recognizes the comments written by PrusaSlicer, SuperSlicer,
 OrcaSlicer, Bambu Studio, Cura, ideaMaker, Simplify3D, KISSlicer, and
-CraftWare. For files without feature comments it is unavailable, and the
-preview falls back to Tool coloring while keeping your choice for the next
-file.
+CraftWare. For files without feature comments, all extrusions share a single
+color and the legend is empty.
 
 ### Exclude Object
 

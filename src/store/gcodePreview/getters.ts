@@ -1,8 +1,8 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, BuildLayerPathsOptions, ColorMode, GcodePreviewState, Layer, LayerPaths, Part, SpeedBucket, Tool } from './types'
+import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, SpeedBucket, Tool } from './types'
 import { ExtrusionRole, MoveFlags } from './types'
 import type { RootState } from '../types'
-import { binarySearch, buildLayerPaths, effectiveColorMode, hasExtrusionRoles, SPEED_BUCKETS } from '@/util/gcode-preview'
+import { binarySearch, buildLayerPaths, SPEED_BUCKETS } from '@/util/gcode-preview'
 import decimalRound from '@/util/decimal-round'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
@@ -199,14 +199,6 @@ export const getters = {
     return Object.freeze(tools)
   },
 
-  getHasRoles: (state): boolean => {
-    return hasExtrusionRoles(state.roles)
-  },
-
-  getColorMode: (state, getters, rootState): ColorMode => {
-    return effectiveColorMode(rootState.config.uiSettings.gcodePreview.colorMode, state.roles, state.speedRange)
-  },
-
   getRoleColors: (state, getters, rootState): Record<string, string> => {
     const colors = rootState.config.uiSettings.theme.isDark
       ? darkRoleColors
@@ -267,10 +259,8 @@ export const getters = {
     )
   },
 
-  getExtrusionColors: (state, getters): Record<string, string> => {
-    const colorMode: ColorMode = getters.getColorMode
-
-    switch (colorMode) {
+  getExtrusionColors: (state, getters, rootState): Record<string, string> => {
+    switch (rootState.config.uiSettings.gcodePreview.colorMode) {
       case 'role':
         return getters.getRoleColors
       case 'speed':
