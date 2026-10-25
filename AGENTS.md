@@ -200,7 +200,7 @@ src/
   `d` beginning with `L` or `A` renders nothing
 - `LayerPaths.extrusions` is keyed by colour group, chosen by `colorBy`
   (`uiSettings.gcodePreview.colorMode`): `T<tool>`, `R<role>`, `S<bucket>` or `F<bucket>`, where
-  `rangeBucket` rounds to the nearest of `RANGE_BUCKETS` (11) evenly spaced stops over
+  `rangeBucket` rounds to the nearest of the 11 evenly spaced `rangeColors` stops over
   `speedRange` / `fanRange`, using PrusaSlicer's range palette. The legends list the stop values
   like PrusaSlicer's (mm/s, and percent for the fan), or just the values when there are 1 or 2
   distinct ones. Colours come from

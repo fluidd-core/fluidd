@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, ColorStop, Tool, ValueRange } from './types'
 import { ExtrusionRole, MoveFlags } from './types'
 import type { RootState } from '../types'
-import { binarySearch, buildLayerPaths } from '@/util/gcode-preview'
+import { binarySearch, buildLayerPaths, rangeColors } from '@/util/gcode-preview'
 import decimalRound from '@/util/decimal-round'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
@@ -26,27 +26,21 @@ const roleColors = [
   '#B3E3AB', // WipeTower
   '#5ED194' // Custom
 ]
-const darkRoleColors = Object.freeze(roleColors)
-// white gap fill disappears on a light background
-const lightRoleColors = Object.freeze(roleColors.map((color, role) => role === ExtrusionRole.GapFill ? '#333333' : color))
+const groupColors = (prefix: string, colors: readonly string[]) => Object.freeze(
+  colors
+    .reduce<Record<string, string>>((groups, color, index) => {
+      groups[`${prefix}${index}`] = color
 
-// PrusaSlicer's DEFAULT_RANGES_COLORS
-const rangeColors = Object.freeze([
-  '#0B2C7A', '#135985', '#1C8891', '#04D60F', '#AAF200', '#FCF903',
-  '#F5CE0A', '#E38820', '#D16830', '#C2523C', '#942616'
-])
-
-const rangeGroupColors = (prefix: string) => Object.freeze(
-  rangeColors
-    .reduce<Record<string, string>>((colors, color, bucket) => {
-      colors[`${prefix}${bucket}`] = color
-
-      return colors
+      return groups
     }, {})
 )
 
-const speedColors = rangeGroupColors('S')
-const fanColors = rangeGroupColors('F')
+const darkRoleColors = groupColors('R', roleColors)
+// white gap fill disappears on a light background
+const lightRoleColors = groupColors('R', roleColors.map((color, role) => role === ExtrusionRole.GapFill ? '#333333' : color))
+
+const speedColors = groupColors('S', rangeColors)
+const fanColors = groupColors('F', rangeColors)
 
 // same stops as PrusaSlicer's range legend: one per distinct value when there are at most 2
 const rangeStops = (range: Readonly<ValueRange> | null, scale: number): readonly ColorStop[] => {
@@ -57,26 +51,13 @@ const rangeStops = (range: Readonly<ValueRange> | null, scale: number): readonly
   const min = range.min * scale
   const max = range.max * scale
 
-  if (range.count === 1) {
-    return [
-      {
-        value: min,
-        color: rangeColors[0]
-      }
-    ]
-  }
-
-  if (range.count === 2) {
-    return [
-      {
-        value: min,
-        color: rangeColors[0]
-      },
-      {
-        value: max,
-        color: rangeColors[rangeColors.length - 1]
-      }
-    ]
+  if (range.count <= 2) {
+    return Object.freeze(
+      [
+        { value: min, color: rangeColors[0] },
+        { value: max, color: rangeColors[rangeColors.length - 1] }
+      ].slice(0, range.count)
+    )
   }
 
   const step = (max - min) / (rangeColors.length - 1)
@@ -255,18 +236,9 @@ export const getters = {
   },
 
   getRoleColors: (state, getters, rootState): Record<string, string> => {
-    const colors = rootState.config.uiSettings.theme.isDark
+    return rootState.config.uiSettings.theme.isDark
       ? darkRoleColors
       : lightRoleColors
-
-    return Object.freeze(
-      colors
-        .reduce<Record<string, string>>((roles, color, role) => {
-          roles[`R${role}`] = color
-
-          return roles
-        }, {})
-    )
   },
 
   getSpeedStops: (state): readonly ColorStop[] => {

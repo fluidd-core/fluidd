@@ -2,17 +2,23 @@ import type { BuildLayerPathsOptions, LayerPaths, MinMax, MoveStore, Point } fro
 import { MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from './decimal-round'
 
-export const RANGE_BUCKETS = 11
+// PrusaSlicer's DEFAULT_RANGES_COLORS
+export const rangeColors = Object.freeze([
+  '#0B2C7A', '#135985', '#1C8891', '#04D60F', '#AAF200', '#FCF903',
+  '#F5CE0A', '#E38820', '#D16830', '#C2523C', '#942616'
+])
 
-// nearest of RANGE_BUCKETS evenly spaced stops from min to max, like PrusaSlicer's range legend
+const lastRangeBucket = rangeColors.length - 1
+
+// nearest of the evenly spaced rangeColors stops from min to max, like PrusaSlicer's range legend
 export const rangeBucket = (value: number, range: Readonly<MinMax> | null | undefined): number => {
   if (!range || range.max <= range.min) {
     return 0
   }
 
-  const bucket = Math.round(((value - range.min) / (range.max - range.min)) * (RANGE_BUCKETS - 1))
+  const bucket = Math.round(((value - range.min) / (range.max - range.min)) * lastRangeBucket)
 
-  return Math.min(RANGE_BUCKETS - 1, Math.max(0, bucket))
+  return Math.min(lastRangeBucket, Math.max(0, bucket))
 }
 
 const groupPrefixes = {

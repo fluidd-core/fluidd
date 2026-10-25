@@ -383,6 +383,13 @@ import GcodePreviewTool from './GcodePreviewTool.vue'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { BedSize } from '@/store/printer/types'
 
+const roleNames = Object.entries(ExtrusionRole)
+  .reduce<Record<number, string>>((names, [name, role]) => {
+    names[role] = snakeCase(name)
+
+    return names
+  }, {})
+
 @Component({
   components: {
     ExcludeObjects,
@@ -595,12 +602,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get roleNames (): Record<number, string> {
-    return Object.entries(ExtrusionRole)
-      .reduce<Record<number, string>>((names, [name, role]) => {
-        names[role] = snakeCase(name)
-
-        return names
-      }, {})
+    return roleNames
   }
 
   get speedStops (): readonly ColorStop[] {
