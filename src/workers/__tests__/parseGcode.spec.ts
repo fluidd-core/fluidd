@@ -35,7 +35,7 @@ describe('parseGcode', () => {
 
     expect(moves.length).toBe(4)
 
-    for (const column of [moves.x, moves.y, moves.z, moves.tool, moves.flags, moves.role, moves.speed, moves.filePosition]) {
+    for (const column of [moves.x, moves.y, moves.z, moves.tool, moves.flags, moves.role, moves.speed, moves.fan, moves.filePosition]) {
       expect(column).toHaveLength(moves.length)
     }
 
@@ -174,6 +174,7 @@ describe('parseGcode', () => {
     expect(result.tools).toHaveLength(0)
     expect(result.roles).toHaveLength(0)
     expect(result.speedRange).toBeNull()
+    expect(result.fanRange).toBeNull()
     expect(result.bounds).toBeNull()
     expect(result.truncated).toBe(false)
   })
@@ -258,6 +259,35 @@ describe('parseGcode', () => {
     ])
 
     expect([...moves.speed]).toEqual([1200, 9000, 600, 1800, 65535])
-    expect(speedRange).toEqual({ min: 600, max: 1800 })
+    expect(speedRange).toEqual({ min: 600, max: 1800, count: 3 })
+  })
+
+  it.each([
+    [['G1 X10 E1 F600', 'G1 X20 E2'], { min: 600, max: 600, count: 1 }],
+    [['G1 X10 E1 F600', 'G1 X20 E2 F1200', 'G1 X30 E3 F600'], { min: 600, max: 1200, count: 2 }]
+  ])('counts few distinct extruding speeds exactly', async (lines, expected) => {
+    const { speedRange } = await parse(lines)
+
+    expect(speedRange).toEqual(expected)
+  })
+
+  it('records sticky fan speeds like Klipper', async () => {
+    const { moves, fanRange } = await parse([
+      'G1 X10 E1',
+      'M106 S127',
+      'G1 X20 E2',
+      'G0 X30',
+      'M106',
+      'G1 X40 E3',
+      'M106 P2 S0',
+      'G1 X50 E4',
+      'M106 S255',
+      'G0 X60',
+      'M107',
+      'G1 X70 E5'
+    ])
+
+    expect([...moves.fan]).toEqual([0, 127, 127, 255, 0, 255, 0])
+    expect(fanRange).toEqual({ min: 0, max: 255, count: 3 })
   })
 })

@@ -1,4 +1,4 @@
-import type { BBox, ExtrusionRole, Layer, MinMax, MoveStore, Part } from '@/store/gcodePreview/types'
+import type { BBox, ExtrusionRole, Layer, MoveStore, Part, ValueRange } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
 import { consola } from 'consola'
 
@@ -15,7 +15,8 @@ export type ParseGcodeWorkerResultMessage = {
   parts: Part[],
   tools: number[],
   roles: ExtrusionRole[],
-  speedRange: MinMax | null,
+  speedRange: ValueRange | null,
+  fanRange: ValueRange | null,
   bounds: BBox | null,
   truncated: boolean
 }

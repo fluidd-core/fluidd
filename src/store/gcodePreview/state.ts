@@ -10,6 +10,7 @@ export const defaultMoveStore: MoveStore = Object.freeze({
   flags: new Uint8Array(0),
   role: new Uint8Array(0),
   speed: new Uint16Array(0),
+  fan: new Uint8Array(0),
   filePosition: new Uint32Array(0),
   length: 0
 })
@@ -22,6 +23,7 @@ export const createState = (): GcodePreviewState => {
     tools: [],
     roles: [],
     speedRange: null,
+    fanRange: null,
     bounds: null,
     file: null,
     parserProgress: 0,

@@ -2,17 +2,25 @@ import type { BuildLayerPathsOptions, LayerPaths, MinMax, MoveStore, Point } fro
 import { MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from './decimal-round'
 
-export const SPEED_BUCKETS = 11
+export const RANGE_BUCKETS = 11
 
-export const speedBucket = (speed: number, range: Readonly<MinMax> | null | undefined): number => {
+// nearest of RANGE_BUCKETS evenly spaced stops from min to max, like PrusaSlicer's range legend
+export const rangeBucket = (value: number, range: Readonly<MinMax> | null | undefined): number => {
   if (!range || range.max <= range.min) {
     return 0
   }
 
-  const bucket = Math.floor(((speed - range.min) / (range.max - range.min)) * SPEED_BUCKETS)
+  const bucket = Math.round(((value - range.min) / (range.max - range.min)) * (RANGE_BUCKETS - 1))
 
-  return Math.min(SPEED_BUCKETS - 1, Math.max(0, bucket))
+  return Math.min(RANGE_BUCKETS - 1, Math.max(0, bucket))
 }
+
+const groupPrefixes = {
+  tool: 'T',
+  role: 'R',
+  speed: 'S',
+  fan: 'F'
+} as const
 
 const TRAVELING = -1
 
@@ -107,16 +115,13 @@ export const buildLayerPaths = (
     includeRetractions = false,
     includeTools = false,
     colorBy = 'tool',
-    speedRange
+    speedRange,
+    fanRange
   } = options ?? {}
 
-  const { x, y, tool, role, speed, flags: moveFlags, length } = moves
+  const { x, y, tool, role, speed, fan, flags: moveFlags, length } = moves
 
-  const groupPrefix = colorBy === 'role'
-    ? 'R'
-    : colorBy === 'speed'
-      ? 'S'
-      : 'T'
+  const groupPrefix = groupPrefixes[colorBy]
 
   const startIndex = Math.min(startMove, length - 1)
 
@@ -149,11 +154,21 @@ export const buildLayerPaths = (
         })
       }
 
-      const group = colorBy === 'role'
-        ? role[index]
-        : colorBy === 'speed'
-          ? speedBucket(speed[index], speedRange)
-          : currentTool
+      let group: number
+
+      switch (colorBy) {
+        case 'role':
+          group = role[index]
+          break
+        case 'speed':
+          group = rangeBucket(speed[index], speedRange)
+          break
+        case 'fan':
+          group = rangeBucket(fan[index], fanRange)
+          break
+        default:
+          group = currentTool
+      }
 
       if (includeExtrusions) {
         if (activeGroup !== group) {

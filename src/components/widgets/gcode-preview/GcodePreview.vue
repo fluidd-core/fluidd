@@ -332,10 +332,18 @@
         </template>
         <template v-else-if="colorMode === 'speed'">
           <gcode-preview-tool
-            v-for="bucket in speedBuckets"
-            :key="`speed:${bucket.color}`"
-            :label="speedLabel(bucket)"
-            :color="bucket.color"
+            v-for="stop in speedStops"
+            :key="`speed:${stop.color}`"
+            :label="speedLabel(stop)"
+            :color="stop.color"
+          />
+        </template>
+        <template v-else-if="colorMode === 'fan'">
+          <gcode-preview-tool
+            v-for="stop in fanStops"
+            :key="`fan:${stop.color}`"
+            :label="Math.round(stop.value)"
+            :color="stop.color"
           />
         </template>
         <template v-else-if="tools.length > 0">
@@ -364,7 +372,7 @@ import { markRaw } from 'vue'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, BuildLayerPathsOptions, ColorMode, Layer, LayerPaths, SpeedBucket, Tool } from '@/store/gcodePreview/types'
+import type { BBox, BuildLayerPathsOptions, ColorMode, ColorStop, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
 import { ExtrusionRole } from '@/store/gcodePreview/types'
 import { snakeCase } from 'lodash-es'
 import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
@@ -570,6 +578,10 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       {
         text: this.$t('app.gcode.label.color_by_speed').toString(),
         value: 'speed'
+      },
+      {
+        text: this.$t('app.gcode.label.color_by_fan').toString(),
+        value: 'fan'
       }
     ]
   }
@@ -591,17 +603,16 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       }, {})
   }
 
-  get speedBuckets (): readonly SpeedBucket[] {
-    return this.$typedGetters['gcodePreview/getSpeedBuckets']
+  get speedStops (): readonly ColorStop[] {
+    return this.$typedGetters['gcodePreview/getSpeedStops']
   }
 
-  speedLabel (bucket: SpeedBucket): string {
-    const min = Math.round(bucket.min)
-    const max = Math.round(bucket.max)
+  get fanStops (): readonly ColorStop[] {
+    return this.$typedGetters['gcodePreview/getFanStops']
+  }
 
-    return min === max
-      ? `${min} mm/s`
-      : `${min} - ${max} mm/s`
+  speedLabel (stop: ColorStop): string {
+    return stop.value.toFixed(1)
   }
 
   get extrusionColors (): Record<string, string> {
@@ -718,6 +729,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     const options: BuildLayerPathsOptions = {
       colorBy: this.colorMode,
       speedRange: this.$typedState.gcodePreview.speedRange,
+      fanRange: this.$typedState.gcodePreview.fanRange,
       includeExtrusions: this.showExtrusions,
       includeMoves: this.showMoves,
       includeRetractions: this.showRetractions,

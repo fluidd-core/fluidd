@@ -1,8 +1,8 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, SpeedBucket, Tool } from './types'
+import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, ColorStop, Tool, ValueRange } from './types'
 import { ExtrusionRole, MoveFlags } from './types'
 import type { RootState } from '../types'
-import { binarySearch, buildLayerPaths, SPEED_BUCKETS } from '@/util/gcode-preview'
+import { binarySearch, buildLayerPaths } from '@/util/gcode-preview'
 import decimalRound from '@/util/decimal-round'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
@@ -30,10 +30,65 @@ const darkRoleColors = Object.freeze(roleColors)
 // white gap fill disappears on a light background
 const lightRoleColors = Object.freeze(roleColors.map((color, role) => role === ExtrusionRole.GapFill ? '#333333' : color))
 
-const speedColors = Object.freeze([
+// PrusaSlicer's DEFAULT_RANGES_COLORS
+const rangeColors = Object.freeze([
   '#0B2C7A', '#135985', '#1C8891', '#04D60F', '#AAF200', '#FCF903',
-  '#F5CE0A', '#D16830', '#C2523C', '#942616', '#6B1B0F'
+  '#F5CE0A', '#E38820', '#D16830', '#C2523C', '#942616'
 ])
+
+const rangeGroupColors = (prefix: string) => Object.freeze(
+  rangeColors
+    .reduce<Record<string, string>>((colors, color, bucket) => {
+      colors[`${prefix}${bucket}`] = color
+
+      return colors
+    }, {})
+)
+
+const speedColors = rangeGroupColors('S')
+const fanColors = rangeGroupColors('F')
+
+// same stops as PrusaSlicer's range legend: one per distinct value when there are at most 2
+const rangeStops = (range: Readonly<ValueRange> | null, scale: number): readonly ColorStop[] => {
+  if (!range) {
+    return []
+  }
+
+  const min = range.min * scale
+  const max = range.max * scale
+
+  if (range.count === 1) {
+    return [
+      {
+        value: min,
+        color: rangeColors[0]
+      }
+    ]
+  }
+
+  if (range.count === 2) {
+    return [
+      {
+        value: min,
+        color: rangeColors[0]
+      },
+      {
+        value: max,
+        color: rangeColors[rangeColors.length - 1]
+      }
+    ]
+  }
+
+  const step = (max - min) / (rangeColors.length - 1)
+
+  return Object.freeze(
+    rangeColors
+      .map((color, index) => ({
+        value: min + step * index,
+        color
+      }))
+  )
+}
 
 export const getters = {
   getLayers: (state, getters, rootState): readonly Layer[] => {
@@ -214,49 +269,14 @@ export const getters = {
     )
   },
 
-  getSpeedBuckets: (state): readonly SpeedBucket[] => {
-    const range = state.speedRange
-
-    if (!range) {
-      return []
-    }
-
-    const min = range.min / 60
-    const max = range.max / 60
-
-    if (max <= min) {
-      return [
-        {
-          min,
-          max,
-          color: speedColors[0]
-        }
-      ]
-    }
-
-    const step = (max - min) / SPEED_BUCKETS
-
-    return Object.freeze(
-      speedColors
-        .map((color, index) => ({
-          min: min + step * index,
-          max: min + step * (index + 1),
-          color
-        }))
-    )
+  getSpeedStops: (state): readonly ColorStop[] => {
+    // mm/min to mm/s
+    return rangeStops(state.speedRange, 1 / 60)
   },
 
-  getSpeedColors: (state, getters): Record<string, string> => {
-    const buckets: readonly SpeedBucket[] = getters.getSpeedBuckets
-
-    return Object.freeze(
-      buckets
-        .reduce<Record<string, string>>((colors, bucket, index) => {
-          colors[`S${index}`] = bucket.color
-
-          return colors
-        }, {})
-    )
+  getFanStops: (state): readonly ColorStop[] => {
+    // M106 S to percent
+    return rangeStops(state.fanRange, 100 / 255)
   },
 
   getExtrusionColors: (state, getters, rootState): Record<string, string> => {
@@ -264,7 +284,9 @@ export const getters = {
       case 'role':
         return getters.getRoleColors
       case 'speed':
-        return getters.getSpeedColors
+        return speedColors
+      case 'fan':
+        return fanColors
       default:
         return getters.getToolColors
     }

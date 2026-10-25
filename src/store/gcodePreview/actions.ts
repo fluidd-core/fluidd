@@ -61,6 +61,7 @@ export const actions = {
             commit('setTools', message.tools)
             commit('setRoles', message.roles)
             commit('setSpeedRange', message.speedRange)
+            commit('setFanRange', message.fanRange)
             commit('setBounds', message.bounds)
             commit('setParserProgress', payload.file.size)
 
@@ -109,6 +110,7 @@ export const actions = {
     commit('setTools', [])
     commit('setRoles', [])
     commit('setSpeedRange', null)
+    commit('setFanRange', null)
     commit('setBounds', null)
 
     commit('setFile', payload.file)

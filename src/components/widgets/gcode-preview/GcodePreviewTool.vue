@@ -20,8 +20,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class GcodePreviewTool extends Vue {
-  @Prop({ type: String, required: true })
-  readonly label!: string
+  @Prop({ type: [String, Number], required: true })
+  readonly label!: string | number
 
   @Prop({ type: String, required: true })
   readonly color!: string

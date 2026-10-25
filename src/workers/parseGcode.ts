@@ -1,4 +1,4 @@
-import type { BBox, Layer, MinMax, MoveStore, Part } from '@/store/gcodePreview/types'
+import type { BBox, Layer, MoveStore, Part, ValueRange } from '@/store/gcodePreview/types'
 import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from '@/util/decimal-round'
 import { parseExtrusionRoleComment } from './gcode-extrusion-roles'
@@ -31,6 +31,22 @@ const MAX_POLYGON_POINTS = 10_000
 const MAX_FILE_POSITION = 0xffffffff
 
 const MAX_SPEED = 0xffff
+
+// counts like PrusaSlicer's ColorRange: exact up to 2 distinct values
+const updateRange = (range: ValueRange | null, value: number): ValueRange => {
+  if (!range) {
+    return { min: value, max: value, count: 1 }
+  }
+
+  if (value !== range.min && value !== range.max) {
+    range.count++
+  }
+
+  range.min = Math.min(range.min, value)
+  range.max = Math.max(range.max, value)
+
+  return range
+}
 
 const INITIAL_MOVE_CAPACITY = 1 << 14
 const MOVE_GROWTH_FACTOR = 1.5
@@ -243,6 +259,7 @@ const parseGcode = async (
   let moveFlags = new Uint8Array(moveCapacity)
   let moveRole = new Uint8Array(moveCapacity)
   let moveSpeed = new Uint16Array(moveCapacity)
+  let moveFan = new Uint8Array(moveCapacity)
   let moveFilePosition = new Uint32Array(moveCapacity)
   let moveCount = 0
   let lastArcMoveIndex = -1
@@ -251,7 +268,8 @@ const parseGcode = async (
   const parts: Part[] = []
   const tools = new Set<number>()
   const roles = new Set<ExtrusionRole>()
-  let speedRange: MinMax | null = null
+  let speedRange: ValueRange | null = null
+  let fanRange: ValueRange | null = null
 
   let truncated = false
   let newLayerForNextMove = false
@@ -267,6 +285,7 @@ const parseGcode = async (
   let tool = 0
   let role: ExtrusionRole = ExtrusionRole.None
   let feedrate = 0
+  let fan = 0
   let filePosition = 0
   let bounds = createBounds()
   let lastBounds: BBox | null = null
@@ -435,6 +454,18 @@ const parseGcode = async (
             toolhead.z = args.z ?? toolhead.z
           }
           break
+        case 'M106': {
+          // same as Klipper: a missing S is full speed, P is ignored
+          const s = args.s ?? 255
+
+          if (s >= 0) {
+            fan = Math.min(255, Math.round(s))
+          }
+          break
+        }
+        case 'M107':
+          fan = 0
+          break
         case 'M207':
           fwretraction.length = args.s ?? fwretraction.length
           fwretraction.z = args.z ?? fwretraction.z
@@ -570,6 +601,7 @@ const parseGcode = async (
             moveFlags = growUint8Array(moveFlags, moveCapacity)
             moveRole = growUint8Array(moveRole, moveCapacity)
             moveSpeed = growUint16Array(moveSpeed, moveCapacity)
+            moveFan = growUint8Array(moveFan, moveCapacity)
             moveFilePosition = growUint32Array(moveFilePosition, moveCapacity)
           }
 
@@ -582,6 +614,7 @@ const parseGcode = async (
           moveFilePosition[moveCount] = filePosition
           moveRole[moveCount] = role
           moveSpeed[moveCount] = feedrate
+          moveFan[moveCount] = fan
           moveFlags[moveCount] = (
             (extrusion > 0 ? MoveFlags.Extruding : 0) |
             (extrusion < 0 ? MoveFlags.Retracting : 0) |
@@ -596,14 +629,8 @@ const parseGcode = async (
           if (extrusion > 0) {
             roles.add(role)
 
-            const speed = moveSpeed[moveCount]
-
-            if (speedRange) {
-              speedRange.min = Math.min(speedRange.min, speed)
-              speedRange.max = Math.max(speedRange.max, speed)
-            } else {
-              speedRange = { min: speed, max: speed }
-            }
+            speedRange = updateRange(speedRange, feedrate)
+            fanRange = updateRange(fanRange, fan)
           }
 
           moveCount++
@@ -696,6 +723,7 @@ const parseGcode = async (
     flags: moveFlags.slice(0, moveCount),
     role: moveRole.slice(0, moveCount),
     speed: moveSpeed.slice(0, moveCount),
+    fan: moveFan.slice(0, moveCount),
     filePosition: moveFilePosition.slice(0, moveCount),
     length: moveCount
   }
@@ -712,6 +740,7 @@ const parseGcode = async (
     roles: [...roles]
       .sort((a, b) => a - b),
     speedRange,
+    fanRange,
     truncated
   }
 }

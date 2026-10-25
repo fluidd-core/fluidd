@@ -257,6 +257,7 @@ app:
     btn:
       load_current_file: Load Current File
     label:
+      color_by_fan: Fan speed (%)
       color_by_feature: Feature type
       color_by_speed: Speed (mm/s)
       color_by_tool: Tool

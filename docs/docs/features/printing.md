@@ -39,8 +39,10 @@ colored:
   support, wipe tower, etc.), read from the comments your slicer writes into
   the G-code
 - **Speed (mm/s)** — a blue-to-red gradient across the file's range of extrusion
-  speeds, with the legend showing each color's range in mm/s. This is the
+  speeds, with the legend showing the speed at each color in mm/s. This is the
   feedrate the G-code commands, not the speed reached after acceleration
+- **Fan speed (%)** — the same gradient across the file's range of part
+  cooling fan speeds, set by `M106`/`M107`
 
 Feature coloring recognizes the comments written by PrusaSlicer, SuperSlicer,
 OrcaSlicer, Bambu Studio, Cura, ideaMaker, Simplify3D, KISSlicer, and
