@@ -16,7 +16,8 @@ Fluidd is packed with features to help you monitor, control, and manage your
 
     ---
 
-    G-code viewer with multi-tool support, feature type and speed coloring,
+    G-code viewer with multi-tool support, feature type, speed and fan
+    speed coloring,
     object exclusion, thumbnail previews, bed mesh visualization, and print
     history with statistics.
 
