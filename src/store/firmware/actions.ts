@@ -13,6 +13,14 @@ const isAgentCustomEvent = (event: Moonraker.Extensions.AgentEvent): event is Mo
   event.event !== 'disconnected'
 )
 
+const isAgentConnectedEvent = (event: Moonraker.Extensions.AgentEvent): event is Moonraker.Extensions.AgentConnectedEvent => (
+  event.event === 'connected'
+)
+
+const isAgentDisconnectedEvent = (event: Moonraker.Extensions.AgentEvent): event is Moonraker.Extensions.AgentDisconnectedEvent => (
+  event.event === 'disconnected'
+)
+
 const runStateOf = (state: FirmwareState): FirmwareRunState => ({
   busy: state.busy,
   runId: state.runId,
@@ -115,6 +123,18 @@ export const actions = {
   },
 
   async onAgentEvent ({ state, commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
+    if (isAgentConnectedEvent(payload)) {
+      await dispatch('init')
+
+      return
+    }
+
+    if (isAgentDisconnectedEvent(payload)) {
+      await dispatch('onAgentDisconnected')
+
+      return
+    }
+
     if (
       !isAgentCustomEvent(payload) ||
       payload.event !== 'update_response' ||

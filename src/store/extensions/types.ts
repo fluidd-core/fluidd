@@ -4,8 +4,6 @@ export interface ExtensionsState {
 
 export interface MoonrakerAgent {
   name: string;
-  dispatch: string;
   eventDispatch: string;
-  disconnectDispatch?: string;
   klippyDispatch?: string;
 }

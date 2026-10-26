@@ -55,14 +55,6 @@ export const actions = {
       .catch(() => undefined)
   },
 
-  async initAgents ({ state, dispatch }) {
-    const promises = registeredAgents()
-      .filter(agent => state.agents.some(connected => connected.name === agent.name))
-      .map(agent => dispatch(agent.dispatch, undefined, { root: true }))
-
-    await Promise.all(promises)
-  },
-
   async onExtensionsList ({ commit, dispatch }, payload: Moonraker.Extensions.ListResponse) {
     if (payload) {
       commit('setAgents', payload.agents)
@@ -76,8 +68,6 @@ export const actions = {
         }))
 
       await Promise.all(promises)
-
-      await dispatch('initAgents')
     }
   },
 
@@ -94,18 +84,10 @@ export const actions = {
   async onAgentEvent ({ commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
     let reserved = true
 
-    const agent = findAgent(payload.agent)
-
     if (isAgentConnectedEvent(payload)) {
       commit('setAgentConnected', payload.data)
-
-      await dispatch('initAgents')
     } else if (isAgentDisconnectedEvent(payload)) {
       commit('setAgentDisconnected', payload.agent)
-
-      if (agent?.disconnectDispatch) {
-        await dispatch(agent.disconnectDispatch, undefined, { root: true })
-      }
     } else {
       reserved = false
     }

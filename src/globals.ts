@@ -286,9 +286,7 @@ export const Globals = Object.freeze({
   MOONRAKER_AGENTS: {
     aldis: {
       name: 'aldis',
-      dispatch: 'firmware/init',
       eventDispatch: 'firmware/onAgentEvent',
-      disconnectDispatch: 'firmware/onAgentDisconnected',
       klippyDispatch: 'firmware/onKlippyStateChanged'
     }
   },
