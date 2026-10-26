@@ -41,7 +41,6 @@ export const actions = {
             ? dispatch(component.dispatch, undefined, { root: true })
             : null
         ))
-        .filter(promise => promise)
 
       await Promise.all(promises)
     }

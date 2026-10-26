@@ -257,6 +257,10 @@ app:
     btn:
       load_current_file: Load Current File
     label:
+      color_by_fan: Fan speed (%)
+      color_by_feature: Feature type
+      color_by_speed: Speed (mm/s)
+      color_by_tool: Tool
       current_layer_height: Current Layer Height
       exclude_object: Exclude Object
       follow_progress: Follow progress
@@ -277,6 +281,22 @@ app:
         your system. Are you sure?
     overlay:
       drag_file_load: <strong>Drag</strong> a gcode file here to load
+    role:
+      bridge_infill: Bridge infill
+      custom: Custom
+      external_perimeter: External perimeter
+      gap_fill: Gap fill
+      internal_infill: Internal infill
+      ironing: Ironing
+      none: Unknown
+      overhang_perimeter: Overhang perimeter
+      perimeter: Perimeter
+      skirt: Skirt/Brim
+      solid_infill: Solid infill
+      support_material: Support material
+      support_material_interface: Support material interface
+      top_solid_infill: Top solid infill
+      wipe_tower: Wipe tower
   general:
     btn:
       abort: Abort

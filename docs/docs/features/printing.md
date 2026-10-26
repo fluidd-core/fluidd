@@ -28,6 +28,27 @@ Less common options can be found on Fluidd's settings page.
     be missing. Your slicer's own preview is the better tool for inspecting a
     file that big.
 
+### Color Modes
+
+The menu above the legend picks how the current layer's extrusions are
+colored:
+
+- **Tool** — one color per tool, using the filament colors from the file
+  metadata when available
+- **Feature type** — one color per feature type (perimeters, infill, skirt/brim,
+  support, wipe tower, etc.), read from the comments your slicer writes into
+  the G-code
+- **Speed (mm/s)** — a blue-to-red gradient across the file's range of extrusion
+  speeds, with the legend showing the speed at each color in mm/s. This is the
+  feedrate the G-code commands, not the speed reached after acceleration
+- **Fan speed (%)** — the same gradient across the file's range of part
+  cooling fan speeds, set by `M106`/`M107`
+
+Feature coloring recognizes the comments written by PrusaSlicer, SuperSlicer,
+OrcaSlicer, Bambu Studio, Cura, ideaMaker, Simplify3D, KISSlicer, and
+CraftWare. For files without feature comments, all extrusions share a single
+color and the legend is empty.
+
 ### Exclude Object
 
 The G-code viewer has

@@ -54,7 +54,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - Generic results (`server.database.*_item`, `server.spoolman.proxy`, `server.extensions.request`) are `unknown` in the map; narrow at the call site with `baseEmit<'method', Narrower>(…)` — `Narrower` must extend the map's result
 - Dispatched handlers type their payload as `ObjectWithRequest<'method'>`, which types both the result and `__request__.params` (optional params may be `undefined`; default them to Moonraker's documented defaults). A string result is dispatched as `{ result }`
 - `Moonraker.Notifications` maps each JSON-RPC notification Fluidd handles to its params tuple (`undefined` when Moonraker sends none — it omits `params` entirely), merged per `moonraker.*.d.ts` like `Methods`. `socketClient.ts` dispatches `socket/<camelCase(method)>` with the **first** param only (`notify_status_update` excepted: it is cached and flushed every second, using its `eventtime`); the `socket/` handlers type it as `Moonraker.NotificationPayload<'notify_…'>` (so they follow the map; helpers: `Moonraker.Notification`, `NotificationPayload<N>`, `NotificationAction<N>` — the `socket/` action name, via `TSHelpers.SnakeToCamelCase`), while the module actions they forward to name the concrete type — both spellings are intentional. `CheckedNotificationHandlers` (`src/store/socket/actions.ts`) fails type-check, naming the handler, when an entry has no `socket/` action; `CheckedNotifications` (`socketClient.ts`) checks the entry shape. Notifications outside the map (`notify_sudo_alert`, `notify_button_event`, …) still reach `dispatch` and are dropped as unknown actions
-- Moonraker agents: the `extensions` module holds connected agents, updated by `notify_agent_event`'s reserved `connected` / `disconnected` events; every agent event, reserved ones included, is then routed to the matching `Globals.MOONRAKER_AGENTS` entry's `eventDispatch`. Entries (`MoonrakerAgent`, `src/store/extensions/types.ts`) also carry `dispatch` (run for each connected agent after `server.extensions.list` and on every `connected` event), optional `disconnectDispatch`, and optional `klippyDispatch` (run when `server/onServerInfo` sees `klippy_state` change, and on `notify_klippy_disconnected`). `Extensions.AgentEvent`'s catch-all `event: string` defeats discriminant narrowing — narrow with type predicates
+- Moonraker agents: the `extensions` module holds connected agents, updated by `notify_agent_event`'s reserved `connected` / `disconnected` events; every agent event, reserved ones included, is then routed to the matching `Globals.MOONRAKER_AGENTS` entry's `eventDispatch`. `extensions/onExtensionsList` also sends each listed agent's `eventDispatch` a synthesized `connected` event, so an agent that connected before Fluidd listed the agents (or before a reconnect) is seen the same way as one connecting live. Symmetrically, `extensions/reset` (socket drop, instance switch) sends each known agent's `eventDispatch` a synthesized `disconnected` before clearing the list. No deduplication is done — a live `connected` can race the list, so agent handlers must be idempotent for repeated `connected` / `disconnected`. Entries (`MoonrakerAgent`, `src/store/extensions/types.ts`) also carry `dispatch` (run for each connected agent after `server.extensions.list` and on every `connected` event), optional `disconnectDispatch` (run on a live `disconnected` only, not the synthesized one), and optional `klippyDispatch` (run when `server/onServerInfo` sees `klippy_state` change, and on `notify_klippy_disconnected`). `Extensions.AgentEvent`'s catch-all `event: string` defeats discriminant narrowing — narrow with type predicates
 - Payload types used **only** by notifications end in `Event`, named after the notification with the namespace prefix dropped (`notify_job_queue_changed` → `JobQueue.ChangedEvent`, `notify_proc_stat_update` → `ProcStats.UpdateEvent`). A type shared with a method result keeps its `Response` name. `*Event` types are standalone interfaces — declare every field, never `extends`/alias/`Pick` a `Response`, even when the shape matches (`Announcements.DismissedEvent` vs `DismissResponse`). `Authorization.UserEvent` is the one content-named exception, shared by the three user notifications
 - `notify_user_logged_out` / `notify_user_deleted` are broadcast to every client, but Moonraker only de-authenticates that user's connections — `auth/onUserLoggedOut` and `auth/onUserDeleted` log out only when the `username` is the current user. `access.get_user` answers `{ username: null, … }` for a connection with no user; `auth/setCurrentUser` stores that as `null`. `auth.currentUser` and `auth.users` are `AppUser` (`src/store/auth/types.ts`, no `created_on`): neither the `access.login` response nor `notify_user_created` carries it. `notify_user_created` only fires for users created through the API, which Moonraker restricts to the `moonraker` source, so `setAddUser` sets that `source` itself
 - Use `wait` parameter for UI loading states: `wait: Waits.onPrintStart`
@@ -168,8 +168,22 @@ src/
 - Parsed in `src/workers/parseGcode.worker.ts` → `parseGcode.ts` — streamed via `fetch` +
   `ReadableStream`, reporting progress by file position
 - Result is a **columnar `MoveStore`** of typed arrays, not `Move` objects (`src/store/gcodePreview/types.ts`):
-  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags` `Uint8Array`, `filePosition` `Uint32Array`,
-  plus a `length` — every column is indexed by the same move index
+  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags`/`role`/`fan` `Uint8Array`, `speed` `Uint16Array`,
+  `filePosition` `Uint32Array`, plus a `length` — every column is indexed by the same move index
+- `role` is an `ExtrusionRole` (PrusaSlicer's 15-role enum, Brim folded into Skirt), sticky from the
+  last role comment. `src/workers/gcode-extrusion-roles.ts` merges per-slicer tag lists, taken from
+  each slicer's source, into one case-insensitive dictionary — no slicer detection. A spec
+  ensures a tag shared by two slicers maps to the same role; the code assumes it does.
+  `parseLine` returns whole-line comments as a separate `comment` type; slicers never put a role
+  tag after a command
+- `speed` is the sticky feedrate in **mm/min**, clamped to `0xffff` (`MAX_SPEED`) — a typed array
+  write wraps rather than saturates. The UI shows mm/s
+- `fan` is the sticky part cooling fan as the raw **`M106 S` value (0–255)**, with Klipper's
+  `M106` semantics: a missing `S` is 255, `P` is ignored, `M107` is 0; `SET_FAN_SPEED` only drives
+  `[fan_generic]`, so it is ignored
+- The result also carries `roles` (sorted distinct roles of extruding moves) plus `speedRange` and
+  `fanRange` (`ValueRange`: min/max over extruding moves, whole file — keeps the legends stable
+  across layers — plus PrusaSlicer's `count`, exact only up to 2 distinct values)
 - `x`/`y`/`z` are **forward-filled** absolute positions after each move — there are no `undefined`
   axes to fall back through
 - `i`/`j` are arc centre offsets, **truncated after the last `Arc` move** — only read them when
@@ -185,6 +199,15 @@ src/
 - SVG path data is built by `buildLayerPaths` in `src/util/gcode-preview.ts` (extracted from the old
   `getPaths` getter, which now just delegates). Every emitted `d` **must** start with a moveto — a
   `d` beginning with `L` or `A` renders nothing
+- `LayerPaths.extrusions` is keyed by colour group, chosen by `colorBy`
+  (`uiSettings.gcodePreview.colorMode`): `T<tool>`, `R<role>`, `S<bucket>` or `F<bucket>`, where
+  `rangeBucket` rounds to the nearest of the 11 evenly spaced `rangeColors` stops over
+  `speedRange` / `fanRange`, using PrusaSlicer's range palette. The legends list the stop values
+  like PrusaSlicer's (mm/s, and percent for the fan), or just the values when there are 1 or 2
+  distinct ones. Colours come from
+  `gcodePreview/getExtrusionColors`; only the current layer is coloured, the other layers stay grey
+- There is no colour-mode fallback: a file without role tags or extruding moves draws in one
+  colour (`R0` / `S0` / `F0`) with an empty legend
 - Oversized files are truncated by the parser, which sets `truncated` on the result;
   `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
   (`app.general.msg.gcode_preview_truncated`)
@@ -356,6 +379,9 @@ src/
 - ESLint enforced: `neostandard` + `pluginVue.configs['flat/vue2-recommended']` + `pluginRegexp` + `@vue/eslint-config-typescript`
 - `.editorconfig` rules: 2 spaces, LF line endings, UTF-8, trim trailing whitespace, max line 100 (code)
 - camelCase for variables/methods, PascalCase for components
+- `src/components/ui/` components put a kebab-case class named after the component on their main
+  element (`AppInlineChart` → `app-inline-chart`), with BEM `__element` classes for inner parts
+  (`app-inline-chart__label`). Their scoped styles target these classes, not Vuetify's
 - Any link opening a new tab (`target="_blank"`) **must** also set `rel="noopener noreferrer"` — applies to `<a>`, `<v-btn>`/`<app-btn>` with `:href`, and any HTML strings rendered via `v-safe-html` (e.g. `src/util/link-external-urls.ts`)
 - Use `consola` for logging, not `console.log` (configured in `src/setupConsola.ts` — warn in prod, verbose in dev)
 - Type imports: `import type { ... }` for types only (`verbatimModuleSyntax: true`)

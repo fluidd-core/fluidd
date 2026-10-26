@@ -1280,12 +1280,4 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   .v-text-field .v-select__slot .v-select__selection--comma {
     min-width: min-content;
   }
-
-  .dragOverlay.v-overlay--active {
-    border: dashed 3px #616161;
-  }
-
-  :deep(.dragOverlay > .v-overlay__content) {
-    width: 100%;
-  }
 </style>

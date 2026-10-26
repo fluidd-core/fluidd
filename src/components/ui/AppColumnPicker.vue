@@ -11,6 +11,7 @@
       <v-tooltip bottom>
         <template #activator="{ on: tooltip }">
           <app-btn
+            class="app-column-picker"
             icon
             text
             v-bind="attrs"

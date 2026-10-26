@@ -205,6 +205,7 @@ import {
   mdiArrowUpBold,
   mdiDockTop,
   mdiDockBottom,
+  mdiTagMultipleOutline,
 } from '@mdi/js'
 
 import {
@@ -530,6 +531,8 @@ export const Icons = Object.freeze({
   database: mdiDatabase,
   dockTop: mdiDockTop,
   dockBottom: mdiDockBottom,
+  featureType: mdiTagMultipleOutline,
+  speedometer: mdiSpeedometer,
   mmu: mdiMulticast,
   mmuEditTtgMap: mdiStateMachine,
   mmuEditGateMap: mdiDatabaseEdit,
