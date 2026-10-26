@@ -13,7 +13,7 @@ const isAgentDisconnectedEvent = (event: Moonraker.Extensions.AgentEvent): event
   event.event === 'disconnected'
 )
 
-const findAgent = (name: string) => Object.values<{ name: string, eventDispatch: string }>(Globals.MOONRAKER_AGENTS)
+const findAgent = (name: string) => Object.values<{ name: string, eventDispatch: string, klippyDispatch?: string }>(Globals.MOONRAKER_AGENTS)
   .find(agent => agent.name === name)
 
 const dispatchAgentEvent = (dispatch: Dispatch, event: Moonraker.Extensions.AgentEvent) => {
@@ -62,6 +62,19 @@ export const actions = {
 
       await Promise.all(promises)
     }
+  },
+
+  async onKlippyStateChanged ({ state, dispatch }) {
+    const promises = state.agents
+      .map(info => {
+        const agent = findAgent(info.name)
+
+        return agent?.klippyDispatch
+          ? dispatch(agent.klippyDispatch, undefined, { root: true })
+          : undefined
+      })
+
+    await Promise.all(promises)
   },
 
   async onAgentEvent ({ commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
