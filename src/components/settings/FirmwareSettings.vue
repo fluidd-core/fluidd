@@ -27,8 +27,8 @@
           outlined
           small
           color="primary"
-          :disabled="isRefreshing || busy"
-          @click="handleRefresh"
+          :disabled="!isSupported || isRefreshing || busy"
+          @click="refresh"
         >
           <v-icon
             left
@@ -264,18 +264,6 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
 
   refresh () {
     this.$typedDispatch('firmware/refresh')
-  }
-
-  handleRefresh () {
-    if (this.isSupported) {
-      this.refresh()
-    } else {
-      this.refreshAgents()
-    }
-  }
-
-  refreshAgents () {
-    this.$typedDispatch('extensions/refresh')
   }
 
   updateOne (name: string) {

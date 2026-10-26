@@ -1,5 +1,5 @@
 import type { ActionTree, Dispatch } from 'vuex'
-import type { ExtensionsState, MoonrakerAgent } from './types'
+import type { ExtensionsState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -13,9 +13,7 @@ const isAgentDisconnectedEvent = (event: Moonraker.Extensions.AgentEvent): event
   event.event === 'disconnected'
 )
 
-const registeredAgents = (): MoonrakerAgent[] => Object.values<MoonrakerAgent>(Globals.MOONRAKER_AGENTS)
-
-const findAgent = (name: string) => registeredAgents()
+const findAgent = (name: string) => Object.values<{ name: string, eventDispatch: string, klippyDispatch?: string }>(Globals.MOONRAKER_AGENTS)
   .find(agent => agent.name === name)
 
 const dispatchAgentEvent = (dispatch: Dispatch, event: Moonraker.Extensions.AgentEvent) => {
@@ -50,11 +48,6 @@ export const actions = {
     SocketActions.serverExtensionsList()
   },
 
-  async refresh () {
-    await SocketActions.serverExtensionsList({ suppressError: true })
-      .catch(() => undefined)
-  },
-
   async onExtensionsList ({ commit, dispatch }, payload: Moonraker.Extensions.ListResponse) {
     if (payload) {
       commit('setAgents', payload.agents)
@@ -72,11 +65,14 @@ export const actions = {
   },
 
   async onKlippyStateChanged ({ state, dispatch }) {
-    const promises = registeredAgents()
-      .filter(agent => state.agents.some(connected => connected.name === agent.name))
-      .map(agent => agent.klippyDispatch
-        ? dispatch(agent.klippyDispatch, undefined, { root: true })
-        : null)
+    const promises = state.agents
+      .map(info => {
+        const agent = findAgent(info.name)
+
+        return agent?.klippyDispatch
+          ? dispatch(agent.klippyDispatch, undefined, { root: true })
+          : undefined
+      })
 
     await Promise.all(promises)
   },
