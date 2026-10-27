@@ -3,6 +3,7 @@ import type { InstanceConfig } from '@/store/config/types'
 import StateMixin from './state'
 import { cloudState } from '@/services/muon-cloud/state'
 import { deletionState } from '@/services/muon-cloud/deletion'
+import { foundOpenFor } from '@/services/muon-cloud/found-open'
 import {
   activateCloudPrinter,
   activateLocalPrinter,
@@ -52,6 +53,8 @@ export default class PrinterEntriesMixin extends Mixins(StateMixin) {
   linkHost = ''
   /** A printer picked for linking before sign-in. */
   pendingLink: DirectoryEntry | null = null
+  /** A found tile on an https page, waiting for sign-in to open through the account. */
+  pendingOpen: DirectoryEntry | null = null
   busyKey: string | null = null
   notice: string | null = null
   setupDialog = false
@@ -321,8 +324,21 @@ export default class PrinterEntriesMixin extends Mixins(StateMixin) {
     const row = e.row
     if (!row) return
     switch (row.action) {
-      case 'open':
+      case 'open': {
+        const way = foundOpenFor(e, cloudState.printers, !!cloudState.account)
+        if (way.kind === 'relay') {
+          return this.run(e.key, async () => {
+            await activateCloudPrinter(way.printerId)
+            return true
+          })
+        }
+        if (way.kind === 'sign-in') {
+          this.pendingOpen = e
+          this.accountDialog = true
+          return
+        }
         return this.connectLocal(e)
+      }
       case 'set-up':
         if (!row.nearby) return
         this.setupPrinter = row.nearby
@@ -357,6 +373,9 @@ export default class PrinterEntriesMixin extends Mixins(StateMixin) {
     const pending = this.pendingLink
     this.pendingLink = null
     if (pending) this.link(pending)
+    const open = this.pendingOpen
+    this.pendingOpen = null
+    if (open) this.openFoundEntry(open)
   }
 
   remove (e: DirectoryEntry) {

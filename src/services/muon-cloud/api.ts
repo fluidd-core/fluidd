@@ -201,32 +201,154 @@ async function tokenRequest (form: Record<string, string>, signal?: AbortSignal)
   return data as TokenSession
 }
 
-let refreshing: Promise<boolean> | null = null
+/** What a refresh came to: a new pair, a refusal (the session is over), or no answer (it is not). */
+export type RefreshOutcome = 'ok' | 'refused' | 'unreachable'
+
+let refreshing: Promise<RefreshOutcome> | null = null
+
+/** The lock and channel name every tab of this origin shares. */
+const REFRESH_LOCK = 'muon.cloud.refresh'
+/** The longest a `/token` refresh may take. A hung one must not hold every tab. */
+export const REFRESH_TIMEOUT_MS = 10000
+/** How long a fallback holder is believed without a release: the refresh timeout and some margin. */
+const HOLD_MS = REFRESH_TIMEOUT_MS + 3000
+/** Time for other tabs' claims to arrive before the fallback decides who is first. */
+const CLAIM_SETTLE_MS = 50
 
 /**
- * Swaps the stored refresh token for a new pair, once at a time: a refresh
- * token used twice ends its session, so two requests that both met a 401
- * must share one refresh. False when there is nothing to refresh with, or
- * the console refused, and then both tokens are dropped.
+ * What to try when the console refuses a refresh, before the session is
+ * dropped: the central login registers a silent `/authorize?prompt=none`
+ * check. `failedRefresh` is the refresh token that was refused; the check
+ * stores nothing unless that is still the stored one. True when it stored a
+ * new pair.
  */
-export function refreshSession (): Promise<boolean> {
+let recoverSession: ((failedRefresh: string) => Promise<boolean>) | null = null
+
+export function setSessionRecovery (recover: ((failedRefresh: string) => Promise<boolean>) | null) {
+  recoverSession = recover
+}
+
+/**
+ * Runs `work` with no other tab of this origin refreshing: a refresh token
+ * used twice ends its session, and the tokens sit in localStorage that every
+ * tab shares. `navigator.locks` where there is one; else a BroadcastChannel
+ * queue (`channelLock`).
+ */
+export async function withRefreshLock<T> (work: () => Promise<T>): Promise<T> {
+  const locks = typeof navigator !== 'undefined' ? (navigator as any).locks : undefined
+  if (locks && typeof locks.request === 'function') {
+    return locks.request(REFRESH_LOCK, work) as Promise<T>
+  }
+  if (typeof BroadcastChannel === 'undefined') return work()
+  return channelLock(work)
+}
+
+/**
+ * The fallback for a browser without `navigator.locks`. Each tab announces a
+ * claim with an id that sorts by time; the lowest live id holds. A claim is
+ * answered once, with a `present` that nobody answers, so there is no
+ * exchange to loop. A tab waits only for lower ids, each of which ends with a
+ * `release` or, if its tab died, expires after HOLD_MS; so waiters run one
+ * after another, and each re-reads the stored pair in `work`.
+ */
+async function channelLock<T> (work: () => Promise<T>): Promise<T> {
+  const channel = new BroadcastChannel(REFRESH_LOCK)
+  const id = `${Date.now().toString(36).padStart(10, '0')}-${Math.random().toString(36).slice(2)}`
+  const others = new Map<string, number>()
+  let wake: (() => void) | null = null
+  channel.onmessage = (event: MessageEvent) => {
+    const message = event.data as { type?: string, id?: string } | null
+    if (!message || typeof message.id !== 'string' || message.id === id) return
+    if (message.type === 'claim') {
+      if (!others.has(message.id)) channel.postMessage({ type: 'present', id })
+      others.set(message.id, Date.now() + HOLD_MS)
+    } else if (message.type === 'present') {
+      if (!others.has(message.id)) others.set(message.id, Date.now() + HOLD_MS)
+    } else if (message.type === 'release') {
+      others.delete(message.id)
+    }
+    wake?.()
+  }
+  try {
+    channel.postMessage({ type: 'claim', id })
+    await new Promise(resolve => setTimeout(resolve, CLAIM_SETTLE_MS))
+    for (;;) {
+      const now = Date.now()
+      let soonest = Infinity
+      let blocked = false
+      for (const [other, expires] of others) {
+        if (expires <= now) others.delete(other)
+        else if (other < id) {
+          blocked = true
+          soonest = Math.min(soonest, expires)
+        }
+      }
+      if (!blocked) break
+      await new Promise<void>((resolve) => {
+        const timer = setTimeout(resolve, Math.max(0, soonest - now))
+        wake = () => { clearTimeout(timer); resolve() }
+      })
+      wake = null
+    }
+    return await work()
+  } finally {
+    channel.postMessage({ type: 'release', id })
+    channel.close()
+  }
+}
+
+/**
+ * Swaps the stored refresh token for a new pair, once at a time across every
+ * tab: a refresh token used twice ends its session, so two requests (here or
+ * in another tab) that both met a 401 must share one refresh. Under the lock
+ * the stored pair is read again; if another tab already rotated it, that new
+ * pair is used and nothing is spent. When the console refuses, a silent
+ * sign-in is tried once before both tokens are dropped, and only if the
+ * refused token is still the stored one (a sign-out or a new sign-in since
+ * leaves storage alone). A console that cannot be reached, or is too slow,
+ * leaves the session as it is: `'unreachable'`.
+ */
+export function refreshOutcome (): Promise<RefreshOutcome> {
   const refreshToken = storedRefreshToken()
-  if (!refreshToken) return Promise.resolve(false)
+  if (!refreshToken) return Promise.resolve('refused')
   if (!refreshing) {
-    refreshing = tokenRequest({ grant_type: 'refresh_token', refresh_token: refreshToken, client_id: CLIENT_ID })
-      .then((session) => {
+    refreshing = withRefreshLock(async (): Promise<RefreshOutcome> => {
+      const current = storedRefreshToken()
+      if (current !== refreshToken) {
+        // Rotated by another tab while this one waited for the lock, or signed out.
+        return current !== null && storedToken() !== null ? 'ok' : 'refused'
+      }
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), REFRESH_TIMEOUT_MS)
+      try {
+        const session = await tokenRequest({ grant_type: 'refresh_token', refresh_token: refreshToken, client_id: CLIENT_ID }, controller.signal)
         storeToken(session.access_token)
         storeRefreshToken(session.refresh_token)
-        return true
-      })
-      .catch(() => {
-        storeToken(null)
-        storeRefreshToken(null)
-        return false
-      })
+        return 'ok'
+      } catch (error) {
+        // Not reaching the console says nothing about the session.
+        if (error instanceof CloudError && error.status === 0) return 'unreachable'
+        try {
+          if (recoverSession && storedRefreshToken() === refreshToken && await recoverSession(refreshToken)) return 'ok'
+        } catch { /* fall through to dropping */ }
+        if (storedRefreshToken() === refreshToken) {
+          storeToken(null)
+          storeRefreshToken(null)
+        }
+        return 'refused'
+      } finally {
+        clearTimeout(timer)
+      }
+    })
+      .catch((): RefreshOutcome => 'unreachable')
       .finally(() => { refreshing = null })
   }
   return refreshing
+}
+
+/** `refreshOutcome` as a yes or no: whether there is a fresh pair to use. */
+export async function refreshSession (): Promise<boolean> {
+  return (await refreshOutcome()) === 'ok'
 }
 
 async function request<T> (method: string, path: string, body?: unknown, token: string | null = storedToken(), retry = true): Promise<T> {
@@ -251,8 +373,14 @@ async function request<T> (method: string, path: string, body?: unknown, token: 
     // response was in flight. Reuse that pair rather than refusing the late
     // response or spending the new refresh token again.
     const currentToken = storedToken()
-    if (currentToken && (token !== currentToken || await refreshSession())) {
+    if (currentToken && token !== currentToken) {
       return request<T>(method, path, body, storedToken(), false)
+    }
+    if (currentToken) {
+      const outcome = await refreshOutcome()
+      if (outcome === 'ok') return request<T>(method, path, body, storedToken(), false)
+      // The console did not answer: that is not a sign-out, so do not look like one.
+      if (outcome === 'unreachable') throw new CloudError('The Muon3D service could not be reached.', 0)
     }
   }
   const text = await response.text()
