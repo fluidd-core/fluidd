@@ -271,6 +271,10 @@ export function eventLine (e: AccountEvent, printerName: (id: string) => string 
     case 'joined_by_link': return { icon: 'userPlus', text: `${s(d.email)} joined ${printer()} with an invite link` }
     case 'invite_link_created': return { icon: 'link', text: `Invite link made for ${printer()}` }
     case 'invite_link_revoked': return { icon: 'link', text: `Invite link for ${printer()} turned off` }
+    case 'app_disconnected': {
+      const n = typeof d.sessions === 'number' ? d.sessions : 0
+      return { icon: 'link', text: n ? `Disconnected a connected app and ended its ${n === 1 ? 'sign-in' : `${n} sign-ins`}` : 'Disconnected a connected app' }
+    }
     case 'refresh_token_reused': return { icon: 'alert', text: 'A sign-in was used twice, so it was ended' }
     case 'deletion_requested': return { icon: 'alert', text: 'Deletion of the account asked for' }
     case 'deletion_cancelled': return { icon: 'alert', text: 'Deletion of the account cancelled' }
