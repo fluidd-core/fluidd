@@ -8,6 +8,9 @@ on:
       - edited
       - synchronize
 
+permissions:
+  pull-requests: read
+
 jobs:
   main:
     name: Semantic Pull Request
@@ -35,4 +38,4 @@ jobs:
             bot
             ignore-semantic-pull-request
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
