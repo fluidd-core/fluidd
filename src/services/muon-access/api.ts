@@ -153,7 +153,8 @@ export const CAPABILITY_ROWS: Array<{ action: string, label: string }> = [
   { action: 'read', label: 'See status and the camera' },
   { action: 'print', label: 'Print, pause and cancel' },
   { action: 'files', label: 'Upload and delete own files' },
-  { action: 'motion', label: 'Move, heat and run macros' },
+  { action: 'motion', label: 'Move and run macros' },
+  { action: 'heat', label: 'Heat the nozzle and bed' },
   { action: 'files_others', label: "Delete or reprint others' files" },
   { action: 'console', label: 'Use the console' },
   { action: 'wifi', label: 'Change Wi-Fi' },
@@ -163,3 +164,22 @@ export const CAPABILITY_ROWS: Array<{ action: string, label: string }> = [
   { action: 'config', label: 'Edit the configuration' },
   { action: 'protection', label: 'Change who can use it' }
 ]
+
+/** Motion's words on a printer whose Moonraker has no `heat` row, where motion covers heating too. */
+const MOTION_WITH_HEAT = 'Move, heat and run macros'
+
+/**
+ * The rows this printer reports, in order, with what this browser may do.
+ * Moonraker gave heating its own row (KAN-878); one from before that reports
+ * no `heat`, so its motion row still says it heats.
+ */
+export function capabilityRows (capabilities: Record<string, Capability>): Array<{ action: string, label: string, value: Capability }> {
+  const ownHeat = 'heat' in capabilities
+  return CAPABILITY_ROWS
+    .filter(row => row.action in capabilities)
+    .map(row => ({
+      ...row,
+      label: row.action === 'motion' && !ownHeat ? MOTION_WITH_HEAT : row.label,
+      value: capabilities[row.action]
+    }))
+}

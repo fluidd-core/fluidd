@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import Vue from 'vue'
-import { AccessRefused, AccessUnavailable, currentPrinterAccess, lanPrinterAccess } from '../api'
+import { AccessRefused, AccessUnavailable, capabilityRows, currentPrinterAccess, lanPrinterAccess } from '../api'
 
 function answer (body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status })
@@ -111,5 +111,29 @@ describe('lanPrinterAccess', () => {
     const refusal = await currentPrinterAccess().setEntry('protected').catch(error => error) as AccessRefused
     expect(refusal).toMatchObject({ name: 'AccessRefused', status: 403, message: 'owner only' })
     expect(post).toHaveBeenCalledWith('/server/muon/access/set_entry', { entry: 'protected' })
+  })
+})
+
+describe('the rows a person sees', () => {
+  // KAN-878: Moonraker gave heating its own row, at motion's levels.
+  it('shows heating as its own row when the printer reports one, and motion without it', () => {
+    const rows = capabilityRows({ motion: 'allowed', heat: 'ask', print: 'allowed' })
+    expect(rows.map(r => [r.action, r.label, r.value])).toEqual([
+      ['print', 'Print, pause and cancel', 'allowed'],
+      ['motion', 'Move and run macros', 'allowed'],
+      ['heat', 'Heat the nozzle and bed', 'ask']
+    ])
+  })
+
+  it('keeps heating in the motion row on a printer from before the heat row', () => {
+    const rows = capabilityRows({ motion: 'refused', console: 'refused' })
+    expect(rows.map(r => [r.action, r.label])).toEqual([
+      ['motion', 'Move, heat and run macros'],
+      ['console', 'Use the console']
+    ])
+  })
+
+  it('leaves out what the printer does not report', () => {
+    expect(capabilityRows({})).toEqual([])
   })
 })

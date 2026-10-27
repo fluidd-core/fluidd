@@ -210,7 +210,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import {
-  CAPABILITY_ROWS,
+  capabilityRows as rowsFor,
   LEVEL_WORDS,
   currentPrinterAccess,
   type AccessAsk,
@@ -344,9 +344,7 @@ export default class AccessSettings extends Mixins(StateMixin) {
   }
 
   get capabilityRows () {
-    return CAPABILITY_ROWS
-      .filter(row => row.action in this.capabilities)
-      .map(row => ({ ...row, value: this.capabilities[row.action] }))
+    return rowsFor(this.capabilities)
   }
 
   changeEntry (entry: AccessEntry) {
