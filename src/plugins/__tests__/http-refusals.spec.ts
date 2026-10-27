@@ -46,3 +46,22 @@ describe('a request the cloud gateway refuses', () => {
     expect(toast).toHaveBeenCalledWith('Forbidden', { type: 'error' })
   })
 })
+
+describe('a printer behind the Bluetooth bridge', () => {
+  // 27 Oct, bench: the bridge's printer refuses these for every role. The
+  // socket opens without a token, and the page keeps the printer's address.
+  const BRIDGE = 'http://127.0.0.1:7126'
+  const DENIED = { error: "denied for every role: Moonraker's own user and credential administration" }
+
+  it.each(['/access/oneshot_token', '/server/muon/identity'])('raises no toast when it refuses %s', async (path) => {
+    const toast = vi.spyOn(EventBus, '$emit')
+    await expect(client(BRIDGE, 403, DENIED).get(path)).rejects.toThrow()
+    expect(toast).not.toHaveBeenCalled()
+  })
+
+  it('still says why when it refuses anything else', async () => {
+    const toast = vi.spyOn(EventBus, '$emit')
+    await expect(client(BRIDGE, 403, DENIED).get('/server/files/list')).rejects.toThrow()
+    expect(toast).toHaveBeenCalledWith(DENIED.error, { type: 'error' })
+  })
+})

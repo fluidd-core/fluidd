@@ -28,6 +28,13 @@ const createHttpClient = (store: Store<RootState>) => {
     400: [
       '/access/login'
     ],
+    // Behind the muon-link Bluetooth bridge the printer refuses these for
+    // every role. The socket opens without a one-shot token, and the page
+    // keeps the printer's address when it can't learn its name (KAN-435).
+    403: [
+      '/access/oneshot_token',
+      '/server/muon/identity'
+    ],
     502: [
       '/access/oneshot_token',
       '/access/user'
@@ -123,6 +130,7 @@ const createHttpClient = (store: Store<RootState>) => {
         if (!quiet) EventBus.$emit(message || 'Server error', { type: 'error' })
         break
       case 502:
+      case 403:
       case 400:
         consola.debug(error.response.status, error.message, message)
         if (!quiet && !handledErrorRequests[error.response.status].includes(url)) {
