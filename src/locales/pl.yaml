@@ -557,6 +557,10 @@ app:
       layers: Warstwy
       show_current_layer: Pokaż aktualną warstwę
       parsed: Przeanalizowano
+      color_by_fan: Prędkość wentylatora (%)
+      color_by_feature: Typ funkcji
+      color_by_speed: Prędkość (mm/s)
+      color_by_tool: Narzędzie
     btn:
       load_current_file: Wczytaj aktualny plik
     msg:
@@ -565,6 +569,22 @@ app:
     overlay:
       drag_file_load: <strong>Przeciągnij</strong> plik G-Code tutaj, aby go 
         wczytać
+    role:
+      bridge_infill: Wypełnienie mostu
+      custom: Niestandardowe
+      external_perimeter: Zewnętrzny obwód
+      gap_fill: Wypełnienie szczelin
+      internal_infill: Wypełnienie wewnętrzne
+      ironing: Prasowanie
+      none: Nieznane
+      overhang_perimeter: Obwód nawisu
+      perimeter: Obwód
+      skirt: Skirt/Brim
+      solid_infill: Wypełnienie pełne
+      support_material: Materiał podporowy
+      support_material_interface: Interfejs materiału podporowego
+      top_solid_infill: Górne wypełnienie pełne
+      wipe_tower: Wieża czyszcząca
   tool:
     btn:
       home_all: Wszystkie
