@@ -207,6 +207,35 @@ describe('the Library store', () => {
     expect(store.libraryStatus().promise?.version).toBe('2026-10-13')
   })
 
+  // KAN-799: the service refused the words, and asking again sent the same words, refused again.
+  it('asking again after the service refuses the promise never sends the refused words', async () => {
+    const service = fakeService({ enabled: false })
+    store.setLibraryClient(service.client())
+    await store.refreshLibrary()
+    service.queue(/^\/v1\/library\/consent$/, 409, { error: { code: 'promise_changed', message: 'The promise changed.' } })
+    // A promise newer than this build knows: it has no words to show for it.
+    service.queue(/^\/v1\/library$/, 200, { enabled: false, promise_version: '2099-01-01', account: null, used_bytes: 0, quota_bytes: 1e9 })
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await expect(store.turnLibraryOn('2026-09-26')).rejects.toMatchObject({ code: 'promise_changed' })
+    }
+    expect(service.calls.filter(c => c.path === '/v1/library/consent')).toHaveLength(1)
+    expect(store.libraryStatus().promise).toBeNull()
+  })
+
+  it('a slicer save the service refuses for its promise reads the promise again, and a retry sends nothing', async () => {
+    const service = fakeService({ enabled: false })
+    store.setLibraryClient(service.client())
+    await store.refreshLibrary()
+    service.queue(/^\/v1\/library\/consent$/, 409, { error: { code: 'promise_changed', message: 'The promise changed.' } })
+    service.queue(/^\/v1\/library$/, 200, { enabled: false, promise_version: '2026-10-13', account: null, used_bytes: 0, quota_bytes: 1e9 })
+    const save = () => store.saveFromSlicer({ item: null, name: 'Cube', origin: 'save', consent: '2026-09-26', project: new ArrayBuffer(1), outputs: [], thumbnail: null, summary: {} })
+    await expect(save()).rejects.toMatchObject({ code: 'promise_changed' })
+    expect(store.libraryStatus().promise?.version).toBe('2026-10-13')
+    const sent = service.calls.length
+    await expect(save()).rejects.toMatchObject({ code: 'promise_changed' })
+    expect(service.calls).toHaveLength(sent)
+  })
+
   it('refuses a slicer consent for words other than the current service promise', async () => {
     const service = fakeService({ enabled: false })
     store.setLibraryClient(service.client())

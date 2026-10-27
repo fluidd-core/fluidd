@@ -229,17 +229,29 @@ export async function setLibraryPreferences (patch: PreferencesPatch): Promise<v
 /** Turns the Library on with the promise this Fluidd shows (MSV-3). */
 export async function turnLibraryOn (version: string): Promise<void> {
   requireCurrentPromise(version)
-  try {
-    await client.consent(version)
-  } catch (error) {
-    // The service wants other words: read its promise again, so Settings shows them
-    // (or says this Control is too old to show them) instead of a reload loop.
-    if (error instanceof LibraryError && error.code === 'promise_changed') await refreshLibrary()
-    throw error
-  }
+  await rereadIfPromiseChanged(() => client.consent(version))
   // A read that began before the consent would answer "off".
   await refreshing?.catch(() => {})
   await refreshLibrary()
+}
+
+/**
+ * Runs `work`; when the service refuses it because the promise changed, reads
+ * the Library again before passing the refusal on. Settings and
+ * the slicer's card then show the promise the service wants now, or say this
+ * Control is too old to show it, so asking again never sends the same stale
+ * words (KAN-799: a refusal followed by "reload" looped on a stale build).
+ */
+async function rereadIfPromiseChanged<T> (work: () => Promise<T>): Promise<T> {
+  try {
+    return await work()
+  } catch (error) {
+    if (error instanceof LibraryError && error.code === 'promise_changed' && libraryState.account) {
+      await refreshing?.catch(() => {})
+      await refreshLibrary().catch(() => {})
+    }
+    throw error
+  }
 }
 
 /** Turns it off: the service deletes the files after 30 days, unless it is turned on again. */
@@ -331,7 +343,7 @@ export async function saveFromSlicer (request: SaveRequest, onProgress?: (progre
     await ensureLibraryRead()
     requireCurrentPromise(request.consent)
   }
-  const saved = await saveToLibrary(client, request, onProgress)
+  const saved = await rereadIfPromiseChanged(() => saveToLibrary(client, request, onProgress))
   keep(saved.item)
   if (request.consent) libraryState.enabled = true
   refreshLibrary().catch(() => {})
@@ -367,6 +379,6 @@ export function libraryStatus (state: LibraryState = libraryState): LibraryStatu
 function requireCurrentPromise (version: string) {
   if (!libraryState.account) throw notSignedIn()
   if (!libraryState.checked || !libraryPromise(version) || libraryState.promiseVersion !== version) {
-    throw new LibraryError('promise_changed', "The Library's promise has changed. Reload to read the current promise.", 409)
+    throw new LibraryError('promise_changed', "The Library's promise has changed. Settings › Library shows the new one, or says to update Control.", 409)
   }
 }
