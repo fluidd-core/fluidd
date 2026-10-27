@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { codeSignIn, finishSignIn, forgotPassword, passwordSignIn, resetPassword, signUp, SIGN_IN_DEVICE, verifyEmail } from '../sign-in'
+import { codeSignIn, finishSignIn, forgotPassword, passwordSignIn, resetPassword, signUp, verifyEmail } from '../sign-in'
 import { AccountError } from '../client'
 
 const BASE = 'https://control.example.test'
