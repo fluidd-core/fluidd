@@ -6,7 +6,7 @@
  */
 import { accountRequest } from './client'
 import type { CreatedToken, CreateTokenBody, PersonalToken } from './tokenTypes'
-import type { ConnectedApp } from './connectedApps'
+import type { ConnectedApp } from './connectedAppTypes'
 
 /** `GET /v1/me`'s account. */
 export interface AccountDetails {
