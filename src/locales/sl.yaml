@@ -155,6 +155,10 @@ app:
       show_previous_layer: Prikaži prejšnjo plast
       show_retractions: Prikaži umike
       parsing_file: Razčlenjujem datoteko
+      color_by_fan: Hitrost ventilatorja (%)
+      color_by_feature: Vrsta vsebine
+      color_by_speed: Hitrost (mm/s)
+      color_by_tool: Orodje
     msg:
       confirm: >-
         Datoteka "%{filename}" je velika %{size}. To lahko povzroči dodatno obremenitev
@@ -162,6 +166,22 @@ app:
     overlay:
       drag_file_load: <strong>Povlecite</strong> datoteko g-kode sem, da jo 
         naložite
+    role:
+      bridge_infill: Polnilo mostov
+      custom: Po meri
+      external_perimeter: Zunanji obod
+      gap_fill: Zapolni špranjo
+      internal_infill: Notranje polnilo
+      ironing: Likanje
+      none: Neznano
+      overhang_perimeter: Obod previsa
+      perimeter: Obod
+      skirt: Oris/obroba
+      solid_infill: Polno polnilo
+      support_material: Podporni material
+      support_material_interface: Vmesnik podpornega materiala
+      top_solid_infill: Zgornje polno polnilo
+      wipe_tower: Stolp za brisanje
   general:
     btn:
       abort: Prekini
@@ -250,6 +270,7 @@ app:
       clear: Počisti
       scroll_to_latest: Pomakni se na najnovejše
       reset_to_default: Ponastavi na privzete nastavitve
+      export_csv: Izvozi CSV
     error:
       app_setup_link: >-
         Zahteve za namestitve Fluidda lahko najdete <a target="_blank" href="%{url}">tukaj</a>.
@@ -589,6 +610,7 @@ app:
         statistiko
       confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa opravila.
       confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
+      export_failed: Izvoz zgodovine tiskanja ni uspel
     tooltip:
       help: Ob povezavi se naložijo le najnovejša opravila. Uporabite 'Naloži 
         vse' za prenos celotne zgodovine.
@@ -796,7 +818,7 @@ app:
       show_screws_tilt_adjust_dialog_automatically: Samodejno prikaži dialog za 
         nastavitev naklona vijakov
       sensor_color: Barva senzorja
-      thermal_chart_smoothing: Glajenje toplotnega grafikona
+      thermal_chart_smoothing: Glajenje toplotnega grafa
     timer_options:
       absolute_file_position: Absoluten položaj datoteke
       duration: Samo trajanje
@@ -823,7 +845,7 @@ app:
         povprečje
       diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva
         na zmogljivost'
-      gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
+      gcode_coords: Uporabi položaj g-kode, namesto orodne glave v armaturi
       keyboard_shortcuts: >-
         [BETA] Omogoči in pritisni '?' za prikaz vseh bližnjic, ki so na voljo
       show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč 
@@ -1214,7 +1236,7 @@ app:
       tangle: ZAPLET
       tension: Napetost
       tool: Orodje
-      toolhead: Glava orodja
+      toolhead: Orodna glava
       tools: Orodja
     tooltip:
       empty: Prazno
@@ -1427,13 +1449,13 @@ app:
     WeightUsed: porabljeno {weight} g
     PrintStartDialog:
       StartJob: Začni opravilo
-      Title: Dodelitev stez AFC
-      NoLane: Ni steze
-      NoLaneMapped: Orodju {tool} ni dodeljena nobena steza
-      NoFilamentLoaded: V stezo {lane} ni naložen filament
+      Title: Dodelitev prog AFC
+      NoLane: Ni proge
+      NoLaneMapped: Orodju {tool} ni dodeljena nobena proga
+      NoFilamentLoaded: V progo {lane} ni naložen filament
       FilamentTypeMismatch: 'Neujemanje vrste materiala filamenta: datoteka zahteva
-        {file}, steza ima {lane}'
-      FilamentWeightNotEnough: 'V stezi {lane} ni dovolj filamenta: zahtevano {required},
+        {file}, proga ima {lane}'
+      FilamentWeightNotEnough: 'V progi {lane} ni dovolj filamenta: zahtevano {required},
         na voljo {available}'
       Question: Želite začeti tiskanje datoteke {filename}?
       QuestionWithSpool: Želite začeti tiskanje datoteke {filename} z aktivnim 
@@ -1443,9 +1465,9 @@ app:
       LaneWeightRemaining: Preostala masa {weight} g
     Initialized: Inicializirano
     SelectTool: Izberi orodje
-    ToolSwap: Menjava glav orodja
-    ToolPickup: Pobiranje glave orodja
-    ToolDock: Odlaganje glave orodja
+    ToolSwap: Menjava orodne glave
+    ToolPickup: Pobiranje orodne glave
+    ToolDock: Odlaganje orodne glave
     UnselectTool: Prekliči izbiro orodja
     BedTemp: Temp. mize
     BedTempSubtitle: Temperatura delovne mize za ta filament v °C.
