@@ -6,6 +6,7 @@
  */
 import { accountRequest } from './client'
 import type { CreatedToken, CreateTokenBody, PersonalToken } from './tokenTypes'
+import type { ConnectedApp } from './connectedApps'
 
 /** `GET /v1/me`'s account. */
 export interface AccountDetails {
@@ -244,6 +245,10 @@ export const accountApi = {
   createToken: (body: CreateTokenBody, reauth: Reauth = {}) =>
     json<CreatedToken>('POST', '/v1/tokens', Object.keys(reauth).length ? { ...body, reauth } : body),
   revokeToken: (id: string) => json<{ id: string, revoked: boolean }>('DELETE', `/v1/tokens/${encodeURIComponent(id)}`),
+
+  /** Connected apps (KAN-905): OAuth and MCP clients the account approved. A signed-in session only. */
+  connections: () => json<{ connections: ConnectedApp[] }>('GET', '/v1/connections'),
+  revokeConnection: (id: string) => json<{ id: string, revoked: boolean }>('DELETE', `/v1/connections/${encodeURIComponent(id)}`),
 
   shares: (printerId: string) => json<{ shares: PrinterShare[] }>('GET', `/v1/printers/${encodeURIComponent(printerId)}/shares`),
   share: (printerId: string, email: string, role: string, endsAt: number | null) =>

@@ -280,7 +280,7 @@ export function eventLine (e: AccountEvent, printerName: (id: string) => string 
 
 /** The Account area's sections, in the list's order. */
 export type AccountSectionId =
-  'overview' | 'profile' | 'security' | 'sessions' | 'printers' | 'tokens' | 'notifications' | 'library' | 'plan' | 'privacy' | 'delete'
+  'overview' | 'profile' | 'security' | 'sessions' | 'printers' | 'tokens' | 'apps' | 'notifications' | 'library' | 'plan' | 'privacy' | 'delete'
 
 export interface AccountSection {
   id: AccountSectionId;
@@ -297,6 +297,7 @@ export const ACCOUNT_SECTIONS: AccountSection[] = [
   { id: 'sessions', label: 'Devices and sessions', icon: 'devices', built: true },
   { id: 'printers', label: 'Printers and access', icon: 'printer', built: true },
   { id: 'tokens', label: 'Access tokens', icon: 'key', built: true },
+  { id: 'apps', label: 'Connected apps', icon: 'link', built: true },
   { id: 'notifications', label: 'Notifications', icon: 'bell', built: true },
   { id: 'library', label: 'Library and storage', icon: 'library', built: true },
   { id: 'plan', label: 'Plan', icon: 'card', built: true },
