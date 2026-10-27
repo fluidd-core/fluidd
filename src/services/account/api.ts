@@ -246,9 +246,11 @@ export const accountApi = {
     json<CreatedToken>('POST', '/v1/tokens', Object.keys(reauth).length ? { ...body, reauth } : body),
   revokeToken: (id: string) => json<{ id: string, revoked: boolean }>('DELETE', `/v1/tokens/${encodeURIComponent(id)}`),
 
-  /** Connected apps (KAN-905): OAuth and MCP clients the account approved. A signed-in session only. */
-  connections: () => json<{ connections: ConnectedApp[] }>('GET', '/v1/connections'),
-  revokeConnection: (id: string) => json<{ id: string, revoked: boolean }>('DELETE', `/v1/connections/${encodeURIComponent(id)}`),
+  /** Connected apps (KAN-905): the OAuth apps the account let in. A signed-in session only. */
+  connectedApps: () => json<{ apps: ConnectedApp[] }>('GET', '/v1/me/connected-apps'),
+  /** Ends every session the app holds for this account and removes its approval. */
+  disconnectApp: (clientId: string) =>
+    json<{ ok: boolean, client_id: string, sessions_ended: number }>('DELETE', `/v1/me/connected-apps/${encodeURIComponent(clientId)}`),
 
   shares: (printerId: string) => json<{ shares: PrinterShare[] }>('GET', `/v1/printers/${encodeURIComponent(printerId)}/shares`),
   share: (printerId: string, email: string, role: string, endsAt: number | null) =>

@@ -17,26 +17,39 @@
       <div class="acct-list">
         <div
           v-for="app in ordered"
-          :key="app.id"
+          :key="app.client_id"
           class="app__row"
+          :class="{ 'app__row--gone': !app.known }"
           data-tid="apps-row"
         >
           <span class="acct-icon-box"><frame-icon
-            :name="app.kind === 'mcp' ? 'cpu' : 'link'"
+            :name="app.verified ? 'link' : 'cpu'"
             small
           /></span>
           <div class="acct-row__label app__body">
             <span class="app__name">
-              <b>{{ app.name }}</b>
+              <b>{{ nameOf(app) }}</b>
               <span
-                v-if="!app.verified"
+                v-if="app.current"
+                class="lib-pill lib-pill--ok"
+                data-tid="apps-current"
+              >This app</span>
+              <span
+                v-else-if="app.verified"
                 class="lib-pill"
+                data-tid="apps-verified"
+              >Muon3D</span>
+              <span
+                v-else
+                class="lib-pill lib-pill--warn"
                 data-tid="apps-unverified"
-              >Not checked by Muon3D</span>
-              <span class="lib-pill">{{ kindLine(app) }}</span>
+              >Muon3D did not check this app</span>
             </span>
-            <span data-tid="apps-where">{{ whereLine(app) }}<template v-if="siteHost(app)"> · {{ siteHost(app) }}</template></span>
-            <span class="app__chips">
+            <span data-tid="apps-where">Signs in from {{ whereLine(app) }}<template v-if="siteLine(app)"> · says its site is {{ siteLine(app) }}</template></span>
+            <span
+              v-if="app.scopes.length"
+              class="app__chips"
+            >
               <span
                 v-for="scope in scopesOf(app)"
                 :key="scope.id"
@@ -46,27 +59,27 @@
                 :data-tid="`apps-scope-${scope.id}`"
               >{{ scope.label }}</span>
             </span>
+            <span
+              v-else
+              data-tid="apps-no-scopes"
+            >Can see who you are, nothing else</span>
             <span data-tid="apps-used">{{ approvedLine(app) }} · {{ usedLine(app) }}</span>
             <span class="app__ask">
               <toggle-switch
-                :value="!bypassOn(app)"
-                :label="`${app.name} asks before it acts`"
+                :value="true"
+                :label="`${nameOf(app)} asks you before it acts`"
                 disabled
-                :data-tid="`apps-ask-${bypassOn(app) ? 'bypass' : 'ask'}`"
+                data-tid="apps-ask"
               />
-              <span>
-                <span
-                  :class="bypassOn(app) ? 'lib-pill lib-pill--err' : 'lib-pill lib-pill--ok'"
-                >{{ bypassOn(app) ? 'Bypass' : 'Ask mode' }}</span>
-                {{ askLine(app) }}
-              </span>
+              <span><span class="lib-pill lib-pill--ok">Ask mode</span> Asks you first. Letting an app act without asking (Bypass) comes later.</span>
             </span>
           </div>
           <button
+            v-if="!app.current"
             type="button"
             class="lib-btn lib-btn--sm lib-btn--ghost app__revoke"
             :disabled="busy"
-            :aria-label="`Disconnect ${app.name}`"
+            :aria-label="`Disconnect ${nameOf(app)}`"
             data-tid="apps-revoke"
             @click="revoke(app)"
           >
@@ -108,7 +121,7 @@
         large
       /></span>
       <h3>No connected apps</h3>
-      <p>When you connect an AI tool such as an MCP client to Muon3D and approve it, it shows here. For a script or CI job, make an access token instead.</p>
+      <p>When you connect an AI tool such as an MCP client to Muon3D and approve it, it shows here. For a script or a CI job, make an access token instead.</p>
       <router-link
         :to="linkTo('tokens')"
         class="lib-btn"
@@ -123,7 +136,7 @@
         name="info"
         small
       />
-      <span>An app that registered itself can only look: see your printers, your Library, your Design files and your name. Ask and Bypass are shown but not enforced yet; nothing an app does today starts a print or moves a printer. Disconnect one you don't know. It stops on its next request.</span>
+      <span>An app that registered itself can only look: see your printers, your Library, your Design files and your name. Its name and site are what it said about itself. Disconnect one you don't know: its sign-ins end at once, and it has to ask you again to come back.</span>
     </div>
 
     <p
@@ -157,23 +170,23 @@ import { isMissing } from '@/services/account/client'
 import type { AccountSectionId } from '@/services/account/model'
 import {
   appFailure,
+  appName,
   appScopes,
   approvedText,
-  askText,
-  bypassOn,
-  kindText,
   lastUsedText,
   orderApps,
+  siteText,
   whereText,
   type ConnectedApp
 } from '@/services/account/connectedApps'
 
 /**
- * Connected apps (KAN-905): the OAuth and MCP clients the account approved.
- * List them with what they may do, when they were last used and whether they
- * ask first, and disconnect one. Approving happens on the console's consent
- * page, never here; the Ask/Bypass switch is shown, not changed, until the
- * console enforces it.
+ * Connected apps (KAN-905): the OAuth apps the account let in, Muon's own and
+ * self-registered ones such as MCP clients. List them with what they may do
+ * and when they were last used, and disconnect one. Approving happens on the
+ * console's consent page, never here. Every app asks first today; the switch
+ * shows that and changes nothing until the console has Bypass for apps
+ * (KAN-961). Control's own entry has no Disconnect: that is signing out.
  */
 @Component({ components: { ToggleSwitch } })
 export default class AccountConnectedApps extends Vue {
@@ -187,15 +200,13 @@ export default class AccountConnectedApps extends Vue {
   error = ''
   message = ''
 
-  readonly bypassOn = bypassOn
-
   created () {
     this.refresh()
   }
 
   async refresh () {
     try {
-      this.apps = (await accountApi.connections()).connections
+      this.apps = (await accountApi.connectedApps()).apps
       this.missing = false
       this.loadError = false
     } catch (error) {
@@ -214,27 +225,20 @@ export default class AccountConnectedApps extends Vue {
     return orderApps(this.apps ?? [])
   }
 
-  scopesOf (app: ConnectedApp) {
-    return appScopes(app)
+  nameOf (app: ConnectedApp): string {
+    return appName(app)
   }
 
-  kindLine (app: ConnectedApp): string {
-    return kindText(app)
+  scopesOf (app: ConnectedApp) {
+    return appScopes(app)
   }
 
   whereLine (app: ConnectedApp): string {
     return whereText(app)
   }
 
-  /** The app's own site, as a host, when it is not the same as where it signs in. */
-  siteHost (app: ConnectedApp): string {
-    if (!app.client_uri) return ''
-    try {
-      const host = new URL(app.client_uri).host
-      return host === app.redirect_host ? '' : host
-    } catch {
-      return ''
-    }
+  siteLine (app: ConnectedApp): string {
+    return siteText(app)
   }
 
   approvedLine (app: ConnectedApp): string {
@@ -245,13 +249,10 @@ export default class AccountConnectedApps extends Vue {
     return lastUsedText(app)
   }
 
-  askLine (app: ConnectedApp): string {
-    return askText(app)
-  }
-
   async revoke (app: ConnectedApp) {
-    const sure = await this.$confirm(`${app.name} loses access on its next request, and anything it was doing for you stops. To use it again, connect it again and approve it.`, {
-      title: `Disconnect ${app.name}?`,
+    const name = appName(app)
+    const sure = await this.$confirm(`${name} is signed out at once, everywhere it is signed in as you, and loses the access you approved. To use it again, connect it and approve it again.`, {
+      title: `Disconnect ${name}?`,
       buttonTrueText: 'Disconnect'
     })
     if (!sure) return
@@ -259,10 +260,10 @@ export default class AccountConnectedApps extends Vue {
     this.error = ''
     this.message = ''
     try {
-      await accountApi.revokeConnection(app.id)
-      this.message = `${app.name} is disconnected.`
+      await accountApi.disconnectApp(app.client_id)
+      this.message = `${name} is disconnected.`
     } catch (error) {
-      // Already gone, or disconnected elsewhere: the list says so after a refresh.
+      // Already gone, or this app: the list says so after a refresh.
       this.error = appFailure(error)
     } finally {
       this.busy = false
@@ -279,6 +280,10 @@ export default class AccountConnectedApps extends Vue {
     gap: 14px;
     align-items: start;
     padding: 14px 0;
+  }
+
+  .app__row--gone {
+    opacity: 0.7;
   }
 
   .app__body {

@@ -1,50 +1,49 @@
 /**
- * Connected apps (KAN-905, remote access phase 2): the AI tools and other
- * programs a person let into their account through the console's OAuth
- * consent page, MCP clients among them. The console's routes are
- * `GET /v1/connections` and `DELETE /v1/connections/{id}`; like the token
- * routes they answer a signed-in session only.
+ * Connected apps (KAN-905, remote access phase 2): the apps a person let into
+ * their account with OAuth. Muon's own (the slicer, the Library) and apps
+ * that registered themselves, such as an MCP client. Personal access tokens
+ * are not here; they have their own page.
  *
- * PROVISIONAL: the console API for this list is not built yet
- * (muon-link-cloud `docs/mcp-server.md`, "Next" 1). The shape below follows
- * what the consent page already shows and what the token list returns. The
- * page treats a 404 as "not here yet", so it is safe against a console that
- * lacks the routes.
+ * The routes are the console's `GET /v1/me/connected-apps` and
+ * `DELETE /v1/me/connected-apps/{client_id}` (console-api contract, 27 Oct
+ * 2026; muon-link-cloud KAN-905 phase 2). They answer a signed-in session
+ * only. `name`, `client_uri` and `redirect_hosts` are what the app said about
+ * itself: the page shows them as text, never as HTML, and never loads
+ * `logo_uri`.
  */
 import { AccountError } from './client'
 import { agoText, dayText } from './model'
 import { scopeLabel, SENSITIVE_SCOPES } from './tokens'
-import type { AskMode } from './tokenTypes'
 
-/** One app as `GET /v1/connections` lists it. Times are seconds. */
+/** One app as `GET /v1/me/connected-apps` lists it. Times are seconds. */
 export interface ConnectedApp {
-  /** The approval's id: what revoking names. */
-  id: string;
   client_id: string;
-  /** The name the app gave itself. Muon3D has not checked it unless `verified`. */
-  name: string;
-  /** `mcp`: it reaches the account through mcp.muon3d.com. `oauth`: the API directly. */
-  kind: 'mcp' | 'oauth';
-  /** Registered by Muon3D (true), or registered itself (false, the usual case for an AI tool). */
+  /** The app's own claim. null when its registration is gone. */
+  name: string | null;
+  /** Added by Muon3D by hand (true); registered itself (false). */
   verified: boolean;
-  /** Where the console sends the person back after approving: a host, or a loopback address. */
-  redirect_host: string | null;
-  /** The app's own site, when it gave one. */
+  /** false: the app's registration was removed. */
+  known: boolean;
+  /** Where it sends people back to after they approve it. */
+  redirect_hosts: string[];
+  /** Self-registered only: the site the app named. */
   client_uri?: string | null;
-  /** What it was approved for. */
+  /** Self-registered only. Not shown: loading it would tell the app's host who is looking. */
+  logo_uri?: string | null;
   scopes: string[];
-  ask_mode: AskMode;
-  bypass_until?: number | null;
-  approved_at: number;
-  last_used_at?: number | null;
-  /** How it was last used: `mcp` through the MCP server, `api` directly. */
-  last_used_via?: 'api' | 'mcp' | null;
+  /** null when there is a session but no approval on record. */
+  approved_at: number | null;
+  /** null when it holds no live session. */
+  last_used_at: number | null;
+  /** Live sessions it holds for this account. */
+  sessions: number;
+  /** The app this page runs in (Control itself): not disconnected from here. */
+  current: boolean;
 }
 
-/** Newest use first; an app never used sorts by when it was approved. */
-export function orderApps (apps: ConnectedApp[]): ConnectedApp[] {
-  const seen = (a: ConnectedApp) => a.last_used_at ?? a.approved_at
-  return [...apps].sort((a, b) => seen(b) - seen(a))
+/** What the page calls an app with no name left. */
+export function appName (app: Pick<ConnectedApp, 'name'>): string {
+  return app.name?.trim() || 'An app that no longer exists'
 }
 
 /** A loopback redirect is a program on the person's own device, not a website. */
@@ -55,59 +54,60 @@ export function isLoopback (host: string | null | undefined): boolean {
   return bare === 'localhost' || bare === '::1' || /^127(\.\d{1,3}){3}$/.test(bare)
 }
 
-/** "A program on this device", "claude.ai", or "Unknown". */
-export function whereText (app: Pick<ConnectedApp, 'redirect_host'>): string {
-  if (!app.redirect_host) return 'Unknown'
-  return isLoopback(app.redirect_host) ? 'A program on your computer' : app.redirect_host
+/** "claude.ai", "A program on your computer", "claude.ai and a program on your computer". */
+export function whereText (app: Pick<ConnectedApp, 'redirect_hosts'>): string {
+  const hosts = app.redirect_hosts ?? []
+  const sites = [...new Set(hosts.filter(h => !isLoopback(h)))]
+  const local = hosts.some(isLoopback)
+  const parts = sites.length > 2 ? [`${sites.length} websites`] : [...sites]
+  if (local) parts.push(parts.length ? 'a program on your computer' : 'A program on your computer')
+  if (!parts.length) return 'Nowhere it named'
+  return parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`
 }
 
-/** "Through MCP", "Through the API". */
-export function kindText (app: Pick<ConnectedApp, 'kind'>): string {
-  return app.kind === 'mcp' ? 'Through MCP' : 'Through the API'
+/** The app's own site as a host, when it named one and it isn't already shown. */
+export function siteText (app: Pick<ConnectedApp, 'client_uri' | 'redirect_hosts'>): string {
+  if (!app.client_uri) return ''
+  try {
+    const host = new URL(app.client_uri).host
+    return (app.redirect_hosts ?? []).includes(host) ? '' : host
+  } catch {
+    return ''
+  }
 }
 
-/** "Approved 3 Oct". */
+/** "Approved 3 Oct", or "Signed in, never approved here" for a session with no approval row. */
 export function approvedText (app: Pick<ConnectedApp, 'approved_at'>, now: number = Date.now()): string {
-  return `Approved ${dayText(app.approved_at, now)}`
+  return app.approved_at ? `Approved ${dayText(app.approved_at, now)}` : 'No approval on record'
 }
 
-/** "Never used", "Used 5 minutes ago through MCP". */
-export function lastUsedText (app: Pick<ConnectedApp, 'last_used_at' | 'last_used_via'>, now: number = Date.now()): string {
-  if (!app.last_used_at) return 'Never used'
+/** "Not signed in", "Used 5 minutes ago", "Used 3 Oct · 2 sessions". */
+export function lastUsedText (app: Pick<ConnectedApp, 'last_used_at' | 'sessions'>, now: number = Date.now()): string {
+  if (!app.last_used_at || !app.sessions) return 'Not signed in now'
   const ago = agoText(app.last_used_at, now)
   const when = ago === 'now' ? 'Used just now' : `Used ${ago}`
-  if (app.last_used_via === 'mcp') return `${when} through MCP`
-  if (app.last_used_via === 'api') return `${when} through the API`
-  return when
+  return app.sessions > 1 ? `${when} · signed in ${app.sessions} times` : when
 }
 
-/** Whether Bypass is on now: on, and not past its end. */
-export function bypassOn (app: Pick<ConnectedApp, 'ask_mode' | 'bypass_until'>, now: number = Date.now()): boolean {
-  if (app.ask_mode !== 'bypass') return false
-  return !app.bypass_until || app.bypass_until > now / 1000
-}
-
-/** The Ask/Bypass line under the switch. Neither is enforced yet. */
-export function askText (app: Pick<ConnectedApp, 'ask_mode' | 'bypass_until'>, now: number = Date.now()): string {
-  if (app.ask_mode === 'bypass' && !bypassOn(app, now)) return 'Asks you first (Bypass ended)'
-  if (bypassOn(app, now)) {
-    return app.bypass_until
-      ? `Acts without asking until ${dayText(app.bypass_until, now)}`
-      : 'Acts without asking'
-  }
-  return 'Asks you first'
-}
-
-/** A scope as the page lists it, with whether it can act in the real world. */
+/** A scope as the page lists it, and whether it can act in the real world. */
 export function appScopes (app: Pick<ConnectedApp, 'scopes'>): Array<{ id: string, label: string, power: boolean }> {
-  return app.scopes.map(id => ({ id, label: scopeLabel(id), power: SENSITIVE_SCOPES.includes(id) }))
+  return (app.scopes ?? []).map(id => ({ id, label: scopeLabel(id), power: SENSITIVE_SCOPES.includes(id) }))
 }
 
-/** A connections call's error in the page's words. */
+/** This page's own app first, then as the console sent them (newest approval first). */
+export function orderApps (apps: ConnectedApp[]): ConnectedApp[] {
+  return [...apps].sort((a, b) => Number(b.current) - Number(a.current))
+}
+
+/** A connected-apps call's error in the page's words (the console's legacy `{error, code}`). */
 export function appFailure (error: unknown): string {
   if (!(error instanceof AccountError)) return 'Something went wrong. Try again.'
   const code = typeof error.body.code === 'string' ? error.body.code : ''
-  if (error.status === 403 && code === 'interactive_only') {
+  if (error.status === 409 && code === 'current_app') {
+    return 'That is the app you are using now. To end it, sign out instead.'
+  }
+  if (error.status === 404) return 'That app was already disconnected.'
+  if (error.status === 403 && (code === 'interactive_only' || code === 'insufficient_scope')) {
     return 'Connected apps are managed from a signed-in browser, never with a token. Sign in here and try again.'
   }
   if (error.status === 429) return 'That was too many tries. Wait a few minutes, then try again.'

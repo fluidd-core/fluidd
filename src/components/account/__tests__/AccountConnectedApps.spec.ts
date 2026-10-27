@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import AccountConnectedApps from '../AccountConnectedApps.vue'
 import { AccountError } from '@/services/account/client'
 import {
-  askText,
+  appName,
   isLoopback,
   lastUsedText,
   orderApps,
@@ -11,33 +11,35 @@ import {
   type ConnectedApp
 } from '@/services/account/connectedApps'
 
-const connections = vi.hoisted(() => vi.fn())
-const revokeConnection = vi.hoisted(() => vi.fn(async () => ({ id: 'c1', revoked: true })))
+const connectedApps = vi.hoisted(() => vi.fn())
+const disconnectApp = vi.hoisted(() => vi.fn(async () => ({ ok: true, client_id: 'dcr_1', sessions_ended: 1 })))
 vi.mock('@/services/account/api', async (actual) => ({
   ...(await actual() as object),
-  accountApi: { connections, revokeConnection }
+  accountApi: { connectedApps, disconnectApp }
 }))
 
 const NOW = Math.floor(Date.now() / 1000)
 
+// The console's example row (console-api contract, 27 Oct).
 function app (extra: Partial<ConnectedApp> = {}): ConnectedApp {
   return {
-    id: 'c1',
-    client_id: 'dyn_abc',
-    name: 'Claude Desktop',
-    kind: 'mcp',
+    client_id: 'dcr_1',
+    name: 'Claude',
     verified: false,
-    redirect_host: '127.0.0.1:33418',
-    client_uri: null,
-    scopes: ['printers:read', 'library:read'],
-    ask_mode: 'ask',
-    bypass_until: null,
+    known: true,
+    redirect_hosts: ['claude.ai'],
+    client_uri: 'https://claude.ai',
+    logo_uri: 'https://claude.ai/logo.png',
+    scopes: ['printers:read', 'account:read'],
     approved_at: NOW - 86400 * 3,
     last_used_at: NOW - 300,
-    last_used_via: 'mcp',
+    sessions: 1,
+    current: false,
     ...extra
   }
 }
+
+const control = (): ConnectedApp => app({ client_id: 'fluidd', name: 'Muon3D Control', verified: true, redirect_hosts: ['control.muon3d.com'], client_uri: null, logo_uri: null, current: true })
 
 const settle = () => new Promise(resolve => setTimeout(resolve))
 
@@ -52,7 +54,7 @@ function open (confirm = true) {
 
 describe('Connected apps', () => {
   beforeEach(() => {
-    connections.mockResolvedValue({ connections: [] })
+    connectedApps.mockResolvedValue({ apps: [] })
   })
   afterEach(() => {
     vi.clearAllMocks()
@@ -66,76 +68,89 @@ describe('Connected apps', () => {
   })
 
   it('says the list comes soon when the console has no such route', async () => {
-    connections.mockRejectedValue(new AccountError('Not found', 404, {}))
+    connectedApps.mockRejectedValue(new AccountError('Not found', 404, {}))
     const { w } = open()
     await settle()
     expect(w.find('[data-tid="apps-missing"]').exists()).toBe(true)
     expect(w.find('[data-tid="apps-error"]').exists()).toBe(false)
   })
 
-  it('lists an app with where it signs in, its scopes in words, when it was used and that it asks first', async () => {
-    connections.mockResolvedValue({ connections: [app()] })
+  it('lists a self-registered app as unchecked, with where it signs in, its scopes in words and when it was used', async () => {
+    connectedApps.mockResolvedValue({ apps: [app()] })
     const { w } = open()
     await settle()
     const row = w.find('[data-tid="apps-row"]')
-    expect(row.text()).toContain('Claude Desktop')
-    expect(row.find('[data-tid="apps-unverified"]').exists()).toBe(true)
-    expect(row.text()).toContain('Through MCP')
-    expect(row.find('[data-tid="apps-where"]').text()).toBe('A program on your computer')
+    expect(row.text()).toContain('Claude')
+    expect(row.find('[data-tid="apps-unverified"]').text()).toBe('Muon3D did not check this app')
+    expect(row.find('[data-tid="apps-where"]').text()).toBe('Signs in from claude.ai')
     expect(row.find('[data-tid="apps-scope-printers:read"]').text()).toBe('See your printers and how they\'re doing')
-    expect(row.find('[data-tid="apps-scope-library:read"]').text()).toBe('Read your Library')
-    expect(row.find('[data-tid="apps-used"]').text()).toContain('Used 5 minutes ago through MCP')
-    const ask = row.find('[data-tid="apps-ask-ask"]')
+    expect(row.find('[data-tid="apps-scope-account:read"]').text()).toBe('See your name and sign-in details')
+    expect(row.find('[data-tid="apps-used"]').text()).toContain('Used 5 minutes ago')
+    // The app's logo is never loaded.
+    expect(w.find('img').exists()).toBe(false)
+  })
+
+  it('shows Ask mode on a switch that cannot be changed yet', async () => {
+    connectedApps.mockResolvedValue({ apps: [app()] })
+    const { w } = open()
+    await settle()
+    const ask = w.find('[data-tid="apps-ask"]')
     expect(ask.attributes('aria-checked')).toBe('true')
     expect(ask.attributes('disabled')).toBeDefined()
-    expect(row.text()).toContain('Asks you first')
+    expect(w.find('[data-tid="apps-row"]').text()).toContain('Ask mode')
   })
 
-  it('shows Bypass with its end, and the switch off', async () => {
-    connections.mockResolvedValue({ connections: [app({ verified: true, ask_mode: 'bypass', bypass_until: NOW + 3600 * 8, kind: 'oauth', redirect_host: 'tools.example.com', client_uri: 'https://example.com' })] })
+  it('renders what the app says about itself as text, not HTML', async () => {
+    connectedApps.mockResolvedValue({ apps: [app({ name: '<img src=x onerror=alert(1)>' })] })
     const { w } = open()
     await settle()
-    const row = w.find('[data-tid="apps-row"]')
-    expect(row.find('[data-tid="apps-unverified"]').exists()).toBe(false)
-    expect(row.find('[data-tid="apps-ask-bypass"]').attributes('aria-checked')).toBe('false')
-    expect(row.text()).toContain('Bypass')
-    expect(row.text()).toContain('Acts without asking until')
-    expect(row.find('[data-tid="apps-where"]').text()).toBe('tools.example.com · example.com')
+    expect(w.find('img').exists()).toBe(false)
+    expect(w.find('[data-tid="apps-row"] b').text()).toBe('<img src=x onerror=alert(1)>')
   })
 
-  it('disconnects an app after asking, then reads the list again', async () => {
-    connections
-      .mockResolvedValueOnce({ connections: [app()] })
-      .mockResolvedValueOnce({ connections: [] })
+  it('puts Control first, marks it, and offers no Disconnect on it', async () => {
+    connectedApps.mockResolvedValue({ apps: [app(), control()] })
+    const { w } = open()
+    await settle()
+    const rows = w.findAll('[data-tid="apps-row"]')
+    expect(rows.at(0).find('[data-tid="apps-current"]').exists()).toBe(true)
+    expect(rows.at(0).find('[data-tid="apps-revoke"]').exists()).toBe(false)
+    expect(rows.at(1).find('[data-tid="apps-revoke"]').exists()).toBe(true)
+  })
+
+  it('disconnects an app by its client id after asking, then reads the list again', async () => {
+    connectedApps
+      .mockResolvedValueOnce({ apps: [app()] })
+      .mockResolvedValueOnce({ apps: [] })
     const { w, $confirm } = open()
     await settle()
     await w.find('[data-tid="apps-revoke"]').trigger('click')
     await settle()
     expect($confirm).toHaveBeenCalledOnce()
-    expect(revokeConnection).toHaveBeenCalledWith('c1')
-    expect(connections).toHaveBeenCalledTimes(2)
-    expect(w.find('[data-tid="apps-message"]').text()).toContain('Claude Desktop is disconnected.')
+    expect(disconnectApp).toHaveBeenCalledWith('dcr_1')
+    expect(connectedApps).toHaveBeenCalledTimes(2)
+    expect(w.find('[data-tid="apps-message"]').text()).toContain('Claude is disconnected.')
     expect(w.find('[data-tid="apps-empty"]').exists()).toBe(true)
   })
 
   it('leaves an app alone when the person says no', async () => {
-    connections.mockResolvedValue({ connections: [app()] })
+    connectedApps.mockResolvedValue({ apps: [app()] })
     const { w } = open(false)
     await settle()
     await w.find('[data-tid="apps-revoke"]').trigger('click')
     await settle()
-    expect(revokeConnection).not.toHaveBeenCalled()
+    expect(disconnectApp).not.toHaveBeenCalled()
   })
 
   it('says why a disconnect was refused, and still reads the list again', async () => {
-    connections.mockResolvedValue({ connections: [app()] })
-    revokeConnection.mockRejectedValueOnce(new AccountError('Forbidden', 403, { code: 'interactive_only' }))
+    connectedApps.mockResolvedValue({ apps: [app()] })
+    disconnectApp.mockRejectedValueOnce(new AccountError('That is this app.', 409, { code: 'current_app' }))
     const { w } = open()
     await settle()
     await w.find('[data-tid="apps-revoke"]').trigger('click')
     await settle()
-    expect(w.find('[data-tid="apps-error"]').text()).toContain('signed-in browser')
-    expect(connections).toHaveBeenCalledTimes(2)
+    expect(w.find('[data-tid="apps-error"]').text()).toContain('sign out instead')
+    expect(connectedApps).toHaveBeenCalledTimes(2)
   })
 })
 
@@ -146,25 +161,22 @@ describe('connected app words', () => {
     expect(isLoopback('localhost')).toBe(true)
     expect(isLoopback('localhost.example.com')).toBe(false)
     expect(isLoopback('127.0.0.1.example.com')).toBe(false)
-    expect(whereText({ redirect_host: null })).toBe('Unknown')
   })
 
-  it('names how an app was last used', () => {
-    expect(lastUsedText({ last_used_at: null })).toBe('Never used')
-    expect(lastUsedText({ last_used_at: NOW, last_used_via: 'api' })).toBe('Used just now through the API')
+  it('says where an app signs in from', () => {
+    expect(whereText({ redirect_hosts: ['127.0.0.1:33418'] })).toBe('A program on your computer')
+    expect(whereText({ redirect_hosts: ['claude.ai', 'localhost:9000'] })).toBe('claude.ai and a program on your computer')
+    expect(whereText({ redirect_hosts: [] })).toBe('Nowhere it named')
   })
 
-  it('treats a Bypass that has ended as asking again', () => {
-    expect(askText({ ask_mode: 'bypass', bypass_until: NOW - 60 })).toBe('Asks you first (Bypass ended)')
-    expect(askText({ ask_mode: 'bypass', bypass_until: null })).toBe('Acts without asking')
+  it('names an app that is gone, and one with no live session', () => {
+    expect(appName({ name: null })).toBe('An app that no longer exists')
+    expect(lastUsedText({ last_used_at: null, sessions: 0 })).toBe('Not signed in now')
+    expect(lastUsedText({ last_used_at: NOW, sessions: 2 })).toBe('Used just now · signed in 2 times')
   })
 
-  it('puts the most recently used first', () => {
-    const ids = orderApps([
-      app({ id: 'old', last_used_at: NOW - 9000 }),
-      app({ id: 'new', last_used_at: NOW - 10 }),
-      app({ id: 'never', last_used_at: null, approved_at: NOW - 100 })
-    ]).map(a => a.id)
-    expect(ids).toEqual(['new', 'never', 'old'])
+  it('keeps the console order but puts this app first', () => {
+    const ids = orderApps([app({ client_id: 'a' }), control(), app({ client_id: 'b' })]).map(a => a.client_id)
+    expect(ids).toEqual(['fluidd', 'a', 'b'])
   })
 })
