@@ -169,6 +169,7 @@
           v-else-if="current.id === 'printers'"
           :link-to="linkTo"
         />
+        <account-tokens v-else-if="current.id === 'tokens'" />
         <account-notifications v-else-if="current.id === 'notifications'" />
         <library-settings v-else-if="current.id === 'library'" />
         <account-plan v-else-if="current.id === 'plan'" />
@@ -227,6 +228,7 @@ import '@/scss/muon3d-account.scss'
     AccountSecurity: () => import('@/components/account/AccountSecurity.vue'),
     AccountSessions: () => import('@/components/account/AccountSessions.vue'),
     AccountPrinters: () => import('@/components/account/AccountPrinters.vue'),
+    AccountTokens: () => import('@/components/account/AccountTokens.vue'),
     AccountNotifications: () => import('@/components/account/AccountNotifications.vue'),
     AccountPrivacy: () => import('@/components/account/AccountPrivacy.vue'),
     AccountDelete: () => import('@/components/account/AccountDelete.vue'),
