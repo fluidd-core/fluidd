@@ -21,7 +21,7 @@
  * The console's own sign-in page, which `/authorize` sends a browser to with
  * `continue`, is `views/SignIn.vue`; `safeContinue` below is its guard.
  */
-import { CLIENT_ID, cloudApi, cloudBaseUrl, sameConsole, storedToken, storeToken, storeRefreshToken } from './api'
+import { CLIENT_ID, cloudApi, cloudBaseUrl, sameConsole, setSessionRecovery, storedRefreshToken, storedToken, storeToken, storeRefreshToken } from './api'
 import { challengeFor, newState, newVerifier } from './pkce'
 import { refreshServiceWorker } from '@/util/service-worker-update'
 
@@ -164,12 +164,23 @@ export function shouldTrySilentSignIn (location: Pick<Location, 'origin' | 'prot
  */
 export async function checkCentralSession (): Promise<void> {
   if (!shouldTrySilentSignIn() || session()?.getItem(PENDING_KEY)) return
+  session()?.setItem(SILENT_KEY, '1')
+  await silentSignIn(null)
+}
+
+/**
+ * One `/authorize?prompt=none` fetch and, if it answers with a code, the
+ * exchange. True when a new pair was stored. `failedRefresh` is for a session
+ * whose refresh was refused: the dead pair is still stored then, and is
+ * replaced, but only while it is still the stored one, so a sign-out or
+ * another sign-in in the meantime is never overwritten.
+ */
+async function silentSignIn (failedRefresh: string | null): Promise<boolean> {
   const revision = ++signInRevision
   const controller = new AbortController()
   const timeout = window.setTimeout(() => controller.abort(), 5000)
-  const current = () => revision === signInRevision && !controller.signal.aborted && !storedToken()
+  const current = () => revision === signInRevision && !controller.signal.aborted && (failedRefresh === null ? !storedToken() : storedRefreshToken() === failedRefresh)
   try {
-    session()?.setItem(SILENT_KEY, '1')
     const verifier = newVerifier()
     const state = newState()
     const base = cloudBaseUrl()
@@ -189,22 +200,50 @@ export async function checkCentralSession (): Promise<void> {
     })
     // Only headers and the URL matter. Do not download/parse another app.
     await response.body?.cancel()
-    if (!current() || cloudBaseUrl() !== base || !response.ok || !response.redirected) return
+    if (!current() || cloudBaseUrl() !== base || !response.ok || !response.redirected) return false
     const url = new URL(response.url)
-    if (`${url.origin}${url.pathname}` !== callback || url.hash) return
+    if (`${url.origin}${url.pathname}` !== callback || url.hash) return false
     const query = url.searchParams
-    if (query.getAll('state').length !== 1 || query.get('state') !== state) return
-    if (query.getAll('iss').length !== 1 || !sameConsole(query.get('iss')!, base)) return
+    if (query.getAll('state').length !== 1 || query.get('state') !== state) return false
+    if (query.getAll('iss').length !== 1 || !sameConsole(query.get('iss')!, base)) return false
     // login_required and every other OAuth error leave sign-in to the user.
-    if (query.has('error') || query.getAll('code').length !== 1 || !query.get('code')) return
+    if (query.has('error') || query.getAll('code').length !== 1 || !query.get('code')) return false
     const tokens = await cloudApi.exchangeCode(query.get('code')!, callback, verifier, controller.signal)
-    if (!current() || cloudBaseUrl() !== base) return
+    if (!current() || cloudBaseUrl() !== base) return false
     storeToken(tokens.access_token)
     storeRefreshToken(tokens.refresh_token)
-  } catch { /* offline, timeout, denied or unsupported: keep the app usable */ } finally {
+    return true
+  } catch {
+    // offline, timeout, denied or unsupported: keep the app usable
+    return false
+  } finally {
     window.clearTimeout(timeout)
   }
 }
+
+/** Least time between two recoveries in a tab, so a console that keeps refusing is not asked in a loop. */
+const RECOVERY_GAP_MS = 60000
+let lastRecovery = 0
+
+/**
+ * After the console refused a refresh: the browser session may still be
+ * alive, and `/authorize?prompt=none` then issues a new pair without a
+ * sign-in page (KAN-932). Once per minute per tab; only where the console
+ * serves this page.
+ */
+export async function recoverCentralSession (failedRefresh: string, now: number = Date.now()): Promise<boolean> {
+  if (!centralLoginEnabled()) return false
+  if (lastRecovery && now - lastRecovery < RECOVERY_GAP_MS) return false
+  lastRecovery = now
+  return silentSignIn(failedRefresh)
+}
+
+/** For tests. */
+export function resetRecovery (): void {
+  lastRecovery = 0
+}
+
+setSessionRecovery((failedRefresh) => recoverCentralSession(failedRefresh))
 
 /**
  * Reads a return from `/authorize` off the address, if this is one, and
