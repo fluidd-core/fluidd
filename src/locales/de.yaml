@@ -158,6 +158,8 @@ app:
     overlay:
       drag_file_load: <strong>Ziehe</strong> eine Gcode-Datei hierher, um sie zu
         laden
+    role:
+      none: Unbekannt
   general:
     btn:
       add: Hinzufügen
