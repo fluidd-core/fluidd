@@ -26,6 +26,18 @@ const MAX_RECONNECT_DELAY_MS = 30_000
 /** How long the one-shot token request may take before the try counts as failed. */
 const TOKEN_TIMEOUT_MS = 5_000
 
+/**
+ * The token endpoint said there is no one-shot token for this caller, rather
+ * than that the caller must sign in (401). Behind the muon-link Bluetooth
+ * bridge the printer refuses `/access/oneshot_token` for every role (403):
+ * the link authenticates the session, so the socket opens without one. A
+ * Moonraker with no authorization component answers 404 and needs no token
+ * either. The printer still decides whether the socket may open.
+ */
+function tokenNotOffered (status: number | undefined): boolean {
+  return status === 403 || status === 404
+}
+
 export class WebSocketClient {
   url = ''
   connection: PrinterSocket | null = null
@@ -150,26 +162,36 @@ export class WebSocketClient {
     this.closing = false
     this.cancelRetry()
 
+    let token: string | null
     try {
       const response = await httpClientActions.accessOneshotTokenGet({ timeout: TOKEN_TIMEOUT_MS })
-      // Fluidd moved on while the token came: another printer, or closed.
-      if (attempt !== this.attempt || target !== this.url) return
-
-      const token = response.data.result
-
-      // Good. Move on with setting up the socket.
-      if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
-      this.bindConnection(new WebSocket(`${this.url}?token=${token}`))
+      token = response.data.result
     } catch (error: unknown) {
       if (attempt !== this.attempt) return
-      // Bad. If this is a 401, then don't retry. Otherwise do.
-      if (
-        !axios.isAxiosError(error) ||
-        error.response?.status !== 401
-      ) {
+      const status = axios.isAxiosError(error) ? error.response?.status : undefined
+      // Bad. If this is a 401, then don't retry.
+      if (status === 401) return
+      if (!tokenNotOffered(status)) {
         this.reconnect()
+        return
       }
+      // No one-shot token to be had, and none needed: open without one.
+      token = null
     }
+    // Fluidd moved on while the token came: another printer, or closed.
+    if (attempt !== this.attempt || target !== this.url) return
+
+    // Good. Move on with setting up the socket.
+    if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
+    let socket: WebSocket
+    try {
+      socket = new WebSocket(token === null ? this.url : `${this.url}?token=${token}`)
+    } catch {
+      // A browser that won't open this address (mixed content, a bad URL): try again later.
+      this.reconnect()
+      return
+    }
+    this.bindConnection(socket)
   }
 
   /**
