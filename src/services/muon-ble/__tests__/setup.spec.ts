@@ -84,12 +84,40 @@ describe('connectForSetup', () => {
     const refused = Object.assign(new Error('the printer refused this key: no live authorisation'), { kind: 'refused', code: 0x040a })
     const gateway = session(200, {}, { fetch: vi.fn(async () => { throw refused }) })
     const { options } = endpointWith(async () => gateway.printer)
-    expect(await connectForSetup(nearby(printer.device), options)).toMatchObject({ ok: false, reason: 'set-up' })
+    expect(await connectForSetup(nearby(printer.device), options)).toEqual({ ok: false, reason: 'set-up', message: 'Walnut · 8987 is set up already.' })
+    expect(gateway.printer.close).toHaveBeenCalledOnce()
+    expect(printer.calls[printer.calls.length - 1]).toBe('disconnect')
   })
 
   it('knows a set-up printer from its state too', async () => {
     const { options } = endpointWith(async () => session(200, { result: completeState }).printer)
-    expect(await connectForSetup(nearby(fakePrinter().device), options)).toMatchObject({ ok: false, reason: 'set-up' })
+    expect(await connectForSetup(nearby(fakePrinter().device), options)).toEqual({ ok: false, reason: 'set-up', message: 'Walnut · 8987 is set up already.' })
+  })
+
+  it.each([401, 403])('treats HTTP %i as the specific set-up refusal and hangs up', async status => {
+    const printer = fakePrinter()
+    const gateway = session(status, { error: 'refused' })
+    const { options } = endpointWith(async () => gateway.printer)
+    expect(await connectForSetup(nearby(printer.device), options)).toEqual({ ok: false, reason: 'set-up', message: 'Walnut · 8987 is set up already.' })
+    expect(gateway.printer.close).toHaveBeenCalledOnce()
+    expect(printer.calls[printer.calls.length - 1]).toBe('disconnect')
+  })
+
+  it.each([
+    ['a failed status', 500, { result: newState }],
+    ['an empty body', 200, null],
+    ['a state without a numeric revision', 200, { result: { ...newState, rev: '1' } }]
+  ])('rejects %s as an invalid setup response and hangs up', async (_case, status, body) => {
+    const printer = fakePrinter()
+    const gateway = session(status as number, body)
+    const { options } = endpointWith(async () => gateway.printer)
+    expect(await connectForSetup(nearby(printer.device), options)).toEqual({
+      ok: false,
+      reason: 'unreachable',
+      message: 'Walnut · 8987 answered, but not with its setup.'
+    })
+    expect(gateway.printer.close).toHaveBeenCalledOnce()
+    expect(printer.calls[printer.calls.length - 1]).toBe('disconnect')
   })
 
   it('says another device holds the printer when its advertisement said so', async () => {
@@ -109,14 +137,22 @@ describe('connectForSetup', () => {
   it('calls anything else unreachable, and hangs up', async () => {
     const printer = fakePrinter()
     const { options } = endpointWith(async () => { throw Object.assign(new Error('lost'), { kind: 'lost' }) })
-    expect(await connectForSetup(nearby(printer.device), options)).toMatchObject({ ok: false, reason: 'unreachable' })
+    expect(await connectForSetup(nearby(printer.device), options)).toEqual({ ok: false, reason: 'unreachable', message: 'Walnut · 8987 stopped answering over Bluetooth.' })
     expect(printer.calls[printer.calls.length - 1]).toBe('disconnect')
+  })
+
+  it('reports endpoint startup failures before touching the radio', async () => {
+    const printer = fakePrinter()
+    const result = await connectForSetup(nearby(printer.device), { endpoint: async () => { throw new Error('relay unavailable') } })
+    expect(result).toEqual({ ok: false, reason: 'unreachable', message: "Couldn't start this page's connection: relay unavailable" })
+    expect(printer.calls).toEqual([])
   })
 })
 
 describe('the code', () => {
   it('is carried plain and shown grouped', () => {
-    expect(plainCode('f6q tdh')).toBe('F6QTDH')
+    expect(plainCode(' f6\tq\nt dh ')).toBe('F6QTDH')
     expect(groupedCode('F6QTDH')).toBe('F6Q TDH')
+    expect(groupedCode('too-short')).toBe('TOO-SHORT')
   })
 })
