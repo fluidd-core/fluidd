@@ -88,6 +88,13 @@ export interface Version {
   files: VersionFile[];
 }
 
+/** The live, immutable version exposed by `GET /v1/public/publications/:id`. */
+export interface PublicPublication {
+  title: string;
+  version: number;
+  files: VersionFile[];
+}
+
 export type SaveOrigin = 'save' | 'autosave' | 'card' | 'print-check'
 
 export interface VersionBody {
@@ -139,6 +146,82 @@ export interface PrintedEvent {
   printer_name: string;
   setup?: PrintSetup;
   version?: number;
+}
+
+export interface LibrarySections {
+  all: number;
+  printed: number;
+  sliced: number;
+  uploads: number;
+  saved: number;
+  imported: number;
+  designs: number;
+}
+
+export type LibraryRunOutcome = 'running' | 'finished' | 'cancelled' | 'failed' | 'unknown'
+
+export interface LibraryRun {
+  id: string;
+  item_id: string | null;
+  version: number | null;
+  printer_id: string;
+  printer_name: string;
+  /** Absent when the run was reported by its hash alone. */
+  file_name: string | null;
+  started_at: string;
+  ended_at: string | null;
+  outcome: LibraryRunOutcome;
+  progress_pct: number | null;
+  duration_s: number | null;
+  in_library: boolean;
+  item?: LibraryItem | null;
+}
+
+/** `GET /v1/library/runs` answers `{runs, cursor}`: `cursor` is the last run's start, to pass back for the next page. */
+export interface LibraryRunsPage {
+  runs: LibraryRun[];
+  cursor: string | null;
+}
+
+/** A person's bookmark as returned by `GET /v1/community/saves`. */
+export interface CommunitySave {
+  id: string;
+  target: { kind: string } & Record<string, unknown>;
+  card: {
+    title: string;
+    thumbnail_url?: string | null;
+    creator?: string | null;
+    url?: string | null;
+    available: boolean;
+  };
+  created_at: string;
+}
+
+export interface CommunitySavesPage {
+  saves: CommunitySave[];
+  next_cursor: string | null;
+}
+
+/** The deliberately small display model for a community save. */
+export interface SavedRow {
+  id: string;
+  title: string;
+  thumbnailUrl: string | null;
+  creator: string | null;
+  url: string | null;
+  available: boolean;
+}
+
+export function savedRows (page: CommunitySavesPage): SavedRow[] {
+  if (!Array.isArray(page.saves)) return []
+  return page.saves.map(({ id, card }) => ({
+    id,
+    title: card.title,
+    thumbnailUrl: card.thumbnail_url ?? null,
+    creator: card.creator ?? null,
+    url: card.url ?? null,
+    available: card.available
+  }))
 }
 
 /**
@@ -266,12 +349,32 @@ export function createLibraryClient (options: LibraryClientOptions) {
     preferences: () => request<Preferences>('GET', '/v1/library/preferences'),
     setPreferences: (patch: PreferencesPatch) => request<Preferences>('PUT', '/v1/library/preferences', patch),
     feed: (since: number) => request<FeedPage>('GET', `/v1/items?since=${since}`),
+    sections: () => request<LibrarySections>('GET', '/v1/library/sections'),
+    // An empty cursor is left out: the service reads a present-but-empty one as a malformed timestamp.
+    runs: (cursor = '', limit = 50) => request<LibraryRunsPage>('GET', `/v1/library/runs?${cursor ? `cursor=${encodeURIComponent(cursor)}&` : ''}limit=${limit}`),
+    sliced: () => request<FeedPage>('GET', '/v1/items?origin=slice'),
+    saved: () => request<CommunitySavesPage>('GET', '/v1/community/saves'),
     createPrint: (body: VersionBody & { name: string }) => request<Created>('POST', '/v1/prints', body),
     createVersion: (id: string, body: VersionBody) => request<Created>('POST', `${item(id)}/versions`, body),
     complete: (id: string, version: number) =>
       request<{ item?: LibraryItem, version?: Version }>('POST', `${item(id)}/versions/${version}/complete`),
     item: (id: string) => request<LibraryItem>('GET', item(id)),
     versions: (id: string) => request<{ versions: Version[] }>('GET', `${item(id)}/versions`),
+    publicPublication: (id: string) => request<PublicPublication>('GET', `/v1/public/publications/${encodeURIComponent(id)}`),
+    /** The raw bytes of a shared file: `POST /v1/shares/:id/files/:file` takes `{key?}` and answers the bytes, or a JSON refusal. */
+    async shareFile (id: string, fileId: string, key?: string): Promise<Uint8Array> {
+      const response = await authorised(`${base}/v1/shares/${encodeURIComponent(id)}/files/${encodeURIComponent(fileId)}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(key === undefined ? {} : { key })
+      })
+      if (!response.ok) {
+        let data: unknown = null
+        try { data = await response.json() } catch { /* nothing readable */ }
+        throw libraryErrorFrom(response.status, data)
+      }
+      return new Uint8Array(await response.arrayBuffer())
+    },
     restore: (id: string, version: number) => request<{ item: LibraryItem, version: Version }>('POST', `${item(id)}/versions/${version}/restore`),
     rename: (id: string, name: string) => request<LibraryItem>('PATCH', item(id), { name }),
     remove: (id: string) => request<LibraryItem>('DELETE', item(id)),

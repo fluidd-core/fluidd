@@ -44,6 +44,7 @@ export interface LibraryState {
   rev: number;
   /** The list has been read at least once. */
   synced: boolean;
+  feedLoading: boolean;
   error: string | null;
   errorCode: string | null;
 }
@@ -62,12 +63,14 @@ function blank (account: string | null): LibraryState {
     items: {},
     rev: 0,
     synced: false,
+    feedLoading: false,
     error: null,
     errorCode: null
   }
 }
 
 export const libraryState = Vue.observable<LibraryState>(blank(null))
+let errorSource: 'library' | 'feed' | null = null
 
 let client: LibraryClient = createLibraryClient({ assertion: modelsAssertion })
 
@@ -83,11 +86,13 @@ export function setLibraryClient (next: LibraryClient) {
 /** Starts the Library again for `account` (null: signed out). */
 export function resetLibrary (account: string | null) {
   Object.assign(libraryState, blank(account))
+  errorSource = null
 }
 
-function setError (error: unknown) {
+function setError (error: unknown, source: 'library' | 'feed' = 'library') {
   libraryState.error = describeLibraryError(error)
   libraryState.errorCode = error instanceof LibraryError ? error.code : null
+  errorSource = source
 }
 
 function clearItems () {
@@ -143,6 +148,7 @@ async function readLibrary () {
     libraryState.checked = true
     libraryState.error = null
     libraryState.errorCode = null
+    errorSource = null
     if (preferences instanceof LibraryError) setError(preferences)
     else libraryState.preferences = preferences
     if (info.enabled) await syncLibrary()
@@ -165,19 +171,27 @@ export function syncLibrary (): Promise<void> {
 async function readFeed () {
   const account = libraryState.account
   if (!account) return
+  libraryState.feedLoading = true
   try {
     const next = await syncFeed({ items: libraryState.items, rev: libraryState.rev }, since => client.feed(since))
     if (libraryState.account !== account) return
     libraryState.items = next.items
     libraryState.rev = next.rev
     libraryState.synced = true
+    if (errorSource === 'feed') {
+      libraryState.error = null
+      libraryState.errorCode = null
+      errorSource = null
+    }
   } catch (error) {
     if (libraryState.account !== account) return
     if (error instanceof LibraryError && error.code === 'consent_required') {
       libraryState.enabled = false
       clearItems()
     }
-    setError(error)
+    setError(error, 'feed')
+  } finally {
+    if (libraryState.account === account) libraryState.feedLoading = false
   }
 }
 

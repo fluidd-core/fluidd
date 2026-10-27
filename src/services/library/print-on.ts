@@ -24,10 +24,11 @@ import { isActiveSlug, printerPath } from '@/services/printer-pages'
 import { cloudPrinterConnection } from '@/services/muon-cloud/state'
 import { savedMaterialName } from '@/services/control/model'
 import type { ItemSetup, LibraryItem } from './api'
-import { gunzip, isGzip } from './bytes'
+import { gunzip, isGzip, sha256Hex } from './bytes'
 import { fitText, setupFit, type PrinterFacts } from './fit'
 import { cleanName } from './save'
 import { libraryClient, recordPrinted } from './store'
+import { rememberLibraryFile } from './runs'
 
 /** One of the account's printers, as Print on… lists it. */
 export interface PrintTarget {
@@ -52,11 +53,61 @@ export const START_ANSWER_MS = 150_000
 /** A queued print may wait for the plate to be cleared. */
 export const QUEUE_WATCH_MS = 12 * 60 * 60_000
 
-/** The G-code's bytes, uncompressed: the Library keeps it gzip-compressed. */
-export async function downloadGcode (item: LibraryItem, setup: ItemSetup): Promise<Uint8Array> {
+/** What the Library lists for a stored G-code file: the bytes as stored and served, which may be gzip. */
+export interface StoredFileFacts {
+  sha256: string;
+  size_bytes: number;
+  encoding: 'identity' | 'gzip';
+}
+
+/** A downloaded G-code: the bytes ready for a printer, and the SHA-256 of the bytes as stored (what run reporting sends). */
+export interface GcodeDownload {
+  bytes: Uint8Array;
+  stored_sha256: string;
+}
+
+/**
+ * Checks the stored bytes against what the Library lists (size, then SHA-256)
+ * BEFORE anything unzips them, then unzips when they are gzip. Without a
+ * listing nothing can be checked: gzip is then recognised by its header.
+ */
+async function unpackStored (stored: Uint8Array, expected?: StoredFileFacts): Promise<GcodeDownload> {
+  const stored_sha256 = await sha256Hex(stored)
+  if (expected && (stored.byteLength !== expected.size_bytes || stored_sha256 !== expected.sha256.toLowerCase())) {
+    throw new Error('The G-code did not match its listing. Nothing was sent to the printer.')
+  }
+  const zipped = expected ? expected.encoding === 'gzip' : isGzip(stored)
+  return { bytes: zipped ? await gunzip(stored) : stored, stored_sha256 }
+}
+
+/** The listing of one of your own items' G-code files, from its version's metadata. */
+export async function ownFileFacts (item: Pick<LibraryItem, 'id' | 'version'>, setup: Pick<ItemSetup, 'file_id'>): Promise<StoredFileFacts | undefined> {
+  if (typeof item.version !== 'number') return undefined
+  const { versions } = await libraryClient().versions(item.id)
+  const file = versions.find(v => v.number === item.version)?.files.find(f => f.id === setup.file_id)
+  if (!file) throw new Error('That G-code is no longer in this version of the print.')
+  return { sha256: file.sha256, size_bytes: file.size_bytes, encoding: file.encoding }
+}
+
+/** One of your own G-codes, downloaded, checked against `expected` when it is known, and unzipped. */
+export async function fetchGcode (item: Pick<LibraryItem, 'id'>, setup: ItemSetup, expected?: StoredFileFacts): Promise<GcodeDownload> {
   const client = libraryClient()
-  const bytes = await client.get(await client.fileUrl(item.id, setup.file_id))
-  return isGzip(bytes) ? gunzip(bytes) : bytes
+  return unpackStored(await client.get(await client.fileUrl(item.id, setup.file_id)), expected)
+}
+
+/** The G-code's bytes, uncompressed: the Library keeps it gzip-compressed. */
+export async function downloadGcode (item: Pick<LibraryItem, 'id'>, setup: ItemSetup, expected?: StoredFileFacts): Promise<Uint8Array> {
+  return (await fetchGcode(item, setup, expected)).bytes
+}
+
+/**
+ * A live Community publication's G-code, read through its viewer-authorised
+ * share route: the service answers the stored bytes, which are checked
+ * against the size and SHA-256 the publication lists before they are
+ * unzipped or used.
+ */
+export async function downloadSharedGcode (shareId: string, fileId: string, expected: StoredFileFacts): Promise<GcodeDownload> {
+  return unpackStored(await libraryClient().shareFile(shareId, fileId), expected)
 }
 
 /** The project (.3mf), as the Library keeps it. */
@@ -184,7 +235,7 @@ export type SendMode = 'print' | 'queue' | 'save'
 export async function sendToPrinter (options: {
   router: VueRouter;
   store: AnyStore;
-  item: LibraryItem;
+  item: Pick<LibraryItem, 'id' | 'name' | 'version'>;
   setup: ItemSetup;
   target: PrintTarget;
   mode: SendMode;
@@ -194,7 +245,7 @@ export async function sendToPrinter (options: {
   const { router, store, item, setup, target, mode } = options
   const step = options.step ?? (() => {})
   step('Downloading the G-code…')
-  const bytes = await downloadGcode(item, setup)
+  const { bytes, stored_sha256 } = await fetchGcode(item, setup, await ownFileFacts(item, setup))
   step(`Opening ${target.name}…`)
   await openPrinter(router, store, target)
 
@@ -224,6 +275,10 @@ export async function sendToPrinter (options: {
       setup: { printer_model: setup.printer_model, nozzle_mm: setup.nozzle_mm, material: setup.material },
       ...(typeof item.version === 'number' ? { version: item.version } : {})
     }).catch(() => {})
+    rememberLibraryFile(path, {
+      gcode_sha256: stored_sha256,
+      ...(typeof item.version === 'number' ? { item_id: item.id, version: item.version } : {})
+    })
   }
   if (mode === 'queue') {
     watchForStart(store, path, printed, QUEUE_WATCH_MS)
@@ -239,6 +294,7 @@ export async function sendToPrinter (options: {
     return
   }
   try {
+    rememberLibraryFile(path, { gcode_sha256: stored_sha256, ...(typeof item.version === 'number' ? { item_id: item.id, version: item.version } : {}) })
     await httpClientActions.post('/printer/print/start', { filename: path }, { timeout: START_ANSWER_MS })
   } catch (error) {
     EventBus.$emit(`${target.name} didn't start ${item.name}. It's in its Jobs.`, { type: 'error', timeout: 0 })

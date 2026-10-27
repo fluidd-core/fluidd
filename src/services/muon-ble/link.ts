@@ -26,6 +26,19 @@ import {
   type GattCharacteristic
 } from './webBluetooth'
 
+/** The largest segment this page writes to a printer, whatever INFO says. */
+export const MAX_WRITE_SEGMENT = 244
+
+/**
+ * The segment size to join a link with: the printer's INFO value, capped at
+ * {@link MAX_WRITE_SEGMENT}. `0` (the printer did not say) stays `undefined`, so
+ * the endpoint keeps its own default.
+ */
+export function cappedSegment (infoSegment: number): number | undefined {
+  if (!infoSegment) return undefined
+  return Math.min(infoSegment, MAX_WRITE_SEGMENT)
+}
+
 /** muon-link-web's `BleLink`, as far as this driver uses it. */
 export interface WasmBleLink {
   onSegment (segment: Uint8Array): void;
@@ -196,8 +209,13 @@ export async function openBleLink (
     })(), options.connectTimeoutMs ?? CONNECT_TIMEOUT_MS, 'Connecting over Bluetooth')
     if (!radioUp) throw new Error('The printer went away while connecting.')
 
-    // Web Bluetooth cannot read the MTU: the printer's INFO value is what counts.
-    const l = endpoint.addLink('central', info.maxSegment || undefined)
+    // Web Bluetooth cannot read the MTU: the printer's INFO value is what counts,
+    // up to a cap. A printer with a 517-byte ATT MTU says 512, and BlueZ on the
+    // M1 silently drops 512-byte Write Commands (D-Bus capture, 20 Oct 2026: 14
+    // WriteValue calls for 45 ATT writes; only the short segments arrived), so a
+    // QUIC Initial never completes. 244 fits one link-layer PDU (244 + 3 ATT +
+    // 4 L2CAP = 251) and was the first size to complete a handshake on hardware.
+    const l = endpoint.addLink('central', cappedSegment(info.maxSegment))
     link = l
     for (const segment of early.splice(0)) l.onSegment(segment)
 

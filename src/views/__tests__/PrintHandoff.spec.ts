@@ -1,0 +1,165 @@
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import { shallowMount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import PrintHandoff from '../PrintHandoff.vue'
+
+const mocks = vi.hoisted(() => ({
+  rows: [] as any[],
+  upload: vi.fn(async () => 'part.gcode'),
+  fetchOwn: vi.fn(async () => ({ bytes: new Uint8Array([1, 2, 3]), stored_sha256: 'a'.repeat(64) })),
+  downloadShared: vi.fn(async () => ({ bytes: new Uint8Array([4, 5, 6]), stored_sha256: 'b'.repeat(64) })),
+  item: vi.fn(),
+  versions: vi.fn(),
+  publication: vi.fn(),
+  remember: vi.fn(),
+  start: vi.fn(async () => {})
+}))
+
+vi.mock('@/mixins/printer-rows', async () => {
+  const { default: Vue } = await import('vue')
+  return { default: Vue.extend({ computed: { rows: () => mocks.rows }, methods: { modelOf: () => 'Muon3D M1' } }) }
+})
+vi.mock('@/services/muon-cloud/state', async () => {
+  const { default: Vue } = await import('vue')
+  return { cloudState: Vue.observable({ account: { id: 'account' } }) }
+})
+vi.mock('@/services/library/print-on', () => ({
+  fetchGcode: mocks.fetchOwn,
+  downloadSharedGcode: mocks.downloadShared,
+  uploadGcode: mocks.upload,
+  gcodeFileName: () => 'part.gcode',
+  activePrinterFacts: () => ({ online: true, model: 'Muon3D M1', nozzleMm: 0.4, material: 'PLA' }),
+  printingNow: () => null,
+  START_ANSWER_MS: 150000
+}))
+vi.mock('@/api/httpClientActions', () => ({ httpClientActions: { post: mocks.start } }))
+vi.mock('@/services/library/runs', () => ({ rememberLibraryFile: mocks.remember }))
+vi.mock('@/services/library/store', () => ({ libraryClient: () => ({ item: mocks.item, versions: mocks.versions, publicPublication: mocks.publication }) }))
+
+const setup = { printer_model: 'Muon3D M1', nozzle_mm: 0.4, material: 'PLA', file_id: 'file', print_seconds: 60, filament_g: 2 }
+const row = (id: string, active: boolean) => ({ id, name: id, slug: `${id}-slug`, active, fit: { kind: 'ready', setup }, status: 'Ready', detail: '', note: '', action: 'print', reslice: '', tone: 'ok' })
+
+function mount (query: Record<string, string> = {}) {
+  const router = new VueRouter({ mode: 'abstract', routes: [{ path: '*', component: { render: (h: any) => h('div') } }] })
+  router.push({ path: '/print', query }).catch(() => {})
+  const push = vi.spyOn(router, 'push')
+  const wrapper = shallowMount(PrintHandoff, {
+    router,
+    mocks: { $store: { state: { printer: { printer: {} } }, getters: {}, dispatch: vi.fn() } },
+    stubs: { CloudAccountDialog: true }
+  })
+  const vm = wrapper.vm as any
+  vm.item = { id: 'item', name: 'Part', setups: [setup] }
+  vm.setup = setup
+  return { wrapper, vm, router: { push } }
+}
+
+beforeEach(() => {
+  mocks.rows = [row('active', true), row('other', false)]
+  mocks.upload.mockClear(); mocks.fetchOwn.mockClear(); mocks.downloadShared.mockClear(); mocks.start.mockClear()
+  mocks.remember.mockClear()
+  mocks.item.mockReset().mockResolvedValue({ id: 'item', name: 'Owner part' })
+  mocks.versions.mockReset().mockResolvedValue({ versions: [{ number: 3, files: [{ id: 'file', role: 'gcode', setup, size_bytes: 3, format: 'gcode', encoding: 'identity', sha256: 'a'.repeat(64) }] }] })
+  mocks.publication.mockReset().mockResolvedValue({ title: 'Community part', version: 3, files: [{ id: 'public-file', role: 'gcode', setup, size_bytes: 3, format: 'gcode', encoding: 'identity', sha256: 'b'.repeat(64) }] })
+})
+
+describe('Print hand-off target safety', () => {
+  it('loads an owner Library hand-off from its item and version', async () => {
+    const { vm } = mount({ library: 'item', version: '3', file: 'file' })
+    await vm.load()
+    expect(mocks.item).toHaveBeenCalledWith('item')
+    expect(mocks.versions).toHaveBeenCalledWith('item')
+    expect(vm.item.name).toBe('Owner part')
+    expect(vm.setup.file_id).toBe('file')
+  })
+
+  it('downloads an owner print checked against its version metadata, and reports the stored hash with item and version', async () => {
+    const { vm } = mount({ library: 'item', version: '3', file: 'file' })
+    await vm.load()
+    vm.chosen = 'active'; await Vue.nextTick(); await vm.upload()
+    expect(mocks.fetchOwn).toHaveBeenCalledWith(expect.objectContaining({ id: 'item' }), expect.objectContaining({ file_id: 'file' }), { sha256: 'a'.repeat(64), size_bytes: 3, encoding: 'identity' })
+    expect(mocks.downloadShared).not.toHaveBeenCalled()
+    expect(mocks.remember).toHaveBeenCalledWith('part.gcode', { gcode_sha256: 'a'.repeat(64), item_id: 'item', version: 3 })
+  })
+
+  it('refuses a public print whose listing has no checksum, before any download', async () => {
+    mocks.publication.mockResolvedValue({ title: 'Old', version: 3, files: [{ id: 'public-file', role: 'gcode', setup, size_bytes: 3, format: 'gcode', encoding: 'identity' }] })
+    const { vm } = mount({ publication: 'share', version: '3', file: 'public-file' })
+    await vm.load()
+    expect(vm.error).toBe('That public print does not list a checksum for its G-code.')
+    expect(mocks.downloadShared).not.toHaveBeenCalled()
+  })
+
+  it('loads and downloads a public hand-off through its publication share', async () => {
+    const { vm } = mount({ publication: 'share', version: '3', file: 'public-file' })
+    await vm.load()
+    expect(mocks.publication).toHaveBeenCalledWith('share')
+    expect(mocks.item).not.toHaveBeenCalled()
+    expect(vm.item.name).toBe('Community part')
+    vm.chosen = 'active'; await Vue.nextTick(); await vm.upload()
+    expect(mocks.downloadShared).toHaveBeenCalledWith('share', 'public-file', { sha256: 'b'.repeat(64), size_bytes: 3, encoding: 'identity' })
+    expect(mocks.fetchOwn).not.toHaveBeenCalled()
+    // A public print reports its share id, and no item or version.
+    expect(mocks.remember).toHaveBeenCalledWith('part.gcode', { gcode_sha256: 'b'.repeat(64), publication_id: 'share' })
+  })
+
+  it('rejects a file id that is not in the selected version', async () => {
+    const { vm } = mount({ publication: 'share', version: '3', file: 'unknown' })
+    await vm.load()
+    expect(vm.error).toBe('That G-code file is not in this public print.')
+  })
+
+  it('disables upload and start for a non-active chosen printer', async () => {
+    const { vm } = mount()
+    vm.chosen = 'other'
+    vm.uploadedPath = 'part.gcode'; vm.uploadedPrinterId = 'other'
+    await Vue.nextTick()
+    expect(vm.canUpload).toBe(false)
+    expect(vm.canStart).toBe(false)
+  })
+
+  it('does not trust uploaded or printer query parameters and never starts on mount', async () => {
+    const { vm } = mount({ uploaded: 'evil.gcode', printer: 'other' })
+    await vm.load()
+    expect(vm.uploadedPath).toBe('')
+    expect(vm.canStart).toBe(false)
+    expect(mocks.start).not.toHaveBeenCalled()
+  })
+
+  it('uploads and starts only while the chosen printer is active, and never starts after upload', async () => {
+    const { vm } = mount()
+    vm.chosen = 'active'
+    await Vue.nextTick()
+    await vm.upload()
+    expect(mocks.upload).toHaveBeenCalledTimes(1)
+    expect(mocks.start).not.toHaveBeenCalled()
+    expect(vm.uploadedPrinterId).toBe('active')
+    await vm.start()
+    expect(mocks.start).toHaveBeenCalledWith('/printer/print/start', { filename: 'part.gcode' }, { timeout: 150000 })
+
+    vm.chosen = 'other'
+    await Vue.nextTick()
+    await vm.upload()
+    await vm.start()
+    expect(mocks.upload).toHaveBeenCalledTimes(1)
+    expect(mocks.start).toHaveBeenCalledTimes(1)
+  })
+
+  it('resets trusted upload state when the printer choice changes', async () => {
+    const { vm } = mount()
+    vm.chosen = 'active'; await Vue.nextTick()
+    vm.uploadedPath = 'part.gcode'; vm.uploadedPrinterId = 'active'; vm.bytes = new Uint8Array([1])
+    vm.chosen = 'other'; await Vue.nextTick()
+    expect(vm.uploadedPath).toBe('')
+    expect(vm.uploadedPrinterId).toBe('')
+    expect(vm.bytes).toBeNull()
+  })
+
+  it('opens a non-active printer on the scoped hand-off with only hand-off identity state', async () => {
+    const { vm, router } = mount({ library: 'item', version: '3', uploaded: 'evil.gcode' })
+    vm.chosen = 'other'
+    await vm.openSelected()
+    expect(router.push).toHaveBeenCalledWith({ path: '/other-slug/print', query: { library: 'item', file: 'file', version: '3', printer: 'other' } })
+  })
+})

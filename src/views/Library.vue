@@ -8,6 +8,13 @@
       <div class="library__titles">
         <h1>Library</h1>
         <p>Everything you've sliced and saved, ready on any of your printers.</p>
+        <a
+          href="https://library.muon3d.com/library"
+          target="_blank"
+          rel="noopener"
+          class="lib-btn lib-btn--sm lib-btn--ghost"
+          data-tid="library-full"
+        >Open full Library ↗</a>
       </div>
       <label
         v-if="listing"
@@ -32,18 +39,28 @@
       </label>
     </header>
 
-    <div class="library__tabs">
-      <span
-        class="library__tab library__tab--on"
-        aria-current="page"
+    <div
+      v-if="signedIn && state.enabled"
+      class="library__tabs"
+      role="tablist"
+      aria-label="Library sections"
+    >
+      <button
+        v-for="tab in sectionTabs"
+        :key="tab.id"
+        type="button"
+        role="tab"
+        class="library__tab"
+        :class="{ 'library__tab--on': section === tab.id }"
+        :aria-selected="section === tab.id ? 'true' : 'false'"
+        :data-tid="`library-section-${tab.id}`"
+        @click="selectSection(tab.id)"
       >
-        Yours
+        {{ tab.label }}
         <span
-          v-if="listing"
           class="lib-pill"
-          data-tid="library-count"
-        >{{ everything.length }}</span>
-      </span>
+        >{{ tab.count }}</span>
+      </button>
       <span class="library__grow" />
       <span
         v-if="listing && storage"
@@ -51,6 +68,24 @@
         data-tid="library-summary"
       >{{ storage }}</span>
     </div>
+
+    <section
+      v-if="signedIn && state.error"
+      class="lib-empty lib-surface library__state"
+      role="alert"
+    >
+      <h2>Your Library didn't answer</h2>
+      <p>{{ state.error }}</p>
+      <div class="lib-empty__actions">
+        <button
+          type="button"
+          class="lib-btn"
+          @click="refresh"
+        >
+          Try again
+        </button>
+      </div>
+    </section>
 
     <!-- Signed out: the Library is the account's. -->
     <section
@@ -80,30 +115,17 @@
     </section>
 
     <section
-      v-else-if="!state.checked"
+      v-else-if="!state.error && (!state.checked || (state.enabled && !state.synced))"
       class="lib-empty lib-surface library__state"
     >
-      <template v-if="state.error">
-        <h2>Your Library didn't answer</h2>
-        <p>{{ state.error }}</p>
-        <div class="lib-empty__actions">
-          <button
-            type="button"
-            class="lib-btn"
-            @click="refresh"
-          >
-            Try again
-          </button>
-        </div>
-      </template>
-      <p v-else>
+      <p>
         Reading your Library…
       </p>
     </section>
 
     <!-- Off: what it keeps, and turning it on. -->
     <section
-      v-else-if="!state.enabled"
+      v-else-if="state.checked && !state.enabled && !state.error"
       class="lib-empty lib-surface library__state"
       data-tid="library-off"
     >
@@ -146,7 +168,7 @@
 
     <!-- On, and nothing in it yet. -->
     <section
-      v-else-if="!everything.length"
+      v-else-if="section === 'all' && state.synced && !everything.length && !state.error"
       class="lib-empty lib-surface library__state"
       data-tid="library-empty"
     >
@@ -164,10 +186,140 @@
         >
           Open Slice
         </router-link>
+        <a
+          href="https://library.muon3d.com/library"
+          target="_blank"
+          rel="noopener"
+          class="lib-btn lib-btn--ghost"
+        >Open full Library ↗</a>
       </div>
     </section>
 
-    <template v-else>
+    <section
+      v-else-if="section !== 'all'"
+      class="library__section"
+      :data-tid="`library-${section}`"
+    >
+      <div
+        v-if="sectionBusy"
+        class="lib-empty lib-surface library__state"
+      >
+        Reading {{ section }}…
+      </div>
+      <div
+        v-else-if="sectionError"
+        class="lib-empty lib-surface library__state"
+        role="alert"
+      >
+        <h2>This section didn't answer</h2>
+        <p>{{ sectionError }}</p>
+        <button
+          class="lib-btn"
+          type="button"
+          @click="loadSection"
+        >
+          Try again
+        </button>
+      </div>
+      <div
+        v-else-if="section === 'printed' && runs.length"
+        class="library__runs lib-surface"
+      >
+        <article
+          v-for="run in runs"
+          :key="run.id"
+          class="library__run"
+          :data-outcome="run.outcome"
+        >
+          <div class="library__run-main">
+            <b>{{ run.item && run.item.name ? run.item.name : run.file_name || 'A print' }}</b>
+            <span>{{ run.printer_name }} · {{ relativeTime(run.started_at) }}</span>
+            <small v-if="!run.in_library">Not in your Library</small>
+          </div>
+          <span
+            class="lib-chip library__outcome"
+            :class="`library__outcome--${run.outcome}`"
+          >{{ run.outcome }}</span>
+          <router-link
+            v-if="canPrintAgain(run)"
+            class="lib-btn lib-btn--sm lib-btn--pri"
+            :to="printAgain(run)"
+          >
+            Print again
+          </router-link>
+          <a
+            v-else
+            class="lib-btn lib-btn--sm lib-btn--ghost"
+            href="https://library.muon3d.com/library/printed"
+            target="_blank"
+            rel="noopener"
+          >Open full Library ↗</a>
+        </article>
+      </div>
+      <div
+        v-else-if="section === 'saved' && savedItems.length"
+        class="library__grid"
+      >
+        <article
+          v-for="item in savedItems"
+          :key="item.id"
+          class="library__saved lib-surface"
+          :data-tid="`library-saved-${item.id}`"
+        >
+          <a
+            v-if="item.available && item.url"
+            :href="item.url"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              v-if="item.thumbnailUrl"
+              :src="item.thumbnailUrl"
+              alt=""
+            >
+            <b>{{ item.title }}</b>
+          </a>
+          <div v-else>
+            <img
+              v-if="item.thumbnailUrl"
+              :src="item.thumbnailUrl"
+              alt=""
+            >
+            <b>{{ item.title }}</b>
+            <span>No longer available</span>
+          </div>
+          <small v-if="item.creator">{{ item.creator }}</small>
+        </article>
+      </div>
+      <div
+        v-else-if="sectionItems.length"
+        class="library__grid"
+      >
+        <library-card
+          v-for="item in sectionItems"
+          :key="item.id"
+          :item="item"
+          @print="printOn(item)"
+          @open="openInSlice(item)"
+        />
+      </div>
+      <div
+        v-else
+        class="lib-empty lib-surface library__state"
+        data-tid="library-section-empty"
+      >
+        <h2>Nothing here yet</h2>
+        <p>Use the full Library to discover and save models.</p>
+        <a
+          class="lib-btn lib-btn--ghost"
+          href="https://library.muon3d.com/library"
+          target="_blank"
+          rel="noopener"
+        >Open full Library ↗</a>
+      </div>
+    </section>
+
+    <template v-else-if="state.synced && everything.length > 0">
       <section
         v-if="recent.length"
         class="library__recent"
@@ -298,7 +450,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import LibraryPageMixin, { type LibraryFilter } from '@/mixins/library-page'
 import LibraryCard from '@/components/library/LibraryCard.vue'
@@ -306,6 +458,10 @@ import LibraryRecentCard from '@/components/library/LibraryRecentCard.vue'
 import PrintOnDialog from '@/components/library/PrintOnDialog.vue'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
 import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
+import { describeLibraryError, LibraryError, savedRows, type LibraryItem, type LibraryRun, type LibrarySections, type SavedRow } from '@/services/library/api'
+import { libraryClient } from '@/services/library/store'
+
+type Section = 'all' | 'printed' | 'sliced' | 'saved'
 
 /**
  * Your Library (`/library`): every print saved from Slice, and the models
@@ -319,6 +475,96 @@ import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
  */
 @Component({ components: { LibraryCard, LibraryRecentCard, PrintOnDialog, FileNameDialog, CloudAccountDialog } })
 export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
+  section: Section = 'all'
+  sections: LibrarySections | null = null
+  runs: LibraryRun[] = []
+  sectionItems: LibraryItem[] = []
+  savedItems: SavedRow[] = []
+  sectionBusy = false
+  sectionError = ''
+  savedAvailable = true
+
+  get sectionTabs (): Array<{ id: Section, label: string, count: number }> {
+    const counts = this.sections
+    return [
+      { id: 'all' as Section, label: 'All', count: counts?.all ?? this.everything.length },
+      { id: 'printed' as Section, label: 'Printed', count: counts?.printed ?? 0 },
+      { id: 'sliced' as Section, label: 'Sliced', count: counts?.sliced ?? 0 },
+      ...(this.savedAvailable ? [{ id: 'saved' as Section, label: 'Saved', count: counts?.saved ?? 0 }] : [])
+    ]
+  }
+
+  @Watch('state.enabled', { immediate: true })
+  onLibraryEnabled (enabled: boolean) {
+    if (enabled) this.loadSections()
+  }
+
+  async loadSections () {
+    try {
+      this.sections = await libraryClient().sections()
+    } catch (error) {
+      // The item list remains useful if an older service has no section summary.
+    }
+  }
+
+  selectSection (section: Section) {
+    this.section = section
+    if (section !== 'all') this.loadSection()
+  }
+
+  /** The newest load of a section: an older, slower answer must not overwrite it. */
+  private sectionLoad = 0
+
+  async loadSection () {
+    const load = ++this.sectionLoad
+    const section = this.section
+    this.sectionBusy = true
+    this.sectionError = ''
+    this.sectionItems = []
+    this.savedItems = []
+    this.runs = []
+    try {
+      if (this.section === 'printed') {
+        const page = await libraryClient().runs()
+        if (load !== this.sectionLoad) return
+        this.runs = Array.isArray(page.runs) ? page.runs : []
+      } else if (this.section === 'sliced') {
+        const page = await libraryClient().sliced()
+        if (load !== this.sectionLoad) return
+        this.sectionItems = Array.isArray(page.items) ? page.items.filter(item => item.state !== 'deleted' && !item.deleted_at) : []
+      } else if (this.section === 'saved') {
+        const saved = savedRows(await libraryClient().saved())
+        if (load !== this.sectionLoad) return
+        this.savedItems = saved
+      }
+    } catch (error) {
+      if (load !== this.sectionLoad) return
+      if (section === 'saved' && error instanceof LibraryError && error.status === 404) {
+        this.savedAvailable = false
+        this.section = 'all'
+      } else this.sectionError = describeLibraryError(error)
+    } finally {
+      if (load === this.sectionLoad) this.sectionBusy = false
+    }
+  }
+
+  /** Only a run whose print is still in the Library, and whose version is known, can be printed again. */
+  canPrintAgain (run: LibraryRun): boolean {
+    return !!run.item_id && run.in_library && (run.version ?? run.item?.version ?? null) !== null
+  }
+
+  printAgain (run: LibraryRun) {
+    return { path: '/print', query: { library: run.item_id as string, version: String(run.version ?? run.item?.version) } }
+  }
+
+  relativeTime (value: string): string {
+    const seconds = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 1000))
+    if (seconds < 60) return 'just now'
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
+    return `${Math.floor(seconds / 86400)}d ago`
+  }
+
   get chips (): Array<{ id: LibraryFilter, label: string, count: number | null }> {
     const chips: Array<{ id: LibraryFilter, label: string, count: number | null }> = [
       { id: 'all', label: 'All', count: this.everything.length },
@@ -374,6 +620,10 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
       color: var(--m3d-text-muted);
       font-size: 14px;
     }
+
+    a {
+      align-self: flex-start;
+    }
   }
 
   .library--phone .library__titles h1 {
@@ -390,9 +640,25 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
 
   .library__tabs {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 24px;
+    gap: 0 24px;
     border-bottom: 1px solid var(--m3d-border);
+  }
+
+  // Four tabs and the storage line do not fit a phone side by side: the
+  // storage line goes under the tabs instead of widening the page.
+  .library--phone .library__tabs {
+    gap: 0 16px;
+  }
+
+  .library--phone .library__grow {
+    display: none;
+  }
+
+  .library--phone .library__storage {
+    flex: 1 0 100%;
+    padding: 2px 0 10px;
   }
 
   .library__tab {
@@ -405,6 +671,8 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
     color: var(--m3d-text-subtle);
     font-size: 15px;
     font-weight: 600;
+    background: transparent;
+    cursor: pointer;
   }
 
   .library__tab--on {
@@ -414,6 +682,49 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
 
   .library__grow {
     flex: 1 1 auto;
+  }
+
+  .library__section,
+  .library__runs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .library__runs {
+    padding: 4px 16px;
+  }
+
+  .library__run {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--m3d-border);
+
+    &:last-child { border-bottom: 0; }
+  }
+
+  .library__run-main {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+
+    b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    span, small { color: var(--m3d-text-subtle); }
+  }
+
+  .library__outcome { text-transform: capitalize; }
+  .library__outcome--finished { color: var(--m3d-success); }
+  .library__outcome--failed { color: var(--m3d-danger); }
+  .library__outcome--running { color: var(--m3d-accent); }
+
+  .library--phone .library__run {
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    .lib-btn { grid-column: 1 / -1; }
   }
 
   .library__storage {

@@ -4,6 +4,18 @@
     :class="{ 'acct-page--phone': isMobileViewport }"
     data-tid="account-page"
   >
+    <a
+      v-if="returnToLibrary"
+      :href="returnToLibrary"
+      class="acct-back"
+      data-tid="account-library-return"
+    >
+      <frame-icon
+        name="chevronLeft"
+        small
+      />
+      Back to Library
+    </a>
     <nav
       v-if="showList"
       class="acct-nav"
@@ -157,6 +169,7 @@
           v-else-if="current.id === 'printers'"
           :link-to="linkTo"
         />
+        <account-tokens v-else-if="current.id === 'tokens'" />
         <account-notifications v-else-if="current.id === 'notifications'" />
         <library-settings v-else-if="current.id === 'library'" />
         <account-plan v-else-if="current.id === 'plan'" />
@@ -187,7 +200,7 @@ import { cloudBaseUrl } from '@/services/muon-cloud/api'
 import { centralLoginEnabled } from '@/services/muon-cloud/centralLogin'
 import { activeSlug } from '@/services/printer-pages'
 import { scopedPath } from '@/router/printerPagePaths'
-import { accountSectionFor, accountSections, type AccountSection, type AccountSectionId } from '@/services/account/model'
+import { accountSectionFor, accountSections, libraryReturnUrl, type AccountSection, type AccountSectionId } from '@/services/account/model'
 import { accountState, loadMe } from '@/services/account/state'
 import AccountOverview from '@/components/account/AccountOverview.vue'
 import AccountProfile from '@/components/account/AccountProfile.vue'
@@ -215,6 +228,7 @@ import '@/scss/muon3d-account.scss'
     AccountSecurity: () => import('@/components/account/AccountSecurity.vue'),
     AccountSessions: () => import('@/components/account/AccountSessions.vue'),
     AccountPrinters: () => import('@/components/account/AccountPrinters.vue'),
+    AccountTokens: () => import('@/components/account/AccountTokens.vue'),
     AccountNotifications: () => import('@/components/account/AccountNotifications.vue'),
     AccountPrivacy: () => import('@/components/account/AccountPrivacy.vue'),
     AccountDelete: () => import('@/components/account/AccountDelete.vue'),
@@ -225,6 +239,10 @@ import '@/scss/muon3d-account.scss'
 })
 export default class Account extends Mixins(BrowserMixin) {
   accountDialog = false
+
+  get returnToLibrary (): string | null {
+    return libraryReturnUrl(this.$route.query.return)
+  }
 
   created () {
     if (!accountState.me) loadMe().catch(() => {})
@@ -294,7 +312,8 @@ export default class Account extends Mixins(BrowserMixin) {
 
   linkTo (id: AccountSectionId, list = false): string {
     const path = id === 'overview' && (list || !this.isMobileViewport) ? '/account' : `/account/${id}`
-    return scopedPath(path, activeSlug())
+    const scoped = scopedPath(path, activeSlug())
+    return this.returnToLibrary ? `${scoped}?return=${encodeURIComponent(this.returnToLibrary)}` : scoped
   }
 
   signOut () {

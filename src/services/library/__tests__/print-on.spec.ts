@@ -4,7 +4,9 @@
 import Vue from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { saveToLibrary } from '../save'
-import { gcodeFileName, sendToPrinter, watchForStart, type PrintTarget, type SendMode } from '../print-on'
+import { createLibraryClient } from '../api'
+import { gzip, sha256Hex } from '../bytes'
+import { downloadSharedGcode, fetchGcode, gcodeFileName, sendToPrinter, watchForStart, type PrintTarget, type SendMode } from '../print-on'
 import { resetLibrary, setLibraryClient } from '../store'
 import { fakeService } from './fakeService'
 
@@ -12,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   upload: vi.fn(),
   start: vi.fn(),
   queue: vi.fn(),
+  remember: vi.fn(),
   active: { slug: null as string | null }
 }))
 
@@ -21,6 +24,7 @@ vi.mock('@/api/httpClientActions', () => ({
     post: (url: string, data: { filename: string }) => (url === '/printer/print/start' ? mocks.start(data.filename) : Promise.reject(new Error(url)))
   }
 }))
+vi.mock('../runs', () => ({ rememberLibraryFile: mocks.remember }))
 vi.mock('@/api/socketActions', () => ({ SocketActions: { serverJobQueuePostJob: mocks.queue } }))
 vi.mock('@/services/printer-pages', () => ({
   isActiveSlug: (slug: string) => slug === mocks.active.slug,
@@ -90,7 +94,7 @@ async function send (mode: SendMode, store = fakeStore(), order: string[] = []) 
 beforeEach(() => {
   resetLibrary('jack')
   mocks.active.slug = null
-  for (const m of [mocks.upload, mocks.start, mocks.queue]) m.mockReset()
+  for (const m of [mocks.upload, mocks.start, mocks.queue, mocks.remember]) m.mockReset()
   mocks.upload.mockImplementation(async (file: File) => ({ data: { item: { path: file.name } } }))
 })
 
@@ -124,6 +128,25 @@ describe('Print on…', () => {
       setup: { printer_model: 'Muon3D M1', nozzle_mm: 0.4, material: 'PLA' },
       version: 1
     }])
+  })
+
+  it('remembers the hash of the G-code as stored (the gzip bytes), with its item and version, for run reporting', async () => {
+    const stored = await gzip(new TextEncoder().encode(GCODE))
+    const { service, item, sent } = await send('print')
+    await sent
+    const [file] = (await service.client().versions(item.id)).versions[0].files.filter(f => f.role === 'gcode')
+    expect(file.sha256).toBe(await sha256Hex(stored))
+    expect(file.sha256).not.toBe(await sha256Hex(new TextEncoder().encode(GCODE)))
+    expect(mocks.remember).toHaveBeenCalledWith('Hinge bracket.gcode', { gcode_sha256: file.sha256, item_id: item.id, version: 1 })
+  })
+
+  it('refuses a stored G-code that does not match its version listing, before anything is uploaded', async () => {
+    const { service, item, setup } = await savedPrint()
+    const listing = (await service.client().versions(item.id)).versions[0].files.find(f => f.id === setup.file_id)!
+    const expected = { sha256: listing.sha256, size_bytes: listing.size_bytes, encoding: listing.encoding }
+    await expect(fetchGcode(item, setup, { ...expected, sha256: 'f'.repeat(64) })).rejects.toThrow('did not match')
+    await expect(fetchGcode(item, setup, { ...expected, size_bytes: expected.size_bytes + 1 })).rejects.toThrow('did not match')
+    await expect(fetchGcode(item, setup, expected)).resolves.toMatchObject({ stored_sha256: expected.sha256 })
   })
 
   it('counts nothing when the printer refuses the start', async () => {
@@ -211,5 +234,52 @@ describe('Print on…', () => {
     expect(gcodeFileName({ name: 'Hinge bracket' })).toBe('Hinge bracket.gcode')
     expect(gcodeFileName({ name: '../config/printer.cfg' })).toBe('config-printer.cfg.gcode')
     expect(gcodeFileName({ name: 'a/b\\c:d*e?f"g<h>i|j' })).toBe('a-b-c-d-e-f-g-h-i-j.gcode')
+  })
+})
+
+describe('downloadSharedGcode', () => {
+  function serve (response: () => Response) {
+    const fetcher = vi.fn<[string, RequestInit], Promise<Response>>(async () => response())
+    setLibraryClient(createLibraryClient({ baseUrl: 'https://models.invalid', assertion: { get: async () => 'a', drop: () => {} }, fetch: fetcher as unknown as typeof fetch }))
+    return fetcher
+  }
+
+  // The listing is the model service's public detail file: {id, role, format, encoding, size_bytes, sha256, setup}, where sha256 is of the stored bytes.
+  it('POSTs {} and returns the served G-code: size and hash checked on the stored gzip bytes, then unzipped', async () => {
+    const text = new TextEncoder().encode(GCODE)
+    const stored = await gzip(text)
+    const fetcher = serve(() => new Response(stored))
+    const expected = { sha256: await sha256Hex(stored), size_bytes: stored.byteLength, encoding: 'gzip' as const }
+    expect(expected.sha256).not.toBe(await sha256Hex(text))
+    const got = await downloadSharedGcode('share', 'file', expected)
+    expect(got.bytes).toEqual(text)
+    expect(got.stored_sha256).toBe(expected.sha256)
+    expect(JSON.parse((fetcher.mock.calls[0][1] as RequestInit).body as string)).toEqual({})
+  })
+
+  it('refuses bytes that do not match the listing', async () => {
+    const stored = await gzip(new TextEncoder().encode(GCODE))
+    serve(() => new Response(stored))
+    await expect(downloadSharedGcode('share', 'file', { sha256: 'f'.repeat(64), size_bytes: stored.byteLength, encoding: 'gzip' })).rejects.toThrow('did not match')
+  })
+
+  it('checks the hash before unzipping: damaged gzip bytes fail the check, not the decompressor', async () => {
+    const stored = await gzip(new TextEncoder().encode(GCODE))
+    const listed = { sha256: await sha256Hex(stored), size_bytes: stored.byteLength, encoding: 'gzip' as const }
+    const damaged = stored.slice(); damaged[Math.floor(damaged.length / 2)] ^= 0xff
+    serve(() => new Response(damaged))
+    await expect(downloadSharedGcode('share', 'file', listed)).rejects.toThrow('did not match its listing')
+  })
+
+  it('takes identity bytes as they are, even ones that begin like gzip', async () => {
+    const plain = new Uint8Array([0x1f, 0x8b, 0x42, 0x43])
+    serve(() => new Response(plain))
+    const got = await downloadSharedGcode('share', 'file', { sha256: await sha256Hex(plain), size_bytes: 4, encoding: 'identity' })
+    expect(got).toEqual({ bytes: plain, stored_sha256: await sha256Hex(plain) })
+  })
+
+  it('surfaces a 4xx refusal', async () => {
+    serve(() => new Response(JSON.stringify({ error: { code: 'not_found', message: 'Not found' } }), { status: 404 }))
+    await expect(downloadSharedGcode('share', 'file', { sha256: 'a'.repeat(64), size_bytes: 1, encoding: 'gzip' })).rejects.toMatchObject({ code: 'not_found' })
   })
 })

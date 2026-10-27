@@ -23,6 +23,7 @@
  */
 import { CLIENT_ID, cloudApi, cloudBaseUrl, sameConsole, storedToken, storeToken, storeRefreshToken } from './api'
 import { challengeFor, newState, newVerifier } from './pkce'
+import { refreshServiceWorker } from '@/util/service-worker-update'
 
 const PENDING_KEY = 'muon.cloud.authorize'
 const SILENT_KEY = 'muon.cloud.silent'
@@ -99,7 +100,10 @@ function currentAddress (): string {
  * again in a loop.
  */
 export async function startCentralSignIn (options: { silent: boolean, returnTo?: string }, go: (url: string) => void = (url) => window.location.assign(url)): Promise<void> {
-  go(await prepareAuthorize(options))
+  const url = await prepareAuthorize(options)
+  // An older worker may answer /authorize with its cached printers page.
+  if (!options.silent) await refreshServiceWorker()
+  go(url)
 }
 
 /**

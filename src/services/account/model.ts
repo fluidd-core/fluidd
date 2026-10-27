@@ -5,6 +5,26 @@
  */
 import type { AccountEvent, Me, Session } from './api'
 
+/** Public Library origins that may send somebody to Account and receive them back. */
+export const LIBRARY_RETURN_HOSTS = ['library.muon3d.com', 'staging.library.muon3d.com'] as const
+
+/**
+ * Accept an absolute, encrypted Library return address only. Parsing the URL
+ * (rather than comparing strings) rejects userinfo and protocol-relative URL tricks.
+ */
+export function libraryReturnUrl (value: unknown): string | null {
+  if (typeof value !== 'string' || !value) return null
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' && !url.username && !url.password &&
+      (LIBRARY_RETURN_HOSTS as readonly string[]).includes(url.hostname) && url.port === ''
+      ? url.href
+      : null
+  } catch {
+    return null
+  }
+}
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
@@ -260,7 +280,7 @@ export function eventLine (e: AccountEvent, printerName: (id: string) => string 
 
 /** The Account area's sections, in the list's order. */
 export type AccountSectionId =
-  'overview' | 'profile' | 'security' | 'sessions' | 'printers' | 'notifications' | 'library' | 'plan' | 'privacy' | 'delete'
+  'overview' | 'profile' | 'security' | 'sessions' | 'printers' | 'tokens' | 'notifications' | 'library' | 'plan' | 'privacy' | 'delete'
 
 export interface AccountSection {
   id: AccountSectionId;
@@ -276,6 +296,7 @@ export const ACCOUNT_SECTIONS: AccountSection[] = [
   { id: 'security', label: 'Sign-in and security', icon: 'shield', built: true },
   { id: 'sessions', label: 'Devices and sessions', icon: 'devices', built: true },
   { id: 'printers', label: 'Printers and access', icon: 'printer', built: true },
+  { id: 'tokens', label: 'Access tokens', icon: 'key', built: true },
   { id: 'notifications', label: 'Notifications', icon: 'bell', built: true },
   { id: 'library', label: 'Library and storage', icon: 'library', built: true },
   { id: 'plan', label: 'Plan', icon: 'card', built: true },

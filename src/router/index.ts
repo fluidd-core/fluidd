@@ -32,6 +32,7 @@ const Login = () => import('@/views/Login.vue')
 const Icons = () => import('@/views/Icons.vue')
 const LinkLanding = () => import('@/views/LinkLanding.vue')
 const JoinLanding = () => import('@/views/JoinLanding.vue')
+const PrintHandoff = () => import('@/views/PrintHandoff.vue')
 
 Vue.use(VueRouter)
 
@@ -77,6 +78,12 @@ function foreignPageRedirect (to: Route): string | null {
 const P = `/:printer(${ROUTE_SLUG_PATTERN})`
 
 const printerRoutes: Array<RouteConfig> = [
+  {
+    path: `${P}/print`,
+    name: 'Print hand-off',
+    component: PrintHandoff,
+    meta: { printerIndependent: true, frame: 'printer' }
+  },
   {
     path: P,
     name: 'Dashboard',
@@ -301,6 +308,12 @@ const routes: Array<RouteConfig> = [
   {
     path: '/welcome',
     redirect: '/'
+  },
+  {
+    path: '/print',
+    name: 'Print hand-off (no printer)',
+    component: PrintHandoff,
+    meta: { printerIndependent: true }
   },
   // Your Library (KAN-521) with no printer open: with one, the same pages
   // under that printer, so the rail and the printer stay beside it.

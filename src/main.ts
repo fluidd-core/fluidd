@@ -58,6 +58,8 @@ import { applyGlassIcons } from '@/util/glass-icons'
 
 // The entry is evaluated: the loader's next mark (KAN-525).
 retireProStorage()
+// Library run reporting loads after first paint: it never delays startup (KAN-836).
+afterFirstPaint(() => { import('./services/library/runs').then(m => m.observePrintRuns(store)) })
 setLoaderProgress(0.8)
 
 // What the printers last showed goes up while the socket connects; the
