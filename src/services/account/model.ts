@@ -304,7 +304,7 @@ export const ACCOUNT_SECTIONS: AccountSection[] = [
   { id: 'apps', label: 'Connected apps', icon: 'link', built: true },
   { id: 'notifications', label: 'Notifications', icon: 'bell', built: true },
   { id: 'library', label: 'Library and storage', icon: 'library', built: true },
-  { id: 'plan', label: 'Plan', icon: 'card', built: true },
+  { id: 'plan', label: 'Plan and credits', icon: 'card', built: true },
   { id: 'privacy', label: 'Privacy and data', icon: 'eye', built: true },
   { id: 'delete', label: 'Delete account', icon: 'trash', built: true }
 ]

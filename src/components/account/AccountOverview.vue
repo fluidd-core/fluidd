@@ -214,10 +214,13 @@
         small
       /></span>
       <span class="acct-row__label">
-        <b>Free plan</b>
-        <span>Printer features are always free</span>
+        <b>{{ planName }} plan</b>
+        <span data-tid="account-tile-plan-line">{{ creditLine }}</span>
       </span>
-      <span class="lib-pill">Plans soon</span>
+      <span
+        v-if="creditState !== 'ok'"
+        class="lib-pill lib-pill--warn"
+      >{{ creditState === 'empty' ? 'Out of credits' : 'Low on credits' }}</span>
     </router-link>
 
     <section
@@ -288,6 +291,7 @@ import {
 } from '@/services/account/model'
 import { libraryItems, libraryPrints, libraryState, refreshLibrary, watchLibraryAccount } from '@/services/library/store'
 import { bytesText } from '@/services/library/format'
+import { balanceState, catalogPlan, credits, loadCredits, nextGrantText, type BalanceState, type CreditAccount } from '@/services/account/credits'
 import type { AccountDetails, Me } from '@/services/account/api'
 
 const EVENT_ICONS: Record<string, string> = {
@@ -314,10 +318,29 @@ export default class AccountOverview extends Vue {
   @Prop({ type: Function, required: true })
   readonly linkTo!: (id: AccountSectionId) => string
 
+  credit: CreditAccount | null = null
+
   created () {
     loadOverview()
     watchLibraryAccount()
     refreshLibrary().catch(() => {})
+    loadCredits().then(account => { this.credit = account }).catch(() => {})
+  }
+
+  get planName (): string {
+    return catalogPlan(this.credit?.plan ?? 'free').name
+  }
+
+  /** "286 credits · 400 more on 9 Nov", or the promise when credits can't be read. */
+  get creditLine (): string {
+    const c = this.credit
+    if (!c) return 'Printer features are always free'
+    const next = nextGrantText(c)
+    return `${credits(c.balance)} credits${next ? ` · ${next}` : ''}`
+  }
+
+  get creditState (): BalanceState {
+    return this.credit ? balanceState(this.credit.balance) : 'ok'
   }
 
   get me (): Me | null {
