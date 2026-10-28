@@ -448,6 +448,7 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import LibraryPageMixin, { type LibraryFilter } from '@/mixins/library-page'
@@ -462,6 +463,9 @@ import { describeLibraryError, LibraryError, savedRows, type LibraryItem, type L
 import { libraryClient, libraryState, turnLibraryOn } from '@/services/library/store'
 
 type Section = 'all' | 'printed' | 'sliced' | 'saved'
+
+/** Automatic consent, by account: asked once per app session, whichever page instance asked (KAN-735). */
+export const autoConsent = Vue.observable({ asked: {} as Record<string, 'pending' | 'done' | 'failed'> })
 
 /**
  * Your Library (`/library`): every print saved from Slice, and the models
@@ -506,31 +510,32 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
     return this.signedIn || (!cloudState.ready && !!storedToken())
   }
 
-  /** The account whose consent was already asked for here, so it's asked once. */
-  consentAsked: string | null = null
-  consentFailed = false
-
   /**
    * The Library is always on (KAN-735): signed in with it off, consent is
-   * recorded with the promise this Control shows, unless a deletion is pending
-   * or the service's promise is one this Control can't show. Those keep the
-   * off panel, as does a failed attempt.
+   * recorded with the promise this Control shows, once per account. Not when
+   * it was turned off (deletion pending or not), the service's promise is one
+   * this Control can't show, or an attempt already failed: those keep the off
+   * panel. True only while the attempt is still to come or under way.
    */
   get consentDue (): boolean {
+    const account = libraryState.account
+    const asked = account ? autoConsent.asked[account] : undefined
     return this.signedIn && libraryState.checked && !libraryState.enabled && !libraryState.error &&
-      !libraryState.purgeAfter && this.promise !== null && !this.consentFailed
+      !libraryState.purgeAfter && !libraryState.withdrawn && this.promise !== null &&
+      (asked === undefined || asked === 'pending')
   }
 
   @Watch('consentDue', { immediate: true })
   async onConsentDue (due: boolean) {
     const account = libraryState.account
     const promise = this.promise
-    if (!due || !promise || this.consentAsked === account) return
-    this.consentAsked = account
+    if (!due || !promise || !account || autoConsent.asked[account] !== undefined) return
+    Vue.set(autoConsent.asked, account, 'pending')
     try {
       await turnLibraryOn(promise.version)
+      Vue.set(autoConsent.asked, account, 'done')
     } catch (error) {
-      this.consentFailed = true
+      Vue.set(autoConsent.asked, account, 'failed')
       this.error = describeLibraryError(error)
     }
   }
