@@ -152,6 +152,51 @@ describe('Connected apps', () => {
     expect(w.find('[data-tid="apps-error"]').text()).toContain('sign out instead')
     expect(connectedApps).toHaveBeenCalledTimes(2)
   })
+
+  it('shows a list that did not load as an error, never as no apps, and tries again', async () => {
+    connectedApps
+      .mockRejectedValueOnce(new AccountError('The store is not writable.', 500, { error: 'the store is not writable' }))
+      .mockResolvedValueOnce({ apps: [app()] })
+    const { w } = open()
+    await settle()
+    expect(w.find('[data-tid="apps-load-error"]').exists()).toBe(true)
+    expect(w.find('[data-tid="apps-empty"]').exists()).toBe(false)
+    expect(w.find('[data-tid="apps-error"]').text()).toBe('The store is not writable.')
+    await w.find('[data-tid="apps-retry"]').trigger('click')
+    await settle()
+    expect(w.find('[data-tid="apps-load-error"]').exists()).toBe(false)
+    expect(w.find('[data-tid="apps-error"]').exists()).toBe(false)
+    expect(w.findAll('[data-tid="apps-row"]')).toHaveLength(1)
+  })
+
+  it('drops the row once disconnected, even when reading the list again fails', async () => {
+    connectedApps
+      .mockResolvedValueOnce({ apps: [app(), app({ client_id: 'dyn_2', name: 'Cursor' })] })
+      .mockRejectedValueOnce(new AccountError('The Muon3D service could not be reached.', 0))
+    const { w } = open()
+    await settle()
+    await w.find('[data-tid="apps-revoke"]').trigger('click')
+    await settle()
+    expect(disconnectApp).toHaveBeenCalledWith('dcr_1')
+    const rows = w.findAll('[data-tid="apps-row"]')
+    expect(rows).toHaveLength(1)
+    expect(rows.at(0).text()).toContain('Cursor')
+    expect(w.find('[data-tid="apps-message"]').text()).toContain('Claude is disconnected.')
+  })
+
+  it('says an app was already disconnected when the console no longer has it', async () => {
+    connectedApps
+      .mockResolvedValueOnce({ apps: [app()] })
+      .mockResolvedValueOnce({ apps: [] })
+    disconnectApp.mockRejectedValueOnce(new AccountError('No app with that id is connected to this account.', 404, { error: 'no app with that id is connected to this account' }))
+    const { w } = open()
+    await settle()
+    await w.find('[data-tid="apps-revoke"]').trigger('click')
+    await settle()
+    expect(w.find('[data-tid="apps-error"]').text()).toBe('That app was already disconnected.')
+    expect(w.find('[data-tid="apps-row"]').exists()).toBe(false)
+    expect(w.find('[data-tid="apps-empty"]').exists()).toBe(true)
+  })
 })
 
 describe('connected app words', () => {

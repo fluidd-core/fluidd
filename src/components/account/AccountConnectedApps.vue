@@ -112,6 +112,30 @@
     </div>
 
     <div
+      v-else-if="loadError"
+      class="acct-empty"
+      data-tid="apps-load-error"
+    >
+      <span class="acct-empty__icon"><frame-icon
+        name="alert"
+        large
+      /></span>
+      <h3>Your connected apps didn't load</h3>
+      <p>This doesn't mean you have none. Try again in a moment.</p>
+      <button
+        type="button"
+        class="lib-btn"
+        data-tid="apps-retry"
+        @click="retry"
+      >
+        <frame-icon
+          name="refresh"
+          small
+        />Try again
+      </button>
+    </div>
+
+    <div
       v-else-if="apps && !apps.length"
       class="acct-empty"
       data-tid="apps-empty"
@@ -166,7 +190,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 import { accountApi } from '@/services/account/api'
-import { isMissing } from '@/services/account/client'
+import { AccountError, isMissing } from '@/services/account/client'
 import type { AccountSectionId } from '@/services/account/model'
 import {
   appFailure,
@@ -221,6 +245,14 @@ export default class AccountConnectedApps extends Vue {
     }
   }
 
+  /** After a failed read: show "Reading…" again and ask once more. */
+  async retry () {
+    this.apps = null
+    this.loadError = false
+    this.error = ''
+    await this.refresh()
+  }
+
   get ordered (): ConnectedApp[] {
     return orderApps(this.apps ?? [])
   }
@@ -262,13 +294,20 @@ export default class AccountConnectedApps extends Vue {
     try {
       await accountApi.disconnectApp(app.client_id)
       this.message = `${name} is disconnected.`
+      // Gone now, even if reading the list again below fails.
+      this.dropRow(app.client_id)
     } catch (error) {
-      // Already gone, or this app: the list says so after a refresh.
+      // Already gone (404, and the row goes too), or this app: the list says so after a refresh.
+      if (error instanceof AccountError && error.status === 404) this.dropRow(app.client_id)
       this.error = appFailure(error)
     } finally {
       this.busy = false
       await this.refresh()
     }
+  }
+
+  dropRow (clientId: string) {
+    if (this.apps) this.apps = this.apps.filter(a => a.client_id !== clientId)
   }
 }
 </script>
