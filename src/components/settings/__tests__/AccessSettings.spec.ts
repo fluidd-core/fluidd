@@ -117,4 +117,14 @@ describe('AccessSettings', () => {
       ['print', 'allowed'], ['wifi', 'allowed'], ['hotspot', 'refused'], ['protection', 'ask']
     ])
   })
+
+  it('shows heating on its own row when the printer has one (KAN-878)', async () => {
+    const wrapper = mount(homeGuest, { motion: 'allowed', heat: 'allowed' })
+    await settle()
+    const rows = wrapper.findAll('[data-capability]').wrappers
+    expect(rows.map(w => w.attributes('data-capability'))).toEqual(['motion', 'heat'])
+    expect(rows[0].text()).toContain('Move and run macros')
+    expect(rows[0].text()).not.toContain('heat')
+    expect(rows[1].text()).toContain('Heat the nozzle and bed')
+  })
 })

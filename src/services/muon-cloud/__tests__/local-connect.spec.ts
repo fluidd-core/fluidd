@@ -19,7 +19,7 @@ vi.mock('@/services/managed-transport', () => ({ createPrinterTransportForSelect
 vi.mock('@/services/managed-session/httpTransportBinding', () => ({ bindHttpClientToPrinterTransport: vi.fn() }))
 
 const { activateLocalPrinter, activationState } = await import('../activate')
-const { nearbyHost, pageCanReach } = await import('../discovery')
+const { nearbyHost, pageCanReach, pageReach } = await import('../discovery')
 
 const printer: InstanceConfig = {
   name: 'Muon-boxwood-367a',
@@ -43,6 +43,19 @@ function browserSays (outcome: 'answers' | 'blocks') {
   })
   vi.stubGlobal('fetch', fetch)
   return fetch
+}
+
+/** Chromium's local network permission for this page. */
+function localNetwork (state: PermissionState) {
+  vi.stubGlobal('navigator', {
+    ...navigator,
+    permissions: {
+      query: vi.fn(async ({ name }: { name: string }) => {
+        if (name !== 'local-network-access') throw new TypeError(`no permission ${name}`)
+        return { state }
+      })
+    }
+  })
 }
 
 function moonraker (apiConnected: boolean, apiAuthenticated = apiConnected) {
@@ -82,6 +95,33 @@ describe('pageCanReach', () => {
     browserSays('blocks')
 
     expect(await pageCanReach(printer.apiUrl)).toBe(false)
+  })
+
+  it('tells a block from an address nobody answers on', async () => {
+    servedOver('https:')
+    browserSays('blocks')
+    expect(await pageReach(printer.apiUrl)).toBe('blocked')
+
+    localNetwork('denied')
+    expect(await pageReach(printer.apiUrl)).toBe('blocked')
+
+    // Chrome let the request out, so nobody is at that address.
+    localNetwork('granted')
+    expect(await pageReach(printer.apiUrl)).toBe('silent')
+
+    // A name may resolve to a public IPv6 address, which is still blocked.
+    expect(await pageReach('http://muon-boxwood-367a.local')).toBe('blocked')
+  })
+
+  it('takes a request that waits out the time limit as unanswered, unless the prompt is still open', async () => {
+    servedOver('https:')
+    vi.stubGlobal('fetch', vi.fn((_url: string, init: RequestInit) => new Promise((_resolve, reject) => {
+      init.signal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')))
+    })))
+    expect(await pageReach(printer.apiUrl, 5)).toBe('silent')
+
+    localNetwork('prompt')
+    expect(await pageReach(printer.apiUrl, 5)).toBe('asking')
   })
 
   it('does not ask from a plain-HTTP page, where nothing is mixed content', async () => {
@@ -127,6 +167,38 @@ describe('activateLocalPrinter', () => {
     expect(socket.connect).not.toHaveBeenCalled()
   })
 
+  it('says the printer is not answering, and offers no page, when the browser let the request out', async () => {
+    // The page Control used to offer here did not load either: nothing holds
+    // the address.
+    servedOver('https:')
+    browserSays('blocks')
+    localNetwork('granted')
+
+    expect(await activateLocalPrinter(printer)).toBe(false)
+    expect(activationState.error).toContain("isn't answering at 192.168.1.153")
+    expect(activationState.error).not.toContain('does not let')
+    expect(activationState.fallbackUrl).toBeNull()
+  })
+
+  it('asks the person to answer the browser\'s prompt while it is open', async () => {
+    servedOver('https:')
+    browserSays('blocks')
+    localNetwork('prompt')
+
+    expect(await activateLocalPrinter(printer)).toBe(false)
+    expect(activationState.error).toContain('when the browser asks')
+    expect(activationState.fallbackUrl).toBe('http://192.168.1.153/')
+  })
+
+  it('offers no page for the printer\'s own hotspot address, which nobody on the home network reaches', async () => {
+    servedOver('https:')
+    browserSays('blocks')
+
+    expect(await activateLocalPrinter({ ...printer, apiUrl: 'http://10.42.0.1' })).toBe(false)
+    expect(activationState.error).toContain('own hotspot')
+    expect(activationState.fallbackUrl).toBeNull()
+  })
+
   it('reports failure, with no printer page to offer, when Moonraker never answers', async () => {
     servedOver('https:')
     browserSays('answers')
@@ -143,8 +215,10 @@ describe('nearbyHost', () => {
     expect(nearbyHost(['10.42.0.1', '192.168.1.153'])).toBe('192.168.1.153')
   })
 
-  it('uses the hotspot address when it is the only one', () => {
-    expect(nearbyHost(['10.42.0.1'])).toBe('10.42.0.1')
+  it('offers no address when the hotspot is the only one reported', () => {
+    // Boxwood, 27 Oct: on the home Wi-Fi since 21:29, while the service still
+    // gave 10.42.0.1 alone at 00:30, and Control offered http://10.42.0.1/.
+    expect(nearbyHost(['10.42.0.1'])).toBeNull()
   })
 
   it('keeps other 10.x networks, which are ordinary home and office LANs', () => {

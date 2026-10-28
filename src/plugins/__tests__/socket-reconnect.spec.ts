@@ -268,3 +268,80 @@ describe('WebSocketClient reconnecting', () => {
     expect(client.retryPending).toBe(false)
   })
 })
+
+/** What axios rejects with when the printer answers `status`. */
+const answered = (status: number) => ({ isAxiosError: true, message: `HTTP ${status}`, response: { status } })
+const socketUrls = () => (WebSocket as unknown as { mock: { calls: unknown[][] } }).mock.calls.map(call => call[0])
+
+describe('WebSocketClient without a one-shot token', () => {
+  // 27 Oct, bench: behind the muon-link Bluetooth bridge the printer refuses
+  // /access/oneshot_token for every role, and Fluidd retried it for ever while
+  // the socket itself would have opened.
+  it.each([403, 404])('opens the socket without a token when the token endpoint answers %i', async (status) => {
+    const { client, store } = lanClient()
+    tokens.get.mockRejectedValueOnce(answered(status))
+
+    await client.connect()
+
+    expect(socketUrls()).toEqual(['ws://printer/websocket'])
+    expect(store.dispatch).toHaveBeenCalledWith('socket/onSocketConnecting', true)
+    expect(client.retryPending).toBe(false)
+    sockets[0].emit('open')
+    expect(client.connection).toBe(sockets[0])
+  })
+
+  it('still sends the token when there is one', async () => {
+    const { client } = lanClient()
+    await client.connect()
+    expect(socketUrls()).toEqual(['ws://printer/websocket?token=token'])
+  })
+
+  it('opens nothing and does not retry on a 401: sign in first', async () => {
+    const { client } = lanClient()
+    tokens.get.mockRejectedValueOnce(answered(401))
+    await client.connect()
+    expect(sockets).toHaveLength(0)
+    expect(client.retryPending).toBe(false)
+  })
+
+  it('retries, and opens nothing, when the printer could not answer', async () => {
+    const { client } = lanClient()
+    tokens.get.mockRejectedValueOnce(answered(502))
+    await client.connect()
+    expect(sockets).toHaveLength(0)
+    expect(client.retryPending).toBe(true)
+  })
+
+  it('opens nothing for a refusal that came after Fluidd closed the connection', async () => {
+    const { client } = lanClient()
+    let refuse!: (error: unknown) => void
+    tokens.get.mockReturnValueOnce(new Promise((_resolve, reject) => { refuse = reject }))
+    const waiting = client.connect()
+
+    client.close()
+    refuse(answered(403))
+    await waiting
+
+    expect(sockets).toHaveLength(0)
+  })
+
+  it('goes back to the token-less socket after it drops', async () => {
+    const { client } = lanClient()
+    tokens.get.mockRejectedValue(answered(403))
+    await client.connect()
+    sockets[0].emit('open')
+    sockets[0].emit('close', { code: 1006, reason: 'lost', wasClean: false })
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    expect(socketUrls()).toEqual(['ws://printer/websocket', 'ws://printer/websocket'])
+  })
+
+  it('tries again later when the browser refuses to open the address', async () => {
+    const { client } = lanClient()
+    vi.stubGlobal('WebSocket', vi.fn(() => { throw new DOMException('insecure', 'SecurityError') }))
+    await client.connect()
+    expect(client.connection).toBeNull()
+    expect(client.retryPending).toBe(true)
+  })
+})

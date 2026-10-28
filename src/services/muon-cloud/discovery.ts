@@ -458,31 +458,88 @@ export async function probeAddress (input: string): Promise<LanPrinter | null> {
  * Any HTTP answer, even an error status, means the page can reach it.
  */
 export async function pageCanReach (apiUrl: string, timeout = PROBE_TIMEOUT_MS): Promise<boolean> {
-  if (location.protocol !== 'https:' || !apiUrl.startsWith('http:')) return true
+  return await pageReach(apiUrl, timeout) === 'reached'
+}
+
+/**
+ * What became of this page's request to the printer at `apiUrl`: it was
+ * answered, the browser blocked it, or it went out and nothing answered.
+ *
+ * Telling the last two apart decides what Fluidd may say. A blocked printer
+ * still works from its own page; a silent address is wrong or the printer is
+ * off, and its page would not load either. On 27 Oct Control told Jack the
+ * browser blocked Boxwood and sent him to http://10.42.0.1/, an address the
+ * printer had stopped holding hours before.
+ *
+ * A block comes back at once. A request the browser let out, to an address
+ * nobody holds, waits for the time limit. With Chromium's local network
+ * permission granted, a quick failure at a private IPv4 address is a refusal
+ * from the address itself; at a name it may still be a block (a name can
+ * resolve to a public IPv6 address). While Chromium's prompt is open the
+ * request waits for the person, whatever the address: that is `asking`.
+ */
+export async function pageReach (apiUrl: string, timeout = PROBE_TIMEOUT_MS): Promise<'reached' | 'blocked' | 'asking' | 'silent'> {
+  if (location.protocol !== 'https:' || !apiUrl.startsWith('http:')) return 'reached'
   const controller = new AbortController()
-  const timer = window.setTimeout(() => controller.abort(), timeout)
+  let timedOut = false
+  const timer = window.setTimeout(() => {
+    timedOut = true
+    controller.abort()
+  }, timeout)
   try {
     await lanFetch(`${apiUrl.replace(/\/+$/, '')}/server/info`, { mode: 'no-cors', signal: controller.signal, cache: 'no-store' })
-    return true
+    return 'reached'
   } catch {
-    return false
+    const permission = await localNetworkPermission()
+    if (permission === 'prompt') return 'asking'
+    if (timedOut || (permission === 'granted' && isPrivateIpv4(hostOf(apiUrl)))) return 'silent'
+    return 'blocked'
   } finally {
     window.clearTimeout(timer)
   }
 }
 
+function isPrivateIpv4 (host: string | null): boolean {
+  return !!host && isIpv4(host) && /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)
+}
+
+/**
+ * Chromium's "look for devices on your local network" permission for this
+ * page, or `unknown` where the browser has none (Firefox, Safari).
+ */
+export async function localNetworkPermission (): Promise<PermissionState | 'unknown'> {
+  for (const name of ['local-network-access', 'local-network']) {
+    try {
+      return (await navigator.permissions.query({ name } as unknown as PermissionDescriptor)).state
+    } catch { /* not this name, or no Permissions API */ }
+  }
+  return 'unknown'
+}
+
 /** The subnet an M1's own hotspot hands out (NetworkManager's shared mode). */
 const OWN_HOTSPOT = /^10\.42\.0\.\d+$/
 
+/** Whether `host` is an address on an M1's own hotspot. */
+export function isOwnHotspot (host: string | null | undefined): boolean {
+  return !!host && OWN_HOTSPOT.test(host)
+}
+
 /**
- * The address to open a printer the service found nearby at. The printer
- * reports every private IPv4 address it holds, sorted, and while its hotspot
- * is up that includes 10.42.0.1, which sorts first and which nobody on the
- * owner's network can reach. That address is only the answer when it is the
- * only one.
+ * The address to open a printer the service found nearby at, or null when it
+ * reported none this browser could use. The printer reports every private
+ * IPv4 address it holds, sorted, and while its hotspot is up that includes
+ * 10.42.0.1, which sorts first and which nobody on the owner's network can
+ * reach.
+ *
+ * The hotspot address is never the answer, even alone. The service lists a
+ * printer only while it connects from this browser's public address, so the
+ * printer is on a network with this browser, and a report of the hotspot alone
+ * is out of date. Boxwood, 27 Oct: its hotspot went down at 21:29:42, a second
+ * after it joined the home Wi-Fi, and at 00:30 the service still gave
+ * 10.42.0.1 as its only address.
  */
 export function nearbyHost (localAddrs: string[]): string | null {
-  return localAddrs.find(a => !OWN_HOTSPOT.test(a)) ?? localAddrs[0] ?? null
+  return localAddrs.find(a => !isOwnHotspot(a)) ?? null
 }
 
 /** Whether something answered at `host` quickly. A refusal is an answer. */

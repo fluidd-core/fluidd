@@ -30,6 +30,7 @@ vi.mock('@/services/printer-pages', () => ({
   isActiveSlug: () => false,
   learnActiveIdentity: vi.fn(async () => null)
 }))
+vi.mock('@/aux_api/useAuxApi', () => ({ setAuxApiBasePath: vi.fn() }))
 const http = vi.hoisted(() => ({
   serverDatabaseItemGet: vi.fn(),
   serverDatabaseItemPost: vi.fn(async () => ({})),

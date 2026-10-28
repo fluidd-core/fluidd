@@ -9,6 +9,14 @@ on:
 permissions:
   contents: write   # needed to create/update GitHub Releases
 
+# One publish at a time (KAN-847). Pushes queue instead of racing, and GitHub
+# keeps only the newest pending run, so the release asset always ends on the
+# latest develop commit. A running publish is never cancelled half-way
+# through replacing the asset.
+concurrency:
+  group: build-develop
+  cancel-in-progress: false
+
 jobs:
   build:
     name: Build
@@ -40,14 +48,6 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      # (optional) keep the original artifact
-      - name: Upload interim dist artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fluidd-${{ github.sha }}.zip
-          path: ./dist
-          retention-days: 1
 
       - name: Zip build output
         run: |
