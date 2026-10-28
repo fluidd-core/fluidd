@@ -43,11 +43,21 @@ const control = (): ConnectedApp => app({ client_id: 'fluidd', name: 'Muon3D Con
 
 const settle = () => new Promise(resolve => setTimeout(resolve))
 
-function open (confirm = true) {
+/** A promise the test settles when it chooses. */
+function deferred<T> () {
+  let settleWith!: (value: T) => void
+  const promise = new Promise<T>(resolve => { settleWith = resolve })
+  return { promise, resolve: settleWith }
+}
+
+const unreachable = () => new AccountError('The Muon3D service could not be reached.', 0)
+
+function open (confirm = true, attachTo?: HTMLElement) {
   const $confirm = vi.fn(async () => confirm)
   const w = mount(AccountConnectedApps, {
     mocks: { $confirm },
-    stubs: { 'frame-icon': true, 'router-link': { props: ['to'], template: '<a :href="to"><slot /></a>' } }
+    stubs: { 'frame-icon': true, 'router-link': { props: ['to'], template: '<a :href="to"><slot /></a>' } },
+    ...(attachTo ? { attachTo } : {})
   })
   return { w, $confirm }
 }
@@ -161,18 +171,44 @@ describe('Connected apps', () => {
     await settle()
     expect(w.find('[data-tid="apps-load-error"]').exists()).toBe(true)
     expect(w.find('[data-tid="apps-empty"]').exists()).toBe(false)
-    expect(w.find('[data-tid="apps-error"]').text()).toBe('The store is not writable.')
+    expect(w.find('[data-tid="apps-read-error"]').text()).toBe('The store is not writable.')
     await w.find('[data-tid="apps-retry"]').trigger('click')
     await settle()
     expect(w.find('[data-tid="apps-load-error"]').exists()).toBe(false)
-    expect(w.find('[data-tid="apps-error"]').exists()).toBe(false)
+    expect(w.find('[data-tid="apps-read-error"]').exists()).toBe(false)
     expect(w.findAll('[data-tid="apps-row"]')).toHaveLength(1)
+  })
+
+  it('keeps Try again on screen and busy while it tries, then moves focus to the heading', async () => {
+    const again = deferred<{ apps: ConnectedApp[] }>()
+    connectedApps
+      .mockRejectedValueOnce(unreachable())
+      .mockReturnValueOnce(again.promise)
+    const { w } = open(true, document.body)
+    await settle()
+    const button = w.find('[data-tid="apps-retry"]').element as HTMLElement
+    button.focus()
+    await w.find('[data-tid="apps-retry"]').trigger('click')
+    // Loading: the same block and button, marked busy, and focus has not moved.
+    expect(w.find('[data-tid="apps-load-error"]').attributes('aria-busy')).toBe('true')
+    expect(w.find('[data-tid="apps-retry"]').element).toBe(button)
+    expect(button.getAttribute('aria-disabled')).toBe('true')
+    expect(button.textContent?.trim()).toBe('Trying again…')
+    expect(document.activeElement).toBe(button)
+    // A second click while it tries sends nothing more.
+    await w.find('[data-tid="apps-retry"]').trigger('click')
+    expect(connectedApps).toHaveBeenCalledTimes(2)
+    again.resolve({ apps: [app()] })
+    await settle()
+    expect(w.findAll('[data-tid="apps-row"]')).toHaveLength(1)
+    expect(document.activeElement).toBe(w.find('h1').element)
+    w.destroy()
   })
 
   it('drops the row once disconnected, even when reading the list again fails', async () => {
     connectedApps
       .mockResolvedValueOnce({ apps: [app(), app({ client_id: 'dyn_2', name: 'Cursor' })] })
-      .mockRejectedValueOnce(new AccountError('The Muon3D service could not be reached.', 0))
+      .mockRejectedValueOnce(unreachable())
     const { w } = open()
     await settle()
     await w.find('[data-tid="apps-revoke"]').trigger('click')
@@ -182,20 +218,78 @@ describe('Connected apps', () => {
     expect(rows).toHaveLength(1)
     expect(rows.at(0).text()).toContain('Cursor')
     expect(w.find('[data-tid="apps-message"]').text()).toContain('Claude is disconnected.')
+    expect(w.find('[data-tid="apps-read-error"]').text()).toBe('The Muon3D service could not be reached.')
   })
 
-  it('says an app was already disconnected when the console no longer has it', async () => {
+  it('ignores a re-read sent before a later disconnect, so that app stays gone', async () => {
+    const first = deferred<{ apps: ConnectedApp[] }>()
+    const second = deferred<{ apps: ConnectedApp[] }>()
+    const cursor = app({ client_id: 'dyn_2', name: 'Cursor' })
     connectedApps
-      .mockResolvedValueOnce({ apps: [app()] })
-      .mockResolvedValueOnce({ apps: [] })
+      .mockResolvedValueOnce({ apps: [app(), cursor] })
+      .mockReturnValueOnce(first.promise)
+      .mockReturnValueOnce(second.promise)
+    const { w } = open()
+    await settle()
+    // Disconnect Claude. Its re-read is still on its way when Cursor goes.
+    await w.findAll('[data-tid="apps-revoke"]').at(0).trigger('click')
+    await settle()
+    expect(w.findAll('[data-tid="apps-row"]')).toHaveLength(1)
+    await w.find('[data-tid="apps-revoke"]').trigger('click')
+    await settle()
+    expect(disconnectApp).toHaveBeenLastCalledWith('dyn_2')
+    expect(w.find('[data-tid="apps-row"]').exists()).toBe(false)
+    // The first re-read was answered before Cursor went, so it still lists Cursor.
+    first.resolve({ apps: [cursor] })
+    await settle()
+    expect(w.find('[data-tid="apps-row"]').exists()).toBe(false)
+    second.resolve({ apps: [] })
+    await settle()
+    expect(w.find('[data-tid="apps-empty"]').exists()).toBe(true)
+  })
+
+  it('drops an app the console says is already disconnected, and keeps saying so when the re-read fails', async () => {
+    connectedApps
+      .mockResolvedValueOnce({ apps: [app(), app({ client_id: 'dyn_2', name: 'Cursor' })] })
+      .mockRejectedValueOnce(unreachable())
     disconnectApp.mockRejectedValueOnce(new AccountError('No app with that id is connected to this account.', 404, { error: 'no app with that id is connected to this account' }))
     const { w } = open()
     await settle()
     await w.find('[data-tid="apps-revoke"]').trigger('click')
     await settle()
+    const rows = w.findAll('[data-tid="apps-row"]')
+    expect(rows).toHaveLength(1)
+    expect(rows.at(0).text()).toContain('Cursor')
     expect(w.find('[data-tid="apps-error"]').text()).toBe('That app was already disconnected.')
-    expect(w.find('[data-tid="apps-row"]').exists()).toBe(false)
-    expect(w.find('[data-tid="apps-empty"]').exists()).toBe(true)
+    expect(w.find('[data-tid="apps-read-error"]').text()).toBe('The Muon3D service could not be reached.')
+  })
+
+  it('keeps the reason a disconnect was refused when the re-read fails too', async () => {
+    connectedApps
+      .mockResolvedValueOnce({ apps: [app()] })
+      .mockRejectedValueOnce(unreachable())
+    disconnectApp.mockRejectedValueOnce(new AccountError('This is the app you are using; sign out instead.', 409, { error: 'this is the app you are using; sign out instead', code: 'current_app' }))
+    const { w } = open()
+    await settle()
+    await w.find('[data-tid="apps-revoke"]').trigger('click')
+    await settle()
+    expect(w.find('[data-tid="apps-row"]').exists()).toBe(true)
+    expect(w.find('[data-tid="apps-error"]').text()).toBe('That is the app you are using now. To end it, sign out instead.')
+    expect(w.find('[data-tid="apps-read-error"]').text()).toBe('The Muon3D service could not be reached.')
+  })
+
+  it('keeps the row when the console has no disconnect route', async () => {
+    connectedApps
+      .mockResolvedValueOnce({ apps: [app()] })
+      .mockRejectedValueOnce(unreachable())
+    // A console without the route: a 404 with no JSON error.
+    disconnectApp.mockRejectedValueOnce(new AccountError('The Muon3D service answered 404.', 404, {}))
+    const { w } = open()
+    await settle()
+    await w.find('[data-tid="apps-revoke"]').trigger('click')
+    await settle()
+    expect(w.find('[data-tid="apps-row"]').exists()).toBe(true)
+    expect(w.find('[data-tid="apps-error"]').text()).toBe('This console can\'t disconnect apps yet.')
   })
 })
 
