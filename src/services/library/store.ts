@@ -37,6 +37,8 @@ export interface LibraryState {
   promiseVersion: string | null;
   /** When the files of a Library turned off are deleted. */
   purgeAfter: string | null;
+  /** Off because it was turned off (the service still has a past consent, or it was turned off here), not never on. */
+  withdrawn: boolean;
   usedBytes: number | null;
   quotaBytes: number | null;
   preferences: Preferences | null;
@@ -57,6 +59,7 @@ function blank (account: string | null): LibraryState {
     enabled: false,
     promiseVersion: null,
     purgeAfter: null,
+    withdrawn: false,
     usedBytes: null,
     quotaBytes: null,
     preferences: null,
@@ -101,8 +104,35 @@ function clearItems () {
   libraryState.synced = false
 }
 
+/**
+ * A deliberate turn-off is remembered per account here too: the service
+ * forgets the account once its files are purged, and an account it has never
+ * seen must not be told apart from one that said no (KAN-735).
+ */
+const TURNED_OFF_KEY = 'muon.library.turned-off.'
+
+function turnedOffHere (account: string | null): boolean {
+  if (!account) return false
+  try {
+    return window.localStorage.getItem(TURNED_OFF_KEY + account) !== null
+  } catch {
+    return false
+  }
+}
+
+function rememberTurnedOff (account: string | null, off: boolean) {
+  if (!account) return
+  try {
+    if (off) window.localStorage.setItem(TURNED_OFF_KEY + account, new Date().toISOString())
+    else window.localStorage.removeItem(TURNED_OFF_KEY + account)
+  } catch {
+    // Storage blocked: the service's own answer still counts.
+  }
+}
+
 function takeInfo (info: LibraryInfo) {
   libraryState.enabled = info.enabled
+  libraryState.withdrawn = !info.enabled && (!!info.account?.consented_at || turnedOffHere(libraryState.account))
   libraryState.promiseVersion = info.promise_version ?? null
   libraryState.purgeAfter = info.account?.purge_after ?? null
   libraryState.usedBytes = typeof info.used_bytes === 'number' ? info.used_bytes : null
@@ -230,6 +260,7 @@ export async function setLibraryPreferences (patch: PreferencesPatch): Promise<v
 export async function turnLibraryOn (version: string): Promise<void> {
   requireCurrentPromise(version)
   await rereadIfPromiseChanged(() => client.consent(version))
+  rememberTurnedOff(libraryState.account, false)
   // A read that began before the consent would answer "off".
   await refreshing?.catch(() => {})
   await refreshLibrary()
@@ -257,7 +288,9 @@ async function rereadIfPromiseChanged<T> (work: () => Promise<T>): Promise<T> {
 /** Turns it off: the service deletes the files after 30 days, unless it is turned on again. */
 export async function turnLibraryOff (): Promise<void> {
   const answer = await client.withdraw()
+  rememberTurnedOff(libraryState.account, true)
   libraryState.enabled = false
+  libraryState.withdrawn = true
   libraryState.purgeAfter = answer?.account?.purge_after ?? null
   clearItems()
 }
@@ -345,7 +378,11 @@ export async function saveFromSlicer (request: SaveRequest, onProgress?: (progre
   }
   const saved = await rereadIfPromiseChanged(() => saveToLibrary(client, request, onProgress))
   keep(saved.item)
-  if (request.consent) libraryState.enabled = true
+  if (request.consent) {
+    libraryState.enabled = true
+    libraryState.withdrawn = false
+    rememberTurnedOff(libraryState.account, false)
+  }
   refreshLibrary().catch(() => {})
   return saved
 }

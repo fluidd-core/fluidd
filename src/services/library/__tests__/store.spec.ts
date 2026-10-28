@@ -292,3 +292,25 @@ describe('the Library store', () => {
     expect(store.libraryState.items).toEqual({})
   })
 })
+
+describe('turned off, not never on (KAN-735)', () => {
+  it('counts a past consent the service still has as withdrawn, and never-on as not', async () => {
+    const service = fakeService({ presign: true })
+    const client = service.client()
+    store.setLibraryClient(client)
+    vi.spyOn(client, 'info').mockResolvedValueOnce({
+      enabled: false,
+      promise_version: PROMISE_VERSION,
+      account: { consent_version: null, consented_at: '2026-10-01T00:00:00Z', purge_after: null, quota_bytes: 1e9 },
+      used_bytes: 0,
+      quota_bytes: 1e9
+    })
+    await store.refreshLibrary()
+    expect(store.libraryState).toMatchObject({ enabled: false, purgeAfter: null, withdrawn: true })
+
+    store.resetLibrary('jack')
+    vi.spyOn(client, 'info').mockResolvedValueOnce({ enabled: false, promise_version: PROMISE_VERSION, account: null, used_bytes: 0, quota_bytes: 1e9 })
+    await store.refreshLibrary()
+    expect(store.libraryState).toMatchObject({ enabled: false, withdrawn: false })
+  })
+})
