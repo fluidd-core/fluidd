@@ -166,6 +166,9 @@ describe('the account\'s history in words', () => {
     [{ kind: 'printer_shared', detail: { printer_id: 'p1', email: 'harry@muon3d.com', role: 'operator' } }, 'You let harry@muon3d.com use Boxwood, as an Operator', 'userPlus'],
     [{ kind: 'two_step_on', detail: {} }, 'Two-step sign-in turned on', 'shield'],
     [{ kind: 'recovery_code_used', detail: { left: 6 } }, 'A recovery code was used; 6 left', 'shield'],
+    [{ kind: 'app_disconnected', detail: { client_id: 'dcr_1', sessions: 2 } }, 'Disconnected a connected app and ended its 2 sign-ins', 'link'],
+    [{ kind: 'app_disconnected', detail: { client_id: 'dcr_1', sessions: 1 } }, 'Disconnected a connected app and ended its sign-in', 'link'],
+    [{ kind: 'app_disconnected', detail: { client_id: 'dcr_1', sessions: 0 } }, 'Disconnected a connected app', 'link'],
     [{ kind: 'something_new', detail: {} }, 'Something new', 'alert']
   ])('%o is "%s"', (e, text, icon) => {
     expect(eventLine({ id: 'e', at: 0, ...e }, printer)).toEqual({ text, icon })

@@ -6,6 +6,7 @@
  */
 import { accountRequest } from './client'
 import type { CreatedToken, CreateTokenBody, PersonalToken } from './tokenTypes'
+import type { ConnectedApp } from './connectedAppTypes'
 
 /** `GET /v1/me`'s account. */
 export interface AccountDetails {
@@ -244,6 +245,12 @@ export const accountApi = {
   createToken: (body: CreateTokenBody, reauth: Reauth = {}) =>
     json<CreatedToken>('POST', '/v1/tokens', Object.keys(reauth).length ? { ...body, reauth } : body),
   revokeToken: (id: string) => json<{ id: string, revoked: boolean }>('DELETE', `/v1/tokens/${encodeURIComponent(id)}`),
+
+  /** Connected apps (KAN-905): the OAuth apps the account let in. A signed-in session only. */
+  connectedApps: () => json<{ apps: ConnectedApp[] }>('GET', '/v1/me/connected-apps'),
+  /** Ends every session the app holds for this account and removes its approval. */
+  disconnectApp: (clientId: string) =>
+    json<{ ok: boolean, client_id: string, sessions_ended: number }>('DELETE', `/v1/me/connected-apps/${encodeURIComponent(clientId)}`),
 
   shares: (printerId: string) => json<{ shares: PrinterShare[] }>('GET', `/v1/printers/${encodeURIComponent(printerId)}/shares`),
   share: (printerId: string, email: string, role: string, endsAt: number | null) =>

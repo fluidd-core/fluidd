@@ -170,6 +170,10 @@
           :link-to="linkTo"
         />
         <account-tokens v-else-if="current.id === 'tokens'" />
+        <account-connected-apps
+          v-else-if="current.id === 'apps'"
+          :link-to="linkTo"
+        />
         <account-notifications v-else-if="current.id === 'notifications'" />
         <library-settings v-else-if="current.id === 'library'" />
         <account-plan v-else-if="current.id === 'plan'" />
@@ -229,6 +233,7 @@ import '@/scss/muon3d-account.scss'
     AccountSessions: () => import('@/components/account/AccountSessions.vue'),
     AccountPrinters: () => import('@/components/account/AccountPrinters.vue'),
     AccountTokens: () => import('@/components/account/AccountTokens.vue'),
+    AccountConnectedApps: () => import('@/components/account/AccountConnectedApps.vue'),
     AccountNotifications: () => import('@/components/account/AccountNotifications.vue'),
     AccountPrivacy: () => import('@/components/account/AccountPrivacy.vue'),
     AccountDelete: () => import('@/components/account/AccountDelete.vue'),
