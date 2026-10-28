@@ -146,6 +146,21 @@ describe('Plan and credits', () => {
     w.destroy()
   })
 
+  it('shows nothing from the account until the balance answers', async () => {
+    loadCredits.mockImplementation(() => new Promise(() => {}))
+    const w = mount(AccountPlan, { stubs: { 'frame-icon': true } })
+    await settle()
+    expect(w.find('[data-tid="plan-reading"]').text()).toBe('Reading your balance…')
+    expect(w.find('[data-tid="plan-option-free"]').exists()).toBe(false)
+    w.destroy()
+  })
+
+  it('names the meter for screen readers, even with no monthly credits', async () => {
+    const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 0, monthly: { left: 0, allowance: 0 }, packs: 0 })
+    expect(w.find('.plan-meter').attributes('aria-label')).toBe('No monthly credits, and 0 from packs')
+    w.destroy()
+  })
+
   it('takes no money while payments are closed: every buying button is disabled and says so', async () => {
     expect(CREDITS_CATALOGUE.paymentsOpen).toBe(false)
     const w = await open(plus)
@@ -159,5 +174,11 @@ describe('Plan and credits', () => {
     expect(w.find('a[href]').exists()).toBe(false)
     expect(text(w)).not.toMatch(/(?:\d[\d,.]*\s*(?:GiB|GB|MiB|MB)|storage\s+(?:of\s+)?\d)/i)
     w.destroy()
+
+    const low = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 12, monthly: { left: 12, allowance: 40 }, packs: 0 })
+    const topUp = low.find('[data-tid="plan-note-top-up"]')
+    expect(topUp.attributes('disabled')).toBe('disabled')
+    expect(topUp.attributes('title')).toBe('Payments open soon')
+    low.destroy()
   })
 })

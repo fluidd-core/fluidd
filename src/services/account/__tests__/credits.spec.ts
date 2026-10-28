@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { LibraryError } from '@/services/library/api'
 import { CREDITS_CATALOGUE } from '../credits-catalogue'
 import {
@@ -6,8 +6,10 @@ import {
   monthlyText, nextGrantText, outcomesText, perCreditText, planName, yearlyLine, type CreditAccount
 } from '../credits'
 
-const drop = vi.hoisted(() => vi.fn())
-vi.mock('@/services/library/assertion', () => ({ modelsAssertion: { get: async () => 'assertion-1', drop } }))
+// Dropping the assertion makes the next one different, so a retry can be told apart.
+const auth = vi.hoisted(() => ({ dropped: false }))
+const drop = vi.hoisted(() => vi.fn(() => { auth.dropped = true }))
+vi.mock('@/services/library/assertion', () => ({ modelsAssertion: { get: async () => auth.dropped ? 'assertion-2' : 'assertion-1', drop } }))
 
 const account = (over: Partial<CreditAccount> = {}): CreditAccount => ({
   plan: 'plus',
@@ -93,6 +95,11 @@ describe('credits in words', () => {
 })
 
 describe('reading the credits', () => {
+  beforeEach(() => {
+    auth.dropped = false
+    drop.mockClear()
+  })
+
   it('asks the model service with the account assertion', async () => {
     const fetcher = vi.fn(async () => new Response(JSON.stringify(account()), { status: 200 }))
     const got = await loadCredits(fetcher as unknown as typeof fetch)
@@ -104,13 +111,14 @@ describe('reading the credits', () => {
   })
 
   it('asks once more with a new assertion after a 401', async () => {
-    drop.mockClear()
     const fetcher = vi.fn()
       .mockResolvedValueOnce(new Response('', { status: 401 }))
       .mockResolvedValueOnce(new Response(JSON.stringify(account()), { status: 200 }))
     expect((await loadCredits(fetcher as unknown as typeof fetch)).balance).toBe(286)
     expect(fetcher).toHaveBeenCalledTimes(2)
     expect(drop).toHaveBeenCalledTimes(1)
+    const sent = fetcher.mock.calls.map(([, init]) => (init as RequestInit & { headers: Record<string, string> }).headers.authorization)
+    expect(sent).toEqual(['Bearer assertion-1', 'Bearer assertion-2'])
   })
 
   it('names why there is no balance to show', async () => {
@@ -124,5 +132,7 @@ describe('reading the credits', () => {
     expect(creditsUnavailableReason(await loadCredits(offline as unknown as typeof fetch).catch(e => e))).toBe('offline')
     expect(await reason(refuse(500))).toBe('error')
     expect(creditsUnavailableReason(new LibraryError('console', 'no', 502))).toBe('error')
+    // The console being down is not Create being closed.
+    expect(creditsUnavailableReason(new LibraryError('console', 'no', 503))).toBe('error')
   })
 })

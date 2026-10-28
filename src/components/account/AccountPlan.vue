@@ -14,352 +14,361 @@
       >{{ planLabel }}<template v-if="account.period"> · {{ account.period }}</template></span>
     </div>
 
-    <!-- Low and empty: what's left, when more comes, and the way to more. Never about a printer. -->
-    <div
-      v-if="alert !== 'ok'"
-      class="acct-note"
-      :class="alert === 'empty' ? 'acct-note--bad' : 'acct-note--warn'"
-      role="status"
-      data-tid="plan-balance-note"
-    >
-      <frame-icon
-        name="alert"
-        small
-      />
-      <span class="plan__note-text">
-        <b>{{ alert === 'empty' ? 'Out of credits' : 'Low on credits' }}.</b>
-        {{ alert === 'empty' ? '' : `${outcomes}.` }}
-        <template v-if="nextGrantLine">{{ nextGrantLine }}.</template>
-      </span>
-      <button
-        type="button"
-        class="lib-btn lib-btn--sm lib-btn--pri"
-        :disabled="!paymentsOpen"
-        :title="paymentsOpen ? undefined : soon"
-        data-tid="plan-note-top-up"
-        @click="scrollTo('plan-packs')"
-      >
-        Top up
-      </button>
-    </div>
-
     <p
-      v-if="unavailable"
-      class="acct-note acct-note--info"
-      data-tid="plan-unavailable"
+      v-if="reading"
+      class="acct-muted plan-reading"
+      data-tid="plan-reading"
     >
-      <frame-icon
-        name="info"
-        small
-      />
-      <span>{{ unavailableLine }}</span>
+      Reading your balance…
     </p>
-
-    <!-- The balance: one number, what it buys, and when more comes. -->
-    <section
-      v-if="account"
-      class="lib-surface acct-card acct-card--pad plan-balance"
-      aria-labelledby="plan-balance-heading"
-      data-tid="plan-balance"
-    >
-      <div class="plan-balance__top">
-        <div class="plan-balance__figure">
-          <h2
-            id="plan-balance-heading"
-            class="sr-only"
-          >
-            Balance
-          </h2>
-          <span
-            class="plan-balance__number"
-            data-tid="plan-balance-number"
-          >{{ fmt(account.balance) }}</span>
-          <span class="plan-balance__unit">credits</span>
-          <acct-more label="How credits are spent">
-            Monthly credits go first, then packs. Packs never expire.
-            {{ rolloverLine }}
-            A job that fails gives its credits back.
-          </acct-more>
-        </div>
-        <span
-          v-if="outcomes"
-          class="acct-muted"
-        >{{ outcomes }}</span>
-      </div>
-
+    <template v-else>
+      <!-- Low and empty: what's left, when more comes, and the way to more. Never about a printer. -->
       <div
-        class="plan-meter"
-        role="img"
-        :aria-label="meterLabel"
+        v-if="alert !== 'ok'"
+        class="acct-note"
+        :class="alert === 'empty' ? 'acct-note--bad' : 'acct-note--warn'"
+        role="status"
+        data-tid="plan-balance-note"
       >
-        <span
-          class="plan-meter__monthly"
-          :style="{ width: `${monthlyShare}%` }"
+        <frame-icon
+          name="alert"
+          small
         />
-        <span
-          class="plan-meter__packs"
-          :style="{ width: `${packsShare}%` }"
-        />
-      </div>
-      <div class="plan-legend">
-        <span v-if="account.monthly.allowance > 0 || account.monthly.left > 0"><i class="plan-legend__dot plan-legend__dot--monthly" />Monthly {{ monthly }}</span>
-        <span v-if="account.packs > 0"><i class="plan-legend__dot plan-legend__dot--packs" />Packs {{ fmt(account.packs) }}</span>
-        <span
-          v-if="nextGrantLine"
-          class="plan-legend__next"
-        >{{ nextGrantLine }}</span>
-      </div>
-
-      <div class="acct-actions">
+        <span class="plan__note-text">
+          <b>{{ alert === 'empty' ? 'Out of credits' : 'Low on credits' }}.</b>
+          {{ alert === 'empty' ? '' : `${outcomes}.` }}
+          <template v-if="nextGrantLine">{{ nextGrantLine }}.</template>
+        </span>
         <button
           type="button"
-          class="lib-btn lib-btn--pri"
+          class="lib-btn lib-btn--sm lib-btn--pri"
           :disabled="!paymentsOpen"
           :title="paymentsOpen ? undefined : soon"
-          data-tid="plan-top-up"
+          data-tid="plan-note-top-up"
           @click="scrollTo('plan-packs')"
         >
           Top up
         </button>
-        <button
-          type="button"
-          class="lib-btn"
-          data-tid="plan-change"
-          @click="scrollTo('plan-plans')"
-        >
-          Change plan
-        </button>
       </div>
-    </section>
 
-    <section
-      v-if="account"
-      class="lib-surface acct-card"
-      aria-labelledby="plan-month-heading"
-    >
-      <div class="acct-card__title">
-        <h2 id="plan-month-heading">
-          This month
-        </h2>
-      </div>
-      <div class="plan-usage">
-        <div
-          v-for="u in usage"
-          :key="u.label"
-          class="plan-usage__item"
-        >
-          <span class="plan-usage__count">{{ u.count }}</span>
-          <span class="acct-muted">{{ u.label }} · {{ fmt(u.credits) }} credits</span>
-        </div>
-      </div>
-    </section>
+      <p
+        v-if="unavailable"
+        class="acct-note acct-note--info"
+        data-tid="plan-unavailable"
+      >
+        <frame-icon
+          name="info"
+          small
+        />
+        <span>{{ unavailableLine }}</span>
+      </p>
 
-    <!-- Plans, with the yearly saving in months. -->
-    <section
-      id="plan-plans"
-      class="lib-surface acct-card"
-      aria-labelledby="plan-plans-heading"
-    >
-      <div class="acct-card__title">
-        <h2 id="plan-plans-heading">
-          Plans
-        </h2>
-        <div
-          class="plan-period"
-          role="group"
-          aria-label="Billing period"
-        >
-          <button
-            v-for="p in periods"
-            :key="p"
-            type="button"
-            class="plan-period__opt"
-            :class="{ 'plan-period__opt--on': period === p }"
-            :aria-pressed="period === p ? 'true' : 'false'"
-            :data-tid="`plan-period-${p}`"
-            @click="period = p"
-          >
-            {{ p === 'monthly' ? 'Monthly' : 'Yearly' }}
-          </button>
-        </div>
-      </div>
-      <ul class="plan-grid">
-        <li
-          v-for="p in plans"
-          :key="p.id"
-          class="plan-option"
-          :class="{ 'plan-option--current': isCurrent(p) }"
-          :data-tid="`plan-option-${p.id}`"
-        >
-          <div class="plan-option__name">
-            <h3>{{ p.name }}</h3>
+      <!-- The balance: one number, what it buys, and when more comes. -->
+      <section
+        v-if="account"
+        class="lib-surface acct-card acct-card--pad plan-balance"
+        aria-labelledby="plan-balance-heading"
+        data-tid="plan-balance"
+      >
+        <div class="plan-balance__top">
+          <div class="plan-balance__figure">
+            <h2
+              id="plan-balance-heading"
+              class="sr-only"
+            >
+              Balance
+            </h2>
             <span
-              v-if="isCurrent(p)"
-              class="lib-pill lib-pill--ok"
-            >Current</span>
-            <span
-              v-else-if="p.id === recommended"
-              class="lib-pill"
-            >Most popular</span>
-          </div>
-          <div class="plan-option__price">
-            <template v-if="p.price">
-              <b>{{ period === 'monthly' ? money(p.price.monthly) : money(p.price.yearly) }}</b> <span class="acct-muted">{{ period === 'monthly' ? 'a month' : 'a year' }}</span>
-            </template>
-            <b v-else>{{ money(0) }}</b>
+              class="plan-balance__number"
+              data-tid="plan-balance-number"
+            >{{ fmt(account.balance) }}</span>
+            <span class="plan-balance__unit">credits</span>
+            <acct-more label="How credits are spent">
+              Monthly credits go first, then packs. Packs never expire.
+              {{ rolloverLine }}
+              A job that fails gives its credits back.
+            </acct-more>
           </div>
           <span
-            v-if="p.price && period === 'yearly'"
-            class="plan-option__save"
-          >{{ yearly(p) }}</span>
-          <span class="plan-option__credits">{{ planCredits(p) }}</span>
-          <ul
-            v-if="p.perks.length"
-            class="plan-option__perks"
-          >
-            <li
-              v-for="perk in p.perks"
-              :key="perk"
-            >
-              <frame-icon
-                name="check"
-                small
-              />{{ perk }}
-            </li>
-          </ul>
+            v-if="outcomes"
+            class="acct-muted"
+          >{{ outcomes }}</span>
+        </div>
+
+        <div
+          class="plan-meter"
+          role="img"
+          :aria-label="meterLabel"
+        >
+          <span
+            class="plan-meter__monthly"
+            :style="{ width: `${monthlyShare}%` }"
+          />
+          <span
+            class="plan-meter__packs"
+            :style="{ width: `${packsShare}%` }"
+          />
+        </div>
+        <div class="plan-legend">
+          <span v-if="account.monthly.allowance > 0 || account.monthly.left > 0"><i class="plan-legend__dot plan-legend__dot--monthly" />Monthly {{ monthly }}</span>
+          <span v-if="account.packs > 0"><i class="plan-legend__dot plan-legend__dot--packs" />Packs {{ fmt(account.packs) }}</span>
+          <span
+            v-if="nextGrantLine"
+            class="plan-legend__next"
+          >{{ nextGrantLine }}</span>
+        </div>
+
+        <div class="acct-actions">
           <button
-            v-if="!isCurrent(p) && p.price"
             type="button"
-            class="lib-btn lib-btn--sm plan-option__go"
-            :class="{ 'lib-btn--pri': p.id === recommended }"
+            class="lib-btn lib-btn--pri"
             :disabled="!paymentsOpen"
             :title="paymentsOpen ? undefined : soon"
-            :data-tid="`plan-choose-${p.id}`"
+            data-tid="plan-top-up"
+            @click="scrollTo('plan-packs')"
           >
-            Choose {{ p.name }}
+            Top up
           </button>
-        </li>
-      </ul>
-      <p
-        v-if="!paymentsOpen"
-        class="acct-muted plan-soon"
-        data-tid="plan-soon"
-      >
-        {{ soon }}.
-      </p>
-    </section>
+          <button
+            type="button"
+            class="lib-btn"
+            data-tid="plan-change"
+            @click="scrollTo('plan-plans')"
+          >
+            Change plan
+          </button>
+        </div>
+      </section>
 
-    <section
-      id="plan-packs"
-      class="lib-surface acct-card"
-      aria-labelledby="plan-packs-heading"
-    >
-      <div class="acct-card__title">
-        <h2 id="plan-packs-heading">
-          Credit packs
-        </h2>
-        <span class="acct-card__aside">Never expire</span>
-      </div>
-      <div class="acct-list">
-        <div
-          v-for="pack in packs"
-          :key="pack.credits"
-          class="acct-row"
-          :data-tid="`plan-pack-${pack.credits}`"
-        >
-          <div class="acct-row__label">
-            <b>{{ fmt(pack.credits) }} credits</b>
-            <span>{{ perCredit(pack.price, pack.credits) }} a credit</span>
+      <section
+        v-if="account"
+        class="lib-surface acct-card"
+        aria-labelledby="plan-month-heading"
+      >
+        <div class="acct-card__title">
+          <h2 id="plan-month-heading">
+            This month
+          </h2>
+        </div>
+        <div class="plan-usage">
+          <div
+            v-for="u in usage"
+            :key="u.label"
+            class="plan-usage__item"
+          >
+            <span class="plan-usage__count">{{ u.count }}</span>
+            <span class="acct-muted">{{ u.label }} · {{ fmt(u.credits) }} credits</span>
           </div>
-          <div class="acct-row__control">
+        </div>
+      </section>
+
+      <!-- Plans, with the yearly saving in months. -->
+      <section
+        id="plan-plans"
+        class="lib-surface acct-card"
+        aria-labelledby="plan-plans-heading"
+      >
+        <div class="acct-card__title">
+          <h2 id="plan-plans-heading">
+            Plans
+          </h2>
+          <div
+            class="plan-period"
+            role="group"
+            aria-label="Billing period"
+          >
             <button
+              v-for="p in periods"
+              :key="p"
               type="button"
-              class="lib-btn lib-btn--sm"
-              :disabled="!paymentsOpen"
-              :title="paymentsOpen ? undefined : soon"
+              class="plan-period__opt"
+              :class="{ 'plan-period__opt--on': period === p }"
+              :aria-pressed="period === p ? 'true' : 'false'"
+              :data-tid="`plan-period-${p}`"
+              @click="period = p"
             >
-              {{ money(pack.price) }}
+              {{ p === 'monthly' ? 'Monthly' : 'Yearly' }}
             </button>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section
-      class="lib-surface acct-card"
-      aria-labelledby="plan-costs-heading"
-      data-tid="plan-costs"
-    >
-      <div class="acct-card__title">
-        <h2 id="plan-costs-heading">
-          What credits buy
-        </h2>
-        <acct-more
-          label="About prices"
-          end
-        >
-          Every job shows its price before it runs. A failed job gives its credits back.
-        </acct-more>
-      </div>
-      <div class="acct-list">
-        <div
-          v-for="c in costs"
-          :key="c.id"
-          class="acct-lrow"
-        >
-          <span class="acct-lrow__text">{{ c.label }}<span
-            v-if="c.plan"
-            class="lib-pill plan-costs__plan"
-          >{{ planName(c.plan) }}</span></span>
-          <span class="plan-costs__credits">{{ c.credits }}</span>
-        </div>
-        <div class="acct-lrow">
-          <span class="acct-lrow__text acct-muted">{{ freeLine }}</span>
-          <span class="plan-costs__credits">Free</span>
-        </div>
-      </div>
-    </section>
-
-    <section
-      v-if="account"
-      class="lib-surface acct-card"
-      aria-labelledby="plan-history-heading"
-      data-tid="plan-history"
-    >
-      <div class="acct-card__title">
-        <h2 id="plan-history-heading">
-          History
-        </h2>
-      </div>
-      <div class="acct-list">
-        <div
-          v-for="row in history"
-          :key="row.id"
-          class="acct-lrow"
-          :data-tid="`plan-history-${row.kind}`"
-        >
-          <span
-            class="plan-hist__icon"
-            :class="`plan-hist__icon--${icon(row)}`"
-          ><frame-icon
-            :name="iconName(row)"
-            small
-          /></span>
-          <span class="acct-lrow__text">{{ row.title }}</span>
-          <span class="acct-lrow__time">{{ when(row.at) }}</span>
-          <span
-            class="plan-hist__change"
-            :class="{ 'plan-hist__change--add': row.change > 0 }"
-          >{{ change(row.change) }}</span>
-        </div>
+        <ul class="plan-grid">
+          <li
+            v-for="p in plans"
+            :key="p.id"
+            class="plan-option"
+            :class="{ 'plan-option--current': isCurrent(p) }"
+            :data-tid="`plan-option-${p.id}`"
+          >
+            <div class="plan-option__name">
+              <h3>{{ p.name }}</h3>
+              <span
+                v-if="isCurrent(p)"
+                class="lib-pill lib-pill--ok"
+              >Current</span>
+              <span
+                v-else-if="p.id === recommended"
+                class="lib-pill"
+              >Most popular</span>
+            </div>
+            <div class="plan-option__price">
+              <template v-if="p.price">
+                <b>{{ period === 'monthly' ? money(p.price.monthly) : money(p.price.yearly) }}</b> <span class="acct-muted">{{ period === 'monthly' ? 'a month' : 'a year' }}</span>
+              </template>
+              <b v-else>{{ money(0) }}</b>
+            </div>
+            <span
+              v-if="p.price && period === 'yearly'"
+              class="plan-option__save"
+            >{{ yearly(p) }}</span>
+            <span class="plan-option__credits">{{ planCredits(p) }}</span>
+            <ul
+              v-if="p.perks.length"
+              class="plan-option__perks"
+            >
+              <li
+                v-for="perk in p.perks"
+                :key="perk"
+              >
+                <frame-icon
+                  name="check"
+                  small
+                />{{ perk }}
+              </li>
+            </ul>
+            <button
+              v-if="!isCurrent(p) && p.price"
+              type="button"
+              class="lib-btn lib-btn--sm plan-option__go"
+              :class="{ 'lib-btn--pri': p.id === recommended }"
+              :disabled="!paymentsOpen"
+              :title="paymentsOpen ? undefined : soon"
+              :data-tid="`plan-choose-${p.id}`"
+            >
+              Choose {{ p.name }}
+            </button>
+          </li>
+        </ul>
         <p
-          v-if="!history.length"
-          class="acct-muted plan-hist__empty"
+          v-if="!paymentsOpen"
+          class="acct-muted plan-soon"
+          data-tid="plan-soon"
         >
-          Nothing yet.
+          {{ soon }}.
         </p>
-      </div>
-    </section>
+      </section>
+
+      <section
+        id="plan-packs"
+        class="lib-surface acct-card"
+        aria-labelledby="plan-packs-heading"
+      >
+        <div class="acct-card__title">
+          <h2 id="plan-packs-heading">
+            Credit packs
+          </h2>
+          <span class="acct-card__aside">Never expire</span>
+        </div>
+        <div class="acct-list">
+          <div
+            v-for="pack in packs"
+            :key="pack.credits"
+            class="acct-row"
+            :data-tid="`plan-pack-${pack.credits}`"
+          >
+            <div class="acct-row__label">
+              <b>{{ fmt(pack.credits) }} credits</b>
+              <span>{{ perCredit(pack.price, pack.credits) }} a credit</span>
+            </div>
+            <div class="acct-row__control">
+              <button
+                type="button"
+                class="lib-btn lib-btn--sm"
+                :disabled="!paymentsOpen"
+                :title="paymentsOpen ? undefined : soon"
+              >
+                {{ money(pack.price) }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="lib-surface acct-card"
+        aria-labelledby="plan-costs-heading"
+        data-tid="plan-costs"
+      >
+        <div class="acct-card__title">
+          <h2 id="plan-costs-heading">
+            What credits buy
+          </h2>
+          <acct-more
+            label="About prices"
+            end
+          >
+            Every job shows its price before it runs. A failed job gives its credits back.
+          </acct-more>
+        </div>
+        <div class="acct-list">
+          <div
+            v-for="c in costs"
+            :key="c.id"
+            class="acct-lrow"
+          >
+            <span class="acct-lrow__text">{{ c.label }}<span
+              v-if="c.plan"
+              class="lib-pill plan-costs__plan"
+            >{{ planName(c.plan) }}</span></span>
+            <span class="plan-costs__credits">{{ c.credits }}</span>
+          </div>
+          <div class="acct-lrow">
+            <span class="acct-lrow__text acct-muted">{{ freeLine }}</span>
+            <span class="plan-costs__credits">Free</span>
+          </div>
+        </div>
+      </section>
+
+      <section
+        v-if="account"
+        class="lib-surface acct-card"
+        aria-labelledby="plan-history-heading"
+        data-tid="plan-history"
+      >
+        <div class="acct-card__title">
+          <h2 id="plan-history-heading">
+            History
+          </h2>
+        </div>
+        <div class="acct-list">
+          <div
+            v-for="row in history"
+            :key="row.id"
+            class="acct-lrow"
+            :data-tid="`plan-history-${row.kind}`"
+          >
+            <span
+              class="plan-hist__icon"
+              :class="`plan-hist__icon--${icon(row)}`"
+            ><frame-icon
+              :name="iconName(row)"
+              small
+            /></span>
+            <span class="acct-lrow__text">{{ row.title }}</span>
+            <span class="acct-lrow__time">{{ when(row.at) }}</span>
+            <span
+              class="plan-hist__change"
+              :class="{ 'plan-hist__change--add': row.change > 0 }"
+            >{{ change(row.change) }}</span>
+          </div>
+          <p
+            v-if="!history.length"
+            class="acct-muted plan-hist__empty"
+          >
+            Nothing yet.
+          </p>
+        </div>
+      </section>
+    </template>
   </div>
 </template>
 
@@ -386,6 +395,8 @@ type Period = 'monthly' | 'yearly'
 @Component({ components: { AcctMore } })
 export default class AccountPlan extends Vue {
   account: CreditAccount | null = null
+  /** Until the service answers, so no card shows the catalogue's figure and then changes. */
+  reading = true
   unavailable: CreditsUnavailable | null = null
   period: Period = 'monthly'
   readonly periods: Period[] = ['monthly', 'yearly']
@@ -397,6 +408,8 @@ export default class AccountPlan extends Vue {
       if (this.account.period === 'yearly') this.period = 'yearly'
     } catch (error) {
       this.unavailable = creditsUnavailableReason(error)
+    } finally {
+      this.reading = false
     }
   }
 
@@ -483,7 +496,9 @@ export default class AccountPlan extends Vue {
 
   get meterLabel (): string {
     const a = this.account
-    return a ? `${this.monthly} monthly credits left, and ${credits(a.packs)} from packs` : ''
+    if (!a) return ''
+    const monthly = a.monthly.allowance || a.monthly.left ? `${this.monthly} monthly credits left` : 'No monthly credits'
+    return `${monthly}, and ${credits(a.packs)} from packs`
   }
 
   get usage (): { label: string, count: number, credits: number }[] {
@@ -557,6 +572,11 @@ export default class AccountPlan extends Vue {
 </script>
 
 <style lang="scss" scoped>
+  .plan-reading {
+    margin: 0;
+    padding: 12px 0;
+  }
+
   .plan__note-text {
     flex: 1 1 auto;
   }

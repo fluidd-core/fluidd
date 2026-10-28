@@ -77,14 +77,14 @@ export type CreditsUnavailable = 'unavailable' | 'off' | 'signed-out' | 'offline
  * Why the page shows the catalogue alone: `unavailable` when this model
  * service has no Create yet (503, 404), `off` when the account hasn't turned
  * the model service on (`consent_required`), `signed-out` when the sign-in
- * has lapsed, and `error` for any other refusal.
+ * has lapsed, and `error` for any other refusal, the console's included.
  */
 export function creditsUnavailableReason (error: unknown): CreditsUnavailable {
   if (!(error instanceof LibraryError)) return 'error'
   if (error.code === 'not-signed-in') return 'signed-out'
   if (error.code === 'consent_required') return 'off'
   if (error.code === 'offline') return 'offline'
-  if (error.status === 503 || error.status === 404) return 'unavailable'
+  if (error.code !== 'console' && (error.status === 503 || error.status === 404)) return 'unavailable'
   return 'error'
 }
 
