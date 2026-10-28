@@ -308,7 +308,13 @@ export default class PrinterEntriesMixin extends Mixins(StateMixin) {
 
   connectLocal (e: DirectoryEntry) {
     const instance = this.localInstance(e)
-    if (!instance) return
+    if (!instance) {
+      // The service found it beside this browser but gave no address to use
+      // (only the printer's own hotspot): there is nothing to open here.
+      this.notice = `${e.name} is on this network, but Muon3D doesn't know its address here. ` +
+        'Search again, or add it by the IP address its screen shows under System.'
+      return
+    }
     return this.run(e.key, () => activateLocalPrinter(instance))
   }
 

@@ -14,9 +14,9 @@ import type { InstanceConfig } from '@/store/config/types'
 import { Globals } from '@/globals'
 import { bindHttpClientToPrinterTransport } from '@/services/managed-session/httpTransportBinding'
 import { type PrinterTransport } from '@/services/managed-transport'
-import { borrowCloudPrinter, cloudState, printerName, setActiveCloudPrinter } from './state'
+import { borrowCloudPrinter, cloudState, dropCloudConnection, printerName, setActiveCloudPrinter } from './state'
 import { MANAGED_API_URL, MANAGED_SOCKET_URL } from './origin'
-import { pageCanReach } from './discovery'
+import { isOwnHotspot, pageReach } from './discovery'
 
 export { MANAGED_API_URL, MANAGED_SOCKET_URL }
 
@@ -81,6 +81,25 @@ function releaseCurrent () {
 }
 
 /**
+ * How long opening a printer through Muon3D may take, from asking the console
+ * for a grant to the printer's socket, including up to `LOAD_WAIT_MS` behind
+ * another printer's load. An Iroh read has no time limit of its own, so a
+ * printer whose link to the relay keeps dropping held the page on "Opening"
+ * for good: Boxwood on 27 Oct, on weak Wi-Fi while it downloaded an update,
+ * lost the relay about once a minute.
+ */
+export const REMOTE_OPEN_TIMEOUT_MS = 30_000
+
+/** Opening a printer through Muon3D took longer than `REMOTE_OPEN_TIMEOUT_MS`. */
+export class RemoteOpenTimeout extends Error {
+  constructor (name: string) {
+    super(`${name} didn't open through Muon3D within ${REMOTE_OPEN_TIMEOUT_MS / 1000} seconds. ` +
+      'The printer or its connection may be slow or offline: check that it\'s on and online, then try again.')
+    this.name = 'RemoteOpenTimeout'
+  }
+}
+
+/**
  * Points Fluidd at a cloud printer. Rejects with `SwitchSuperseded` when
  * another printer is opened before this one is on.
  */
@@ -90,45 +109,83 @@ export async function activateCloudPrinter (printerId: string) {
   activationState.switching = printerId
   activationState.error = null
   activationState.fallbackUrl = null
-  let transport: PrinterTransport | null = null
-  try {
-    // The printer Fluidd is on stays usable while the grant comes.
-    const borrowed = transport = await borrowCloudPrinter(printerId)
-    if (superseded()) throw new SwitchSuperseded()
-    await oneAtATime(mine, async () => {
-      Vue.$socket?.releaseTransportSocket(true)
-      releaseCurrent()
-      const release = bindHttpClientToPrinterTransport(Vue.$httpClient, borrowed)
-      current = { transport: borrowed, release }
-      setActiveCloudPrinter(printerId)
-
-      const instance: InstanceConfig = {
-        name: printerName(printerId),
-        apiUrl: MANAGED_API_URL,
-        socketUrl: MANAGED_SOCKET_URL,
-        active: true
-      }
-      await appInit(instance, store.state.config.hostConfig, { isCurrent: () => !superseded() })
+  // Set inside `open`, so typed here rather than narrowed to null.
+  let transport = null as PrinterTransport | null
+  const open = async () => {
+    try {
+      // The printer Fluidd is on stays usable while the grant comes.
+      const borrowed = transport = await borrowCloudPrinter(printerId)
       if (superseded()) throw new SwitchSuperseded()
+      await oneAtATime(mine, async () => {
+        Vue.$socket?.releaseTransportSocket(true)
+        releaseCurrent()
+        const release = bindHttpClientToPrinterTransport(Vue.$httpClient, borrowed)
+        current = { transport: borrowed, release }
+        setActiveCloudPrinter(printerId)
 
-      const socket = await borrowed.openWebSocket('/websocket')
-      if (superseded()) {
-        socket.close()
-        throw new SwitchSuperseded()
-      }
-      Vue.$socket.adoptTransportSocket(socket, () => borrowed.openWebSocket('/websocket'))
-    })
+        const instance: InstanceConfig = {
+          name: printerName(printerId),
+          apiUrl: MANAGED_API_URL,
+          socketUrl: MANAGED_SOCKET_URL,
+          active: true
+        }
+        await appInit(instance, store.state.config.hostConfig, { isCurrent: () => !superseded() })
+        if (superseded()) throw new SwitchSuperseded()
+
+        const socket = await borrowed.openWebSocket('/websocket')
+        if (superseded()) {
+          socket.close()
+          throw new SwitchSuperseded()
+        }
+        Vue.$socket.adoptTransportSocket(socket, () => borrowed.openWebSocket('/websocket'))
+      })
+    } catch (error) {
+      // Replaced before it was bound: nothing else will close it.
+      if (transport && current?.transport !== transport) transport.close()
+      throw error
+    }
+  }
+  const opening = open()
+  // Given up on below, it may still fail later, with nobody listening.
+  opening.catch(() => {})
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    await Promise.race([
+      opening,
+      new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => reject(new RemoteOpenTimeout(printerName(printerId))), REMOTE_OPEN_TIMEOUT_MS)
+      })
+    ])
   } catch (error) {
-    // Replaced before it was bound: nothing else will close it.
-    if (transport && current?.transport !== transport) transport.close()
     if (!superseded() && !(error instanceof SwitchSuperseded)) {
       activationState.error = (error as Error).message
-      setActiveCloudPrinter(null)
-      releaseCurrent()
+      // Timed out before this printer was bound: the one Fluidd is on stays.
+      const bound = !(error instanceof RemoteOpenTimeout) || (!!transport && current?.transport === transport)
+      if (bound) {
+        setActiveCloudPrinter(null)
+        releaseCurrent()
+      }
+      if (error instanceof RemoteOpenTimeout) {
+        transport?.close()
+        // Trying again must dial afresh, not borrow the stalled connection.
+        dropCloudConnection(printerId)
+        activationState.switching = null
+        // The open still waits on Iroh: at its next step it finds it was replaced.
+        ++generation
+      }
     }
     throw error
   } finally {
+    clearTimeout(timer)
     if (!superseded()) activationState.switching = null
+  }
+}
+
+function hostOf (apiUrl: string): string {
+  try {
+    return new URL(apiUrl).hostname
+  } catch {
+    return apiUrl
   }
 }
 
@@ -151,10 +208,24 @@ export async function activateLocalPrinter (instance: InstanceConfig): Promise<b
   activationState.fallbackUrl = null
   const name = instance.name || instance.apiUrl
   try {
-    if (!await pageCanReach(instance.apiUrl)) {
+    const reach = await pageReach(instance.apiUrl)
+    if (reach !== 'reached') {
       if (superseded()) throw new SwitchSuperseded()
-      activationState.error = `This browser does not let ${location.host} reach ${name} on your network.`
-      activationState.fallbackUrl = `${instance.apiUrl.replace(/\/+$/, '')}/`
+      const host = hostOf(instance.apiUrl)
+      // The printer's own page is offered only where it would open: the
+      // browser blocked this page, and the address is one on this network.
+      // An address that went unanswered, or the printer's own hotspot, would
+      // not load there either.
+      if (reach === 'silent') {
+        activationState.error = `${name} isn't answering at ${host}. Check that it's on, or search again: it may have a new address.`
+      } else if (isOwnHotspot(host)) {
+        activationState.error = `${host} is ${name}'s own hotspot, which only a device joined to it can reach. Search again to find it on your network.`
+      } else {
+        activationState.error = reach === 'asking'
+          ? `Let ${location.host} look for devices on your local network when the browser asks, then open ${name} again.`
+          : `This browser does not let ${location.host} reach ${name} on your network.`
+        activationState.fallbackUrl = `${instance.apiUrl.replace(/\/+$/, '')}/`
+      }
       return false
     }
     return await oneAtATime(mine, async () => {
