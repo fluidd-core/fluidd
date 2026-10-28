@@ -49,12 +49,11 @@ export interface CatalogueCost {
 
 export const CREDITS_CATALOGUE = {
   /**
-   * Shows the Plan and credits page. False until Jack signs off its plan
-   * contents: Account › Plan keeps the planned-prices card
-   * (AccountPlanPlanned.vue) and the Overview tile reads no balance. Flipping
-   * it is the whole change; the specs set it for themselves.
+   * Shows the Plan and credits page (on since 28 Oct 2026). False puts back
+   * the planned-prices card (AccountPlanPlanned.vue), and the Overview tile
+   * reads no balance. The specs set it for themselves.
    */
-  planPageOpen: false,
+  planPageOpen: true,
   currency: 'GBP',
   /** Checkout exists. False: buttons show, disabled, with "Payments open soon". */
   paymentsOpen: false,
