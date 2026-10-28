@@ -36,6 +36,15 @@
           <frame-icon name="search" />
         </button>
         <app-notification-menu v-if="!sectionContext.foreign && authenticated && socketConnected" />
+        <router-link
+          v-if="!printerFrame && !onLibrary"
+          to="/library"
+          class="app-header__icon"
+          aria-label="Library"
+          data-tid="header-library"
+        >
+          <frame-icon name="library" />
+        </router-link>
         <cloud-account-menu v-if="!printerFrame" />
       </div>
 
@@ -68,10 +77,29 @@
       </router-link>
 
       <printer-switch-button v-if="printerFrame" />
-      <span
+      <!-- No printer chosen: the places that need none, so the Library is one click from home. -->
+      <nav
         v-else
-        class="app-header__place"
-      >{{ placeName }}</span>
+        class="app-header__places"
+        aria-label="Muon3D"
+        data-tid="header-places"
+      >
+        <router-link
+          v-for="place in places"
+          :key="place.to"
+          :to="place.to"
+          class="app-header__place"
+          :class="{ 'app-header__place--on': place.on }"
+          :aria-current="place.on ? (place.to === $route.path ? 'page' : 'true') : undefined"
+          :data-tid="`header-place-${place.id}`"
+        >
+          {{ place.name }}
+        </router-link>
+        <span
+          v-if="!places.some(place => place.on)"
+          class="app-header__place app-header__place--on"
+        >{{ placeName }}</span>
+      </nav>
 
       <button
         type="button"
@@ -297,6 +325,18 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
     if (this.$route.name?.startsWith('Library')) return 'Library'
     if (this.$route.name?.startsWith('Account')) return 'Account'
     return this.$route.name ?? ''
+  }
+
+  get onLibrary (): boolean {
+    return this.$route.name?.startsWith('Library') ?? false
+  }
+
+  /** Where you can go without choosing a printer. */
+  get places (): Array<{ id: string, name: string, to: string, on: boolean }> {
+    return [
+      { id: 'printers', name: 'Printers', to: '/', on: this.$route.path === '/' },
+      { id: 'library', name: 'Library', to: '/library', on: this.onLibrary }
+    ]
   }
 
   openKeys () {
@@ -693,13 +733,34 @@ export default class AppBar extends Mixins(FrameMixin, ServicesMixin, FilesMixin
     }
   }
 
+  .app-header__places {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+
   .app-header__place {
     overflow: hidden;
-    color: var(--m3d-text);
-    font-size: 17px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: var(--m3d-text-muted) !important;
+    font-size: 15px;
     font-weight: 600;
+    text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    &[href]:hover {
+      background: var(--m3d-hover);
+      color: var(--m3d-text) !important;
+    }
+  }
+
+  .app-header__place--on {
+    color: var(--m3d-text) !important;
+    font-size: 17px;
   }
 
   /* Every icon action is the same 40 px square, 4 px apart. */

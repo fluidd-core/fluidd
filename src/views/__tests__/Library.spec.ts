@@ -3,8 +3,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/services/muon-cloud/state', async () => {
   const { default: Vue } = await import('vue')
-  return { cloudState: Vue.observable({ account: null, activePrinterId: null, printers: [] }), cloudPrinterConnection: vi.fn() }
+  return { cloudState: Vue.observable({ ready: true, account: null, activePrinterId: null, printers: [] }), cloudPrinterConnection: vi.fn() }
 })
+vi.mock('@/services/muon-cloud/api', async (original) => ({
+  ...await original() as object,
+  storedToken: vi.fn(() => null)
+}))
 vi.mock('@/services/printer-pages', () => ({ activeSlug: () => null }))
 vi.mock('@/services/library/print-on', () => ({
   activePrinterFacts: vi.fn(),
@@ -26,11 +30,16 @@ vi.mock('@/services/library/store', async (original) => ({
 // eslint-disable-next-line import/first
 import { libraryState, resetLibrary, refreshLibrary } from '@/services/library/store'
 // eslint-disable-next-line import/first
+import { storedToken } from '@/services/muon-cloud/api'
+// eslint-disable-next-line import/first
+import { cloudState } from '@/services/muon-cloud/state'
+// eslint-disable-next-line import/first
 import Library from '../Library.vue'
 
-function renderLibrary () {
+function renderLibrary (query: Record<string, string> = {}) {
   return shallowMount(Library, {
     mocks: {
+      $route: { query },
       $store: { state: { config: { apiUrl: '', instances: [] } }, getters: {} },
       $vuetify: { breakpoint: { mobile: false } }
     },
@@ -132,6 +141,59 @@ describe('Library feed states', () => {
       expect(wrapper.text()).not.toContain('Reading your Library…')
     } finally {
       wrapper.destroy()
+    }
+  })
+})
+
+describe('Library: Discover and Your Library (KAN-735)', () => {
+  it('opens on Your Library once signed in, and on Discover signed out', () => {
+    const mine = renderLibrary()
+    try {
+      expect(mine.find('[data-tid="library-view-mine"]').attributes('aria-current')).toBe('page')
+      expect(mine.find('[data-tid="library-view-discover"]').attributes('aria-current')).toBeUndefined()
+      expect(mine.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
+    } finally {
+      mine.destroy()
+    }
+    Object.assign(libraryState, { account: null })
+    const signedOut = renderLibrary()
+    try {
+      expect(signedOut.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(true)
+      expect(signedOut.find('[data-tid="library-signed-out"]').exists()).toBe(false)
+    } finally {
+      signedOut.destroy()
+    }
+  })
+
+  it('stays on Your Library while a saved session is still being restored', () => {
+    Object.assign(libraryState, { account: null })
+    cloudState.ready = false
+    vi.mocked(storedToken).mockReturnValue('saved')
+    const restoring = renderLibrary()
+    try {
+      expect(restoring.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
+    } finally {
+      restoring.destroy()
+      cloudState.ready = true
+      vi.mocked(storedToken).mockReturnValue(null)
+    }
+  })
+
+  it('follows the address: ?view=discover or ?view=mine', () => {
+    const discover = renderLibrary({ view: 'discover' })
+    try {
+      expect(discover.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(true)
+      expect(discover.find('[data-tid="library-grid"]').exists()).toBe(false)
+    } finally {
+      discover.destroy()
+    }
+    Object.assign(libraryState, { account: null })
+    const mine = renderLibrary({ view: 'mine' })
+    try {
+      expect(mine.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
+      expect(mine.find('[data-tid="library-signed-out"]').exists()).toBe(true)
+    } finally {
+      mine.destroy()
     }
   })
 })
