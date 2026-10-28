@@ -99,8 +99,10 @@ export interface UsageWindow {
   /** Credits used, and allowed, in this window. */
   used: number;
   limit: number;
-  /** When the window starts again. */
+  /** When the window starts again, or when the plan ends if it won't renew. */
   resets: number;
+  /** A paid plan that won't renew: the date is its end, not a reset. */
+  ending?: boolean;
 }
 
 /**
@@ -111,7 +113,8 @@ export interface UsageWindow {
 export function usageWindow (account: CreditAccount): UsageWindow {
   if (account.weekly) return { window: 'week', ...account.weekly }
   const { left, allowance } = account.monthly
-  return { window: 'month', used: Math.max(0, allowance - left), limit: allowance, resets: account.renews }
+  const ending = account.plan !== 'free' && !account.willRenew
+  return { window: 'month', used: Math.max(0, allowance - left), limit: allowance, resets: account.renews, ending }
 }
 
 export type LimitState = 'none' | 'ok' | 'near' | 'reached'
@@ -138,9 +141,9 @@ export function usedText (usage: UsageWindow): string {
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-/** "Resets Mon 3 Nov". */
+/** "Resets Mon 3 Nov", or "Plan ends Mon 9 Nov" for a plan that won't renew. */
 export function resetText (usage: UsageWindow, now: number = Date.now()): string {
-  return `Resets ${WEEKDAYS[new Date(usage.resets).getDay()]} ${dayText(usage.resets / 1000, now)}`
+  return `${usage.ending ? 'Plan ends' : 'Resets'} ${WEEKDAYS[new Date(usage.resets).getDay()]} ${dayText(usage.resets / 1000, now)}`
 }
 
 /**

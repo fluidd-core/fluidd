@@ -50,7 +50,7 @@ export interface CatalogueCost {
 
 export const CREDITS_CATALOGUE = {
   /**
-   * Shows the Plan and credits page (on since 28 Oct 2026). False puts back
+   * Shows the Plan page (on since 28 Oct 2026). False puts back
    * the planned-prices card (AccountPlanPlanned.vue), and the Overview tile
    * reads no balance. The specs set it for themselves.
    */

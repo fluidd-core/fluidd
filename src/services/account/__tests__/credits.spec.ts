@@ -65,6 +65,14 @@ describe('the plan\'s limit', () => {
     expect(resetText({ window: 'week', used: 0, limit: 100, resets: monday }, now)).toBe('Resets Mon 2 Nov')
   })
 
+  it('says a paid plan that won\'t renew ends, rather than resets', () => {
+    const ending = usageWindow(account({ willRenew: false }))
+    expect(ending.ending).toBe(true)
+    expect(resetText(ending, now)).toBe('Plan ends Mon 9 Nov')
+    // Free never renews, and its month still resets.
+    expect(usageWindow(account({ plan: 'free', willRenew: false })).ending).toBe(false)
+  })
+
   it('puts the limit, the reset and any bought credits on the Overview tile', () => {
     expect(usageTileText(account({ weekly: { used: 34, limit: 100, resets: monday } }), now)).toBe('34% of this week\'s limit used · Resets Mon 2 Nov')
     expect(usageTileText(account({ weekly: { used: 100, limit: 100, resets: monday }, packs: 120 }), now))
@@ -108,6 +116,7 @@ describe('prices', () => {
     expect(yearlyLine(catalogPlan('free'))).toBe('')
     expect(perCreditText(12.99, 500)).toBe('2.6p')
     expect(planName('team')).toBe('Team')
+    expect(catalogPlan('team').id).toBe('free')
   })
 
   it('keeps every top-up dearer per credit than Plus, so the plan is always the better buy', () => {

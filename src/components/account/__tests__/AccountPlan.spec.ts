@@ -69,7 +69,8 @@ describe('Plan', () => {
     expect(usage).toContain('This week')
     expect(usage).toContain('34% of this week\'s limit used')
     expect(usage).toContain('Resets Mon 2 Nov')
-    expect(usage).toContain('2 shapes and 8 parts this week')
+    // The service counts what was made a month at a time, whatever the limit's window.
+    expect(usage).toContain('2 shapes and 8 parts this month')
     expect(w.find('[data-tid="plan-current"]').text()).toBe('Plus · monthly')
     expect(w.find('[data-tid="plan-limit-note"]').exists()).toBe(false)
     // No list of what credits buy up front: the plans come first, prices per job sit behind (i).
@@ -85,6 +86,17 @@ describe('Plan', () => {
     expect(usage).toContain('This month')
     expect(usage).toContain('41% of this month\'s limit used')
     expect(usage).not.toContain('week')
+    // The account's own plan shows what the service grants it, a month at a time.
+    const own = w.findAll('[data-tid="plan-option-plus"] [data-tid="plan-row"]').at(0)
+    expect(own.find('dt').text()).toBe('Each month')
+    expect(own.find('dd').text()).toBe('400 credits')
+    w.destroy()
+  })
+
+  it('says when a plan that won\'t renew ends, not that it resets', async () => {
+    const w = await open({ ...plus, weekly: undefined, willRenew: false })
+    expect(text(w.find('[data-tid="plan-usage"]'))).toContain('Plan ends Mon 9 Nov')
+    expect(w.text()).not.toContain('Resets')
     w.destroy()
   })
 
@@ -139,6 +151,7 @@ describe('Plan', () => {
     expect(w.find('[data-tid="plan-usage-line"]').text()).toBe('No usage included on your plan yet.')
     expect(w.find('.plan-meter').exists()).toBe(false)
     expect(w.find('[data-tid="plan-option-free"]').text()).toContain('Current')
+    expect(w.findAll('[data-tid="plan-option-free"] dd').at(0).text()).toBe('None yet')
     w.destroy()
   })
 

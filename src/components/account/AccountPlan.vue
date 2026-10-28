@@ -10,7 +10,7 @@
         <h1>Plan</h1>
         <acct-more label="How plans work">
           We only charge for what costs us to run: making shapes, parts and scans on our servers. Everything else is free on every plan.
-          Your plan's usage resets each week. Credits are a top-up, used only once you reach the limit.
+          Your plan's usage resets each {{ windowName }}. Credits are a top-up, used only once you reach the limit.
         </acct-more>
       </div>
       <span
@@ -42,7 +42,7 @@
         <span class="plan__note-text">
           <b>{{ limit === 'reached' ? `You've reached this ${windowName}'s limit.` : `${usedLine}.` }}</b>
           {{ resetLine }}.
-          <template v-if="limit === 'reached' && topUp > 0">Your {{ fmt(topUp) }} credits are in use until then.</template>
+          <template v-if="limit === 'reached' && topUp > 0">Your {{ fmt(topUp) }} credits are in use{{ usage && usage.ending ? '' : ' until then' }}.</template>
         </span>
         <button
           v-if="limit === 'reached' && topUp === 0"
@@ -89,8 +89,7 @@
         <template v-if="limit !== 'none'">
           <div
             class="plan-meter"
-            role="img"
-            :aria-label="`${usedLine}. ${resetLine}.`"
+            aria-hidden="true"
           >
             <span
               class="plan-meter__used"
@@ -431,10 +430,10 @@ export default class AccountPlan extends Vue {
     return Math.max(this.account?.packs ?? 0, 0)
   }
 
-  /** "6 shapes, 8 parts and 1 scan this month", or "Nothing made yet this week". */
+  /** "6 shapes, 8 parts and 1 scan this month": the service counts these monthly. */
   get madeLine (): string {
     const u = this.account?.usage
-    const window = `this ${this.windowName}`
+    const window = 'this month'
     if (!u) return ''
     const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? '' : 's'}`
     const made = [
@@ -469,8 +468,16 @@ export default class AccountPlan extends Vue {
     }
   }
 
+  /**
+   * The account's own plan says what the service grants it, a month at a
+   * time until the service counts weeks; the others, the catalogue.
+   */
   rows (plan: CataloguePlan): PlanRow[] {
-    return planRows(plan)
+    const rows = planRows(plan)
+    const usage = this.usage
+    if (!usage || usage.window !== 'month' || !this.isCurrent(plan)) return rows
+    const granted = usage.limit > 0 ? `${credits(usage.limit)} credits` : 'None yet'
+    return [{ label: 'Each month', value: granted }, ...rows.slice(1)]
   }
 
   outcomes (n: number): string {
