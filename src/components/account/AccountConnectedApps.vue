@@ -4,7 +4,12 @@
     data-tid="account-apps"
   >
     <div class="acct-head">
-      <h1>Connected apps</h1>
+      <h1
+        ref="heading"
+        tabindex="-1"
+      >
+        Connected apps
+      </h1>
       <p>AI tools and other programs you let into your account from the Muon3D sign-in page. Each one can do only what you approved, and you can cut it off any time.</p>
     </div>
 
@@ -112,6 +117,33 @@
     </div>
 
     <div
+      v-else-if="loadError"
+      class="acct-empty"
+      :aria-busy="retrying ? 'true' : 'false'"
+      data-tid="apps-load-error"
+    >
+      <span class="acct-empty__icon"><frame-icon
+        name="alert"
+        large
+      /></span>
+      <h3>Your connected apps didn't load</h3>
+      <p>This doesn't mean you have none. Try again in a moment.</p>
+      <!-- aria-disabled, not disabled: a disabled button drops keyboard focus to the page. -->
+      <button
+        type="button"
+        class="lib-btn app__retry"
+        :aria-disabled="retrying ? 'true' : 'false'"
+        data-tid="apps-retry"
+        @click="retry"
+      >
+        <frame-icon
+          name="refresh"
+          small
+        />{{ retrying ? 'Trying again…' : 'Try again' }}
+      </button>
+    </div>
+
+    <div
       v-else-if="apps && !apps.length"
       class="acct-empty"
       data-tid="apps-empty"
@@ -159,6 +191,14 @@
     >
       {{ error }}
     </p>
+    <p
+      v-if="readError"
+      class="acct-error"
+      role="alert"
+      data-tid="apps-read-error"
+    >
+      {{ readError }}
+    </p>
   </div>
 </template>
 
@@ -166,7 +206,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 import { accountApi } from '@/services/account/api'
-import { isMissing } from '@/services/account/client'
+import { AccountError, isMissing } from '@/services/account/client'
 import type { AccountSectionId } from '@/services/account/model'
 import {
   appFailure,
@@ -196,29 +236,60 @@ export default class AccountConnectedApps extends Vue {
   apps: ConnectedApp[] | null = null
   missing = false
   loadError = false
+  retrying = false
   busy = false
+  /** Why the last disconnect failed. */
   error = ''
+  /** Why the list couldn't be read. Its own line, so it never hides `error`. */
+  readError = ''
   message = ''
+  /** Bumped by every read and every row dropped here: only the latest read's answer counts. */
+  reads = 0
 
   created () {
     this.refresh()
   }
 
   async refresh () {
+    const read = ++this.reads
     try {
-      this.apps = (await accountApi.connectedApps()).apps
+      const { apps } = await accountApi.connectedApps()
+      // A later read, or a row dropped since this one was sent: this answer is stale.
+      if (read !== this.reads) return
+      this.apps = apps
       this.missing = false
       this.loadError = false
+      this.readError = ''
     } catch (error) {
+      if (read !== this.reads) return
       if (isMissing(error)) {
         this.missing = true
         this.apps = []
       } else {
         this.loadError = true
         this.apps = this.apps ?? []
-        this.error = appFailure(error)
+        this.readError = appFailure(error)
       }
     }
+  }
+
+  /**
+   * After a failed read, ask once more. The block and its button stay on
+   * screen while it loads, so focus stays on the button. When the list
+   * replaces the block, focus moves to the heading, not to the page.
+   */
+  async retry () {
+    if (this.retrying) return
+    this.retrying = true
+    try {
+      await this.refresh()
+    } finally {
+      this.retrying = false
+    }
+    if (this.loadError) return
+    await this.$nextTick()
+    const heading = this.$refs.heading as HTMLElement | undefined
+    heading?.focus()
   }
 
   get ordered (): ConnectedApp[] {
@@ -262,13 +333,28 @@ export default class AccountConnectedApps extends Vue {
     try {
       await accountApi.disconnectApp(app.client_id)
       this.message = `${name} is disconnected.`
+      // Gone now, even if reading the list again below fails.
+      this.dropRow(app.client_id)
     } catch (error) {
-      // Already gone, or this app: the list says so after a refresh.
-      this.error = appFailure(error)
+      if (isMissing(error)) {
+        // A console without the route: nothing was disconnected, so the row stays.
+        this.error = 'This console can\'t disconnect apps yet.'
+      } else {
+        // A 404 from the route: not connected any more, so the row goes too.
+        if (error instanceof AccountError && error.status === 404) this.dropRow(app.client_id)
+        this.error = appFailure(error)
+      }
     } finally {
       this.busy = false
+      // A re-read that fails shows on its own line and leaves `error` and `message` alone.
       await this.refresh()
     }
+  }
+
+  /** Takes an app off the list, and voids any read already sent: it could still list the app. */
+  dropRow (clientId: string) {
+    this.reads++
+    if (this.apps) this.apps = this.apps.filter(a => a.client_id !== clientId)
   }
 }
 </script>
@@ -328,6 +414,11 @@ export default class AccountConnectedApps extends Vue {
   .app__reading {
     margin: 0;
     font-size: 13px;
+  }
+
+  .app__retry[aria-disabled='true'] {
+    opacity: 0.45;
+    cursor: default;
   }
 
   @media (max-width: 480px) {
