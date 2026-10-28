@@ -222,9 +222,9 @@
         class="lib-pill"
       >Plans soon</span>
       <span
-        v-else-if="creditAlert !== 'ok'"
+        v-else-if="limitReached"
         class="lib-pill lib-pill--warn"
-      >{{ creditAlert === 'empty' ? 'Out of credits' : 'Low on credits' }}</span>
+      >Limit reached</span>
     </router-link>
 
     <section
@@ -295,7 +295,7 @@ import {
 } from '@/services/account/model'
 import { libraryItems, libraryPrints, libraryState, refreshLibrary, watchLibraryAccount } from '@/services/library/store'
 import { bytesText } from '@/services/library/format'
-import { balanceAlert, credits, loadCredits, nextGrantText, planName, type BalanceState, type CreditAccount } from '@/services/account/credits'
+import { limitState, loadCredits, planName, usageTileText, usageWindow, type CreditAccount } from '@/services/account/credits'
 import { CREDITS_CATALOGUE } from '@/services/account/credits-catalogue'
 import type { AccountDetails, Me } from '@/services/account/api'
 
@@ -342,16 +342,14 @@ export default class AccountOverview extends Vue {
     return this.credit ? `${planName(this.credit.plan)} plan` : 'Plan and credits'
   }
 
-  /** "286 credits · 400 more on 9 Nov", or the promise when credits can't be read. */
+  /** "34% of this week's limit used · Resets Mon 3 Nov", or the promise when there's no limit to show. */
   get creditLine (): string {
-    const c = this.credit
-    if (!c) return 'Printer features are always free'
-    const next = nextGrantText(c)
-    return `${credits(c.balance)} credits${next ? ` · ${next}` : ''}`
+    return this.credit ? usageTileText(this.credit) : 'Printer features are always free'
   }
 
-  get creditAlert (): BalanceState {
-    return this.credit ? balanceAlert(this.credit) : 'ok'
+  /** Only with nothing bought to carry on with. */
+  get limitReached (): boolean {
+    return !!this.credit && this.credit.packs <= 0 && limitState(usageWindow(this.credit)) === 'reached'
   }
 
   get me (): Me | null {
