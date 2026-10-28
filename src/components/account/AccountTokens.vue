@@ -5,8 +5,12 @@
   >
     <div class="acct-head acct-head--row">
       <div class="acct-head">
-        <h1>Access tokens</h1>
-        <p>A token lets a script, a CI job or an AI tool act as you, with fewer powers than you have. Each one ends on its own and you can revoke it any time.</p>
+        <div class="acct-head__title">
+          <h1>Access tokens</h1>
+          <acct-more label="What a token is">
+            A token lets a script, a CI job or an AI tool act as you, with fewer powers. It ends on its own, and you can revoke it any time.
+          </acct-more>
+        </div>
       </div>
       <button
         v-if="!missing && !making && !fresh"
@@ -37,7 +41,7 @@
           name="alert"
           small
         />
-        <span>You will not see this again. We keep only a fingerprint, so we can't show it a second time. If you lose it, revoke it and make another.</span>
+        <span>You won't see it again. Lost it? Revoke it and make another.</span>
       </div>
       <div class="tok__secret">
         <input
@@ -68,8 +72,8 @@
         v-if="copyFailed"
         class="acct-field__note"
         role="status"
-      >Your browser wouldn't copy it. Select the token above and copy it by hand.</span>
-      <span class="acct-field__note">Send it as <code>Authorization: Bearer &lt;token&gt;</code>. Keep it out of code you share, and don't paste it into chats.</span>
+      >Couldn't copy. Select it and copy it by hand.</span>
+      <span class="acct-field__note">Send it as <code>Authorization: Bearer &lt;token&gt;</code>. Keep it out of shared code and chats.</span>
       <div class="acct-actions">
         <button
           type="button"
@@ -298,7 +302,7 @@
           />
           <span>
             <b>Anyone holding this token can act without your click.</b>
-            Bypass is saved on the token but not enforced yet. When it is, the token will be able to start prints and heat or move a printer on its own, with nobody there, so treat a leaked one as a person at your printer.
+            Bypass is saved but not enforced yet. Once it is, treat a leaked token as a person at your printer.
             You'll be asked for a fresh two-step code.
           </span>
         </div>
@@ -336,10 +340,10 @@
           name="shield"
           small
         />
-        <span>A token that can start prints, upload files, heat, move, publish or skip the click needs two-step sign-in. <router-link
+        <span>Those marked need two-step sign-in. <router-link
           :to="linkTo('security')"
           class="acct-link"
-        >Turn it on</router-link>, or leave those out.</span>
+        >Turn it on</router-link>, or leave them out.</span>
       </div>
 
       <p
@@ -418,7 +422,7 @@
                 :title="scopeLabel(scope)"
               >{{ scope }}</span>
             </span>
-            <span>{{ printersLine(token) }} · {{ modeLine(token) }}</span>
+            <span>{{ printersLine(token) }}<template v-if="token.ask_mode === 'bypass'"> · {{ modeLine(token) }}</template></span>
             <span>{{ endsLine(token) }} · {{ usedLine(token) }}</span>
           </div>
           <button
@@ -455,7 +459,7 @@
         large
       /></span>
       <h3>Tokens come soon</h3>
-      <p>This console can't make tokens yet. They appear here when it can.</p>
+      <p>They appear here once the console supports them.</p>
     </div>
 
     <div
@@ -468,7 +472,7 @@
         large
       /></span>
       <h3>No tokens yet</h3>
-      <p>Make one to let a script, a CI job or an AI tool read your printers or Library. You choose what it can do, and it ends on its own.</p>
+      <p>Let a script, a CI job or an AI tool read your printers or Library.</p>
       <button
         type="button"
         class="lib-btn lib-btn--pri"
@@ -487,7 +491,7 @@
         name="info"
         small
       />
-      <span>A token can never change who can reach your printers, make other tokens, or edit your account. Those need you, signed in. Lost one, or see one you don't know? Revoke it. It stops on its next request.</span>
+      <span>A token can't change access, make tokens or edit your account. See one you don't know? Revoke it.</span>
     </div>
 
     <p
@@ -522,6 +526,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import AccountReauthMixin from '@/mixins/account-reauth'
 import ReauthDialog from './ReauthDialog.vue'
+import AcctMore from './AcctMore.vue'
 import { cloudState } from '@/services/muon-cloud/state'
 import type { CloudPrinter } from '@/services/muon-cloud/api'
 import { accountApi } from '@/services/account/api'
@@ -558,7 +563,7 @@ import {
  * in `fresh` only until the person says they've saved it, or leaves: never in
  * the shared account state, storage or the console.
  */
-@Component({ components: { ReauthDialog } })
+@Component({ components: { ReauthDialog, AcctMore } })
 export default class AccountTokens extends Mixins(AccountReauthMixin) {
   @Prop({ type: Function, default: (id: AccountSectionId) => `/account/${id}` })
   readonly linkTo!: (id: AccountSectionId) => string

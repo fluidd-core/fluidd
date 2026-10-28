@@ -3,8 +3,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/services/muon-cloud/state', async () => {
   const { default: Vue } = await import('vue')
-  return { cloudState: Vue.observable({ account: null, activePrinterId: null, printers: [] }), cloudPrinterConnection: vi.fn() }
+  return { cloudState: Vue.observable({ ready: true, account: null, activePrinterId: null, printers: [] }), cloudPrinterConnection: vi.fn() }
 })
+vi.mock('@/services/muon-cloud/api', async (original) => ({
+  ...await original() as object,
+  storedToken: vi.fn(() => null)
+}))
 vi.mock('@/services/printer-pages', () => ({ activeSlug: () => null }))
 vi.mock('@/services/library/print-on', () => ({
   activePrinterFacts: vi.fn(),
@@ -15,32 +19,40 @@ vi.mock('@/services/library/print-on', () => ({
 }))
 vi.mock('@/components/library/PrintOnDialog.vue', () => ({ default: { render: () => null } }))
 vi.mock('@/components/widgets/filesystem/FileNameDialog.vue', () => ({ default: { render: () => null } }))
-vi.mock('@/components/muon-cloud/CloudAccountDialog.vue', () => ({ default: { render: () => null } }))
 
 vi.mock('@/services/library/store', async (original) => ({
   ...await original() as object,
   watchLibraryAccount: vi.fn(),
-  refreshLibrary: vi.fn(async () => {})
+  refreshLibrary: vi.fn(async () => {}),
+  turnLibraryOn: vi.fn(async () => {})
 }))
 
 // eslint-disable-next-line import/first
-import { libraryState, resetLibrary, refreshLibrary } from '@/services/library/store'
+import { libraryState, resetLibrary, refreshLibrary, turnLibraryOn } from '@/services/library/store'
 // eslint-disable-next-line import/first
-import Library from '../Library.vue'
+import { PROMISE_VERSION } from '@/services/library/promise'
+// eslint-disable-next-line import/first
+import { storedToken } from '@/services/muon-cloud/api'
+// eslint-disable-next-line import/first
+import { cloudState } from '@/services/muon-cloud/state'
+// eslint-disable-next-line import/first
+import Library, { autoConsent } from '../Library.vue'
 
-function renderLibrary () {
+function renderLibrary (query: Record<string, string> = {}) {
   return shallowMount(Library, {
     mocks: {
+      $route: { query },
       $store: { state: { config: { apiUrl: '', instances: [] } }, getters: {} },
       $vuetify: { breakpoint: { mobile: false } }
     },
-    stubs: ['router-link', 'frame-icon', 'library-card', 'library-recent-card', 'print-on-dialog', 'file-name-dialog', 'cloud-account-dialog']
+    stubs: ['router-link', 'frame-icon', 'library-card', 'library-recent-card', 'print-on-dialog', 'file-name-dialog']
   })
 }
 
 beforeEach(() => {
   resetLibrary('fixture')
   Object.assign(libraryState, { checked: true, enabled: true })
+  autoConsent.asked = {}
   vi.clearAllMocks()
 })
 
@@ -130,6 +142,208 @@ describe('Library feed states', () => {
       expect(wrapper.text()).toContain('Nothing here yet')
       expect(wrapper.text()).toContain('Open Slice')
       expect(wrapper.text()).not.toContain('Reading your Library…')
+    } finally {
+      wrapper.destroy()
+    }
+  })
+})
+
+describe('Library: Discover and Your Library (KAN-735)', () => {
+  it('opens on Your Library once signed in, and on Discover signed out', () => {
+    const mine = renderLibrary()
+    try {
+      expect(mine.find('[data-tid="library-view-mine"]').attributes('aria-current')).toBe('page')
+      expect(mine.find('[data-tid="library-view-discover"]').attributes('aria-current')).toBeUndefined()
+      expect(mine.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
+    } finally {
+      mine.destroy()
+    }
+    Object.assign(libraryState, { account: null })
+    const signedOut = renderLibrary()
+    try {
+      expect(signedOut.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(true)
+      expect(signedOut.find('[data-tid="library-signed-out"]').exists()).toBe(false)
+      expect(signedOut.find('[data-tid="library-views"]').exists()).toBe(false)
+    } finally {
+      signedOut.destroy()
+    }
+  })
+
+  it('stays on Your Library while a saved session is still being restored', () => {
+    Object.assign(libraryState, { account: null })
+    cloudState.ready = false
+    vi.mocked(storedToken).mockReturnValue('saved')
+    const restoring = renderLibrary()
+    try {
+      expect(restoring.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
+    } finally {
+      restoring.destroy()
+      cloudState.ready = true
+      vi.mocked(storedToken).mockReturnValue(null)
+    }
+  })
+
+  it('follows the address: ?view=discover or ?view=mine', () => {
+    const discover = renderLibrary({ view: 'discover' })
+    try {
+      expect(discover.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(true)
+      expect(discover.find('[data-tid="library-grid"]').exists()).toBe(false)
+    } finally {
+      discover.destroy()
+    }
+    const mine = renderLibrary({ view: 'mine' })
+    try {
+      expect(mine.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
+    } finally {
+      mine.destroy()
+    }
+  })
+
+  it('signed out, ?view=mine still shows Discover only, with no sign-in panel', () => {
+    Object.assign(libraryState, { account: null })
+    const wrapper = renderLibrary({ view: 'mine' })
+    try {
+      expect(wrapper.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(true)
+      expect(wrapper.find('[data-tid="library-views"]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid="library-signed-out"]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid="library-grid"]').exists()).toBe(false)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+})
+
+const flush = () => new Promise(resolve => setTimeout(resolve))
+
+function offFor (account: string, extra: Partial<typeof libraryState> = {}) {
+  resetLibrary(account)
+  Object.assign(libraryState, { checked: true, enabled: false, promiseVersion: PROMISE_VERSION, ...extra })
+}
+
+describe('Library: both views signed in (KAN-735)', () => {
+  it('shows the switch, and ?view=mine shows Your Library', () => {
+    const wrapper = renderLibrary({ view: 'mine' })
+    try {
+      expect(wrapper.find('[data-tid="library-views"]').exists()).toBe(true)
+      expect(wrapper.find('[data-tid="library-view-discover"]').exists()).toBe(true)
+      expect(wrapper.find('[data-tid="library-view-mine"]').attributes('aria-current')).toBe('page')
+      expect(wrapper.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+})
+
+describe('Library: always on (KAN-735)', () => {
+  it('asks nothing signed out', async () => {
+    resetLibrary(null)
+    Object.assign(libraryState, { checked: true, enabled: false, promiseVersion: PROMISE_VERSION })
+    const wrapper = renderLibrary()
+    try {
+      await flush()
+      expect(turnLibraryOn).not.toHaveBeenCalled()
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it.each([
+    ['before the service has answered', { checked: false }],
+    ['while the Library has an error', { error: 'Offline', errorCode: 'offline' }]
+  ])('asks nothing %s', async (_, extra) => {
+    offFor('fixture', extra)
+    const wrapper = renderLibrary()
+    try {
+      await flush()
+      expect(turnLibraryOn).not.toHaveBeenCalled()
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it('leaves it off when it was turned off, even with no deletion date', async () => {
+    offFor('fixture', { withdrawn: true, purgeAfter: null })
+    const wrapper = renderLibrary()
+    try {
+      await flush()
+      expect(turnLibraryOn).not.toHaveBeenCalled()
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(true)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it('falls back to the off panel when consent fails, and does not try again', async () => {
+    offFor('fixture')
+    vi.mocked(turnLibraryOn).mockRejectedValueOnce(new Error('nope'))
+    const first = renderLibrary()
+    try {
+      await flush()
+      expect(first.find('[data-tid="library-off"]').exists()).toBe(true)
+      expect(first.text()).not.toContain('Reading your Library…')
+    } finally {
+      first.destroy()
+    }
+    const again = renderLibrary()
+    try {
+      await flush()
+      expect(turnLibraryOn).toHaveBeenCalledOnce()
+      expect(again.find('[data-tid="library-off"]').exists()).toBe(true)
+    } finally {
+      again.destroy()
+    }
+  })
+
+  it('asks again for another account after one failed', async () => {
+    offFor('a')
+    vi.mocked(turnLibraryOn).mockRejectedValueOnce(new Error('nope'))
+    const wrapper = renderLibrary()
+    try {
+      await flush()
+      expect(turnLibraryOn).toHaveBeenCalledTimes(1)
+      offFor('b')
+      await flush()
+      expect(turnLibraryOn).toHaveBeenCalledTimes(2)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it('records consent once with the current promise when signed in with the Library off', async () => {
+    Object.assign(libraryState, { enabled: false, promiseVersion: PROMISE_VERSION, purgeAfter: null })
+    vi.mocked(turnLibraryOn).mockReturnValueOnce(new Promise(() => {}))
+    const wrapper = renderLibrary()
+    try {
+      await wrapper.vm.$nextTick()
+      expect(turnLibraryOn).toHaveBeenCalledOnce()
+      expect(turnLibraryOn).toHaveBeenCalledWith(PROMISE_VERSION)
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid="library-turn-on"]').exists()).toBe(false)
+      expect(wrapper.text()).toContain('Reading your Library…')
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it('leaves it off, as before, while a deletion is pending', async () => {
+    Object.assign(libraryState, { enabled: false, promiseVersion: PROMISE_VERSION, purgeAfter: '2026-11-27T00:00:00Z' })
+    const wrapper = renderLibrary()
+    try {
+      await wrapper.vm.$nextTick()
+      expect(turnLibraryOn).not.toHaveBeenCalled()
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(true)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it('leaves it off when the promise is one this Control does not know', async () => {
+    Object.assign(libraryState, { enabled: false, promiseVersion: '2099-01-01', purgeAfter: null })
+    const wrapper = renderLibrary()
+    try {
+      await wrapper.vm.$nextTick()
+      expect(turnLibraryOn).not.toHaveBeenCalled()
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(true)
     } finally {
       wrapper.destroy()
     }

@@ -192,6 +192,19 @@ async function statusConnection (printerId: string): Promise<PrinterTransport> {
   return existing
 }
 
+/**
+ * Drops the shared connection to a printer that stopped answering through it,
+ * so the next open and the next status poll dial again instead of borrowing
+ * the stalled one.
+ */
+export function dropCloudConnection (printerId: string) {
+  const existing = statusConnections.get(printerId)
+  if (!existing) return
+  statusConnections.delete(printerId)
+  polling.delete(printerId)
+  existing.then(c => c.close()).catch(() => {})
+}
+
 async function pollOne (printer: CloudPrinter) {
   const signal = sessionAbort.signal
   const unavailable = (error: string) => {

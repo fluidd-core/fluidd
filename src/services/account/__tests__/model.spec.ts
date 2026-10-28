@@ -85,7 +85,7 @@ describe('the account in words', () => {
   it('calls an account with a passkey or two-step and a second way in well protected', () => {
     const good = securityHealth(me({ passkeys: 2, two_step: true, recovery_left: 7 }))
     expect(good.level).toBe('good')
-    expect(good.line).toBe('You have 2 passkeys, two-step sign-in is on and 7 recovery codes are left. Nothing to do.')
+    expect(good.line).toBe('2 passkeys, two-step sign-in is on and 7 recovery codes are left.')
   })
 
   it('warns when only a password protects the account', () => {

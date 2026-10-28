@@ -110,7 +110,7 @@ describe('Access tokens', () => {
     expect(createToken).toHaveBeenCalledTimes(1)
     expect(createToken.mock.calls[0][0]).toEqual({ name: 'Laptop scripts', scopes: ['printers:read'], expires_in_days: 30, ask_mode: 'ask' })
     expect((w.find('[data-tid="tokens-secret"]').element as HTMLInputElement).value).toBe(SECRET)
-    expect(w.text()).toContain('You will not see this again')
+    expect(w.text()).toContain("You won't see it again")
   })
 
   it('shows the token once: gone after the person has saved it, and never in storage', async () => {

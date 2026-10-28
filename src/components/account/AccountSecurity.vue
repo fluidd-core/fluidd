@@ -5,7 +5,6 @@
   >
     <div class="acct-head">
       <h1>Sign-in and security</h1>
-      <p>How you get into your account, and what keeps someone else out.</p>
     </div>
 
     <div
@@ -30,14 +29,13 @@
         <div class="acct-row__label">
           <b>Email</b>
           <span>
-            {{ email }}<template v-if="details && details.email_verified === true"><span class="sec__ok"> · confirmed</span></template><template v-else-if="details && details.email_verified === false"><span class="sec__warn"> · not confirmed yet</span></template>.
-            You sign in with it, and every security email goes here.
+            {{ email }}<template v-if="details && details.email_verified === true"><span class="sec__ok"> · confirmed</span></template><template v-else-if="details && details.email_verified === false"><span class="sec__warn"> · not confirmed</span></template>
           </span>
           <span
             v-if="pending"
             class="sec__warn"
             data-tid="security-email-pending"
-          >Waiting for you to open the link sent to {{ pending.address }}.</span>
+          >Link sent to {{ pending.address }}</span>
         </div>
         <div class="acct-row__control">
           <button
@@ -76,7 +74,12 @@
     >
       <div class="acct-card__title">
         <h2>Ways to sign in</h2>
-        <span class="acct-card__aside">Keep at least two, in case you lose a phone</span>
+        <acct-more
+          label="Why more than one"
+          end
+        >
+          Keep at least two, so losing a phone doesn't lock you out.
+        </acct-more>
       </div>
       <div
         v-if="me && !passkeys.length && !twoStep && canAddPasskey"
@@ -88,7 +91,7 @@
           large
         /></span>
         <h3>No passkeys yet</h3>
-        <p>Add one and sign in with your fingerprint, face or screen lock instead.</p>
+        <p>Sign in with your face, fingerprint or screen lock.</p>
         <div class="acct-actions acct-actions--center">
           <button
             type="button"
@@ -116,7 +119,7 @@
           /></span>
           <div class="acct-row__label">
             <b>Passkeys <span class="acct-subtle">{{ passkeys.length || '' }}</span></b>
-            <span>Sign in with your fingerprint, face or screen lock. Nothing to type, nothing to steal. Skips the two-step code.</span>
+            <span>Face, fingerprint or screen lock</span>
           </div>
           <button
             v-if="canAddPasskey"
@@ -233,7 +236,7 @@
         <div class="acct-row">
           <div class="acct-row__label">
             <b>Authenticator app</b>
-            <span>{{ twoStep ? 'A six-digit code after your password, or after Apple or Google.' : 'Off. Turn it on and a password alone no longer gets anyone in.' }}</span>
+            <span>{{ twoStep ? 'A code after your password' : 'Adds a code after your password' }}</span>
           </div>
           <button
             type="button"
@@ -252,7 +255,9 @@
         >
           <div class="acct-row__label">
             <b>Recovery codes</b>
-            <span><template v-if="recoveryLeft !== null"><span class="sec__num">{{ recoveryLeft }} of 10</span> left. </template>Each works once, if you lose your authenticator. Making new ones cancels the old.</span>
+            <span><template v-if="recoveryLeft !== null"><span class="sec__num">{{ recoveryLeft }} of 10</span> left </template><acct-more label="About recovery codes">
+              Each works once, if you lose your authenticator. New codes cancel the old ones.
+            </acct-more></span>
           </div>
           <span
             v-if="recoveryMissing"
@@ -279,7 +284,9 @@
       <div class="acct-row">
         <div class="acct-row__label">
           <b>Security emails</b>
-          <span>We always email you when someone signs in on a new device, or your password, email, passkeys or two-step sign-in change. These can't be turned off.</span>
+          <span>Always on <acct-more label="What they cover">
+            New-device sign-ins, and changes to your password, email, passkeys or two-step sign-in.
+          </acct-more></span>
         </div>
         <router-link
           :to="linkTo('sessions')"
@@ -317,7 +324,7 @@
       @close="close"
     >
       <p class="m3-dlg__text">
-        We send a link to the new address. It changes when you open the link, and we tell the old address.
+        It changes when you open the link we send.
       </p>
       <label class="m3-field">
         <span class="m3-field__label">New email address</span>
@@ -454,7 +461,7 @@
     >
       <template v-if="!codes.length">
         <p class="m3-dlg__text">
-          Scan this with an authenticator app, then type the six-digit code it shows.
+          Scan with an authenticator app, then type its code.
         </p>
         <div class="sec__qr">
           <app-qr-code
@@ -481,7 +488,7 @@
       </template>
       <template v-else>
         <p class="m3-dlg__text">
-          Each works once, if you lose your authenticator. We won't show them again, so save them somewhere safe.
+          Each works once. Save them now: we won't show them again.
         </p>
         <div
           class="sec__codes"
@@ -547,7 +554,7 @@
       @close="close"
     >
       <p class="m3-dlg__text">
-        A password alone gets into your account again. Type a code from your authenticator app, or a recovery code, to confirm.
+        A password alone gets in again. Type an authenticator or recovery code to confirm.
       </p>
       <label class="m3-field">
         <span class="m3-field__label">Code</span>
@@ -596,6 +603,7 @@ import AccountReauthMixin from '@/mixins/account-reauth'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 import AppQrCode from '@/components/ui/AppQrCode.vue'
 import ReauthDialog from './ReauthDialog.vue'
+import AcctMore from './AcctMore.vue'
 import { cloudState } from '@/services/muon-cloud/state'
 import { accountApi, type AccountDetails, type Identity, type Me, type Passkey } from '@/services/account/api'
 import { isMissing } from '@/services/account/client'
@@ -611,7 +619,7 @@ type Dialog = '' | 'email' | 'password' | 'rename' | 'twoStep' | 'twoStepOff'
  * its recovery codes. Each change asks "Confirm it's you" when the console
  * wants it. What the console can't do yet says so ("Renaming soon").
  */
-@Component({ components: { M3Dialog, AppQrCode, ReauthDialog } })
+@Component({ components: { M3Dialog, AppQrCode, ReauthDialog, AcctMore } })
 export default class AccountSecurity extends Mixins(AccountReauthMixin) {
   @Prop({ type: Function, required: true })
   readonly linkTo!: (id: AccountSectionId) => string
@@ -681,13 +689,12 @@ export default class AccountSecurity extends Mixins(AccountReauthMixin) {
   }
 
   get passwordLine (): string {
-    if (!this.hasPassword) return 'No password. You sign in with a passkey, Apple or Google.'
+    if (!this.hasPassword) return 'Not set'
     const changed = (accountState.events ?? []).find(e => e.kind === 'password_changed' || e.kind === 'password_reset')
-    return `${changed ? `Changed ${dayText(changed.at)}. ` : ''}Changing it signs you out everywhere else.`
+    return changed ? `Changed ${dayText(changed.at)}` : 'Set'
   }
 
   get providers () {
-    const social = accountState.config?.social ?? {}
     return (['apple', 'google'] as const).map(id => {
       const linked = this.identities.find(i => i.provider === id)
       return {
@@ -696,8 +703,8 @@ export default class AccountSecurity extends Mixins(AccountReauthMixin) {
         letter: id === 'apple' ? 'A' : 'G',
         linked: !!linked,
         line: linked
-          ? `Linked ${dayText(linked.created_at)}${linked.email ? ` to ${linked.email}` : ''}.`
-          : social[id] ? 'Not linked.' : 'Not linked. Signing in with it isn\'t open yet.'
+          ? `Linked${linked.email ? ` · ${linked.email}` : ''}`
+          : 'Not linked'
       }
     })
   }

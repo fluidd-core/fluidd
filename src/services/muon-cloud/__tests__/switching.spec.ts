@@ -9,15 +9,16 @@ vi.mock('@/init', () => init)
 vi.mock('@/store', () => ({ default: { state: { config: { hostConfig: {} } } } }))
 const cloud = vi.hoisted(() => ({
   borrowCloudPrinter: vi.fn(),
+  dropCloudConnection: vi.fn(),
   setActiveCloudPrinter: vi.fn(),
   printerName: vi.fn(() => 'Boxwood · 367A'),
   cloudState: { activePrinterId: null }
 }))
 vi.mock('../state', () => cloud)
-vi.mock('../discovery', () => ({ pageCanReach: vi.fn(async () => true) }))
+vi.mock('../discovery', () => ({ pageReach: vi.fn(async () => 'reached'), isOwnHotspot: vi.fn(() => false) }))
 vi.mock('@/services/managed-session/httpTransportBinding', () => ({ bindHttpClientToPrinterTransport: vi.fn(() => () => {}) }))
 
-const { activateCloudPrinter, activateLocalPrinter, LOAD_WAIT_MS, SwitchSuperseded } = await import('../activate')
+const { activateCloudPrinter, activateLocalPrinter, activationState, LOAD_WAIT_MS, REMOTE_OPEN_TIMEOUT_MS, RemoteOpenTimeout, SwitchSuperseded } = await import('../activate')
 
 const walnut: InstanceConfig = {
   name: 'Walnut · 8987',
@@ -135,6 +136,108 @@ describe('switching printers', () => {
       const next = activateLocalPrinter(walnut)
       await vi.advanceTimersByTimeAsync(LOAD_WAIT_MS)
       await expect(next).resolves.toBe(true)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})
+
+describe('opening a printer through Muon3D', () => {
+  // Boxwood, 27 Oct: the grant reached the printer and its gateway connection
+  // opened, but no request followed, and the page said "Opening" for good.
+  it('gives up after a while, says why, and lets go of the printer, when the load never finishes', async () => {
+    vi.useFakeTimers()
+    try {
+      const boxwood = transport()
+      cloud.borrowCloudPrinter.mockResolvedValue(boxwood)
+      const stalled = later<ReturnType<typeof loaded>>()
+      init.appInit.mockReturnValueOnce(stalled.promise)
+
+      const opening = activateCloudPrinter('boxwood')
+      const settled = expect(opening).rejects.toBeInstanceOf(RemoteOpenTimeout)
+      // At most LOAD_WAIT_MS behind any load still pending from before.
+      await vi.advanceTimersByTimeAsync(LOAD_WAIT_MS)
+      expect(init.appInit).toHaveBeenCalledOnce()
+      expect(activationState.switching).toBe('boxwood')
+
+      await vi.advanceTimersByTimeAsync(REMOTE_OPEN_TIMEOUT_MS - LOAD_WAIT_MS)
+      await settled
+      expect(activationState.error).toContain("Boxwood · 367A didn't open through Muon3D")
+      expect(activationState.switching).toBeNull()
+      expect(boxwood.close).toHaveBeenCalled()
+      expect(cloud.setActiveCloudPrinter).toHaveBeenLastCalledWith(null)
+      // Trying again dials afresh rather than borrowing the stalled connection.
+      expect(cloud.dropCloudConnection).toHaveBeenCalledWith('boxwood')
+
+      // The load finishing late does not bring the abandoned printer back.
+      cloud.setActiveCloudPrinter.mockClear()
+      stalled.resolve(loaded('https://muon-cloud.invalid'))
+      await vi.advanceTimersByTimeAsync(0)
+      expect(socket.adoptTransportSocket).not.toHaveBeenCalled()
+      expect(cloud.setActiveCloudPrinter).not.toHaveBeenCalled()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('gives up on a grant that never comes, and closes the printer if it comes later', async () => {
+    vi.useFakeTimers()
+    try {
+      const borrowed = later<ReturnType<typeof transport>>()
+      cloud.borrowCloudPrinter.mockReturnValueOnce(borrowed.promise)
+
+      const opening = activateCloudPrinter('boxwood')
+      const settled = expect(opening).rejects.toBeInstanceOf(RemoteOpenTimeout)
+      await vi.advanceTimersByTimeAsync(REMOTE_OPEN_TIMEOUT_MS)
+      await settled
+
+      const boxwood = transport()
+      borrowed.resolve(boxwood)
+      await vi.waitFor(() => expect(boxwood.close).toHaveBeenCalled())
+      expect(init.appInit).not.toHaveBeenCalled()
+      expect(cloud.setActiveCloudPrinter).not.toHaveBeenCalledWith('boxwood')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('leaves the printer Fluidd is on alone when the next one times out waiting for its grant', async () => {
+    vi.useFakeTimers()
+    try {
+      const boxwood = transport()
+      cloud.borrowCloudPrinter.mockResolvedValueOnce(boxwood)
+      init.appInit.mockResolvedValue(loaded('https://muon-cloud.invalid'))
+      const first = activateCloudPrinter('boxwood')
+      await vi.advanceTimersByTimeAsync(LOAD_WAIT_MS)
+      await first
+      cloud.setActiveCloudPrinter.mockClear()
+
+      cloud.borrowCloudPrinter.mockReturnValueOnce(new Promise(() => {}))
+      const second = activateCloudPrinter('walnut')
+      const settled = expect(second).rejects.toBeInstanceOf(RemoteOpenTimeout)
+      await vi.advanceTimersByTimeAsync(REMOTE_OPEN_TIMEOUT_MS)
+      await settled
+
+      expect(boxwood.close).not.toHaveBeenCalled()
+      expect(cloud.setActiveCloudPrinter).not.toHaveBeenCalled()
+      expect(activationState.error).toContain("didn't open through Muon3D")
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('does not time out a printer that opens in time', async () => {
+    vi.useFakeTimers()
+    try {
+      cloud.borrowCloudPrinter.mockResolvedValue(transport())
+      init.appInit.mockResolvedValue(loaded('https://muon-cloud.invalid'))
+
+      const opening = activateCloudPrinter('boxwood')
+      await vi.advanceTimersByTimeAsync(LOAD_WAIT_MS)
+      await opening
+      await vi.advanceTimersByTimeAsync(REMOTE_OPEN_TIMEOUT_MS)
+      expect(activationState.error).toBeNull()
+      expect(cloud.setActiveCloudPrinter).toHaveBeenLastCalledWith('boxwood')
     } finally {
       vi.useRealTimers()
     }

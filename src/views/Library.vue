@@ -7,7 +7,12 @@
     <header class="library__head">
       <div class="library__titles">
         <h1>Library</h1>
-        <p>Everything you've sliced and saved, ready on any of your printers.</p>
+        <p v-if="view === 'discover'">
+          Prints to make, shared by the Muon3D community and tested on the M1.
+        </p>
+        <p v-else>
+          Everything you've sliced and saved, ready on any of your printers.
+        </p>
         <a
           href="https://library.muon3d.com/library"
           target="_blank"
@@ -17,7 +22,7 @@
         >Open full Library ↗</a>
       </div>
       <label
-        v-if="listing"
+        v-if="listing && view === 'mine'"
         class="lib-field library__find"
       >
         <frame-icon
@@ -39,383 +44,381 @@
       </label>
     </header>
 
-    <div
-      v-if="signedIn && state.enabled"
-      class="library__tabs"
-      role="tablist"
-      aria-label="Library sections"
+    <!-- The same two places as library.muon3d.com: what's public, and what's yours. -->
+    <nav
+      v-if="mineShown"
+      class="library__views"
+      aria-label="Library"
+      data-tid="library-views"
     >
-      <button
-        v-for="tab in sectionTabs"
-        :key="tab.id"
-        type="button"
-        role="tab"
-        class="library__tab"
-        :class="{ 'library__tab--on': section === tab.id }"
-        :aria-selected="section === tab.id ? 'true' : 'false'"
-        :data-tid="`library-section-${tab.id}`"
-        @click="selectSection(tab.id)"
+      <router-link
+        v-for="place in views"
+        :key="place.id"
+        :to="{ query: { view: place.id } }"
+        class="library__view"
+        :class="{ 'library__view--on': view === place.id }"
+        :aria-current="view === place.id ? 'page' : undefined"
+        :data-tid="`library-view-${place.id}`"
       >
-        {{ tab.label }}
+        {{ place.label }}
+      </router-link>
+    </nav>
+
+    <library-discover v-if="view === 'discover'" />
+
+    <template v-else>
+      <div
+        v-if="signedIn && state.enabled"
+        class="library__tabs"
+        role="tablist"
+        aria-label="Library sections"
+      >
+        <button
+          v-for="tab in sectionTabs"
+          :key="tab.id"
+          type="button"
+          role="tab"
+          class="library__tab"
+          :class="{ 'library__tab--on': section === tab.id }"
+          :aria-selected="section === tab.id ? 'true' : 'false'"
+          :data-tid="`library-section-${tab.id}`"
+          @click="selectSection(tab.id)"
+        >
+          {{ tab.label }}
+          <span
+            class="lib-pill"
+          >{{ tab.count }}</span>
+        </button>
+        <span class="library__grow" />
         <span
-          class="lib-pill"
-        >{{ tab.count }}</span>
-      </button>
-      <span class="library__grow" />
-      <span
-        v-if="listing && storage"
-        class="library__storage"
-        data-tid="library-summary"
-      >{{ storage }}</span>
-    </div>
-
-    <section
-      v-if="signedIn && state.error"
-      class="lib-empty lib-surface library__state"
-      role="alert"
-    >
-      <h2>Your Library didn't answer</h2>
-      <p>{{ state.error }}</p>
-      <div class="lib-empty__actions">
-        <button
-          type="button"
-          class="lib-btn"
-          @click="refresh"
-        >
-          Try again
-        </button>
+          v-if="listing && storage"
+          class="library__storage"
+          data-tid="library-summary"
+        >{{ storage }}</span>
       </div>
-    </section>
 
-    <!-- Signed out: the Library is the account's. -->
-    <section
-      v-if="!signedIn"
-      class="lib-empty lib-surface library__state"
-      data-tid="library-signed-out"
-    >
-      <span class="lib-empty__icon"><frame-icon
-        name="user"
-        large
-      /></span>
-      <h2>Sign in to keep a Library</h2>
-      <p>
-        Your Library lives in your Muon3D account, so it's the same on every printer, phone and computer. Printing and
-        saving to a printer work without it.
-      </p>
-      <div class="lib-empty__actions">
-        <button
-          type="button"
-          class="lib-btn lib-btn--pri"
-          data-tid="library-sign-in"
-          @click="accountDialog = true"
-        >
-          Sign in
-        </button>
-      </div>
-    </section>
-
-    <section
-      v-else-if="!state.error && (!state.checked || (state.enabled && !state.synced))"
-      class="lib-empty lib-surface library__state"
-    >
-      <p>
-        Reading your Library…
-      </p>
-    </section>
-
-    <!-- Off: what it keeps, and turning it on. -->
-    <section
-      v-else-if="state.checked && !state.enabled && !state.error"
-      class="lib-empty lib-surface library__state"
-      data-tid="library-off"
-    >
-      <span class="lib-empty__icon lib-empty__icon--accent"><frame-icon
-        name="library"
-        large
-      /></span>
-      <h2>Your Library is off</h2>
-      <p>
-        Turn it on and we keep what you save: the project, the sliced file and a picture, in your account and nowhere
-        else. You can download or delete all of it whenever you like.
-      </p>
-      <p
-        v-if="purgeDay"
-        class="library__warn"
-      >
-        What was in it is deleted on {{ purgeDay }} unless you turn it back on.
-      </p>
-      <div class="lib-empty__actions">
-        <button
-          type="button"
-          class="lib-btn lib-btn--pri"
-          :disabled="busy || !promise"
-          data-tid="library-turn-on"
-          @click="turnOn"
-        >
-          Turn it on
-        </button>
-        <a
-          class="lib-btn lib-btn--ghost"
-          :href="promiseUrl"
-          target="_blank"
-          rel="noopener"
-        >What we keep</a>
-      </div>
-      <p v-if="!promise">
-        The Library has a promise this version of Control cannot show. Update Control before turning it on.
-      </p>
-    </section>
-
-    <!-- On, and nothing in it yet. -->
-    <section
-      v-else-if="section === 'all' && state.synced && !everything.length && !state.error"
-      class="lib-empty lib-surface library__state"
-      data-tid="library-empty"
-    >
-      <span class="lib-empty__icon"><frame-icon
-        name="slice"
-        large
-      /></span>
-      <h2>Nothing here yet</h2>
-      <p>Slice something and press Save. It appears here, ready to print on any of your printers.</p>
-      <div class="lib-empty__actions">
-        <router-link
-          to="/slice"
-          class="lib-btn lib-btn--pri"
-          data-tid="library-go-slice"
-        >
-          Open Slice
-        </router-link>
-        <a
-          href="https://library.muon3d.com/library"
-          target="_blank"
-          rel="noopener"
-          class="lib-btn lib-btn--ghost"
-        >Open full Library ↗</a>
-      </div>
-    </section>
-
-    <section
-      v-else-if="section !== 'all'"
-      class="library__section"
-      :data-tid="`library-${section}`"
-    >
-      <div
-        v-if="sectionBusy"
-        class="lib-empty lib-surface library__state"
-      >
-        Reading {{ section }}…
-      </div>
-      <div
-        v-else-if="sectionError"
+      <section
+        v-if="signedIn && state.error"
         class="lib-empty lib-surface library__state"
         role="alert"
       >
-        <h2>This section didn't answer</h2>
-        <p>{{ sectionError }}</p>
-        <button
-          class="lib-btn"
-          type="button"
-          @click="loadSection"
-        >
-          Try again
-        </button>
-      </div>
-      <div
-        v-else-if="section === 'printed' && runs.length"
-        class="library__runs lib-surface"
-      >
-        <article
-          v-for="run in runs"
-          :key="run.id"
-          class="library__run"
-          :data-outcome="run.outcome"
-        >
-          <div class="library__run-main">
-            <b>{{ run.item && run.item.name ? run.item.name : run.file_name || 'A print' }}</b>
-            <span>{{ run.printer_name }} · {{ relativeTime(run.started_at) }}</span>
-            <small v-if="!run.in_library">Not in your Library</small>
-          </div>
-          <span
-            class="lib-chip library__outcome"
-            :class="`library__outcome--${run.outcome}`"
-          >{{ run.outcome }}</span>
-          <router-link
-            v-if="canPrintAgain(run)"
-            class="lib-btn lib-btn--sm lib-btn--pri"
-            :to="printAgain(run)"
+        <h2>Your Library didn't answer</h2>
+        <p>{{ state.error }}</p>
+        <div class="lib-empty__actions">
+          <button
+            type="button"
+            class="lib-btn"
+            @click="refresh"
           >
-            Print again
-          </router-link>
-          <a
-            v-else
-            class="lib-btn lib-btn--sm lib-btn--ghost"
-            href="https://library.muon3d.com/library/printed"
-            target="_blank"
-            rel="noopener"
-          >Open full Library ↗</a>
-        </article>
-      </div>
-      <div
-        v-else-if="section === 'saved' && savedItems.length"
-        class="library__grid"
-      >
-        <article
-          v-for="item in savedItems"
-          :key="item.id"
-          class="library__saved lib-surface"
-          :data-tid="`library-saved-${item.id}`"
-        >
-          <a
-            v-if="item.available && item.url"
-            :href="item.url"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              v-if="item.thumbnailUrl"
-              :src="item.thumbnailUrl"
-              alt=""
-            >
-            <b>{{ item.title }}</b>
-          </a>
-          <div v-else>
-            <img
-              v-if="item.thumbnailUrl"
-              :src="item.thumbnailUrl"
-              alt=""
-            >
-            <b>{{ item.title }}</b>
-            <span>No longer available</span>
-          </div>
-          <small v-if="item.creator">{{ item.creator }}</small>
-        </article>
-      </div>
-      <div
-        v-else-if="sectionItems.length"
-        class="library__grid"
-      >
-        <library-card
-          v-for="item in sectionItems"
-          :key="item.id"
-          :item="item"
-          @print="printOn(item)"
-          @open="openInSlice(item)"
-        />
-      </div>
-      <div
-        v-else
-        class="lib-empty lib-surface library__state"
-        data-tid="library-section-empty"
-      >
-        <h2>Nothing here yet</h2>
-        <p>Use the full Library to discover and save models.</p>
-        <a
-          class="lib-btn lib-btn--ghost"
-          href="https://library.muon3d.com/library"
-          target="_blank"
-          rel="noopener"
-        >Open full Library ↗</a>
-      </div>
-    </section>
-
-    <template v-else-if="state.synced && everything.length > 0">
-      <section
-        v-if="recent.length"
-        class="library__recent"
-        aria-label="Pick up where you left off"
-      >
-        <div class="library__section-head">
-          <h2>Pick up where you left off</h2>
-          <span>From Slice and your printers</span>
-        </div>
-        <div class="library__recent-row">
-          <library-recent-card
-            v-for="item in recent"
-            :key="item.id"
-            :item="item"
-            :to="printTo(item)"
-            :fit="activeFit(item)"
-            :printer-name="activePrinter ? activePrinter.name : ''"
-            @print="printOn(item, $event && activePrinter ? activePrinter.id : null)"
-          />
+            Try again
+          </button>
         </div>
       </section>
 
-      <div class="library__bar">
-        <div
-          class="library__chips"
-          role="group"
-          aria-label="Show"
+      <!-- Reading it, or turning it on for you (KAN-735: no turn-on step). -->
+      <section
+        v-if="!state.error && (!signedIn || !state.checked || consentDue || (state.enabled && !state.synced))"
+        class="lib-empty lib-surface library__state"
+      >
+        <p>
+          Reading your Library…
+        </p>
+      </section>
+
+      <!-- Off and not turned on for you: a deletion is pending, the promise is unknown, or consent failed. -->
+      <section
+        v-else-if="state.checked && !state.enabled && !state.error"
+        class="lib-empty lib-surface library__state"
+        data-tid="library-off"
+      >
+        <span class="lib-empty__icon lib-empty__icon--accent"><frame-icon
+          name="library"
+          large
+        /></span>
+        <h2>Your Library is off</h2>
+        <p>
+          Turn it on and we keep what you save: the project, the sliced file and a picture, in your account and nowhere
+          else. You can download or delete all of it whenever you like.
+        </p>
+        <p
+          v-if="purgeDay"
+          class="library__warn"
         >
+          What was in it is deleted on {{ purgeDay }} unless you turn it back on.
+        </p>
+        <div class="lib-empty__actions">
           <button
-            v-for="chip in chips"
-            :key="chip.id"
             type="button"
-            class="lib-chip"
-            :class="{ 'lib-chip--on': filter === chip.id }"
-            :aria-pressed="filter === chip.id ? 'true' : 'false'"
-            :data-tid="`library-chip-${chip.id}`"
-            @click="filter = chip.id"
+            class="lib-btn lib-btn--pri"
+            :disabled="busy || !promise"
+            data-tid="library-turn-on"
+            @click="turnOn"
           >
-            {{ chip.label }}<span
-              v-if="chip.count !== null"
-              class="lib-chip__n"
-            >{{ chip.count }}</span>
+            Turn it on
+          </button>
+          <a
+            class="lib-btn lib-btn--ghost"
+            :href="promiseUrl"
+            target="_blank"
+            rel="noopener"
+          >What we keep</a>
+        </div>
+        <p v-if="!promise">
+          The Library has a promise this version of Control cannot show. Update Control before turning it on.
+        </p>
+      </section>
+
+      <!-- On, and nothing in it yet. -->
+      <section
+        v-else-if="section === 'all' && state.synced && !everything.length && !state.error"
+        class="lib-empty lib-surface library__state"
+        data-tid="library-empty"
+      >
+        <span class="lib-empty__icon"><frame-icon
+          name="slice"
+          large
+        /></span>
+        <h2>Nothing here yet</h2>
+        <p>Slice something and press Save. It appears here, ready to print on any of your printers.</p>
+        <div class="lib-empty__actions">
+          <router-link
+            to="/slice"
+            class="lib-btn lib-btn--pri"
+            data-tid="library-go-slice"
+          >
+            Open Slice
+          </router-link>
+          <a
+            href="https://library.muon3d.com/library"
+            target="_blank"
+            rel="noopener"
+            class="lib-btn lib-btn--ghost"
+          >Open full Library ↗</a>
+        </div>
+      </section>
+
+      <section
+        v-else-if="section !== 'all'"
+        class="library__section"
+        :data-tid="`library-${section}`"
+      >
+        <div
+          v-if="sectionBusy"
+          class="lib-empty lib-surface library__state"
+        >
+          Reading {{ section }}…
+        </div>
+        <div
+          v-else-if="sectionError"
+          class="lib-empty lib-surface library__state"
+          role="alert"
+        >
+          <h2>This section didn't answer</h2>
+          <p>{{ sectionError }}</p>
+          <button
+            class="lib-btn"
+            type="button"
+            @click="loadSection"
+          >
+            Try again
           </button>
         </div>
-        <label class="library__sort">
-          <select
-            v-model="sort"
-            aria-label="Sort"
-            data-tid="library-sort"
-          >
-            <option value="recent">Recently changed</option>
-            <option value="name">By name</option>
-          </select>
-          <frame-icon
-            name="chevronDown"
-            small
-          />
-        </label>
-      </div>
-
-      <div
-        class="library__grid"
-        data-tid="library-grid"
-      >
-        <library-card
-          v-for="item in shown"
-          :key="item.id"
-          :item="item"
-          @print="printOn(item)"
-          @open="openInSlice(item)"
-          @rename="rename(item)"
-          @copy="copy(item)"
-          @download-gcode="downloadGcode(item, $event)"
-          @download-project="downloadProject(item)"
-          @delete="remove(item)"
-        />
-        <router-link
-          v-if="!query && filter === 'all'"
-          to="/slice"
-          class="library__add"
-          data-tid="library-add"
+        <div
+          v-else-if="section === 'printed' && runs.length"
+          class="library__runs lib-surface"
         >
-          <frame-icon
-            name="slice"
-            large
+          <article
+            v-for="run in runs"
+            :key="run.id"
+            class="library__run"
+            :data-outcome="run.outcome"
+          >
+            <div class="library__run-main">
+              <b>{{ run.item && run.item.name ? run.item.name : run.file_name || 'A print' }}</b>
+              <span>{{ run.printer_name }} · {{ relativeTime(run.started_at) }}</span>
+              <small v-if="!run.in_library">Not in your Library</small>
+            </div>
+            <span
+              class="lib-chip library__outcome"
+              :class="`library__outcome--${run.outcome}`"
+            >{{ run.outcome }}</span>
+            <router-link
+              v-if="canPrintAgain(run)"
+              class="lib-btn lib-btn--sm lib-btn--pri"
+              :to="printAgain(run)"
+            >
+              Print again
+            </router-link>
+            <a
+              v-else
+              class="lib-btn lib-btn--sm lib-btn--ghost"
+              href="https://library.muon3d.com/library/printed"
+              target="_blank"
+              rel="noopener"
+            >Open full Library ↗</a>
+          </article>
+        </div>
+        <div
+          v-else-if="section === 'saved' && savedItems.length"
+          class="library__grid"
+        >
+          <article
+            v-for="item in savedItems"
+            :key="item.id"
+            class="library__saved lib-surface"
+            :data-tid="`library-saved-${item.id}`"
+          >
+            <a
+              v-if="item.available && item.url"
+              :href="item.url"
+              target="_blank"
+              rel="noopener"
+            >
+              <img
+                v-if="item.thumbnailUrl"
+                :src="item.thumbnailUrl"
+                alt=""
+              >
+              <b>{{ item.title }}</b>
+            </a>
+            <div v-else>
+              <img
+                v-if="item.thumbnailUrl"
+                :src="item.thumbnailUrl"
+                alt=""
+              >
+              <b>{{ item.title }}</b>
+              <span>No longer available</span>
+            </div>
+            <small v-if="item.creator">{{ item.creator }}</small>
+          </article>
+        </div>
+        <div
+          v-else-if="sectionItems.length"
+          class="library__grid"
+        >
+          <library-card
+            v-for="item in sectionItems"
+            :key="item.id"
+            :item="item"
+            @print="printOn(item)"
+            @open="openInSlice(item)"
           />
-          <b>Add from Slice</b>
-          <span>Slice a model and press Save. Saving again keeps a new version of the same print.</span>
-        </router-link>
-      </div>
-      <p
-        v-if="!shown.length"
-        class="library__note"
-      >
-        {{ query ? `Nothing in your Library matches "${query}".` : 'Nothing here.' }}
-      </p>
+        </div>
+        <div
+          v-else
+          class="lib-empty lib-surface library__state"
+          data-tid="library-section-empty"
+        >
+          <h2>Nothing here yet</h2>
+          <p>Use the full Library to discover and save models.</p>
+          <a
+            class="lib-btn lib-btn--ghost"
+            href="https://library.muon3d.com/library"
+            target="_blank"
+            rel="noopener"
+          >Open full Library ↗</a>
+        </div>
+      </section>
+
+      <template v-else-if="state.synced && everything.length > 0">
+        <section
+          v-if="recent.length"
+          class="library__recent"
+          aria-label="Pick up where you left off"
+        >
+          <div class="library__section-head">
+            <h2>Pick up where you left off</h2>
+            <span>From Slice and your printers</span>
+          </div>
+          <div class="library__recent-row">
+            <library-recent-card
+              v-for="item in recent"
+              :key="item.id"
+              :item="item"
+              :to="printTo(item)"
+              :fit="activeFit(item)"
+              :printer-name="activePrinter ? activePrinter.name : ''"
+              @print="printOn(item, $event && activePrinter ? activePrinter.id : null)"
+            />
+          </div>
+        </section>
+
+        <div class="library__bar">
+          <div
+            class="library__chips"
+            role="group"
+            aria-label="Show"
+          >
+            <button
+              v-for="chip in chips"
+              :key="chip.id"
+              type="button"
+              class="lib-chip"
+              :class="{ 'lib-chip--on': filter === chip.id }"
+              :aria-pressed="filter === chip.id ? 'true' : 'false'"
+              :data-tid="`library-chip-${chip.id}`"
+              @click="filter = chip.id"
+            >
+              {{ chip.label }}<span
+                v-if="chip.count !== null"
+                class="lib-chip__n"
+              >{{ chip.count }}</span>
+            </button>
+          </div>
+          <label class="library__sort">
+            <select
+              v-model="sort"
+              aria-label="Sort"
+              data-tid="library-sort"
+            >
+              <option value="recent">Recently changed</option>
+              <option value="name">By name</option>
+            </select>
+            <frame-icon
+              name="chevronDown"
+              small
+            />
+          </label>
+        </div>
+
+        <div
+          class="library__grid"
+          data-tid="library-grid"
+        >
+          <library-card
+            v-for="item in shown"
+            :key="item.id"
+            :item="item"
+            @print="printOn(item)"
+            @open="openInSlice(item)"
+            @rename="rename(item)"
+            @copy="copy(item)"
+            @download-gcode="downloadGcode(item, $event)"
+            @download-project="downloadProject(item)"
+            @delete="remove(item)"
+          />
+          <router-link
+            v-if="!query && filter === 'all'"
+            to="/slice"
+            class="library__add"
+            data-tid="library-add"
+          >
+            <frame-icon
+              name="slice"
+              large
+            />
+            <b>Add from Slice</b>
+            <span>Slice a model and press Save. Saving again keeps a new version of the same print.</span>
+          </router-link>
+        </div>
+        <p
+          v-if="!shown.length"
+          class="library__note"
+        >
+          {{ query ? `Nothing in your Library matches "${query}".` : 'Nothing here.' }}
+        </p>
+      </template>
     </template>
 
     <p
@@ -441,39 +444,40 @@
       @input="!$event && (naming = null)"
       @save="saveName"
     />
-
-    <cloud-account-dialog
-      v-if="accountDialog"
-      v-model="accountDialog"
-    />
   </div>
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import LibraryPageMixin, { type LibraryFilter } from '@/mixins/library-page'
+import { storedToken } from '@/services/muon-cloud/api'
+import { cloudState } from '@/services/muon-cloud/state'
 import LibraryCard from '@/components/library/LibraryCard.vue'
+import LibraryDiscover from '@/components/library/LibraryDiscover.vue'
 import LibraryRecentCard from '@/components/library/LibraryRecentCard.vue'
 import PrintOnDialog from '@/components/library/PrintOnDialog.vue'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
-import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
 import { describeLibraryError, LibraryError, savedRows, type LibraryItem, type LibraryRun, type LibrarySections, type SavedRow } from '@/services/library/api'
-import { libraryClient } from '@/services/library/store'
+import { libraryClient, libraryState, turnLibraryOn } from '@/services/library/store'
 
 type Section = 'all' | 'printed' | 'sliced' | 'saved'
+
+/** Automatic consent, by account: asked once per app session, whichever page instance asked (KAN-735). */
+export const autoConsent = Vue.observable({ asked: {} as Record<string, 'pending' | 'done' | 'failed'> })
 
 /**
  * Your Library (`/library`): every print saved from Slice, and the models
  * the phone app keeps, in the account, whichever printer Fluidd is on. A
  * card opens the print's own page; its menu prints it, opens it in Slice,
- * renames, copies, downloads or deletes it. Signed out, off, or empty, the
+ * renames, copies, downloads or deletes it. Off (deletion pending) or empty, the
  * page says what to do instead.
  *
  * Only the look is here: what the page does is mixins/library-page.ts, a
  * card is LibraryCard, Print on… is PrintOnDialog.
  */
-@Component({ components: { LibraryCard, LibraryRecentCard, PrintOnDialog, FileNameDialog, CloudAccountDialog } })
+@Component({ components: { LibraryCard, LibraryDiscover, LibraryRecentCard, PrintOnDialog, FileNameDialog } })
 export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
   section: Section = 'all'
   sections: LibrarySections | null = null
@@ -483,6 +487,58 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
   sectionBusy = false
   sectionError = ''
   savedAvailable = true
+
+  readonly views = [
+    { id: 'discover' as const, label: 'Discover' },
+    { id: 'mine' as const, label: 'Your Library' }
+  ]
+
+  /**
+   * Discover or your own Library: as the address says, else yours once you're
+   * signed in. While a saved session is still being restored it is yours too,
+   * so a signed-in start doesn't flash Discover first.
+   */
+  get view (): 'discover' | 'mine' {
+    if (!this.mineShown) return 'discover'
+    const asked = this.$route?.query.view
+    if (asked === 'discover' || asked === 'mine') return asked
+    return 'mine'
+  }
+
+  /** Your Library is there only signed in (or while a saved session is restored); signed out it's Discover alone (KAN-735). */
+  get mineShown (): boolean {
+    return this.signedIn || (!cloudState.ready && !!storedToken())
+  }
+
+  /**
+   * The Library is always on (KAN-735): signed in with it off, consent is
+   * recorded with the promise this Control shows, once per account. Not when
+   * it was turned off (deletion pending or not), the service's promise is one
+   * this Control can't show, or an attempt already failed: those keep the off
+   * panel. True only while the attempt is still to come or under way.
+   */
+  get consentDue (): boolean {
+    const account = libraryState.account
+    const asked = account ? autoConsent.asked[account] : undefined
+    return this.signedIn && libraryState.checked && !libraryState.enabled && !libraryState.error &&
+      !libraryState.purgeAfter && !libraryState.withdrawn && this.promise !== null &&
+      (asked === undefined || asked === 'pending')
+  }
+
+  @Watch('consentDue', { immediate: true })
+  async onConsentDue (due: boolean) {
+    const account = libraryState.account
+    const promise = this.promise
+    if (!due || !promise || !account || autoConsent.asked[account] !== undefined) return
+    Vue.set(autoConsent.asked, account, 'pending')
+    try {
+      await turnLibraryOn(promise.version)
+      Vue.set(autoConsent.asked, account, 'done')
+    } catch (error) {
+      Vue.set(autoConsent.asked, account, 'failed')
+      this.error = describeLibraryError(error)
+    }
+  }
 
   get sectionTabs (): Array<{ id: Section, label: string, count: number }> {
     const counts = this.sections
@@ -591,6 +647,30 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
   .library--phone {
     gap: 16px;
     padding: 4px 0 24px;
+  }
+
+  .library__views {
+    display: flex;
+    gap: 6px;
+  }
+
+  .library__view {
+    padding: 8px 16px;
+    border-radius: 999px;
+    color: var(--m3d-text-muted) !important;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--m3d-hover);
+      color: var(--m3d-text) !important;
+    }
+  }
+
+  .library__view--on {
+    background: var(--m3d-accent-soft);
+    color: var(--m3d-accent) !important;
   }
 
   .library__head {

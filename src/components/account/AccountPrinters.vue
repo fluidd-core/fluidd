@@ -6,7 +6,6 @@
     <div class="acct-head acct-head--row">
       <div class="acct-head">
         <h1>Printers and access</h1>
-        <p>The printers linked to your account, who else can use them, and printers other people share with you.</p>
       </div>
       <button
         type="button"
@@ -32,7 +31,7 @@
         name="userPlus"
         small
       />
-      <span class="prn__grow"><b>{{ requester(request) }}</b> wants to use {{ printerName(request.printer_id) }}{{ request.link_id ? ' with your invite link' : '' }} as {{ request.role === 'viewer' ? 'a Viewer' : 'an Operator' }}. <span class="acct-subtle">Choosing another role: Coming soon. You can change it after allowing access.</span></span>
+      <span class="prn__grow"><b>{{ requester(request) }}</b> wants to use {{ printerName(request.printer_id) }}{{ request.link_id ? ' with your invite link' : '' }} as {{ request.role === 'viewer' ? 'a Viewer' : 'an Operator' }}.</span>
       <button
         type="button"
         class="lib-btn lib-btn--sm lib-btn--ghost"
@@ -58,7 +57,12 @@
     >
       <div class="acct-card__title">
         <h2>Your printers</h2>
-        <span class="acct-card__aside">Owner is set at each printer's screen</span>
+        <acct-more
+          label="Who owns a printer"
+          end
+        >
+          The owner is set on each printer's own screen. Printers on your network work without an account.
+        </acct-more>
       </div>
       <div
         v-if="!owned.length"
@@ -70,7 +74,7 @@
           large
         /></span>
         <h3>No printers in your account yet</h3>
-        <p>Link an M1 with the six-digit code on its screen. Printers on your network work without this.</p>
+        <p>Link an M1 with the code on its screen.</p>
         <button
           type="button"
           class="lib-btn lib-btn--pri"
@@ -313,7 +317,6 @@
     >
       <p class="m3-dlg__text">
         What {{ changing && changing.email }} can do with {{ changing && printerName(changing.printerId) }}.
-        Their end date stays the same. Changing to Viewer takes back their control access.
       </p>
       <div class="prn__roles">
         <button
@@ -408,7 +411,7 @@
       @close="dialog = ''"
     >
       <p class="m3-dlg__text">
-        They sign in with this address, and the printer appears in their account. Take it back whenever you like.
+        It appears in their account. Take it back any time.
       </p>
       <label class="m3-field">
         <span class="m3-field__label">Their email address</span>
@@ -500,6 +503,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import M3Dialog from '@/components/ui/M3Dialog.vue'
 import PrinterThumb, { type ThumbState } from '@/components/ui/PrinterThumb.vue'
 import LinkPrinterDialog from '@/components/muon-cloud/LinkPrinterDialog.vue'
+import AcctMore from './AcctMore.vue'
 import { cloudApi, type CloudPrinter } from '@/services/muon-cloud/api'
 import { cloudState, refreshPrinters } from '@/services/muon-cloud/state'
 import { knownPrinters, printerPath } from '@/services/printer-pages'
@@ -527,7 +531,7 @@ interface PersonRow {
  * waiting for you, and printers shared with you. People are named by their
  * confirmed email address, never a name they chose (LINK-3).
  */
-@Component({ components: { M3Dialog, PrinterThumb, LinkPrinterDialog } })
+@Component({ components: { M3Dialog, PrinterThumb, LinkPrinterDialog, AcctMore } })
 export default class AccountPrinters extends Vue {
   @Prop({ type: Function, required: true })
   readonly linkTo!: (id: AccountSectionId) => string
@@ -642,7 +646,7 @@ export default class AccountPrinters extends Vue {
 
   peopleLine (printerId: string): string {
     const n = (this.shares[printerId] ?? []).length
-    return n === 0 ? 'only you' : n === 1 ? '1 other person can use it' : `${n} other people can use it`
+    return n === 0 ? 'only you' : n === 1 ? '1 other person' : `${n} other people`
   }
 
   sharedLine (p: CloudPrinter & { shared_by?: string }): string {

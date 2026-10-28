@@ -5,7 +5,6 @@
   >
     <div class="acct-head">
       <h1>Delete your account</h1>
-      <p>This deletes your Muon3D account and everything kept in it. Your printers keep working without it.</p>
     </div>
 
     <div
@@ -18,7 +17,7 @@
         name="clock"
         small
       />
-      <span class="del__grow"><b>Your account will be deleted on {{ deleteDay }}.</b> Until then you can keep it, with your printers and sharing as they were.</span>
+      <span class="del__grow"><b>Your account will be deleted on {{ deleteDay }}.</b> Until then you can keep it.</span>
       <button
         type="button"
         class="lib-btn lib-btn--sm lib-btn--pri"
@@ -69,7 +68,7 @@
                 small
                 class="del__green"
               />
-              <span>Your printers, their files and their history. They work on your network with no account, for good.</span>
+              <span>Your printers, their files and history. They work on your network without an account.</span>
             </div>
             <div class="del__keep">
               <frame-icon
@@ -77,7 +76,7 @@
                 small
                 class="del__green"
               />
-              <span>You stay their owner. That is set at each printer, not in your account.</span>
+              <span>You stay their owner.</span>
             </div>
           </div>
         </section>
@@ -89,7 +88,7 @@
           <h2 class="lib-card-title">
             Before you go
           </h2>
-          <span class="acct-muted del__text">Download your account first. Once it's gone we can't get it back.</span>
+          <span class="acct-muted del__text">Once it's gone we can't get it back.</span>
           <div>
             <router-link
               :to="linkTo('privacy')"
@@ -418,7 +417,7 @@ export default class AccountDelete extends Vue {
       {
         icon: 'printer',
         title: this.owned.length ? `${listText(this.owned.map(p => p.name))} ${this.owned.length === 1 ? 'is' : 'are'} unlinked` : 'No printers are linked',
-        text: "You can't reach them from outside your home any more. Link them again from a new account at each printer's screen."
+        text: 'No more remote access. Link them again at each printer.'
       },
       {
         icon: 'userMinus',
@@ -428,7 +427,7 @@ export default class AccountDelete extends Vue {
       {
         icon: 'library',
         title: libraryState.enabled ? `Your Library: ${prints === 1 ? '1 print' : `${prints} prints`}${models ? `, ${models === 1 ? '1 model' : `${models} models`}` : ''}` : 'Your Library',
-        text: `${this.librarySize ? `${this.librarySize}, deleted` : 'Deleted'} from our storage. Backups are cleared within 14 days.`
+        text: `${this.librarySize ? `${this.librarySize}, deleted` : 'Deleted'}. Backups clear within 14 days.`
       },
       {
         icon: 'card',
@@ -441,7 +440,7 @@ export default class AccountDelete extends Vue {
   get graceLine (): string {
     if (this.scheduled) return `Deletion is set for ${this.deleteDay}. Until then you can keep your account.`
     return this.grace
-      ? 'We wait 14 days before deleting anything, in case this wasn\'t you or you change your mind. You\'re signed out everywhere straight away, and nothing of yours is shared from that moment.'
+      ? 'We wait 14 days in case you change your mind. You\'re signed out, and sharing stops, at once.'
       : 'Account deletion needs a console update to support the 14-day recovery period.'
   }
 
