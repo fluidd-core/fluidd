@@ -10,6 +10,7 @@ vi.mock('@/services/account/credits', async (actual) => ({ ...(await actual<obje
 
 const settle = () => new Promise(resolve => setTimeout(resolve))
 const shipped = CREDITS_CATALOGUE.planPageOpen
+const monday = new Date(2026, 10, 2, 9).getTime()
 
 const plus: CreditAccount = {
   plan: 'plus',
@@ -18,12 +19,13 @@ const plus: CreditAccount = {
   willRenew: true,
   balance: 286,
   monthly: { left: 236, allowance: 400 },
-  packs: 50,
-  usage: { shape: { credits: 120, count: 6 }, part: { credits: 32, count: 8 }, scan: { credits: 30, count: 1 } },
+  packs: 0,
+  weekly: { used: 34, limit: 100, resets: monday },
+  usage: { shape: { credits: 40, count: 2 }, part: { credits: 32, count: 8 }, scan: { credits: 0, count: 0 } },
   history: [
     { id: '9', at: Date.now() - 3600_000, kind: 'shape', title: 'Low-poly fox planter', change: -20 },
     { id: '8', at: Date.now() - 7200_000, kind: 'refund', title: 'Chess knight, refunded', change: 20 },
-    { id: '4', at: Date.now() - 18 * 86400_000, kind: 'monthly', title: 'Monthly credits', change: 400 }
+    { id: '4', at: Date.now() - 18 * 86400_000, kind: 'pack', title: '100 credits', change: 100 }
   ],
   jobsAtOnce: 2
 }
@@ -37,7 +39,7 @@ async function open (answer: CreditAccount | Error) {
 
 const text = (w: { text: () => string }) => w.text().replace(/\s+/g, ' ')
 
-describe('Plan and credits, while closed', () => {
+describe('Plan, while closed', () => {
   beforeEach(() => { CREDITS_CATALOGUE.planPageOpen = false })
   afterEach(() => {
     CREDITS_CATALOGUE.planPageOpen = shipped
@@ -48,116 +50,148 @@ describe('Plan and credits, while closed', () => {
     const w = await open(plus)
     expect(w.find('h1').text()).toBe('Plan')
     expect(w.text()).toContain('These are planned prices.')
-    expect(w.find('[data-tid="plan-balance"]').exists()).toBe(false)
-    expect(w.find('[data-tid="plan-reading"]').exists()).toBe(false)
+    expect(w.find('[data-tid="plan-usage"]').exists()).toBe(false)
     expect(loadCredits).not.toHaveBeenCalled()
     w.destroy()
   })
 })
 
-describe('Plan and credits', () => {
+describe('Plan', () => {
   beforeEach(() => { CREDITS_CATALOGUE.planPageOpen = true })
   afterEach(() => {
     CREDITS_CATALOGUE.planPageOpen = shipped
     vi.clearAllMocks()
   })
 
-  it('leads with the balance, what it buys and when more comes', async () => {
+  it('leads with how much of the week is used and when it resets, then the plans', async () => {
     const w = await open(plus)
-    expect(w.find('[data-tid="plan-balance-number"]').text()).toBe('286')
-    const balance = text(w.find('[data-tid="plan-balance"]'))
-    expect(balance).toContain('About 14 shapes or 71 parts')
-    expect(balance).toContain('Monthly 236 of 400')
-    expect(balance).toContain('Packs 50')
-    expect(balance).toContain('400 more on 9 Nov')
+    const usage = text(w.find('[data-tid="plan-usage"]'))
+    expect(usage).toContain('This week')
+    expect(usage).toContain('34% of this week\'s limit used')
+    expect(usage).toContain('Resets Mon 2 Nov')
+    expect(usage).toContain('2 shapes and 8 parts this week')
     expect(w.find('[data-tid="plan-current"]').text()).toBe('Plus · monthly')
-    expect(w.find('[data-tid="plan-balance-note"]').exists()).toBe(false)
+    expect(w.find('[data-tid="plan-limit-note"]').exists()).toBe(false)
+    // No list of what credits buy up front: the plans come first, prices per job sit behind (i).
+    const headings = w.findAll('h2').wrappers.map(h => h.text())
+    expect(headings).toEqual(['This week', 'Plans', 'Credits', 'History'])
+    expect(w.text()).not.toContain('What credits buy')
     w.destroy()
   })
 
-  it('shows refunds and monthly grants in the history, signed', async () => {
+  it('names the service\'s monthly allowance as a month until it sends a week', async () => {
+    const w = await open({ ...plus, weekly: undefined })
+    const usage = text(w.find('[data-tid="plan-usage"]'))
+    expect(usage).toContain('This month')
+    expect(usage).toContain('41% of this month\'s limit used')
+    expect(usage).not.toContain('week')
+    w.destroy()
+  })
+
+  it('shows the plans side by side, with the same rows and only what costs us to run', async () => {
+    const w = await open(plus)
+    const rows = (id: string) => w.findAll(`[data-tid="plan-option-${id}"] [data-tid="plan-row"]`).wrappers
+      .map(r => `${r.find('dt').text()}: ${r.find('dd').text().replace(/\s+/g, ' ').trim()}`)
+    expect(rows('free')).toEqual(['Each week: 1 shape or 5 parts', 'Jobs at once: 1', 'Priority queue: —Not included', 'High detail shapes: —Not included'])
+    expect(rows('plus')).toEqual(['Each week: 5 shapes or 25 parts', 'Jobs at once: 2', 'Priority queue: Included', 'High detail shapes: —Not included'])
+    expect(rows('pro')).toEqual(['Each week: 15 shapes or 75 parts', 'Jobs at once: 4', 'Priority queue: Included', 'High detail shapes: Included'])
+    for (const plan of CREDITS_CATALOGUE.plans) {
+      const card = text(w.find(`[data-tid="plan-option-${plan.id}"]`))
+      if (plan.price) expect(card).toContain(`£${plan.price.monthly.toFixed(2)}`)
+      for (const free of CREDITS_CATALOGUE.free) expect(card).not.toContain(free)
+    }
+    const free = text(w.find('[data-tid="plan-free"]'))
+    for (const item of CREDITS_CATALOGUE.free) expect(free).toContain(item)
+    expect(w.find('[data-tid="plan-option-plus"]').text()).toContain('Current')
+    w.destroy()
+  })
+
+  it('says when the limit is nearly used, and when it resets', async () => {
+    const w = await open({ ...plus, weekly: { used: 85, limit: 100, resets: monday } })
+    const note = text(w.find('[data-tid="plan-limit-note"]'))
+    expect(note).toContain('85% of this week\'s limit used.')
+    expect(note).toContain('Resets Mon 2 Nov.')
+    expect(note).not.toMatch(/printer/i)
+    expect(w.find('[data-tid="plan-note-credits"]').exists()).toBe(false)
+    w.destroy()
+  })
+
+  it('at the limit, says when it resets and offers credits without pushing them', async () => {
+    const w = await open({ ...plus, weekly: { used: 100, limit: 100, resets: monday } })
+    const note = text(w.find('[data-tid="plan-limit-note"]'))
+    expect(note).toContain('You\'ve reached this week\'s limit.')
+    expect(note).toContain('Resets Mon 2 Nov.')
+    expect(w.find('[data-tid="plan-note-credits"]').text()).toBe('Buy credits')
+    w.destroy()
+  })
+
+  it('at the limit with bought credits, says they carry on until the reset', async () => {
+    const w = await open({ ...plus, packs: 120, weekly: { used: 100, limit: 100, resets: monday } })
+    expect(text(w.find('[data-tid="plan-limit-note"]'))).toContain('Your 120 credits are in use until then.')
+    expect(w.find('[data-tid="plan-note-credits"]').exists()).toBe(false)
+    expect(text(w.find('[data-tid="plan-topup"]'))).toBe('120 credits for after your limit')
+    w.destroy()
+  })
+
+  it('says nothing about limits when the plan includes no usage (production Free today)', async () => {
+    const w = await open({ ...plus, plan: 'free', period: null, weekly: undefined, monthly: { left: 0, allowance: 0 }, packs: 0, history: [] })
+    expect(w.find('[data-tid="plan-limit-note"]').exists()).toBe(false)
+    expect(w.find('[data-tid="plan-usage-line"]').text()).toBe('No usage included on your plan yet.')
+    expect(w.find('.plan-meter').exists()).toBe(false)
+    expect(w.find('[data-tid="plan-option-free"]').text()).toContain('Current')
+    w.destroy()
+  })
+
+  it('keeps credits as a top-up: never expiring, priced per credit, with job prices behind (i)', async () => {
+    const w = await open(plus)
+    for (const pack of CREDITS_CATALOGUE.packs) expect(text(w.find(`[data-tid="plan-pack-${pack.credits}"]`))).toContain(`£${pack.price.toFixed(2)}`)
+    expect(text(w.find('[data-tid="plan-pack-100"]'))).toContain('About 5 shapes or 25 parts')
+    await w.find('[data-tid="plan-credits"] [data-tid="acct-more"]').trigger('click')
+    const more = text(w.find('[data-tid="plan-credits"] [role="note"]'))
+    expect(more).toContain('only used once you reach your plan\'s limit')
+    expect(more).toContain('A part uses 4 credits, a shape 20 and a scan 30')
+    w.destroy()
+  })
+
+  it('shows refunds and purchases in the history, signed', async () => {
     const w = await open(plus)
     const history = text(w.find('[data-tid="plan-history"]'))
     expect(history).toContain('Low-poly fox planter')
     expect(history).toContain('−20')
     expect(history).toContain('Chess knight, refunded')
-    expect(history).toContain('+400')
-    expect(w.find('[data-tid="plan-history-refund"]').exists()).toBe(true)
+    expect(history).toContain('+100')
     w.destroy()
   })
 
-  it('warns when low, with what is left and when more comes, never about a printer', async () => {
-    const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 12, monthly: { left: 12, allowance: 40 }, packs: 0 })
-    const note = text(w.find('[data-tid="plan-balance-note"]'))
-    expect(note).toContain('Low on credits.')
-    expect(note).toContain('Enough for 3 parts.')
-    expect(note).toContain('40 more on 9 Nov.')
-    expect(note).not.toMatch(/printer/i)
-    w.destroy()
-  })
-
-  it('leaves out the monthly line when the server grants no monthly credits', async () => {
-    const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 100, monthly: { left: 0, allowance: 0 }, packs: 100 })
-    const balance = text(w.find('[data-tid="plan-balance"]'))
-    expect(balance).not.toContain('Monthly')
-    expect(balance).not.toContain('more on')
-    expect(balance).toContain('Packs 100')
-    w.destroy()
-  })
-
-  it('says nothing about being out when Free grants nothing and nothing can be bought', async () => {
-    const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 0, monthly: { left: 0, allowance: 0 }, packs: 0, usage: { shape: { credits: 0, count: 0 }, part: { credits: 0, count: 0 }, scan: { credits: 0, count: 0 } }, history: [] })
-    expect(w.find('[data-tid="plan-balance-note"]').exists()).toBe(false)
-    expect(w.find('[data-tid="plan-balance-number"]').text()).toBe('0')
-    expect(text(w.find('[data-tid="plan-option-free"]'))).toContain('No monthly credits')
-    expect(text(w.find('[data-tid="plan-option-free"]'))).not.toContain('credits a month')
-    expect(w.find('[data-tid="plan-option-free"]').text()).toContain('Current')
-    w.destroy()
-  })
-
-  it('shows monthly credits kept from last month in full', async () => {
-    const w = await open({ ...plus, balance: 570, monthly: { left: 520, allowance: 400 } })
-    const balance = text(w.find('[data-tid="plan-balance"]'))
-    expect(balance).toContain('Monthly 520')
-    expect(balance).not.toContain('520 of 400')
-    w.destroy()
-  })
-
-  it('says out of credits at zero', async () => {
-    const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 0, monthly: { left: 0, allowance: 40 }, packs: 0 })
-    expect(text(w.find('[data-tid="plan-balance-note"]'))).toContain('Out of credits.')
-    expect(w.find('[data-tid="plan-balance-note"]').classes()).toContain('acct-note--bad')
-    w.destroy()
-  })
-
-  it('shows plans, packs and prices from the catalogue when there is no balance to read', async () => {
+  it('shows the plans from the catalogue, with nothing marked current, when there is no usage to read', async () => {
     const w = await open(new LibraryError('create_unavailable', 'no', 503))
-    expect(w.find('[data-tid="plan-balance"]').exists()).toBe(false)
-    expect(w.find('[data-tid="plan-unavailable"]').text()).toContain('Your balance shows here once Create opens.')
-    for (const plan of CREDITS_CATALOGUE.plans) {
-      const card = text(w.find(`[data-tid="plan-option-${plan.id}"]`))
-      expect(card).toContain(`${plan.monthlyCredits.toLocaleString('en-GB')} credits a month`)
-      if (plan.price) expect(card).toContain(`£${plan.price.monthly.toFixed(2)}`)
-    }
-    for (const pack of CREDITS_CATALOGUE.packs) expect(text(w.find(`[data-tid="plan-pack-${pack.credits}"]`))).toContain(`£${pack.price.toFixed(2)}`)
-    const costs = text(w.find('[data-tid="plan-costs"]'))
-    for (const cost of CREDITS_CATALOGUE.costs) expect(costs).toContain(cost.label)
-    expect(costs).toContain('Every printer feature')
+    expect(w.find('[data-tid="plan-usage"]').exists()).toBe(false)
+    expect(w.find('[data-tid="plan-unavailable"]').text()).toContain('Your usage shows here once Create opens.')
+    for (const plan of CREDITS_CATALOGUE.plans) expect(w.find(`[data-tid="plan-option-${plan.id}"]`).exists()).toBe(true)
     expect(w.find('[data-tid="plan-current"]').exists()).toBe(false)
     expect(w.text()).not.toContain('Current')
     w.destroy()
   })
 
-  it('says why the balance is missing', async () => {
+  it('says why the usage is missing', async () => {
     const line = async (error: Error) => {
       const w = await open(error)
       const said = w.find('[data-tid="plan-unavailable"]').text()
       w.destroy()
       return said
     }
-    expect(await line(new LibraryError('not-signed-in', 'no', 401))).toBe('Sign in again to see your balance.')
+    expect(await line(new LibraryError('not-signed-in', 'no', 401))).toBe('Sign in again to see your usage.')
     expect(await line(new LibraryError('consent_required', 'no', 403))).toContain('Turn on Muon3D models')
-    expect(await line(new LibraryError('internal', 'no', 500))).toBe('Your balance didn\'t load. Try again later.')
+    expect(await line(new LibraryError('internal', 'no', 500))).toBe('Your usage didn\'t load. Try again later.')
+  })
+
+  it('shows nothing from the account until the service answers', async () => {
+    loadCredits.mockImplementation(() => new Promise(() => {}))
+    const w = mount(AccountPlan, { stubs: { 'frame-icon': true } })
+    await settle()
+    expect(w.find('[data-tid="plan-reading"]').text()).toBe('Reading your plan…')
+    expect(w.find('[data-tid="plan-option-free"]').exists()).toBe(false)
+    w.destroy()
   })
 
   it('switches to yearly prices with the saving in months', async () => {
@@ -169,26 +203,11 @@ describe('Plan and credits', () => {
     w.destroy()
   })
 
-  it('shows nothing from the account until the balance answers', async () => {
-    loadCredits.mockImplementation(() => new Promise(() => {}))
-    const w = mount(AccountPlan, { stubs: { 'frame-icon': true } })
-    await settle()
-    expect(w.find('[data-tid="plan-reading"]').text()).toBe('Reading your balance…')
-    expect(w.find('[data-tid="plan-option-free"]').exists()).toBe(false)
-    w.destroy()
-  })
-
-  it('names the meter for screen readers, even with no monthly credits', async () => {
-    const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 0, monthly: { left: 0, allowance: 0 }, packs: 0 })
-    expect(w.find('.plan-meter').attributes('aria-label')).toBe('No monthly credits, and 0 from packs')
-    w.destroy()
-  })
-
   it('takes no money while payments are closed: every buying button is disabled and says so', async () => {
     expect(CREDITS_CATALOGUE.paymentsOpen).toBe(false)
-    const w = await open(plus)
-    const buying = w.findAll('[data-tid="plan-top-up"], [data-tid^="plan-choose-"], [data-tid^="plan-pack-"] button').wrappers
-    expect(buying.length).toBeGreaterThan(3)
+    const w = await open({ ...plus, weekly: { used: 100, limit: 100, resets: monday } })
+    const buying = w.findAll('[data-tid="plan-note-credits"], [data-tid^="plan-choose-"], [data-tid^="plan-pack-"] button').wrappers
+    expect(buying.length).toBeGreaterThan(4)
     for (const b of buying) {
       expect(b.attributes('disabled')).toBe('disabled')
       expect(b.attributes('title')).toBe('Payments open soon')
@@ -197,11 +216,5 @@ describe('Plan and credits', () => {
     expect(w.find('a[href]').exists()).toBe(false)
     expect(text(w)).not.toMatch(/(?:\d[\d,.]*\s*(?:GiB|GB|MiB|MB)|storage\s+(?:of\s+)?\d)/i)
     w.destroy()
-
-    const low = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 12, monthly: { left: 12, allowance: 40 }, packs: 0 })
-    const topUp = low.find('[data-tid="plan-note-top-up"]')
-    expect(topUp.attributes('disabled')).toBe('disabled')
-    expect(topUp.attributes('title')).toBe('Payments open soon')
-    low.destroy()
   })
 })

@@ -6,8 +6,12 @@
     data-tid="account-plan"
   >
     <div class="acct-head acct-head--row">
-      <div class="acct-head">
-        <h1>Plan and credits</h1>
+      <div class="acct-head__title">
+        <h1>Plan</h1>
+        <acct-more label="How plans work">
+          We only charge for what costs us to run: making shapes, parts and scans on our servers. Everything else is free on every plan.
+          Your plan's usage resets each week. Credits are a top-up, used only once you reach the limit.
+        </acct-more>
       </div>
       <span
         v-if="account"
@@ -21,35 +25,35 @@
       class="acct-muted plan-reading"
       data-tid="plan-reading"
     >
-      Reading your balance…
+      Reading your plan…
     </p>
     <template v-else>
-      <!-- Low and empty: what's left, when more comes, and the way to more. Never about a printer. -->
+      <!-- Near or at the limit: when it resets, and what keeps you going. Never about a printer. -->
       <div
-        v-if="alert !== 'ok'"
-        class="acct-note"
-        :class="alert === 'empty' ? 'acct-note--bad' : 'acct-note--warn'"
+        v-if="limit === 'near' || limit === 'reached'"
+        class="acct-note acct-note--warn"
         role="status"
-        data-tid="plan-balance-note"
+        data-tid="plan-limit-note"
       >
         <frame-icon
-          name="alert"
+          name="clock"
           small
         />
         <span class="plan__note-text">
-          <b>{{ alert === 'empty' ? 'Out of credits' : 'Low on credits' }}.</b>
-          {{ alert === 'empty' ? '' : `${outcomes}.` }}
-          <template v-if="nextGrantLine">{{ nextGrantLine }}.</template>
+          <b>{{ limit === 'reached' ? `You've reached this ${windowName}'s limit.` : `${usedLine}.` }}</b>
+          {{ resetLine }}.
+          <template v-if="limit === 'reached' && topUp > 0">Your {{ fmt(topUp) }} credits are in use until then.</template>
         </span>
         <button
+          v-if="limit === 'reached' && topUp === 0"
           type="button"
-          class="lib-btn lib-btn--sm lib-btn--pri"
+          class="lib-btn lib-btn--sm"
           :disabled="!paymentsOpen"
           :title="paymentsOpen ? undefined : soon"
-          data-tid="plan-note-top-up"
-          @click="scrollTo('plan-packs')"
+          data-tid="plan-note-credits"
+          @click="scrollTo('plan-credits')"
         >
-          Top up
+          Buy credits
         </button>
       </div>
 
@@ -65,72 +69,49 @@
         <span>{{ unavailableLine }}</span>
       </p>
 
-      <!-- The balance: one number, what it buys, and when more comes. -->
+      <!-- Usage: how much of the limit is used, and when it resets. -->
       <section
-        v-if="account"
-        class="lib-surface acct-card acct-card--pad plan-balance"
-        aria-labelledby="plan-balance-heading"
-        data-tid="plan-balance"
+        v-if="account && usage"
+        class="lib-surface acct-card acct-card--pad plan-usage"
+        aria-labelledby="plan-usage-heading"
+        data-tid="plan-usage"
       >
-        <div class="plan-balance__top">
-          <div class="plan-balance__figure">
-            <h2
-              id="plan-balance-heading"
-              class="sr-only"
-            >
-              Balance
-            </h2>
-            <span
-              class="plan-balance__number"
-              data-tid="plan-balance-number"
-            >{{ fmt(account.balance) }}</span>
-            <span class="plan-balance__unit">credits</span>
-            <acct-more label="How credits are spent">
-              Monthly credits go first, then packs. Packs never expire.
-              {{ rolloverLine }}
-              A job that fails gives its credits back.
-            </acct-more>
-          </div>
+        <div class="plan-usage__top">
+          <h2 id="plan-usage-heading">
+            {{ windowName === 'week' ? 'This week' : 'This month' }}
+          </h2>
           <span
-            v-if="outcomes"
+            v-if="limit !== 'none'"
             class="acct-muted"
-          >{{ outcomes }}</span>
+            data-tid="plan-usage-resets"
+          >{{ resetLine }}</span>
         </div>
-
-        <div
-          class="plan-meter"
-          role="img"
-          :aria-label="meterLabel"
-        >
-          <span
-            class="plan-meter__monthly"
-            :style="{ width: `${monthlyShare}%` }"
-          />
-          <span
-            class="plan-meter__packs"
-            :style="{ width: `${packsShare}%` }"
-          />
-        </div>
-        <div class="plan-legend">
-          <span v-if="account.monthly.allowance > 0 || account.monthly.left > 0"><i class="plan-legend__dot plan-legend__dot--monthly" />Monthly {{ monthly }}</span>
-          <span v-if="account.packs > 0"><i class="plan-legend__dot plan-legend__dot--packs" />Packs {{ fmt(account.packs) }}</span>
-          <span
-            v-if="nextGrantLine"
-            class="plan-legend__next"
-          >{{ nextGrantLine }}</span>
-        </div>
-
-        <div class="acct-actions">
-          <button
-            type="button"
-            class="lib-btn lib-btn--pri"
-            :disabled="!paymentsOpen"
-            :title="paymentsOpen ? undefined : soon"
-            data-tid="plan-top-up"
-            @click="scrollTo('plan-packs')"
+        <template v-if="limit !== 'none'">
+          <div
+            class="plan-meter"
+            role="img"
+            :aria-label="`${usedLine}. ${resetLine}.`"
           >
-            Top up
-          </button>
+            <span
+              class="plan-meter__used"
+              :class="{ 'plan-meter__used--warn': limit !== 'ok' }"
+              :style="{ width: `${percent}%` }"
+            />
+          </div>
+          <span data-tid="plan-usage-line">{{ usedLine }}</span>
+        </template>
+        <span
+          v-else
+          class="acct-muted"
+          data-tid="plan-usage-line"
+        >No usage included on your plan yet.</span>
+        <span class="acct-muted">{{ madeLine }}</span>
+        <span
+          v-if="topUp > 0"
+          class="plan-usage__credits"
+          data-tid="plan-topup"
+        ><b>{{ fmt(topUp) }} credits</b> for after your limit</span>
+        <div class="acct-actions">
           <button
             type="button"
             class="lib-btn"
@@ -142,29 +123,7 @@
         </div>
       </section>
 
-      <section
-        v-if="account"
-        class="lib-surface acct-card"
-        aria-labelledby="plan-month-heading"
-      >
-        <div class="acct-card__title">
-          <h2 id="plan-month-heading">
-            This month
-          </h2>
-        </div>
-        <div class="plan-usage">
-          <div
-            v-for="u in usage"
-            :key="u.label"
-            class="plan-usage__item"
-          >
-            <span class="plan-usage__count">{{ u.count }}</span>
-            <span class="acct-muted">{{ u.label }} · {{ fmt(u.credits) }} credits</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Plans, with the yearly saving in months. -->
+      <!-- Plans side by side: the same rows on each, and only what costs us to run. -->
       <section
         id="plan-plans"
         class="lib-surface acct-card"
@@ -222,21 +181,29 @@
               v-if="p.price && period === 'yearly'"
               class="plan-option__save"
             >{{ yearly(p) }}</span>
-            <span class="plan-option__credits">{{ planCredits(p) }}</span>
-            <ul
-              v-if="p.perks.length"
-              class="plan-option__perks"
-            >
-              <li
-                v-for="perk in p.perks"
-                :key="perk"
+            <dl class="plan-option__rows">
+              <div
+                v-for="row in rows(p)"
+                :key="row.label"
+                class="plan-option__row"
+                :class="{ 'plan-option__row--off': row.value === false }"
+                data-tid="plan-row"
               >
-                <frame-icon
-                  name="check"
-                  small
-                />{{ perk }}
-              </li>
-            </ul>
+                <dt>{{ row.label }}</dt>
+                <dd v-if="row.value === true">
+                  <frame-icon
+                    name="check"
+                    small
+                  /><span class="sr-only">Included</span>
+                </dd>
+                <dd v-else-if="row.value === false">
+                  <span aria-hidden="true">—</span><span class="sr-only">Not included</span>
+                </dd>
+                <dd v-else>
+                  {{ row.value }}
+                </dd>
+              </div>
+            </dl>
             <button
               v-if="!isCurrent(p) && p.price"
               type="button"
@@ -251,6 +218,12 @@
           </li>
         </ul>
         <p
+          class="plan-free"
+          data-tid="plan-free"
+        >
+          <b>Free on every plan:</b> {{ freeLine }}.
+        </p>
+        <p
           v-if="!paymentsOpen"
           class="acct-muted plan-soon"
           data-tid="plan-soon"
@@ -259,16 +232,23 @@
         </p>
       </section>
 
+      <!-- Credits: a top-up for after the limit, offered, never pushed. -->
       <section
-        id="plan-packs"
+        id="plan-credits"
         class="lib-surface acct-card"
-        aria-labelledby="plan-packs-heading"
+        aria-labelledby="plan-credits-heading"
+        data-tid="plan-credits"
       >
         <div class="acct-card__title">
-          <h2 id="plan-packs-heading">
-            Credit packs
+          <h2 id="plan-credits-heading">
+            Credits
           </h2>
-          <span class="acct-card__aside">Never expire</span>
+          <acct-more
+            label="How credits work"
+            end
+          >
+            Credits are only used once you reach your plan's limit, and they never expire. {{ costsLine }}. A job that fails gives its usage back.
+          </acct-more>
         </div>
         <div class="acct-list">
           <div
@@ -279,7 +259,7 @@
           >
             <div class="acct-row__label">
               <b>{{ fmt(pack.credits) }} credits</b>
-              <span>{{ perCredit(pack.price, pack.credits) }} a credit</span>
+              <span>{{ outcomes(pack.credits) }} · {{ perCredit(pack.price, pack.credits) }} a credit</span>
             </div>
             <div class="acct-row__control">
               <button
@@ -291,41 +271,6 @@
                 {{ money(pack.price) }}
               </button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        class="lib-surface acct-card"
-        aria-labelledby="plan-costs-heading"
-        data-tid="plan-costs"
-      >
-        <div class="acct-card__title">
-          <h2 id="plan-costs-heading">
-            What credits buy
-          </h2>
-          <acct-more
-            label="About prices"
-            end
-          >
-            Every job shows its price before it runs. A failed job gives its credits back.
-          </acct-more>
-        </div>
-        <div class="acct-list">
-          <div
-            v-for="c in costs"
-            :key="c.id"
-            class="acct-lrow"
-          >
-            <span class="acct-lrow__text">{{ c.label }}<span
-              v-if="c.plan"
-              class="lib-pill plan-costs__plan"
-            >{{ planName(c.plan) }}</span></span>
-            <span class="plan-costs__credits">{{ c.credits }}</span>
-          </div>
-          <div class="acct-lrow">
-            <span class="acct-lrow__text acct-muted">{{ freeLine }}</span>
-            <span class="plan-costs__credits">Free</span>
           </div>
         </div>
       </section>
@@ -376,11 +321,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { CREDITS_CATALOGUE, type CataloguePack, type CataloguePlan, type CatalogueCost } from '@/services/account/credits-catalogue'
+import { CREDITS_CATALOGUE, type CataloguePack, type CataloguePlan } from '@/services/account/credits-catalogue'
 import {
-  balanceAlert, changeText, credits, creditsUnavailableReason, historyIcon, loadCredits, money, monthlyText, nextGrantText,
-  outcomesText, perCreditText, planName, yearlyLine,
-  type BalanceState, type CreditAccount, type CreditHistoryRow, type CreditsUnavailable, type HistoryIcon
+  changeText, costsText, credits, creditsUnavailableReason, historyIcon, limitState, loadCredits, money, outcomesText,
+  perCreditText, planName, planRows, resetText, usageWindow, usedPercent, usedText, yearlyLine,
+  type CreditAccount, type CreditHistoryRow, type CreditsUnavailable, type HistoryIcon, type LimitState, type PlanRow, type UsageWindow
 } from '@/services/account/credits'
 import { whenText } from '@/services/account/model'
 import AcctMore from './AcctMore.vue'
@@ -389,8 +334,10 @@ import AccountPlanPlanned from './AccountPlanPlanned.vue'
 type Period = 'monthly' | 'yearly'
 
 /**
- * Plan and credits (ADR 0023): the balance and what it buys, this month's
- * use, plans, packs, prices and the history, from the model service's
+ * Plan (ADR 0023, and Jack's rule of 28 Oct: charge only for what costs us
+ * to run). Leads with how much of the plan's limit is used and when it
+ * resets, then the plans side by side, then credits as a top-up for after
+ * the limit, then the history, from the model service's
  * `GET /v1/create/plan`. Every number on it comes from the catalogue
  * (credits-catalogue.ts) or the service. No button takes money until
  * `paymentsOpen`. Until `planPageOpen`, it shows the planned-prices card and
@@ -399,7 +346,7 @@ type Period = 'monthly' | 'yearly'
 @Component({ components: { AcctMore, AccountPlanPlanned } })
 export default class AccountPlan extends Vue {
   account: CreditAccount | null = null
-  /** Until the service answers, so no card shows the catalogue's figure and then changes. */
+  /** Until the service answers, so nothing about the account shows and then changes. */
   reading = true
   unavailable: CreditsUnavailable | null = null
   period: Period = 'monthly'
@@ -434,15 +381,11 @@ export default class AccountPlan extends Vue {
     return CREDITS_CATALOGUE.packs
   }
 
-  get costs (): CatalogueCost[] {
-    return CREDITS_CATALOGUE.costs
-  }
-
   get recommended (): string {
     return CREDITS_CATALOGUE.recommended
   }
 
-  /** The account's plan in the catalogue: none before the balance is read, or for a plan Control doesn't list. */
+  /** The account's plan in the catalogue: none before the service answers, or for a plan Control doesn't list. */
   get currentPlan (): CataloguePlan | null {
     const id = this.account?.plan
     return CREDITS_CATALOGUE.plans.find(p => p.id === id) ?? null
@@ -456,68 +399,52 @@ export default class AccountPlan extends Vue {
     return plan.id === this.currentPlan?.id
   }
 
-  /** Low or out, and only when there's a way to more (see balanceAlert). */
-  get alert (): BalanceState {
-    return this.account ? balanceAlert(this.account) : 'ok'
+  get usage (): UsageWindow | null {
+    return this.account ? usageWindow(this.account) : null
   }
 
-  /** "236 of 400". */
-  get monthly (): string {
-    return this.account ? monthlyText(this.account.monthly) : ''
+  /** "week" once the service counts weeks; "month" until then. */
+  get windowName (): UsageWindow['window'] {
+    return this.usage?.window ?? 'week'
   }
 
-  /** The account's own plan says what the service grants it; the others, the catalogue. */
-  planCredits (plan: CataloguePlan): string {
-    const n = this.account && this.isCurrent(plan) ? this.account.monthly.allowance : plan.monthlyCredits
-    return n > 0 ? `${credits(n)} credits a month` : 'No monthly credits'
+  get limit (): LimitState {
+    return this.usage ? limitState(this.usage) : 'none'
   }
 
-  get outcomes (): string {
-    return outcomesText(this.account?.balance ?? 0)
+  get percent (): number {
+    return this.usage ? usedPercent(this.usage) : 0
   }
 
-  /** "400 more on 9 Nov". */
-  get nextGrantLine (): string {
-    return this.account ? nextGrantText(this.account) : ''
+  /** "34% of this week's limit used". */
+  get usedLine (): string {
+    return this.usage ? usedText(this.usage) : ''
   }
 
-  get rolloverLine (): string {
-    const months = this.currentPlan?.rolloverMonths ?? 0
-    if (!months) return 'Unused monthly credits end with the month.'
-    return `Unused monthly credits keep for ${months === 1 ? 'a month' : `${months} months`}.`
+  /** "Resets Mon 3 Nov". */
+  get resetLine (): string {
+    return this.usage ? resetText(this.usage) : ''
   }
 
-  get monthlyShare (): number {
-    return this.share(this.account?.monthly.left ?? 0)
+  /** Bought credits, for after the limit. */
+  get topUp (): number {
+    return Math.max(this.account?.packs ?? 0, 0)
   }
 
-  get packsShare (): number {
-    return this.share(this.account?.packs ?? 0)
-  }
-
-  /** The bar's full width is this month's credits, kept ones included, plus the packs. */
-  share (n: number): number {
-    const a = this.account
-    if (!a) return 0
-    const whole = Math.max(Math.max(a.monthly.allowance, a.monthly.left) + Math.max(a.packs, 0), 1)
-    return Math.max(0, Math.min(100, (Math.max(n, 0) / whole) * 100))
-  }
-
-  get meterLabel (): string {
-    const a = this.account
-    if (!a) return ''
-    const monthly = a.monthly.allowance || a.monthly.left ? `${this.monthly} monthly credits left` : 'No monthly credits'
-    return `${monthly}, and ${credits(a.packs)} from packs`
-  }
-
-  get usage (): { label: string, count: number, credits: number }[] {
+  /** "6 shapes, 8 parts and 1 scan this month", or "Nothing made yet this week". */
+  get madeLine (): string {
     const u = this.account?.usage
-    if (!u) return []
-    return [
-      { label: 'Shapes', ...u.shape },
-      { label: 'Parts', ...u.part },
-      { label: 'Scans', ...u.scan }
-    ]
+    const window = `this ${this.windowName}`
+    if (!u) return ''
+    const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? '' : 's'}`
+    const made = [
+      u.shape.count ? plural(u.shape.count, 'shape') : '',
+      u.part.count ? plural(u.part.count, 'part') : '',
+      u.scan.count ? plural(u.scan.count, 'scan') : ''
+    ].filter(Boolean)
+    if (!made.length) return `Nothing made yet ${window}`
+    const list = made.length > 1 ? `${made.slice(0, -1).join(', ')} and ${made[made.length - 1]}` : made[0]
+    return `${list} ${window}`
   }
 
   get history (): CreditHistoryRow[] {
@@ -528,18 +455,26 @@ export default class AccountPlan extends Vue {
     return CREDITS_CATALOGUE.free.join(', ')
   }
 
+  get costsLine (): string {
+    return costsText()
+  }
+
   get unavailableLine (): string {
     switch (this.unavailable) {
-      case 'off': return 'Turn on Muon3D models in Library and storage to see your balance.'
-      case 'offline': return 'Your balance can\'t be reached right now.'
-      case 'signed-out': return 'Sign in again to see your balance.'
-      case 'error': return 'Your balance didn\'t load. Try again later.'
-      default: return 'Your balance shows here once Create opens.'
+      case 'off': return 'Turn on Muon3D models in Library and storage to see your usage.'
+      case 'offline': return 'Your usage can\'t be reached right now.'
+      case 'signed-out': return 'Sign in again to see your usage.'
+      case 'error': return 'Your usage didn\'t load. Try again later.'
+      default: return 'Your usage shows here once Create opens.'
     }
   }
 
-  planName (id: string): string {
-    return planName(id)
+  rows (plan: CataloguePlan): PlanRow[] {
+    return planRows(plan)
+  }
+
+  outcomes (n: number): string {
+    return outcomesText(n)
   }
 
   money (amount: number): string {
@@ -590,93 +525,44 @@ export default class AccountPlan extends Vue {
     flex: 1 1 auto;
   }
 
-  .plan-balance__top {
+  .plan-usage {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-  }
-
-  .plan-balance__figure {
-    display: flex;
-    align-items: baseline;
     gap: 8px;
   }
 
-  .plan-balance__number {
-    font-size: 36px;
-    font-weight: 600;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
+  .plan-usage__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+
+    h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+    }
   }
 
-  .plan-balance__unit {
-    color: var(--m3d-text-muted);
-    font-size: 15px;
+  .plan-usage__credits {
+    font-size: 13px;
   }
 
   .plan-meter {
-    display: flex;
     overflow: hidden;
     height: 8px;
     border-radius: 4px;
     background: var(--m3d-surface-2);
   }
 
-  .plan-meter__monthly {
+  .plan-meter__used {
+    display: block;
+    height: 100%;
     background: var(--m3d-accent);
   }
 
-  .plan-meter__packs {
-    background: color-mix(in srgb, var(--m3d-accent) 45%, transparent);
-  }
-
-  .plan-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 16px;
-    color: var(--m3d-text-muted);
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .plan-legend__dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    margin-right: 6px;
-    border-radius: 50%;
-  }
-
-  .plan-legend__dot--monthly {
-    background: var(--m3d-accent);
-  }
-
-  .plan-legend__dot--packs {
-    background: color-mix(in srgb, var(--m3d-accent) 45%, transparent);
-  }
-
-  .plan-legend__next {
-    margin-left: auto;
-  }
-
-  .plan-usage {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    padding: 4px 0 16px;
-  }
-
-  .plan-usage__item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 13px;
-  }
-
-  .plan-usage__count {
-    font-size: 20px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
+  .plan-meter__used--warn {
+    background: var(--m3d-warning, #e0a030);
   }
 
   .plan-period {
@@ -753,26 +639,38 @@ export default class AccountPlan extends Vue {
     font-weight: 500;
   }
 
-  .plan-option__credits {
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  .plan-option__perks {
+  .plan-option__rows {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 0;
-    margin: 0;
-    color: var(--m3d-text-muted);
-    font-size: 12px;
-    list-style: none;
+    margin: 6px 0 0;
+    font-size: 13px;
+  }
 
-    li {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+  .plan-option__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 30px;
+    padding: 4px 0;
+    border-top: 1px solid var(--m3d-border);
+
+    dt {
+      flex: none;
+      color: var(--m3d-text-muted);
+      white-space: nowrap;
     }
+
+    dd {
+      display: inline-flex;
+      margin: 0;
+      font-weight: 500;
+      text-align: right;
+    }
+  }
+
+  .plan-option__row--off dd {
+    color: var(--m3d-text-muted);
   }
 
   .plan-option__go {
@@ -780,18 +678,14 @@ export default class AccountPlan extends Vue {
     margin-top: auto;
   }
 
+  .plan-free {
+    margin: 0 0 6px;
+    font-size: 13px;
+  }
+
   .plan-soon {
     margin: 0 0 14px;
     font-size: 12px;
-  }
-
-  .plan-costs__plan {
-    margin-left: 8px;
-  }
-
-  .plan-costs__credits {
-    font-variant-numeric: tabular-nums;
-    font-weight: 500;
   }
 
   .plan-hist__icon {
