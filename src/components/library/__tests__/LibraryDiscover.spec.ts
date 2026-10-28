@@ -8,7 +8,7 @@ function answer (body: unknown, status = 200) {
   return vi.fn(async () => new Response(typeof body === 'string' ? body : JSON.stringify(body), { status }))
 }
 
-async function render (fetcher: ReturnType<typeof vi.fn>) {
+async function render (fetcher: () => Promise<Response>) {
   vi.stubGlobal('fetch', fetcher)
   const wrapper = mount(LibraryDiscover, { stubs: ['frame-icon'] })
   expect(wrapper.find('[role="status"]').text()).toBe('Loading Discover')
