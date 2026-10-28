@@ -2,11 +2,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { LibraryError } from '@/services/library/api'
 import { CREDITS_CATALOGUE } from '../credits-catalogue'
 import {
-  balanceState, catalogPlan, changeText, creditsUnavailableReason, historyIcon, loadCredits, money, nextGrantText,
-  outcomesText, perCreditText, yearlyLine, type CreditAccount
+  balanceAlert, balanceState, catalogPlan, changeText, credits, creditsUnavailableReason, historyIcon, loadCredits, money,
+  monthlyText, nextGrantText, outcomesText, perCreditText, planName, yearlyLine, type CreditAccount
 } from '../credits'
 
-vi.mock('@/services/library/assertion', () => ({ modelsAssertion: { get: async () => 'assertion-1', drop: () => {} } }))
+const drop = vi.hoisted(() => vi.fn())
+vi.mock('@/services/library/assertion', () => ({ modelsAssertion: { get: async () => 'assertion-1', drop } }))
 
 const account = (over: Partial<CreditAccount> = {}): CreditAccount => ({
   plan: 'plus',
@@ -40,6 +41,22 @@ describe('credits in words', () => {
     expect(balanceState(-40)).toBe('empty')
   })
 
+  it('only warns when there is a way to more credits', () => {
+    const now = new Date(2026, 9, 28).getTime()
+    expect(balanceAlert(account({ balance: 12, monthly: { left: 12, allowance: 400 }, packs: 0 }), now)).toBe('low')
+    expect(balanceAlert(account({ plan: 'free', willRenew: false, balance: 0, monthly: { left: 0, allowance: 40 }, packs: 0 }), now)).toBe('empty')
+    // Production today: Free grants nothing and nothing can be bought, so there's nothing to tell them.
+    expect(CREDITS_CATALOGUE.paymentsOpen).toBe(false)
+    expect(balanceAlert(account({ plan: 'free', willRenew: false, balance: 0, monthly: { left: 0, allowance: 0 }, packs: 0 }), now)).toBe('ok')
+    expect(balanceAlert(account({ willRenew: false, balance: 3 }), now)).toBe('ok')
+  })
+
+  it('shows monthly credits kept from last month past the allowance', () => {
+    expect(monthlyText({ left: 236, allowance: 400 })).toBe('236 of 400')
+    expect(monthlyText({ left: 520, allowance: 400 })).toBe('520')
+    expect(credits(-1200)).toBe('−1,200')
+  })
+
   it('says when more credits come, and says nothing when none are coming', () => {
     const now = new Date(2026, 9, 28).getTime()
     expect(nextGrantText(account(), now)).toBe('400 more on 9 Nov')
@@ -54,6 +71,8 @@ describe('credits in words', () => {
     expect(yearlyLine(catalogPlan('free'))).toBe('')
     expect(perCreditText(12.99, 500)).toBe('2.6p')
     expect(catalogPlan('nonsense').id).toBe('free')
+    expect(planName('pro')).toBe('Pro')
+    expect(planName('team')).toBe('Team')
   })
 
   it('signs history rows and picks their icon', () => {
@@ -81,6 +100,17 @@ describe('reading the credits', () => {
     const [url, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toMatch(/\/v1\/create\/plan$/)
     expect((init.headers as Record<string, string>).authorization).toBe('Bearer assertion-1')
+    expect(init.credentials).toBe('omit')
+  })
+
+  it('asks once more with a new assertion after a 401', async () => {
+    drop.mockClear()
+    const fetcher = vi.fn()
+      .mockResolvedValueOnce(new Response('', { status: 401 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify(account()), { status: 200 }))
+    expect((await loadCredits(fetcher as unknown as typeof fetch)).balance).toBe(286)
+    expect(fetcher).toHaveBeenCalledTimes(2)
+    expect(drop).toHaveBeenCalledTimes(1)
   })
 
   it('names why there is no balance to show', async () => {
@@ -92,6 +122,7 @@ describe('reading the credits', () => {
     expect(await reason(refuse(401))).toBe('signed-out')
     const offline = vi.fn(async () => { throw new TypeError('network') })
     expect(creditsUnavailableReason(await loadCredits(offline as unknown as typeof fetch).catch(e => e))).toBe('offline')
-    expect(creditsUnavailableReason(new LibraryError('console', 'no'))).toBe('unavailable')
+    expect(await reason(refuse(500))).toBe('error')
+    expect(creditsUnavailableReason(new LibraryError('console', 'no', 502))).toBe('error')
   })
 })

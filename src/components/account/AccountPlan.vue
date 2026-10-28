@@ -8,16 +8,17 @@
         <h1>Plan and credits</h1>
       </div>
       <span
+        v-if="account"
         class="lib-pill"
         data-tid="plan-current"
-      >{{ currentPlan.name }}<template v-if="account && account.period"> · {{ account.period }}</template></span>
+      >{{ planLabel }}<template v-if="account.period"> · {{ account.period }}</template></span>
     </div>
 
     <!-- Low and empty: what's left, when more comes, and the way to more. Never about a printer. -->
     <div
-      v-if="account && state !== 'ok'"
+      v-if="alert !== 'ok'"
       class="acct-note"
-      :class="state === 'empty' ? 'acct-note--bad' : 'acct-note--warn'"
+      :class="alert === 'empty' ? 'acct-note--bad' : 'acct-note--warn'"
       role="status"
       data-tid="plan-balance-note"
     >
@@ -26,8 +27,8 @@
         small
       />
       <span class="plan__note-text">
-        <b>{{ state === 'empty' ? 'Out of credits' : 'Low on credits' }}.</b>
-        {{ state === 'empty' ? '' : `${outcomes}.` }}
+        <b>{{ alert === 'empty' ? 'Out of credits' : 'Low on credits' }}.</b>
+        {{ alert === 'empty' ? '' : `${outcomes}.` }}
         <template v-if="nextGrantLine">{{ nextGrantLine }}.</template>
       </span>
       <button
@@ -101,7 +102,7 @@
         />
       </div>
       <div class="plan-legend">
-        <span v-if="account.monthly.allowance > 0"><i class="plan-legend__dot plan-legend__dot--monthly" />Monthly {{ fmt(account.monthly.left) }} of {{ fmt(account.monthly.allowance) }}</span>
+        <span v-if="account.monthly.allowance > 0 || account.monthly.left > 0"><i class="plan-legend__dot plan-legend__dot--monthly" />Monthly {{ monthly }}</span>
         <span v-if="account.packs > 0"><i class="plan-legend__dot plan-legend__dot--packs" />Packs {{ fmt(account.packs) }}</span>
         <span
           v-if="nextGrantLine"
@@ -165,17 +166,16 @@
         </h2>
         <div
           class="plan-period"
-          role="radiogroup"
+          role="group"
           aria-label="Billing period"
         >
           <button
             v-for="p in periods"
             :key="p"
             type="button"
-            role="radio"
             class="plan-period__opt"
             :class="{ 'plan-period__opt--on': period === p }"
-            :aria-checked="period === p ? 'true' : 'false'"
+            :aria-pressed="period === p ? 'true' : 'false'"
             :data-tid="`plan-period-${p}`"
             @click="period = p"
           >
@@ -188,13 +188,13 @@
           v-for="p in plans"
           :key="p.id"
           class="plan-option"
-          :class="{ 'plan-option--current': p.id === currentPlan.id }"
+          :class="{ 'plan-option--current': isCurrent(p) }"
           :data-tid="`plan-option-${p.id}`"
         >
           <div class="plan-option__name">
             <h3>{{ p.name }}</h3>
             <span
-              v-if="p.id === currentPlan.id"
+              v-if="isCurrent(p)"
               class="lib-pill lib-pill--ok"
             >Current</span>
             <span
@@ -212,7 +212,7 @@
             v-if="p.price && period === 'yearly'"
             class="plan-option__save"
           >{{ yearly(p) }}</span>
-          <span class="plan-option__credits">{{ fmt(p.monthlyCredits) }} credits a month</span>
+          <span class="plan-option__credits">{{ planCredits(p) }}</span>
           <ul
             v-if="p.perks.length"
             class="plan-option__perks"
@@ -228,7 +228,7 @@
             </li>
           </ul>
           <button
-            v-if="p.id !== currentPlan.id && p.price"
+            v-if="!isCurrent(p) && p.price"
             type="button"
             class="lib-btn lib-btn--sm plan-option__go"
             :class="{ 'lib-btn--pri': p.id === recommended }"
@@ -367,8 +367,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { CREDITS_CATALOGUE, type CataloguePack, type CataloguePlan, type CatalogueCost } from '@/services/account/credits-catalogue'
 import {
-  balanceState, catalogPlan, changeText, credits, creditsUnavailableReason, historyIcon, loadCredits, money,
-  nextGrantText, outcomesText, perCreditText, yearlyLine, type BalanceState, type CreditAccount, type CreditHistoryRow, type HistoryIcon
+  balanceAlert, changeText, credits, creditsUnavailableReason, historyIcon, loadCredits, money, monthlyText, nextGrantText,
+  outcomesText, perCreditText, planName, yearlyLine,
+  type BalanceState, type CreditAccount, type CreditHistoryRow, type CreditsUnavailable, type HistoryIcon
 } from '@/services/account/credits'
 import { whenText } from '@/services/account/model'
 import AcctMore from './AcctMore.vue'
@@ -385,7 +386,7 @@ type Period = 'monthly' | 'yearly'
 @Component({ components: { AcctMore } })
 export default class AccountPlan extends Vue {
   account: CreditAccount | null = null
-  unavailable: ReturnType<typeof creditsUnavailableReason> | null = null
+  unavailable: CreditsUnavailable | null = null
   period: Period = 'monthly'
   readonly periods: Period[] = ['monthly', 'yearly']
   readonly soon = 'Payments open soon'
@@ -419,12 +420,34 @@ export default class AccountPlan extends Vue {
     return CREDITS_CATALOGUE.recommended
   }
 
-  get currentPlan (): CataloguePlan {
-    return catalogPlan(this.account?.plan ?? 'free')
+  /** The account's plan in the catalogue: none before the balance is read, or for a plan Control doesn't list. */
+  get currentPlan (): CataloguePlan | null {
+    const id = this.account?.plan
+    return CREDITS_CATALOGUE.plans.find(p => p.id === id) ?? null
   }
 
-  get state (): BalanceState {
-    return balanceState(this.account?.balance ?? 0)
+  get planLabel (): string {
+    return this.account ? planName(this.account.plan) : ''
+  }
+
+  isCurrent (plan: CataloguePlan): boolean {
+    return plan.id === this.currentPlan?.id
+  }
+
+  /** Low or out, and only when there's a way to more (see balanceAlert). */
+  get alert (): BalanceState {
+    return this.account ? balanceAlert(this.account) : 'ok'
+  }
+
+  /** "236 of 400". */
+  get monthly (): string {
+    return this.account ? monthlyText(this.account.monthly) : ''
+  }
+
+  /** The account's own plan says what the service grants it; the others, the catalogue. */
+  planCredits (plan: CataloguePlan): string {
+    const n = this.account && this.isCurrent(plan) ? this.account.monthly.allowance : plan.monthlyCredits
+    return n > 0 ? `${credits(n)} credits a month` : 'No monthly credits'
   }
 
   get outcomes (): string {
@@ -437,7 +460,7 @@ export default class AccountPlan extends Vue {
   }
 
   get rolloverLine (): string {
-    const months = this.currentPlan.rolloverMonths
+    const months = this.currentPlan?.rolloverMonths ?? 0
     if (!months) return 'Unused monthly credits end with the month.'
     return `Unused monthly credits keep for ${months === 1 ? 'a month' : `${months} months`}.`
   }
@@ -450,17 +473,17 @@ export default class AccountPlan extends Vue {
     return this.share(this.account?.packs ?? 0)
   }
 
-  /** The bar's full width is this month's allowance plus the packs. */
+  /** The bar's full width is this month's credits, kept ones included, plus the packs. */
   share (n: number): number {
     const a = this.account
     if (!a) return 0
-    const whole = Math.max(a.monthly.allowance + Math.max(a.packs, 0), 1)
+    const whole = Math.max(Math.max(a.monthly.allowance, a.monthly.left) + Math.max(a.packs, 0), 1)
     return Math.max(0, Math.min(100, (Math.max(n, 0) / whole) * 100))
   }
 
   get meterLabel (): string {
     const a = this.account
-    return a ? `${credits(a.monthly.left)} of ${credits(a.monthly.allowance)} monthly credits left, and ${credits(a.packs)} from packs` : ''
+    return a ? `${this.monthly} monthly credits left, and ${credits(a.packs)} from packs` : ''
   }
 
   get usage (): { label: string, count: number, credits: number }[] {
@@ -485,12 +508,14 @@ export default class AccountPlan extends Vue {
     switch (this.unavailable) {
       case 'off': return 'Turn on Muon3D models in Library and storage to see your balance.'
       case 'offline': return 'Your balance can\'t be reached right now.'
+      case 'signed-out': return 'Sign in again to see your balance.'
+      case 'error': return 'Your balance didn\'t load. Try again later.'
       default: return 'Your balance shows here once Create opens.'
     }
   }
 
   planName (id: string): string {
-    return catalogPlan(id).name
+    return planName(id)
   }
 
   money (amount: number): string {

@@ -44,17 +44,24 @@ export interface CreditAccount {
 
 /**
  * The account's credits from the model service, with the Library's
- * assertion. Refusals come back as a LibraryError (see creditsUnavailableReason).
+ * assertion. A 401 asks once more with a new assertion, as the Library does.
+ * Refusals come back as a LibraryError (see creditsUnavailableReason).
  */
 export async function loadCredits (fetcher?: typeof fetch): Promise<CreditAccount> {
   const http = fetcher ?? ((input, init) => fetch(input, init))
-  const token = await modelsAssertion.get()
-  let response: Response
-  try {
-    response = await http(`${MODELS_URL}/v1/create/plan`, { headers: { authorization: `Bearer ${token}` } })
-  } catch {
-    throw new LibraryError('offline', 'Your credits can\'t be reached.')
+  async function ask (retried: boolean): Promise<Response> {
+    const token = await modelsAssertion.get()
+    let response: Response
+    try {
+      response = await http(`${MODELS_URL}/v1/create/plan`, { credentials: 'omit', cache: 'no-store', headers: { authorization: `Bearer ${token}` } })
+    } catch {
+      throw new LibraryError('offline', 'Your credits can\'t be reached.')
+    }
+    if (response.status !== 401 || retried) return response
+    modelsAssertion.drop()
+    return ask(true)
   }
+  const response = await ask(false)
   const text = await response.text()
   let data: unknown = null
   try {
@@ -64,17 +71,21 @@ export async function loadCredits (fetcher?: typeof fetch): Promise<CreditAccoun
   return data as CreditAccount
 }
 
+export type CreditsUnavailable = 'unavailable' | 'off' | 'signed-out' | 'offline' | 'error'
+
 /**
  * Why the page shows the catalogue alone: `unavailable` when this model
  * service has no Create yet (503, 404), `off` when the account hasn't turned
- * the model service on (`consent_required`).
+ * the model service on (`consent_required`), `signed-out` when the sign-in
+ * has lapsed, and `error` for any other refusal.
  */
-export function creditsUnavailableReason (error: unknown): 'unavailable' | 'off' | 'signed-out' | 'offline' {
-  if (!(error instanceof LibraryError)) return 'offline'
+export function creditsUnavailableReason (error: unknown): CreditsUnavailable {
+  if (!(error instanceof LibraryError)) return 'error'
   if (error.code === 'not-signed-in') return 'signed-out'
   if (error.code === 'consent_required') return 'off'
   if (error.code === 'offline') return 'offline'
-  return 'unavailable'
+  if (error.status === 503 || error.status === 404) return 'unavailable'
+  return 'error'
 }
 
 export type BalanceState = 'ok' | 'low' | 'empty'
@@ -86,6 +97,17 @@ export function balanceState (balance: number): BalanceState {
   if (balance < cost('part')) return 'empty'
   if (balance < CREDITS_CATALOGUE.lowBelow) return 'low'
   return 'ok'
+}
+
+/**
+ * The warning a balance earns, or 'ok' for none. Low and out only show when
+ * there's a way to more: monthly credits coming, or payments open. Telling
+ * someone they're out when they can do nothing about it only makes them cross.
+ */
+export function balanceAlert (account: CreditAccount, now: number = Date.now()): BalanceState {
+  const state = balanceState(account.balance)
+  if (state === 'ok' || (!CREDITS_CATALOGUE.paymentsOpen && !nextGrantText(account, now))) return 'ok'
+  return state
 }
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
@@ -103,6 +125,12 @@ export function catalogPlan (id: string): CataloguePlan {
   return CREDITS_CATALOGUE.plans.find(p => p.id === id) ?? CREDITS_CATALOGUE.plans[0]
 }
 
+/** "Plus", or a plan the catalogue doesn't list yet under its own name. */
+export function planName (id: string): string {
+  const plan = CREDITS_CATALOGUE.plans.find(p => p.id === id)
+  return plan?.name ?? (id ? id[0].toUpperCase() + id.slice(1) : '')
+}
+
 const SYMBOLS: Record<string, string> = { GBP: '£', USD: '$', EUR: '€' }
 
 /** "£7.99". */
@@ -112,9 +140,14 @@ export function money (amount: number, currency: string = CREDITS_CATALOGUE.curr
   return symbol ? `${symbol}${text}` : `${text} ${currency}`
 }
 
-/** "1,200". */
+/** "1,200", "−20". */
 export function credits (n: number): string {
-  return n.toLocaleString('en-GB')
+  return n < 0 ? `−${Math.abs(n).toLocaleString('en-GB')}` : n.toLocaleString('en-GB')
+}
+
+/** "236 of 400", or "520" when credits kept from last month take it past the allowance. */
+export function monthlyText (monthly: { left: number, allowance: number }): string {
+  return monthly.left > monthly.allowance ? credits(monthly.left) : `${credits(monthly.left)} of ${credits(monthly.allowance)}`
 }
 
 /** What a plan costs per month on a yearly plan, and the months it saves: "£6.67 a month, 2 months free". */
@@ -139,7 +172,7 @@ export function nextGrantText (account: CreditAccount, now: number = Date.now())
 
 /** "+400", "−20". */
 export function changeText (change: number): string {
-  return change > 0 ? `+${credits(change)}` : `−${credits(Math.abs(change))}`
+  return change > 0 ? `+${credits(change)}` : credits(change)
 }
 
 export type HistoryIcon = 'add' | 'spend' | 'refund' | 'expire'

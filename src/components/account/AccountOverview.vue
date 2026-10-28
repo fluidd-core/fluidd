@@ -214,13 +214,13 @@
         small
       /></span>
       <span class="acct-row__label">
-        <b>{{ planName }} plan</b>
+        <b>{{ planTitle }}</b>
         <span data-tid="account-tile-plan-line">{{ creditLine }}</span>
       </span>
       <span
-        v-if="creditState !== 'ok'"
+        v-if="creditAlert !== 'ok'"
         class="lib-pill lib-pill--warn"
-      >{{ creditState === 'empty' ? 'Out of credits' : 'Low on credits' }}</span>
+      >{{ creditAlert === 'empty' ? 'Out of credits' : 'Low on credits' }}</span>
     </router-link>
 
     <section
@@ -291,7 +291,7 @@ import {
 } from '@/services/account/model'
 import { libraryItems, libraryPrints, libraryState, refreshLibrary, watchLibraryAccount } from '@/services/library/store'
 import { bytesText } from '@/services/library/format'
-import { balanceState, catalogPlan, credits, loadCredits, nextGrantText, type BalanceState, type CreditAccount } from '@/services/account/credits'
+import { balanceAlert, credits, loadCredits, nextGrantText, planName, type BalanceState, type CreditAccount } from '@/services/account/credits'
 import type { AccountDetails, Me } from '@/services/account/api'
 
 const EVENT_ICONS: Record<string, string> = {
@@ -327,8 +327,9 @@ export default class AccountOverview extends Vue {
     loadCredits().then(account => { this.credit = account }).catch(() => {})
   }
 
-  get planName (): string {
-    return catalogPlan(this.credit?.plan ?? 'free').name
+  /** "Plus plan", or the section's name until the balance is read. */
+  get planTitle (): string {
+    return this.credit ? `${planName(this.credit.plan)} plan` : 'Plan and credits'
   }
 
   /** "286 credits · 400 more on 9 Nov", or the promise when credits can't be read. */
@@ -339,8 +340,8 @@ export default class AccountOverview extends Vue {
     return `${credits(c.balance)} credits${next ? ` · ${next}` : ''}`
   }
 
-  get creditState (): BalanceState {
-    return this.credit ? balanceState(this.credit.balance) : 'ok'
+  get creditAlert (): BalanceState {
+    return this.credit ? balanceAlert(this.credit) : 'ok'
   }
 
   get me (): Me | null {

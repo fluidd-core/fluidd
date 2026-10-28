@@ -8,7 +8,8 @@
  * 2026-10-06 (ADR 0023, option B). A price change goes in all three files.
  *
  * Nothing here takes money: `paymentsOpen` stays false until store and web
- * checkout exist (KAN-406), and the buttons say so.
+ * checkout exist (KAN-406), and the buttons say so. Setting it true only
+ * enables the buttons; each still needs its checkout wired in AccountPlan.vue.
  */
 
 export type PlanId = 'free' | 'plus' | 'pro'
@@ -17,7 +18,11 @@ export type CostId = 'part' | 'partChange' | 'shape' | 'shapeRefine' | 'photo' |
 export interface CataloguePlan {
   id: PlanId;
   name: string;
-  /** Credits added at the start of every month, yearly plans included. */
+  /**
+   * Credits added at the start of every month, yearly plans included. The
+   * service's figure wins for the account's own plan: Free grants
+   * `MODELS_CREATE_FREE_MONTHLY`, which is 0 until it's set to match this.
+   */
   monthlyCredits: number;
   /** Months of allowance unused monthly credits may keep. 0: they lapse. */
   rolloverMonths: number;

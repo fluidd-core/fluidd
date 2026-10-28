@@ -82,6 +82,24 @@ describe('Plan and credits', () => {
     w.destroy()
   })
 
+  it('says nothing about being out when Free grants nothing and nothing can be bought', async () => {
+    const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 0, monthly: { left: 0, allowance: 0 }, packs: 0, usage: { shape: { credits: 0, count: 0 }, part: { credits: 0, count: 0 }, scan: { credits: 0, count: 0 } }, history: [] })
+    expect(w.find('[data-tid="plan-balance-note"]').exists()).toBe(false)
+    expect(w.find('[data-tid="plan-balance-number"]').text()).toBe('0')
+    expect(text(w.find('[data-tid="plan-option-free"]'))).toContain('No monthly credits')
+    expect(text(w.find('[data-tid="plan-option-free"]'))).not.toContain('credits a month')
+    expect(w.find('[data-tid="plan-option-free"]').text()).toContain('Current')
+    w.destroy()
+  })
+
+  it('shows monthly credits kept from last month in full', async () => {
+    const w = await open({ ...plus, balance: 570, monthly: { left: 520, allowance: 400 } })
+    const balance = text(w.find('[data-tid="plan-balance"]'))
+    expect(balance).toContain('Monthly 520')
+    expect(balance).not.toContain('520 of 400')
+    w.destroy()
+  })
+
   it('says out of credits at zero', async () => {
     const w = await open({ ...plus, plan: 'free', period: null, willRenew: false, balance: 0, monthly: { left: 0, allowance: 40 }, packs: 0 })
     expect(text(w.find('[data-tid="plan-balance-note"]'))).toContain('Out of credits.')
@@ -102,8 +120,21 @@ describe('Plan and credits', () => {
     const costs = text(w.find('[data-tid="plan-costs"]'))
     for (const cost of CREDITS_CATALOGUE.costs) expect(costs).toContain(cost.label)
     expect(costs).toContain('Every printer feature')
-    expect(w.find('[data-tid="plan-option-free"]').text()).toContain('Current')
+    expect(w.find('[data-tid="plan-current"]').exists()).toBe(false)
+    expect(w.text()).not.toContain('Current')
     w.destroy()
+  })
+
+  it('says why the balance is missing', async () => {
+    const line = async (error: Error) => {
+      const w = await open(error)
+      const said = w.find('[data-tid="plan-unavailable"]').text()
+      w.destroy()
+      return said
+    }
+    expect(await line(new LibraryError('not-signed-in', 'no', 401))).toBe('Sign in again to see your balance.')
+    expect(await line(new LibraryError('consent_required', 'no', 403))).toContain('Turn on Muon3D models')
+    expect(await line(new LibraryError('internal', 'no', 500))).toBe('Your balance didn\'t load. Try again later.')
   })
 
   it('switches to yearly prices with the saving in months', async () => {
@@ -111,7 +142,7 @@ describe('Plan and credits', () => {
     await w.find('[data-tid="plan-period-yearly"]').trigger('click')
     expect(w.find('[data-tid="plan-option-plus"] .plan-option__price').text().replace(/\s+/g, ' ')).toBe('£79.99 a year')
     expect(text(w.find('[data-tid="plan-option-plus"]'))).toContain('2 months free')
-    expect(w.find('[data-tid="plan-period-yearly"]').attributes('aria-checked')).toBe('true')
+    expect(w.find('[data-tid="plan-period-yearly"]').attributes('aria-pressed')).toBe('true')
     w.destroy()
   })
 
