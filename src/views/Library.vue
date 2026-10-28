@@ -46,6 +46,7 @@
 
     <!-- The same two places as library.muon3d.com: what's public, and what's yours. -->
     <nav
+      v-if="mineShown"
       class="library__views"
       aria-label="Library"
       data-tid="library-views"
@@ -114,35 +115,9 @@
         </div>
       </section>
 
-      <!-- Signed out: the Library is the account's. -->
+      <!-- Reading it, or turning it on for you (KAN-735: no turn-on step). -->
       <section
-        v-if="!signedIn"
-        class="lib-empty lib-surface library__state"
-        data-tid="library-signed-out"
-      >
-        <span class="lib-empty__icon"><frame-icon
-          name="user"
-          large
-        /></span>
-        <h2>Sign in to keep a Library</h2>
-        <p>
-          Your Library lives in your Muon3D account, so it's the same on every printer, phone and computer. Printing and
-          saving to a printer work without it.
-        </p>
-        <div class="lib-empty__actions">
-          <button
-            type="button"
-            class="lib-btn lib-btn--pri"
-            data-tid="library-sign-in"
-            @click="accountDialog = true"
-          >
-            Sign in
-          </button>
-        </div>
-      </section>
-
-      <section
-        v-else-if="!state.error && (!state.checked || (state.enabled && !state.synced))"
+        v-if="!state.error && (!signedIn || !state.checked || consentDue || (state.enabled && !state.synced))"
         class="lib-empty lib-surface library__state"
       >
         <p>
@@ -150,7 +125,7 @@
         </p>
       </section>
 
-      <!-- Off: what it keeps, and turning it on. -->
+      <!-- Off and not turned on for you: a deletion is pending, the promise is unknown, or consent failed. -->
       <section
         v-else-if="state.checked && !state.enabled && !state.error"
         class="lib-empty lib-surface library__state"
@@ -469,11 +444,6 @@
       @input="!$event && (naming = null)"
       @save="saveName"
     />
-
-    <cloud-account-dialog
-      v-if="accountDialog"
-      v-model="accountDialog"
-    />
   </div>
 </template>
 
@@ -488,9 +458,8 @@ import LibraryDiscover from '@/components/library/LibraryDiscover.vue'
 import LibraryRecentCard from '@/components/library/LibraryRecentCard.vue'
 import PrintOnDialog from '@/components/library/PrintOnDialog.vue'
 import FileNameDialog from '@/components/widgets/filesystem/FileNameDialog.vue'
-import CloudAccountDialog from '@/components/muon-cloud/CloudAccountDialog.vue'
 import { describeLibraryError, LibraryError, savedRows, type LibraryItem, type LibraryRun, type LibrarySections, type SavedRow } from '@/services/library/api'
-import { libraryClient } from '@/services/library/store'
+import { libraryClient, libraryState, turnLibraryOn } from '@/services/library/store'
 
 type Section = 'all' | 'printed' | 'sliced' | 'saved'
 
@@ -498,13 +467,13 @@ type Section = 'all' | 'printed' | 'sliced' | 'saved'
  * Your Library (`/library`): every print saved from Slice, and the models
  * the phone app keeps, in the account, whichever printer Fluidd is on. A
  * card opens the print's own page; its menu prints it, opens it in Slice,
- * renames, copies, downloads or deletes it. Signed out, off, or empty, the
+ * renames, copies, downloads or deletes it. Off (deletion pending) or empty, the
  * page says what to do instead.
  *
  * Only the look is here: what the page does is mixins/library-page.ts, a
  * card is LibraryCard, Print on… is PrintOnDialog.
  */
-@Component({ components: { LibraryCard, LibraryDiscover, LibraryRecentCard, PrintOnDialog, FileNameDialog, CloudAccountDialog } })
+@Component({ components: { LibraryCard, LibraryDiscover, LibraryRecentCard, PrintOnDialog, FileNameDialog } })
 export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
   section: Section = 'all'
   sections: LibrarySections | null = null
@@ -526,10 +495,44 @@ export default class Library extends Mixins(LibraryPageMixin, BrowserMixin) {
    * so a signed-in start doesn't flash Discover first.
    */
   get view (): 'discover' | 'mine' {
+    if (!this.mineShown) return 'discover'
     const asked = this.$route?.query.view
     if (asked === 'discover' || asked === 'mine') return asked
-    if (this.signedIn || (!cloudState.ready && storedToken())) return 'mine'
-    return 'discover'
+    return 'mine'
+  }
+
+  /** Your Library is there only signed in (or while a saved session is restored); signed out it's Discover alone (KAN-735). */
+  get mineShown (): boolean {
+    return this.signedIn || (!cloudState.ready && !!storedToken())
+  }
+
+  /** The account whose consent was already asked for here, so it's asked once. */
+  consentAsked: string | null = null
+  consentFailed = false
+
+  /**
+   * The Library is always on (KAN-735): signed in with it off, consent is
+   * recorded with the promise this Control shows, unless a deletion is pending
+   * or the service's promise is one this Control can't show. Those keep the
+   * off panel, as does a failed attempt.
+   */
+  get consentDue (): boolean {
+    return this.signedIn && libraryState.checked && !libraryState.enabled && !libraryState.error &&
+      !libraryState.purgeAfter && this.promise !== null && !this.consentFailed
+  }
+
+  @Watch('consentDue', { immediate: true })
+  async onConsentDue (due: boolean) {
+    const account = libraryState.account
+    const promise = this.promise
+    if (!due || !promise || this.consentAsked === account) return
+    this.consentAsked = account
+    try {
+      await turnLibraryOn(promise.version)
+    } catch (error) {
+      this.consentFailed = true
+      this.error = describeLibraryError(error)
+    }
   }
 
   get sectionTabs (): Array<{ id: Section, label: string, count: number }> {

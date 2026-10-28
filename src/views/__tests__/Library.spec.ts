@@ -24,11 +24,14 @@ vi.mock('@/components/muon-cloud/CloudAccountDialog.vue', () => ({ default: { re
 vi.mock('@/services/library/store', async (original) => ({
   ...await original() as object,
   watchLibraryAccount: vi.fn(),
-  refreshLibrary: vi.fn(async () => {})
+  refreshLibrary: vi.fn(async () => {}),
+  turnLibraryOn: vi.fn(async () => {})
 }))
 
 // eslint-disable-next-line import/first
-import { libraryState, resetLibrary, refreshLibrary } from '@/services/library/store'
+import { libraryState, resetLibrary, refreshLibrary, turnLibraryOn } from '@/services/library/store'
+// eslint-disable-next-line import/first
+import { PROMISE_VERSION } from '@/services/library/promise'
 // eslint-disable-next-line import/first
 import { storedToken } from '@/services/muon-cloud/api'
 // eslint-disable-next-line import/first
@@ -160,6 +163,7 @@ describe('Library: Discover and Your Library (KAN-735)', () => {
     try {
       expect(signedOut.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(true)
       expect(signedOut.find('[data-tid="library-signed-out"]').exists()).toBe(false)
+      expect(signedOut.find('[data-tid="library-views"]').exists()).toBe(false)
     } finally {
       signedOut.destroy()
     }
@@ -187,13 +191,64 @@ describe('Library: Discover and Your Library (KAN-735)', () => {
     } finally {
       discover.destroy()
     }
-    Object.assign(libraryState, { account: null })
     const mine = renderLibrary({ view: 'mine' })
     try {
       expect(mine.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(false)
-      expect(mine.find('[data-tid="library-signed-out"]').exists()).toBe(true)
     } finally {
       mine.destroy()
+    }
+  })
+
+  it('signed out, ?view=mine still shows Discover only, with no sign-in panel', () => {
+    Object.assign(libraryState, { account: null })
+    const wrapper = renderLibrary({ view: 'mine' })
+    try {
+      expect(wrapper.findComponent({ name: 'LibraryDiscover' }).exists()).toBe(true)
+      expect(wrapper.find('[data-tid="library-views"]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid="library-signed-out"]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid="library-grid"]').exists()).toBe(false)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+})
+
+describe('Library: always on (KAN-735)', () => {
+  it('records consent once with the current promise when signed in with the Library off', async () => {
+    Object.assign(libraryState, { enabled: false, promiseVersion: PROMISE_VERSION, purgeAfter: null })
+    const wrapper = renderLibrary()
+    try {
+      await wrapper.vm.$nextTick()
+      expect(turnLibraryOn).toHaveBeenCalledOnce()
+      expect(turnLibraryOn).toHaveBeenCalledWith(PROMISE_VERSION)
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(false)
+      expect(wrapper.find('[data-tid="library-turn-on"]').exists()).toBe(false)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it('leaves it off, as before, while a deletion is pending', async () => {
+    Object.assign(libraryState, { enabled: false, promiseVersion: PROMISE_VERSION, purgeAfter: '2026-11-27T00:00:00Z' })
+    const wrapper = renderLibrary()
+    try {
+      await wrapper.vm.$nextTick()
+      expect(turnLibraryOn).not.toHaveBeenCalled()
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(true)
+    } finally {
+      wrapper.destroy()
+    }
+  })
+
+  it('leaves it off when the promise is one this Control does not know', async () => {
+    Object.assign(libraryState, { enabled: false, promiseVersion: '2099-01-01', purgeAfter: null })
+    const wrapper = renderLibrary()
+    try {
+      await wrapper.vm.$nextTick()
+      expect(turnLibraryOn).not.toHaveBeenCalled()
+      expect(wrapper.find('[data-tid="library-off"]').exists()).toBe(true)
+    } finally {
+      wrapper.destroy()
     }
   })
 })
