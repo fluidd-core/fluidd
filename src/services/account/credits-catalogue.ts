@@ -20,8 +20,8 @@ export interface CataloguePlan {
   name: string;
   /**
    * Credits added at the start of every month, yearly plans included. The
-   * service's figure wins for the account's own plan: Free grants
-   * `MODELS_CREATE_FREE_MONTHLY`, which is 0 until it's set to match this.
+   * service's figure wins for the account's own plan: Free grants nothing
+   * until `MODELS_CREATE_FREE_MONTHLY=1` turns this allowance on.
    */
   monthlyCredits: number;
   /** Months of allowance unused monthly credits may keep. 0: they lapse. */
