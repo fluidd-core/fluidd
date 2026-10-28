@@ -2,6 +2,7 @@
   <span
     class="acct-more"
     :class="{ 'acct-more--open': open, 'acct-more--end': end }"
+    @focusout="leave"
   >
     <button
       ref="toggle"
@@ -11,7 +12,7 @@
       :aria-controls="id"
       :title="label"
       data-tid="acct-more"
-      @click="open = !open"
+      @click="toggle"
     >
       <frame-icon
         name="info"
@@ -22,8 +23,10 @@
     <span
       v-if="open"
       :id="id"
+      ref="body"
       class="acct-more__body"
       role="note"
+      :style="shift ? { transform: `translateX(${shift}px)` } : undefined"
     ><slot /></span>
   </span>
 </template>
@@ -35,7 +38,8 @@ let next = 0
 
 /**
  * The details behind a short label, one step away: an (i) that opens a
- * small note under it. Escape, or a click anywhere else, closes it.
+ * small note under it. Escape, a click anywhere else, or focus moving on
+ * closes it. The note slides back inside the window on a narrow screen.
  */
 @Component({})
 export default class AcctMore extends Vue {
@@ -47,7 +51,28 @@ export default class AcctMore extends Vue {
   readonly end!: boolean
 
   open = false
+  /** Pixels the note moves sideways to stay inside the window. */
+  shift = 0
   readonly id = `acct-more-${++next}`
+
+  async toggle () {
+    this.open = !this.open
+    this.shift = 0
+    if (!this.open) return
+    await this.$nextTick()
+    const body = this.$refs.body as HTMLElement | undefined
+    if (!body) return
+    const margin = 16
+    const { left, right } = body.getBoundingClientRect()
+    const width = document.documentElement.clientWidth
+    if (right > width - margin) this.shift = width - margin - right
+    else if (left < margin) this.shift = margin - left
+  }
+
+  leave (event: FocusEvent) {
+    const to = event.relatedTarget as Node | null
+    if (this.open && to && !this.$el.contains(to)) this.open = false
+  }
 
   mounted () {
     document.addEventListener('click', this.outside, true)

@@ -115,7 +115,7 @@ export function securityHealth (me: Me): SecurityHealth {
     return { level: 'good', title: 'Well protected', line: `${listText(have).replace(/^./, c => c.toUpperCase())}.` }
   }
   if (!strong) {
-    return { level: 'weak', title: 'Only a password protects this account', line: 'Add a passkey or turn on two-step sign-in.' }
+    return { level: 'weak', title: 'Only a password protects this account', line: 'Anyone who learns it can reach your printers. Add a passkey or turn on two-step sign-in.' }
   }
   return { level: 'fair', title: 'One way in', line: 'Add a second way to sign in.' }
 }

@@ -554,7 +554,7 @@
       @close="close"
     >
       <p class="m3-dlg__text">
-        Type an authenticator or recovery code to confirm.
+        A password alone gets in again. Type an authenticator or recovery code to confirm.
       </p>
       <label class="m3-field">
         <span class="m3-field__label">Code</span>

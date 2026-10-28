@@ -4,12 +4,12 @@
     data-tid="account-notifications"
   >
     <div class="acct-head">
-      <h1>
-        Notifications
+      <div class="acct-head__title">
+        <h1>Notifications</h1>
         <acct-more label="Where alerts go">
           Print alerts go to your phone, sealed by the printer so we can't read them. Email is only for your account, never for what you print.
         </acct-more>
-      </h1>
+      </div>
     </div>
 
     <div class="acct-grid2 note__grid">

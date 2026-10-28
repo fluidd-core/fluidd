@@ -38,4 +38,15 @@ describe('the details behind a short label', () => {
     expect(w.find('[role="note"]').exists()).toBe(false)
     w.destroy()
   })
+
+  it('closes when focus moves on to something else', async () => {
+    const w = open()
+    const elsewhere = document.createElement('button')
+    document.body.appendChild(elsewhere)
+    await w.find('[data-tid="acct-more"]').trigger('click')
+    await w.find('[data-tid="acct-more"]').trigger('focusout', { relatedTarget: elsewhere })
+    expect(w.find('[role="note"]').exists()).toBe(false)
+    elsewhere.remove()
+    w.destroy()
+  })
 })

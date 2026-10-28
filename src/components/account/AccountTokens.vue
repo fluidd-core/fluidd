@@ -5,12 +5,12 @@
   >
     <div class="acct-head acct-head--row">
       <div class="acct-head">
-        <h1>
-          Access tokens
+        <div class="acct-head__title">
+          <h1>Access tokens</h1>
           <acct-more label="What a token is">
             A token lets a script, a CI job or an AI tool act as you, with fewer powers. It ends on its own, and you can revoke it any time.
           </acct-more>
-        </h1>
+        </div>
       </div>
       <button
         v-if="!missing && !making && !fresh"
@@ -73,7 +73,7 @@
         class="acct-field__note"
         role="status"
       >Couldn't copy. Select it and copy it by hand.</span>
-      <span class="acct-field__note">Send it as <code>Authorization: Bearer &lt;token&gt;</code>.</span>
+      <span class="acct-field__note">Send it as <code>Authorization: Bearer &lt;token&gt;</code>. Keep it out of shared code and chats.</span>
       <div class="acct-actions">
         <button
           type="button"

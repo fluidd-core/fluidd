@@ -5,12 +5,12 @@
   >
     <div class="acct-head acct-head--row">
       <div class="acct-head">
-        <h1>
-          Devices and sessions
+        <div class="acct-head__title">
+          <h1>Devices and sessions</h1>
           <acct-more label="What signing out does">
             Signing a device out ends its remote connections to your printers. Prints carry on. A device unused for 30 days signs out by itself.
           </acct-more>
-        </h1>
+        </div>
       </div>
       <button
         v-if="others.length && !everywhereMissing"

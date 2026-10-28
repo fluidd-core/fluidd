@@ -440,7 +440,7 @@ export default class AccountDelete extends Vue {
   get graceLine (): string {
     if (this.scheduled) return `Deletion is set for ${this.deleteDay}. Until then you can keep your account.`
     return this.grace
-      ? 'We wait 14 days in case you change your mind. You\'re signed out everywhere at once.'
+      ? 'We wait 14 days in case you change your mind. You\'re signed out, and sharing stops, at once.'
       : 'Account deletion needs a console update to support the 14-day recovery period.'
   }
 
