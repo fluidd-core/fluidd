@@ -214,10 +214,17 @@
         small
       /></span>
       <span class="acct-row__label">
-        <b>Free plan</b>
-        <span>Printer features are always free</span>
+        <b>{{ planTitle }}</b>
+        <span data-tid="account-tile-plan-line">{{ creditLine }}</span>
       </span>
-      <span class="lib-pill">Plans soon</span>
+      <span
+        v-if="!planPageOpen"
+        class="lib-pill"
+      >Plans soon</span>
+      <span
+        v-else-if="creditAlert !== 'ok'"
+        class="lib-pill lib-pill--warn"
+      >{{ creditAlert === 'empty' ? 'Out of credits' : 'Low on credits' }}</span>
     </router-link>
 
     <section
@@ -288,6 +295,8 @@ import {
 } from '@/services/account/model'
 import { libraryItems, libraryPrints, libraryState, refreshLibrary, watchLibraryAccount } from '@/services/library/store'
 import { bytesText } from '@/services/library/format'
+import { balanceAlert, credits, loadCredits, nextGrantText, planName, type BalanceState, type CreditAccount } from '@/services/account/credits'
+import { CREDITS_CATALOGUE } from '@/services/account/credits-catalogue'
 import type { AccountDetails, Me } from '@/services/account/api'
 
 const EVENT_ICONS: Record<string, string> = {
@@ -314,10 +323,35 @@ export default class AccountOverview extends Vue {
   @Prop({ type: Function, required: true })
   readonly linkTo!: (id: AccountSectionId) => string
 
+  credit: CreditAccount | null = null
+
   created () {
     loadOverview()
     watchLibraryAccount()
     refreshLibrary().catch(() => {})
+    if (this.planPageOpen) loadCredits().then(account => { this.credit = account }).catch(() => {})
+  }
+
+  get planPageOpen (): boolean {
+    return CREDITS_CATALOGUE.planPageOpen
+  }
+
+  /** "Plus plan", or the section's name until the balance is read. */
+  get planTitle (): string {
+    if (!this.planPageOpen) return 'Free plan'
+    return this.credit ? `${planName(this.credit.plan)} plan` : 'Plan and credits'
+  }
+
+  /** "286 credits · 400 more on 9 Nov", or the promise when credits can't be read. */
+  get creditLine (): string {
+    const c = this.credit
+    if (!c) return 'Printer features are always free'
+    const next = nextGrantText(c)
+    return `${credits(c.balance)} credits${next ? ` · ${next}` : ''}`
+  }
+
+  get creditAlert (): BalanceState {
+    return this.credit ? balanceAlert(this.credit) : 'ok'
   }
 
   get me (): Me | null {
