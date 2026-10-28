@@ -57,8 +57,12 @@ export default class AcctMore extends Vue {
 
   async toggle () {
     this.open = !this.open
+    if (this.open) await this.place()
+  }
+
+  /** Keeps the open note 16px inside the window. */
+  async place () {
     this.shift = 0
-    if (!this.open) return
     await this.$nextTick()
     const body = this.$refs.body as HTMLElement | undefined
     if (!body) return
@@ -77,11 +81,17 @@ export default class AcctMore extends Vue {
   mounted () {
     document.addEventListener('click', this.outside, true)
     document.addEventListener('keydown', this.escape)
+    window.addEventListener('resize', this.resized)
   }
 
   beforeDestroy () {
     document.removeEventListener('click', this.outside, true)
     document.removeEventListener('keydown', this.escape)
+    window.removeEventListener('resize', this.resized)
+  }
+
+  resized () {
+    if (this.open) this.place()
   }
 
   outside (event: Event) {

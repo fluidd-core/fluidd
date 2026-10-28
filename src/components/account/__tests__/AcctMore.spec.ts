@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import AcctMore from '../AcctMore.vue'
 
 function open () {
@@ -48,5 +48,25 @@ describe('the details behind a short label', () => {
     expect(w.find('[role="note"]').exists()).toBe(false)
     elsewhere.remove()
     w.destroy()
+  })
+
+  it('stays open when focus goes nowhere, as when the note\'s own text is clicked', async () => {
+    const w = open()
+    await w.find('[data-tid="acct-more"]').trigger('click')
+    await w.find('[data-tid="acct-more"]').trigger('focusout', { relatedTarget: null })
+    expect(w.find('[role="note"]').exists()).toBe(true)
+    w.destroy()
+  })
+
+  it('slides the note back inside a narrow window', async () => {
+    const width = vi.spyOn(document.documentElement, 'clientWidth', 'get').mockReturnValue(400)
+    const rect = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ left: 300, right: 580 } as DOMRect)
+    const w = open()
+    await w.find('[data-tid="acct-more"]').trigger('click')
+    await new Promise(resolve => setTimeout(resolve))
+    expect(w.find('[role="note"]').attributes('style')).toContain('translateX(-196px)')
+    w.destroy()
+    width.mockRestore()
+    rect.mockRestore()
   })
 })
