@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import AccountPlan from '../AccountPlan.vue'
 import { CREDITS_CATALOGUE } from '@/services/account/credits-catalogue'
 import { LibraryError } from '@/services/library/api'
@@ -9,6 +9,7 @@ const loadCredits = vi.hoisted(() => vi.fn())
 vi.mock('@/services/account/credits', async (actual) => ({ ...(await actual<object>()), loadCredits }))
 
 const settle = () => new Promise(resolve => setTimeout(resolve))
+const shipped = CREDITS_CATALOGUE.planPageOpen
 
 const plus: CreditAccount = {
   plan: 'plus',
@@ -36,8 +37,30 @@ async function open (answer: CreditAccount | Error) {
 
 const text = (w: { text: () => string }) => w.text().replace(/\s+/g, ' ')
 
+describe('Plan and credits, while closed', () => {
+  beforeEach(() => { CREDITS_CATALOGUE.planPageOpen = false })
+  afterEach(() => {
+    CREDITS_CATALOGUE.planPageOpen = shipped
+    vi.clearAllMocks()
+  })
+
+  it('shows the planned-prices card and asks the service nothing', async () => {
+    const w = await open(plus)
+    expect(w.find('h1').text()).toBe('Plan')
+    expect(w.text()).toContain('These are planned prices.')
+    expect(w.find('[data-tid="plan-balance"]').exists()).toBe(false)
+    expect(w.find('[data-tid="plan-reading"]').exists()).toBe(false)
+    expect(loadCredits).not.toHaveBeenCalled()
+    w.destroy()
+  })
+})
+
 describe('Plan and credits', () => {
-  afterEach(() => { vi.clearAllMocks() })
+  beforeEach(() => { CREDITS_CATALOGUE.planPageOpen = true })
+  afterEach(() => {
+    CREDITS_CATALOGUE.planPageOpen = shipped
+    vi.clearAllMocks()
+  })
 
   it('leads with the balance, what it buys and when more comes', async () => {
     const w = await open(plus)

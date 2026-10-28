@@ -218,7 +218,11 @@
         <span data-tid="account-tile-plan-line">{{ creditLine }}</span>
       </span>
       <span
-        v-if="creditAlert !== 'ok'"
+        v-if="!planPageOpen"
+        class="lib-pill"
+      >Plans soon</span>
+      <span
+        v-else-if="creditAlert !== 'ok'"
         class="lib-pill lib-pill--warn"
       >{{ creditAlert === 'empty' ? 'Out of credits' : 'Low on credits' }}</span>
     </router-link>
@@ -292,6 +296,7 @@ import {
 import { libraryItems, libraryPrints, libraryState, refreshLibrary, watchLibraryAccount } from '@/services/library/store'
 import { bytesText } from '@/services/library/format'
 import { balanceAlert, credits, loadCredits, nextGrantText, planName, type BalanceState, type CreditAccount } from '@/services/account/credits'
+import { CREDITS_CATALOGUE } from '@/services/account/credits-catalogue'
 import type { AccountDetails, Me } from '@/services/account/api'
 
 const EVENT_ICONS: Record<string, string> = {
@@ -324,11 +329,16 @@ export default class AccountOverview extends Vue {
     loadOverview()
     watchLibraryAccount()
     refreshLibrary().catch(() => {})
-    loadCredits().then(account => { this.credit = account }).catch(() => {})
+    if (this.planPageOpen) loadCredits().then(account => { this.credit = account }).catch(() => {})
+  }
+
+  get planPageOpen (): boolean {
+    return CREDITS_CATALOGUE.planPageOpen
   }
 
   /** "Plus plan", or the section's name until the balance is read. */
   get planTitle (): string {
+    if (!this.planPageOpen) return 'Free plan'
     return this.credit ? `${planName(this.credit.plan)} plan` : 'Plan and credits'
   }
 

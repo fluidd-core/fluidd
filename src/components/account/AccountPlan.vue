@@ -1,5 +1,7 @@
 <template>
+  <account-plan-planned v-if="!pageOpen" />
   <div
+    v-else
     class="acct-section"
     data-tid="account-plan"
   >
@@ -382,6 +384,7 @@ import {
 } from '@/services/account/credits'
 import { whenText } from '@/services/account/model'
 import AcctMore from './AcctMore.vue'
+import AccountPlanPlanned from './AccountPlanPlanned.vue'
 
 type Period = 'monthly' | 'yearly'
 
@@ -390,9 +393,10 @@ type Period = 'monthly' | 'yearly'
  * use, plans, packs, prices and the history, from the model service's
  * `GET /v1/create/plan`. Every number on it comes from the catalogue
  * (credits-catalogue.ts) or the service. No button takes money until
- * `paymentsOpen`.
+ * `paymentsOpen`. Until `planPageOpen`, it shows the planned-prices card and
+ * asks the service nothing.
  */
-@Component({ components: { AcctMore } })
+@Component({ components: { AcctMore, AccountPlanPlanned } })
 export default class AccountPlan extends Vue {
   account: CreditAccount | null = null
   /** Until the service answers, so no card shows the catalogue's figure and then changes. */
@@ -403,6 +407,7 @@ export default class AccountPlan extends Vue {
   readonly soon = 'Payments open soon'
 
   async created () {
+    if (!this.pageOpen) return
     try {
       this.account = await loadCredits()
       if (this.account.period === 'yearly') this.period = 'yearly'
@@ -411,6 +416,10 @@ export default class AccountPlan extends Vue {
     } finally {
       this.reading = false
     }
+  }
+
+  get pageOpen (): boolean {
+    return CREDITS_CATALOGUE.planPageOpen
   }
 
   get paymentsOpen (): boolean {
