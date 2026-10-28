@@ -4,8 +4,12 @@
     data-tid="account-notifications"
   >
     <div class="acct-head">
-      <h1>Notifications</h1>
-      <p>Print alerts go to your phone, sealed by the printer so we can't read them. Email is for your account, never for what you print.</p>
+      <h1>
+        Notifications
+        <acct-more label="Where alerts go">
+          Print alerts go to your phone, sealed by the printer so we can't read them. Email is only for your account, never for what you print.
+        </acct-more>
+      </h1>
     </div>
 
     <div class="acct-grid2 note__grid">
@@ -65,7 +69,7 @@
           class="acct-field__note note__soon"
           data-tid="notify-soon"
         >
-          Choosing which emails you get comes soon. Until then we send the account emails above, and no news.
+          Email choices come soon. Until then: account emails only, no news.
         </p>
       </section>
 
@@ -122,7 +126,7 @@
             </div>
           </div>
           <p class="acct-field__note note__empty">
-            {{ phones.length ? 'Each phone turns alerts on for the printers it wants, in the Muon3D app.' : 'No phone is signed in. Print alerts come with the Muon3D app.' }} A browser can't receive print alerts.
+            {{ phones.length ? 'Each phone picks its printers in the Muon3D app.' : 'Print alerts need the Muon3D app.' }}
           </p>
         </section>
       </div>
@@ -142,6 +146,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import ToggleSwitch from '@/components/control/ToggleSwitch.vue'
 import PrinterThumb from '@/components/ui/PrinterThumb.vue'
+import AcctMore from './AcctMore.vue'
 import { cloudState } from '@/services/muon-cloud/state'
 import type { CloudPrinter } from '@/services/muon-cloud/api'
 import { accountApi, type EmailPreferences } from '@/services/account/api'
@@ -158,7 +163,7 @@ type PreferenceId = keyof EmailPreferences
  * switched. Email is for the account: access requests, sharing, and news
  * only when asked for (`/v1/me/preferences`). Security email is always on.
  */
-@Component({ components: { ToggleSwitch, PrinterThumb } })
+@Component({ components: { ToggleSwitch, PrinterThumb, AcctMore } })
 export default class AccountNotifications extends Vue {
   preferences: EmailPreferences | null = null
   prefsMissing = false
@@ -175,7 +180,7 @@ export default class AccountNotifications extends Vue {
   accountKinds: Array<{ id: PreferenceId | 'security', label: string, sub?: string, phone: string, always?: boolean }> = [
     { id: 'email_access_requests', label: 'Someone asks to use a printer', phone: 'In the app' },
     { id: 'email_shared_with_you', label: 'A printer is shared with you', phone: 'In the app' },
-    { id: 'email_news', label: 'News from Muon3D', sub: 'A few emails a year. Off unless you turn it on.', phone: '–' },
+    { id: 'email_news', label: 'News from Muon3D', sub: 'A few a year', phone: '–' },
     { id: 'security', label: 'Security', sub: 'New sign-ins, password and email changes', phone: '–', always: true }
   ]
 

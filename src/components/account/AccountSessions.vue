@@ -5,8 +5,12 @@
   >
     <div class="acct-head acct-head--row">
       <div class="acct-head">
-        <h1>Devices and sessions</h1>
-        <p>Everywhere you're signed in. Signing a device out also ends any remote connection it has open to your printers. Prints carry on.</p>
+        <h1>
+          Devices and sessions
+          <acct-more label="What signing out does">
+            Signing a device out ends its remote connections to your printers. Prints carry on. A device unused for 30 days signs out by itself.
+          </acct-more>
+        </h1>
       </div>
       <button
         v-if="others.length && !everywhereMissing"
@@ -85,9 +89,8 @@
         large
       /></span>
       <h3>Only this browser is signed in</h3>
-      <p>Get print alerts and reach your printers away from home with the Muon3D app.</p>
+      <p>Get the Muon3D app for print alerts away from home.</p>
     </div>
-    <span class="acct-field__note sess__aside">A device that hasn't been used for 30 days is signed out by itself.</span>
 
     <section
       class="lib-surface acct-card"
@@ -96,7 +99,7 @@
     >
       <div class="acct-card__title">
         <h2>Activity</h2>
-        <span class="acct-card__aside">The last 90 days</span>
+        <span class="acct-card__aside">Last 90 days</span>
       </div>
       <div class="acct-list">
         <div
@@ -138,10 +141,10 @@
         name="alert"
         small
       />
-      <span>Don't recognise something? Sign that device out, then <router-link
+      <span>Don't recognise a device? Sign it out, then <router-link
         :to="linkTo('security')"
         class="acct-link"
-      >change your password</router-link>. Changing it signs out everything except this browser.</span>
+      >change your password</router-link>.</span>
     </div>
 
     <p
@@ -173,6 +176,7 @@ import { AccountError, isMissing } from '@/services/account/client'
 import { accountState, describe, loadEvents, loadSessions } from '@/services/account/state'
 import { agoText, devicesFrom, eventLine, whenText, type AccountSectionId, type Device } from '@/services/account/model'
 import { beginSignOut } from '@/services/account/sign-out'
+import AcctMore from './AcctMore.vue'
 
 const EVENT_ICONS: Record<string, string> = {
   signIn: 'signIn', signOut: 'logout', key: 'key', shield: 'shield', userPlus: 'userPlus', userMinus: 'userMinus', mail: 'mail', lock: 'lock', alert: 'alert', link: 'link'
@@ -186,7 +190,7 @@ const NEW_FOR_S = 3 * 86400
  * each device once, with what it uses and when it was last used, signing
  * one out or all the others, and the account's history.
  */
-@Component({})
+@Component({ components: { AcctMore } })
 export default class AccountSessions extends Vue {
   @Prop({ type: Function, required: true })
   readonly linkTo!: (id: AccountSectionId) => string
@@ -240,8 +244,7 @@ export default class AccountSessions extends Vue {
   detail (device: Device): string {
     const parts: string[] = []
     if (device.uses) parts.push(device.uses)
-    if (device.phoneKey) parts.push(`phone key ${device.phoneKey}`)
-    parts.push(`signed in ${whenText(device.signedInAt)}`)
+    if (device.phoneKey) parts.push(`key ${device.phoneKey}`)
     const used = agoText(device.lastUsedAt)
     parts.push(device.current ? 'active now' : used === 'now' ? 'active now' : `active ${used}`)
     return parts.join(' · ')
@@ -322,10 +325,6 @@ export default class AccountSessions extends Vue {
   .sess__new {
     background: color-mix(in srgb, var(--m3d-accent) 14%, transparent);
     color: var(--m3d-accent);
-  }
-
-  .sess__aside {
-    margin-top: -6px;
   }
 
   .sess__event {
