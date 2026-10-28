@@ -157,7 +157,7 @@ describe('Delete account', () => {
   it('waits 14 days by default on a console with the grace period, and can still be kept', async () => {
     deleteAccount.mockResolvedValueOnce({ ok: true, delete_after: 1_800_000_000 + 14 * DAY })
     const w = open(me())
-    expect(w.text()).toContain('We wait 14 days before deleting anything')
+    expect(w.text()).toContain('We wait 14 days in case you change your mind')
     await throughToStep2(w)
     expect(tid(w, 'delete-confirm').text()).toBe('Delete in 14 days')
     await tid(w, 'delete-confirm').trigger('click')

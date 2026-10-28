@@ -106,7 +106,7 @@
           large
         /></span>
         <h2>Sign in to see your account</h2>
-        <p>Your Muon3D account keeps your printers reachable from anywhere, your Library and who can use your printers. Printers on this network work without it.</p>
+        <p>Reach your printers from anywhere, and keep your Library.</p>
         <div class="lib-empty__actions">
           <button
             type="button"
@@ -130,10 +130,7 @@
           large
         /></span>
         <h2>Your account opens on {{ consoleHost }}</h2>
-        <p>
-          You're on a printer's own page. Your account's settings, passkeys and Library are on {{ consoleHost }},
-          where you're signed in to Muon3D.
-        </p>
+        <p>You're on a printer's own page.</p>
         <div class="lib-empty__actions">
           <a
             class="lib-btn lib-btn--pri"

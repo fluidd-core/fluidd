@@ -112,12 +112,12 @@ export function securityHealth (me: Me): SecurityHealth {
     if (s.passkeys) have.push(plural(s.passkeys, 'passkey'))
     if (s.two_step) have.push('two-step sign-in is on')
     if (s.two_step && typeof s.recovery_left === 'number') have.push(`${s.recovery_left} recovery ${s.recovery_left === 1 ? 'code is' : 'codes are'} left`)
-    return { level: 'good', title: 'Well protected', line: `You have ${listText(have)}. Nothing to do.` }
+    return { level: 'good', title: 'Well protected', line: `${listText(have).replace(/^./, c => c.toUpperCase())}.` }
   }
   if (!strong) {
-    return { level: 'weak', title: 'Only a password protects this account', line: 'Anyone who learns it can reach your printers from anywhere. Add a passkey or turn on two-step sign-in.' }
+    return { level: 'weak', title: 'Only a password protects this account', line: 'Anyone who learns it can reach your printers. Add a passkey or turn on two-step sign-in.' }
   }
-  return { level: 'fair', title: 'One way in', line: 'Add a second way to sign in, in case you lose the device your passkey is on.' }
+  return { level: 'fair', title: 'One way in', line: 'Add a second way to sign in.' }
 }
 
 /** "a, b and c". */
@@ -205,7 +205,7 @@ export function devicesFrom (sessions: Session[]): Device[] {
       id: s.id,
       label: leftover ? 'An old web sign-in' : labelOf(s),
       kind,
-      uses: leftover ? 'Left by the sign-in page; it ends by itself' : client ?? (kind === 'browser' ? '' : 'Muon3D app'),
+      uses: leftover ? 'Ends by itself' : client ?? (kind === 'browser' ? '' : 'Muon3D app'),
       current: s.current,
       signedInAt: s.created_at,
       lastUsedAt: s.last_used_at,

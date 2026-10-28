@@ -152,6 +152,12 @@
   }
 }
 
+.acct-head__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .acct-head--row {
   flex-direction: row;
   flex-wrap: wrap;

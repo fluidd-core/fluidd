@@ -5,7 +5,6 @@
   >
     <div class="acct-head">
       <h1>Profile</h1>
-      <p>Your name is shown to people you share a printer with, next to your email address.</p>
     </div>
 
     <section
@@ -18,8 +17,7 @@
       <div class="profile__photo">
         <span class="acct-avatar acct-avatar--xl">{{ initials }}</span>
         <div class="profile__photo-text">
-          <span class="acct-soon">Your profile photo lives in Library</span>
-          <span class="acct-field__note">Use the Library link below to edit it.</span>
+          <span class="acct-soon">Your photo is set in Library</span>
         </div>
       </div>
       <label class="acct-field">
@@ -39,11 +37,11 @@
           v-if="fromEmail"
           class="acct-field__note profile__warn"
           data-tid="account-name-from-email"
-        >We made this from your email address. Put your name here, or a name you're happy to show.</span>
+        >Made from your email. Change it to a name you're happy to show.</span>
         <span
           v-else
           class="acct-field__note"
-        >Up to 64 characters. People you invite see it next to your email address, never instead of it.</span>
+        >Shown next to your email to people you share with</span>
       </label>
     </section>
 
@@ -54,7 +52,7 @@
         name="info"
         small
       />
-      <span>Your community name and username stay private until you choose Public above. Public pages also need an explicit choice in Library.</span>
+      <span>Your community name stays private until you choose Public.</span>
     </div>
 
     <p

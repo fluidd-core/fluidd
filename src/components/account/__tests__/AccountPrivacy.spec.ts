@@ -14,7 +14,7 @@ afterEach(() => { vi.clearAllMocks() })
 describe('Library data export', () => {
   it('uses a native keyboard-operable button beside account data', () => {
     const w = mount(); const button = w.find('[data-tid="privacy-library-download"]')
-    expect(button.element.tagName).toBe('BUTTON'); expect(button.attributes('type')).toBe('button'); expect(w.text()).toContain('archive'); w.destroy()
+    expect(button.element.tagName).toBe('BUTTON'); expect(button.attributes('type')).toBe('button'); expect(w.text()).toContain('as one .tar'); w.destroy()
   })
   it('lets row labels shrink inside the flex layout', () => {
     const accountStyles = readFileSync(`${process.cwd()}/src/scss/muon3d-account.scss`, 'utf8')

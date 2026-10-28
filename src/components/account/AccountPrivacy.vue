@@ -5,7 +5,6 @@
   >
     <div class="acct-head">
       <h1>Privacy and data</h1>
-      <p>Everything starts private. Nothing of yours is public until you choose to share it.</p>
     </div>
 
     <section
@@ -19,13 +18,13 @@
         <div class="acct-row">
           <div class="acct-row__label">
             <b>Your profile and shared content</b>
-            <span>Review your name and profile settings in Profile. Only content you choose to share is public.</span>
+            <span>Private unless you share it</span>
           </div>
         </div>
         <div class="acct-row">
           <div class="acct-row__label">
             <b>People you let use a printer</b>
-            <span>See your name and email address, and that printer. Nothing else of yours.</span>
+            <span>Your name, email and that printer. Nothing else.</span>
           </div>
           <router-link
             :to="linkTo('printers')"
@@ -48,7 +47,7 @@
         <div class="acct-row">
           <div class="acct-row__label">
             <b>Account</b>
-            <span>One file: your profile, devices, printers, sharing and activity, and how long we keep each.</span>
+            <span>Profile, devices, printers, sharing and activity</span>
           </div>
           <button
             type="button"
@@ -63,7 +62,7 @@
         <div class="acct-row">
           <div class="acct-row__label">
             <b>Library</b>
-            <span>Your retained prints, versions, models and files in one archive (.tar), with their metadata.</span>
+            <span>Prints, models and files, as one .tar</span>
           </div>
           <button
             type="button"

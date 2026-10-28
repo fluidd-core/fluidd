@@ -41,7 +41,7 @@
           <span
             v-else-if="details && details.email_verified === false"
             class="lib-pill lib-pill--warn"
-          >Not confirmed yet</span>
+          >Not confirmed</span>
         </span>
         <span
           v-if="account"
@@ -141,17 +141,24 @@
         <span class="acct-muted">{{ printersText }}</span>
       </component>
 
-      <div
+      <component
+        :is="tileTag('notifications')"
+        :to="tileTo('notifications')"
         class="lib-surface acct-tile"
         data-tid="account-tile-notifications"
       >
         <span class="acct-tile__top"><frame-icon
           name="bell"
           small
-        />Notifications</span>
-        <span>Finished, failed and needs you</span>
-        <span class="acct-muted">Print alerts go to your phone, set up in the Muon3D app. Security emails always go to {{ account ? account.email : 'your address' }}.</span>
-      </div>
+        />Notifications<frame-icon
+          v-if="built('notifications')"
+          name="chevronRight"
+          small
+          class="acct-tile__go"
+        /></span>
+        <span>Print alerts on your phone</span>
+        <span class="acct-muted">Security emails always on</span>
+      </component>
 
       <router-link
         :to="linkTo('library')"
@@ -193,7 +200,7 @@
           class="acct-tile__go"
         /></span>
         <span>Nothing of yours is public</span>
-        <span class="acct-muted">Download your data, or read how long we keep each thing.</span>
+        <span class="acct-muted">Download your data</span>
       </component>
     </div>
 
@@ -208,9 +215,9 @@
       /></span>
       <span class="acct-row__label">
         <b>Free plan</b>
-        <span>Everything your printers do stays free for good. Paid plans for more storage and Create come later.</span>
+        <span>Printer features are always free</span>
       </span>
-      <span class="lib-pill">Plans coming soon</span>
+      <span class="lib-pill">Plans soon</span>
     </router-link>
 
     <section
@@ -407,7 +414,7 @@ export default class AccountOverview extends Vue {
 
   get libraryOffText (): string {
     if (!libraryState.checked) return libraryState.error ? 'Your Library didn\'t answer.' : 'Reading…'
-    return 'Your Library is off. Turn it on to keep what you slice.'
+    return 'Off'
   }
 
   get usedText (): string {
