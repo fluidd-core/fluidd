@@ -6,7 +6,7 @@
  */
 import { LibraryError, MODELS_URL, libraryErrorFrom } from '@/services/library/api'
 import { modelsAssertion } from '@/services/library/assertion'
-import { CREDITS_CATALOGUE, type CataloguePlan, type CostId, type PlanId } from './credits-catalogue'
+import { CREDITS_CATALOGUE, catalogue, type CataloguePlan, type CostId, type PlanId } from './credits-catalogue'
 import { dayText } from './model'
 
 export type HistoryKind = 'shape' | 'part' | 'refund' | 'monthly' | 'rollover' | 'pack' | 'reversal'
@@ -157,12 +157,14 @@ export function usageTileText (account: CreditAccount, now: number = Date.now())
   return [usedText(usage), resetText(usage, now), bought].filter(Boolean).join(' · ')
 }
 
-const cost = (id: CostId) => CREDITS_CATALOGUE.costs.find(c => c.id === id)?.credits ?? 0
+const cost = (id: CostId) => catalogue.costs.find(c => c.id === id)?.credits ?? 0
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
 
 /** "About 5 shapes or 25 parts", "Enough for 3 parts", or "". */
 export function outcomesText (credits: number): string {
+  // Before the catalogue is read, there is nothing to divide by.
+  if (!cost('shape') || !cost('part')) return ''
   const shapes = Math.floor(credits / cost('shape'))
   const parts = Math.floor(credits / cost('part'))
   if (shapes >= 1) return `About ${plural(shapes, 'shape')} or ${plural(parts, 'part')}`
@@ -170,8 +172,9 @@ export function outcomesText (credits: number): string {
   return ''
 }
 
-/** "A part uses 4 credits, a shape 20 and a scan 30". */
+/** "A part uses 4 credits, a shape 20 and a scan 30", once the catalogue is read. */
 export function costsText (): string {
+  if (!cost('part') || !cost('shape') || !cost('scan')) return ''
   return `A part uses ${cost('part')} credits, a shape ${cost('shape')} and a scan ${cost('scan')}`
 }
 
@@ -194,20 +197,21 @@ export function planRows (plan: CataloguePlan): PlanRow[] {
   ]
 }
 
-export function catalogPlan (id: string): CataloguePlan {
-  return CREDITS_CATALOGUE.plans.find(p => p.id === id) ?? CREDITS_CATALOGUE.plans[0]
+/** The catalogue's plan, or null before it is read or for a plan it doesn't list. */
+export function catalogPlan (id: string): CataloguePlan | null {
+  return catalogue.plans.find(p => p.id === id) ?? null
 }
 
 /** "Plus", or a plan the catalogue doesn't list yet under its own name. */
 export function planName (id: string): string {
-  const plan = CREDITS_CATALOGUE.plans.find(p => p.id === id)
+  const plan = catalogue.plans.find(p => p.id === id)
   return plan?.name ?? (id ? id[0].toUpperCase() + id.slice(1) : '')
 }
 
 const SYMBOLS: Record<string, string> = { GBP: '£', USD: '$', EUR: '€' }
 
 /** "£7.99". */
-export function money (amount: number, currency: string = CREDITS_CATALOGUE.currency): string {
+export function money (amount: number, currency: string = catalogue.currency): string {
   const symbol = SYMBOLS[currency]
   const text = amount.toFixed(2)
   return symbol ? `${symbol}${text}` : `${text} ${currency}`
@@ -220,7 +224,7 @@ export function credits (n: number): string {
 
 /** What a plan costs per month on a yearly plan, and the months it saves: "£6.67 a month, 2 months free". */
 export function yearlyLine (plan: CataloguePlan): string {
-  if (!plan.price) return ''
+  if (!plan.price?.monthly) return ''
   const perMonth = plan.price.yearly / 12
   const saved = Math.round((plan.price.monthly * 12 - plan.price.yearly) / plan.price.monthly)
   return `${money(perMonth)} a month${saved >= 1 ? `, ${plural(saved, 'month')} free` : ''}`

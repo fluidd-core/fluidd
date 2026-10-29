@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { LibraryError } from '@/services/library/api'
-import { CREDITS_CATALOGUE } from '../credits-catalogue'
+import { CREDITS_CATALOGUE, catalogue, loadCatalogue, setCatalogue } from '../credits-catalogue'
+import { SERVICE_CATALOGUE } from './catalogue-fixture'
 import {
-  catalogPlan, changeText, credits, creditsUnavailableReason, historyIcon, limitState, loadCredits, money, outcomesText,
+  catalogPlan, changeText, costsText, credits, creditsUnavailableReason, historyIcon, limitState, loadCredits, money, outcomesText,
   perCreditText, planName, planRows, resetText, usageTileText, usageWindow, usedPercent, usedText, yearlyLine,
   type CreditAccount
 } from '../credits'
@@ -13,6 +14,14 @@ const drop = vi.hoisted(() => vi.fn(() => { auth.dropped = true }))
 vi.mock('@/services/library/assertion', () => ({ modelsAssertion: { get: async () => auth.dropped ? 'assertion-2' : 'assertion-1', drop } }))
 
 const now = new Date(2026, 9, 28).getTime()
+
+beforeEach(() => { setCatalogue(SERVICE_CATALOGUE) })
+
+const planOf = (id: string) => {
+  const plan = catalogPlan(id)
+  if (!plan) throw new Error(`no ${id} in the catalogue`)
+  return plan
+}
 const monday = new Date(2026, 10, 2, 9).getTime()
 
 const account = (over: Partial<CreditAccount> = {}): CreditAccount => ({
@@ -84,13 +93,13 @@ describe('the plan\'s limit', () => {
 
 describe('plans side by side', () => {
   it('gives every plan the same rows in the same order, so they line up', () => {
-    const labels = CREDITS_CATALOGUE.plans.map(p => planRows(p).map(r => r.label))
+    const labels = catalogue.plans.map(p => planRows(p).map(r => r.label))
     for (const l of labels) expect(l).toEqual(labels[0])
     expect(labels[0]).toEqual(['Each week', 'Jobs at once', 'Priority queue', 'High detail shapes'])
   })
 
   it('differs only in what costs us to run, and gives more for more', () => {
-    const [free, plus, pro] = CREDITS_CATALOGUE.plans
+    const [free, plus, pro] = catalogue.plans
     expect(free.weeklyLimit).toBeLessThan(plus.weeklyLimit)
     expect(plus.weeklyLimit).toBeLessThan(pro.weeklyLimit)
     expect(planRows(pro).find(r => r.label === 'High detail shapes')?.value).toBe(true)
@@ -112,17 +121,17 @@ describe('prices', () => {
 
   it('prices plans and packs from the catalogue', () => {
     expect(money(7.99)).toBe('£7.99')
-    expect(yearlyLine(catalogPlan('plus'))).toBe('£6.67 a month, 2 months free')
-    expect(yearlyLine(catalogPlan('free'))).toBe('')
+    expect(yearlyLine(planOf('plus'))).toBe('£6.67 a month, 2 months free')
+    expect(yearlyLine(planOf('free'))).toBe('')
     expect(perCreditText(12.99, 500)).toBe('2.6p')
     expect(planName('team')).toBe('Team')
-    expect(catalogPlan('team').id).toBe('free')
+    expect(catalogPlan('team')).toBeNull()
   })
 
   it('keeps every top-up dearer per credit than Plus, so the plan is always the better buy', () => {
-    const plus = catalogPlan('plus')
+    const plus = planOf('plus')
     const plusPerCredit = (plus.price?.monthly ?? 0) / (plus.weeklyLimit * 52 / 12)
-    for (const pack of CREDITS_CATALOGUE.packs) expect(pack.price / pack.credits).toBeGreaterThan(plusPerCredit)
+    for (const pack of catalogue.packs) expect(pack.price / pack.credits).toBeGreaterThan(plusPerCredit)
   })
 
   it('signs history rows and picks their icon', () => {
@@ -134,6 +143,57 @@ describe('prices', () => {
     expect(historyIcon(row('rollover', -64))).toBe('expire')
     expect(historyIcon(row('shape', -20))).toBe('spend')
     expect(historyIcon(row('pack', 100))).toBe('add')
+  })
+})
+
+describe('the catalogue', () => {
+  it('is read from the model service, with no account, once a session', async () => {
+    catalogue.plans = []
+    const fetcher = vi.fn(async () => new Response(JSON.stringify(SERVICE_CATALOGUE), { status: 200 }))
+    expect(await loadCatalogue(fetcher as unknown as typeof fetch)).toBe(true)
+    const [url, init] = fetcher.mock.calls[0] as unknown as [string, RequestInit]
+    expect(url).toMatch(/\/v1\/create\/catalogue$/)
+    expect(init.credentials).toBe('omit')
+    expect(init.headers).toBeUndefined()
+    expect(await loadCatalogue(fetcher as unknown as typeof fetch)).toBe(true)
+    expect(fetcher).toHaveBeenCalledTimes(1)
+    // Two at once share one request.
+    catalogue.plans = []
+    const both = await Promise.all([loadCatalogue(fetcher as unknown as typeof fetch), loadCatalogue(fetcher as unknown as typeof fetch)])
+    expect(both).toEqual([true, true])
+    expect(fetcher).toHaveBeenCalledTimes(2)
+  })
+
+  it('tries again after a failed read', async () => {
+    catalogue.plans = []
+    const flaky = vi.fn()
+      .mockResolvedValueOnce(new Response('', { status: 503 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify(SERVICE_CATALOGUE), { status: 200 }))
+    expect(await loadCatalogue(flaky as unknown as typeof fetch)).toBe(false)
+    expect(await loadCatalogue(flaky as unknown as typeof fetch)).toBe(true)
+    expect(catalogue.plans).toHaveLength(3)
+  })
+
+  it('takes the service\'s numbers and Control\'s words for them', () => {
+    expect(catalogue.plans.map(p => [p.id, p.weeklyLimit, p.jobsAtOnce])).toEqual([['free', 20, 1], ['plus', 100, 2], ['pro', 300, 4]])
+    expect(catalogue.costs.find(c => c.id === 'shapeRefine')).toEqual({ id: 'shapeRefine', label: 'Another idea', credits: 12 })
+    expect(catalogue.packs).toEqual([{ credits: 100, price: 2.99 }, { credits: 500, price: 12.99 }, { credits: 1500, price: 34.99 }])
+  })
+
+  it('keeps what it had, and says no, when the service can\'t answer or answers nonsense', async () => {
+    expect(setCatalogue({ plans: [] })).toBe(false)
+    expect(setCatalogue('<html>')).toBe(false)
+    expect(setCatalogue({ plans: [null, { weeklyLimit: 5 }] })).toBe(false)
+    expect(catalogue.plans).toHaveLength(3)
+    catalogue.plans = []
+    const down = vi.fn(async () => new Response('', { status: 503 }))
+    expect(await loadCatalogue(down as unknown as typeof fetch)).toBe(false)
+    const offline = vi.fn(async () => { throw new TypeError('network') })
+    expect(await loadCatalogue(offline as unknown as typeof fetch)).toBe(false)
+    // Nothing to divide by yet: no made-up outcomes or prices per job.
+    catalogue.costs = []
+    expect(outcomesText(100)).toBe('')
+    expect(costsText()).toBe('')
   })
 })
 
