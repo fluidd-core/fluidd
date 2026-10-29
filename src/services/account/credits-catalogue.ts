@@ -88,24 +88,28 @@ const num = (v: unknown): number => (typeof v === 'number' && Number.isFinite(v)
  * nothing, for an answer without plans.
  */
 export function setCatalogue (data: unknown): boolean {
-  const d = (data ?? {}) as Record<string, unknown>
-  if (!Array.isArray(d.plans) || !d.plans.length) return false
-  const plans = (d.plans as Record<string, unknown>[]).map(p => {
-    const price = p.price as Record<string, unknown> | null
+  const d = (data && typeof data === 'object' ? data : {}) as Record<string, unknown>
+  if (!Array.isArray(d.plans)) return false
+  const named = (d.plans as unknown[]).filter((p): p is Record<string, unknown> =>
+    !!p && typeof p === 'object' && typeof (p as Record<string, unknown>).id === 'string' && typeof (p as Record<string, unknown>).name === 'string')
+  if (!named.length) return false
+  const plans = named.map(p => {
+    const price = p.price && typeof p.price === 'object' ? p.price as Record<string, unknown> : null
     return {
       id: String(p.id),
       name: String(p.name),
-      price: price ? { monthly: num(price.monthly), yearly: num(price.yearly) } : null,
+      price: price && num(price.monthly) > 0 ? { monthly: num(price.monthly), yearly: num(price.yearly) } : null,
       weeklyLimit: num(p.weeklyLimit),
       jobsAtOnce: num(p.jobsAtOnce),
       priority: p.priority === true,
       highDetail: p.highDetail === true
     }
   })
-  const packs = (Array.isArray(d.packs) ? d.packs as Record<string, unknown>[] : [])
+  const packs = (Array.isArray(d.packs) ? d.packs as unknown[] : [])
+    .filter((p): p is Record<string, unknown> => !!p && typeof p === 'object')
     .map(p => ({ credits: num(p.credits), price: num(p.price) }))
-    .filter(p => p.credits > 0)
-  const costs = (d.costs ?? {}) as Record<string, unknown>
+    .filter(p => p.credits > 0 && p.price > 0)
+  const costs = (d.costs && typeof d.costs === 'object' ? d.costs : {}) as Record<string, unknown>
   catalogue.currency = typeof d.currency === 'string' ? d.currency : 'GBP'
   catalogue.plans = plans
   catalogue.packs = packs

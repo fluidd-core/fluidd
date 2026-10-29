@@ -224,7 +224,7 @@ export function credits (n: number): string {
 
 /** What a plan costs per month on a yearly plan, and the months it saves: "£6.67 a month, 2 months free". */
 export function yearlyLine (plan: CataloguePlan): string {
-  if (!plan.price) return ''
+  if (!plan.price?.monthly) return ''
   const perMonth = plan.price.yearly / 12
   const saved = Math.round((plan.price.monthly * 12 - plan.price.yearly) / plan.price.monthly)
   return `${money(perMonth)} a month${saved >= 1 ? `, ${plural(saved, 'month')} free` : ''}`

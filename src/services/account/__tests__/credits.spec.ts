@@ -157,6 +157,21 @@ describe('the catalogue', () => {
     expect(init.headers).toBeUndefined()
     expect(await loadCatalogue(fetcher as unknown as typeof fetch)).toBe(true)
     expect(fetcher).toHaveBeenCalledTimes(1)
+    // Two at once share one request.
+    catalogue.plans = []
+    const both = await Promise.all([loadCatalogue(fetcher as unknown as typeof fetch), loadCatalogue(fetcher as unknown as typeof fetch)])
+    expect(both).toEqual([true, true])
+    expect(fetcher).toHaveBeenCalledTimes(2)
+  })
+
+  it('tries again after a failed read', async () => {
+    catalogue.plans = []
+    const flaky = vi.fn()
+      .mockResolvedValueOnce(new Response('', { status: 503 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify(SERVICE_CATALOGUE), { status: 200 }))
+    expect(await loadCatalogue(flaky as unknown as typeof fetch)).toBe(false)
+    expect(await loadCatalogue(flaky as unknown as typeof fetch)).toBe(true)
+    expect(catalogue.plans).toHaveLength(3)
   })
 
   it('takes the service\'s numbers and Control\'s words for them', () => {
@@ -168,6 +183,7 @@ describe('the catalogue', () => {
   it('keeps what it had, and says no, when the service can\'t answer or answers nonsense', async () => {
     expect(setCatalogue({ plans: [] })).toBe(false)
     expect(setCatalogue('<html>')).toBe(false)
+    expect(setCatalogue({ plans: [null, { weeklyLimit: 5 }] })).toBe(false)
     expect(catalogue.plans).toHaveLength(3)
     catalogue.plans = []
     const down = vi.fn(async () => new Response('', { status: 503 }))
