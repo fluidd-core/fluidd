@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import AccountPlan from '../AccountPlan.vue'
-import { CREDITS_CATALOGUE } from '@/services/account/credits-catalogue'
+import { CREDITS_CATALOGUE, catalogue, setCatalogue } from '@/services/account/credits-catalogue'
+import { SERVICE_CATALOGUE } from '@/services/account/__tests__/catalogue-fixture'
 import { LibraryError } from '@/services/library/api'
 import type { CreditAccount } from '@/services/account/credits'
 
@@ -9,7 +10,6 @@ const loadCredits = vi.hoisted(() => vi.fn())
 vi.mock('@/services/account/credits', async (actual) => ({ ...(await actual<object>()), loadCredits }))
 
 const settle = () => new Promise(resolve => setTimeout(resolve))
-const shipped = CREDITS_CATALOGUE.planPageOpen
 const monday = new Date(2026, 10, 2, 9).getTime()
 
 const plus: CreditAccount = {
@@ -39,28 +39,11 @@ async function open (answer: CreditAccount | Error) {
 
 const text = (w: { text: () => string }) => w.text().replace(/\s+/g, ' ')
 
-describe('Plan, while closed', () => {
-  beforeEach(() => { CREDITS_CATALOGUE.planPageOpen = false })
-  afterEach(() => {
-    CREDITS_CATALOGUE.planPageOpen = shipped
-    vi.clearAllMocks()
-  })
-
-  it('shows the planned-prices card and asks the service nothing', async () => {
-    const w = await open(plus)
-    expect(w.find('h1').text()).toBe('Plan')
-    expect(w.text()).toContain('These are planned prices.')
-    expect(w.find('[data-tid="plan-usage"]').exists()).toBe(false)
-    expect(loadCredits).not.toHaveBeenCalled()
-    w.destroy()
-  })
-})
-
 describe('Plan', () => {
-  beforeEach(() => { CREDITS_CATALOGUE.planPageOpen = true })
+  beforeEach(() => { setCatalogue(SERVICE_CATALOGUE) })
   afterEach(() => {
-    CREDITS_CATALOGUE.planPageOpen = shipped
     vi.clearAllMocks()
+    vi.unstubAllGlobals()
   })
 
   it('leads with how much of the week is used and when it resets, then the plans', async () => {
@@ -107,7 +90,7 @@ describe('Plan', () => {
     expect(rows('free')).toEqual(['Each week: 1 shape or 5 parts', 'Jobs at once: 1', 'Priority queue: —Not included', 'High detail shapes: —Not included'])
     expect(rows('plus')).toEqual(['Each week: 5 shapes or 25 parts', 'Jobs at once: 2', 'Priority queue: Included', 'High detail shapes: —Not included'])
     expect(rows('pro')).toEqual(['Each week: 15 shapes or 75 parts', 'Jobs at once: 4', 'Priority queue: Included', 'High detail shapes: Included'])
-    for (const plan of CREDITS_CATALOGUE.plans) {
+    for (const plan of catalogue.plans) {
       const card = text(w.find(`[data-tid="plan-option-${plan.id}"]`))
       if (plan.price) expect(card).toContain(`£${plan.price.monthly.toFixed(2)}`)
       for (const free of CREDITS_CATALOGUE.free) expect(card).not.toContain(free)
@@ -157,12 +140,37 @@ describe('Plan', () => {
 
   it('keeps credits as a top-up: never expiring, priced per credit, with job prices behind (i)', async () => {
     const w = await open(plus)
-    for (const pack of CREDITS_CATALOGUE.packs) expect(text(w.find(`[data-tid="plan-pack-${pack.credits}"]`))).toContain(`£${pack.price.toFixed(2)}`)
+    for (const pack of catalogue.packs) expect(text(w.find(`[data-tid="plan-pack-${pack.credits}"]`))).toContain(`£${pack.price.toFixed(2)}`)
     expect(text(w.find('[data-tid="plan-pack-100"]'))).toContain('About 5 shapes or 25 parts')
     await w.find('[data-tid="plan-credits"] [data-tid="acct-more"]').trigger('click')
     const more = text(w.find('[data-tid="plan-credits"] [role="note"]'))
     expect(more).toContain('only used once you reach your plan\'s limit')
     expect(more).toContain('A part uses 4 credits, a shape 20 and a scan 30')
+    w.destroy()
+  })
+
+  it('takes every number from the model service\'s catalogue', async () => {
+    setCatalogue({ ...SERVICE_CATALOGUE, plans: SERVICE_CATALOGUE.plans.map(p => p.id === 'plus' ? { ...p, weeklyLimit: 200, price: { monthly: 8.99, yearly: 89.99 } } : p) })
+    const w = await open(plus)
+    const card = text(w.find('[data-tid="plan-option-plus"]'))
+    expect(card).toContain('£8.99')
+    expect(card).toContain('10 shapes or 50 parts')
+    w.destroy()
+  })
+
+  it('says so when the catalogue can\'t be read, and invents no plans', async () => {
+    catalogue.plans = []
+    catalogue.packs = []
+    catalogue.costs = []
+    const fetcher = vi.fn(async () => new Response('', { status: 503 }))
+    vi.stubGlobal('fetch', fetcher)
+    const w = await open(plus)
+    expect((fetcher.mock.calls[0] as unknown as [string])[0]).toMatch(/\/v1\/create\/catalogue$/)
+    expect(w.find('[data-tid="plan-catalogue-missing"]').text()).toContain('Plans can\'t be read from the model service')
+    expect(w.findAll('[data-tid^="plan-option-"]').length).toBe(0)
+    expect(w.findAll('[data-tid^="plan-pack-"]').length).toBe(0)
+    // The account's own usage still shows.
+    expect(text(w.find('[data-tid="plan-usage"]'))).toContain('34% of this week\'s limit used')
     w.destroy()
   })
 
@@ -180,7 +188,7 @@ describe('Plan', () => {
     const w = await open(new LibraryError('create_unavailable', 'no', 503))
     expect(w.find('[data-tid="plan-usage"]').exists()).toBe(false)
     expect(w.find('[data-tid="plan-unavailable"]').text()).toContain('Your usage shows here once Create opens.')
-    for (const plan of CREDITS_CATALOGUE.plans) expect(w.find(`[data-tid="plan-option-${plan.id}"]`).exists()).toBe(true)
+    for (const plan of catalogue.plans) expect(w.find(`[data-tid="plan-option-${plan.id}"]`).exists()).toBe(true)
     expect(w.find('[data-tid="plan-current"]').exists()).toBe(false)
     expect(w.text()).not.toContain('Current')
     w.destroy()

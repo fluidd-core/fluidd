@@ -1,7 +1,5 @@
 <template>
-  <account-plan-planned v-if="!pageOpen" />
   <div
-    v-else
     class="acct-section"
     data-tid="account-plan"
   >
@@ -133,6 +131,7 @@
             Plans
           </h2>
           <div
+            v-if="plans.length"
             class="plan-period"
             role="group"
             aria-label="Billing period"
@@ -151,6 +150,13 @@
             </button>
           </div>
         </div>
+        <p
+          v-if="catalogueMissing"
+          class="acct-muted"
+          data-tid="plan-catalogue-missing"
+        >
+          Plans can't be read from the model service right now. Try again later.
+        </p>
         <ul class="plan-grid">
           <li
             v-for="p in plans"
@@ -233,6 +239,7 @@
 
       <!-- Credits: a top-up for after the limit, offered, never pushed. -->
       <section
+        v-if="packs.length"
         id="plan-credits"
         class="lib-surface acct-card"
         aria-labelledby="plan-credits-heading"
@@ -246,7 +253,9 @@
             label="How credits work"
             end
           >
-            Credits are only used once you reach your plan's limit, and they never expire. {{ costsLine }}. A job that fails gives its usage back.
+            Credits are only used once you reach your plan's limit, and they never expire.<template v-if="costsLine">
+              {{ costsLine }}.
+            </template> A job that fails gives its usage back.
           </acct-more>
         </div>
         <div class="acct-list">
@@ -320,7 +329,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { CREDITS_CATALOGUE, type CataloguePack, type CataloguePlan } from '@/services/account/credits-catalogue'
+import { CREDITS_CATALOGUE, catalogue, loadCatalogue, type CataloguePack, type CataloguePlan } from '@/services/account/credits-catalogue'
 import {
   changeText, costsText, credits, creditsUnavailableReason, historyIcon, limitState, loadCredits, money, outcomesText,
   perCreditText, planName, planRows, resetText, usageWindow, usedPercent, usedText, yearlyLine,
@@ -328,7 +337,6 @@ import {
 } from '@/services/account/credits'
 import { whenText } from '@/services/account/model'
 import AcctMore from './AcctMore.vue'
-import AccountPlanPlanned from './AccountPlanPlanned.vue'
 
 type Period = 'monthly' | 'yearly'
 
@@ -337,12 +345,12 @@ type Period = 'monthly' | 'yearly'
  * to run). Leads with how much of the plan's limit is used and when it
  * resets, then the plans side by side, then credits as a top-up for after
  * the limit, then the history, from the model service's
- * `GET /v1/create/plan`. Every number on it comes from the catalogue
- * (credits-catalogue.ts) or the service. No button takes money until
- * `paymentsOpen`. Until `planPageOpen`, it shows the planned-prices card and
- * asks the service nothing.
+ * `GET /v1/create/plan`. Every number on it comes from the model service:
+ * the plans, packs and costs from its catalogue (`GET /v1/create/catalogue`,
+ * KAN-1155), the usage from the account. No button takes money until
+ * `paymentsOpen`.
  */
-@Component({ components: { AcctMore, AccountPlanPlanned } })
+@Component({ components: { AcctMore } })
 export default class AccountPlan extends Vue {
   account: CreditAccount | null = null
   /** Until the service answers, so nothing about the account shows and then changes. */
@@ -351,9 +359,11 @@ export default class AccountPlan extends Vue {
   period: Period = 'monthly'
   readonly periods: Period[] = ['monthly', 'yearly']
   readonly soon = 'Payments open soon'
+  /** The catalogue couldn't be read: the page says so instead of showing no plans. */
+  catalogueMissing = false
 
   async created () {
-    if (!this.pageOpen) return
+    loadCatalogue().then(read => { this.catalogueMissing = !read })
     try {
       this.account = await loadCredits()
       if (this.account.period === 'yearly') this.period = 'yearly'
@@ -364,20 +374,16 @@ export default class AccountPlan extends Vue {
     }
   }
 
-  get pageOpen (): boolean {
-    return CREDITS_CATALOGUE.planPageOpen
-  }
-
   get paymentsOpen (): boolean {
     return CREDITS_CATALOGUE.paymentsOpen
   }
 
   get plans (): CataloguePlan[] {
-    return CREDITS_CATALOGUE.plans
+    return catalogue.plans
   }
 
   get packs (): CataloguePack[] {
-    return CREDITS_CATALOGUE.packs
+    return catalogue.packs
   }
 
   get recommended (): string {
@@ -387,7 +393,7 @@ export default class AccountPlan extends Vue {
   /** The account's plan in the catalogue: none before the service answers, or for a plan Control doesn't list. */
   get currentPlan (): CataloguePlan | null {
     const id = this.account?.plan
-    return CREDITS_CATALOGUE.plans.find(p => p.id === id) ?? null
+    return catalogue.plans.find(p => p.id === id) ?? null
   }
 
   get planLabel (): string {
