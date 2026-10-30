@@ -174,7 +174,8 @@ export default class PrinterEntriesMixin extends Mixins(StateMixin) {
     if (e.active !== 'cloud') {
       actions.push({ id: 'connect-cloud', label: 'Connect through Muon3D', icon: '$cloud', disabled: !e.cloud?.online })
     }
-    if (e.nearby && !e.cloud?.online) {
+    // Offered whenever the printer is in Bluetooth range, online to the cloud or not (ADR 0052).
+    if (e.nearby) {
       actions.push({ id: 'connect-bluetooth', label: 'Connect over Bluetooth', icon: '$bluetooth' })
     }
     actions.push({
