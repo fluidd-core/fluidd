@@ -10,17 +10,17 @@ const RETRY_MIN = 1000
 const RETRY_MAX = 30_000
 const RETRY_JITTER = 0.2
 
-const STALL_AFTER = 10_000
-const DEAD_AFTER = 30_000
+const PING_AFTER = 10_000
+const DEAD_AFTER = 20_000
 
 const FAST_NOTIFY_KEYS = [
   'motion_report'
 ] as const
 
 const retryDelay = (attempt: number): number => {
-  const base = Math.min(RETRY_MAX, RETRY_MIN * 2 ** Math.min(attempt, 16))
+  const base = RETRY_MIN * 2 ** Math.min(attempt, 16)
 
-  return Math.round(base * (1 + RETRY_JITTER * (2 * Math.random() - 1)))
+  return Math.min(RETRY_MAX, Math.round(base * (1 + RETRY_JITTER * (2 * Math.random() - 1))))
 }
 
 // A 5xx is never suppressible — a 503 drives klippy recovery in socket/onSocketError.
@@ -53,8 +53,7 @@ export class WebSocketClient {
   private cache: CachedParams | null = null
   private retryCount = 0
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
-  private stallTimeout: ReturnType<typeof setTimeout> | null = null
-  private deadTimeout: ReturnType<typeof setTimeout> | null = null
+  private silenceTimeout: ReturnType<typeof setTimeout> | null = null
 
   constructor (options: SocketPluginOptions) {
     this.store = options.store
@@ -63,7 +62,7 @@ export class WebSocketClient {
   close () {
     this.clearReconnectTimer()
 
-    this.clearSilenceTimers()
+    this.clearSilenceTimer()
 
     if (this.connection) {
       this.clearCacheAndRequests()
@@ -104,11 +103,13 @@ export class WebSocketClient {
       const connection = new WebSocket(url)
       this.connection = connection
 
+      this.armDeadTimer()
+
       connection.onopen = () => {
         if (this.connection !== connection) return
 
         this.retryCount = 0
-        this.armSilenceTimers()
+        this.armPingTimer()
         this.store.typedDispatch('socket/onSetStatus', 'identifying')
       }
 
@@ -128,7 +129,7 @@ export class WebSocketClient {
       connection.onmessage = async (message) => {
         if (this.connection !== connection) return
 
-        this.armSilenceTimers()
+        this.armPingTimer()
 
         // Parse the data packet.
         const socketResponse = JSON.parse(message.data) as SocketResponse
@@ -225,7 +226,7 @@ export class WebSocketClient {
     // If the socket is already marked disconnected, there is nothing left to do.
     if (this.store.state.socket.status === 'disconnected') return
 
-    this.clearSilenceTimers()
+    this.clearSilenceTimer()
     this.clearCacheAndRequests()
     this.connection = null
 
@@ -248,38 +249,36 @@ export class WebSocketClient {
     }
   }
 
-  private armSilenceTimers () {
-    this.clearSilenceTimers()
+  private armPingTimer () {
+    this.clearSilenceTimer()
 
     // Unauthenticated sockets get no notifications
-    this.stallTimeout = setTimeout(() => {
-      this.stallTimeout = null
-
-      consola.debug(`${LOG_PREFIX} No message for ${STALL_AFTER} ms`)
+    this.silenceTimeout = setTimeout(() => {
+      consola.debug(`${LOG_PREFIX} No message for ${PING_AFTER} ms`)
       this.emit('server.info', { suppressError: true })
         .catch(() => {})
-    }, STALL_AFTER)
+      this.armDeadTimer()
+    }, PING_AFTER)
+  }
 
-    this.deadTimeout = setTimeout(() => {
-      this.deadTimeout = null
+  private armDeadTimer () {
+    this.clearSilenceTimer()
+
+    this.silenceTimeout = setTimeout(() => {
+      this.silenceTimeout = null
 
       const connection = this.connection
 
-      consola.debug(`${LOG_PREFIX} No message for ${DEAD_AFTER} ms, replacing the connection`)
+      consola.debug(`${LOG_PREFIX} No response for ${DEAD_AFTER} ms, replacing the connection`)
       this.handleClose()
       connection?.close()
     }, DEAD_AFTER)
   }
 
-  private clearSilenceTimers () {
-    if (this.stallTimeout !== null) {
-      clearTimeout(this.stallTimeout)
-      this.stallTimeout = null
-    }
-
-    if (this.deadTimeout !== null) {
-      clearTimeout(this.deadTimeout)
-      this.deadTimeout = null
+  private clearSilenceTimer () {
+    if (this.silenceTimeout !== null) {
+      clearTimeout(this.silenceTimeout)
+      this.silenceTimeout = null
     }
   }
 
