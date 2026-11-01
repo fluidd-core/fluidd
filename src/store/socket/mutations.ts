@@ -17,5 +17,13 @@ export const mutations = {
 
   setConnectionId (state, payload: number | null) {
     state.connectionId = payload
+  },
+
+  setRetryAt (state, payload: number | null) {
+    state.retryAt = payload
+  },
+
+  setStalled (state, payload: boolean) {
+    state.stalled = payload
   }
 } satisfies MutationTree<SocketState>

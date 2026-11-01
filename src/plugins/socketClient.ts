@@ -7,11 +7,12 @@ import type { SocketError } from '@/util/is-socket-error'
 const LOG_PREFIX = '[WEBSOCKET]'
 
 const RETRY_MIN = 1000
-const RETRY_MAX = 30_000
+const RETRY_MAX = 15_000
 const RETRY_JITTER = 0.2
+const RETRY_SHOW_AFTER = 5000
 
 const PING_AFTER = 10_000
-const DEAD_AFTER = 20_000
+const DEAD_AFTER = 10_000
 
 const FAST_NOTIFY_KEYS = [
   'motion_report'
@@ -53,6 +54,7 @@ export class WebSocketClient {
   private cache: CachedParams | null = null
   private retryCount = 0
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
+  private retryHeld = false
   private silenceTimeout: ReturnType<typeof setTimeout> | null = null
 
   constructor (options: SocketPluginOptions) {
@@ -83,7 +85,10 @@ export class WebSocketClient {
   }
 
   retryNow () {
-    if (this.reconnectTimeout !== null) {
+    if (
+      this.reconnectTimeout !== null ||
+      this.retryHeld
+    ) {
       this.connect()
     }
   }
@@ -236,9 +241,22 @@ export class WebSocketClient {
 
     this.retryCount += 1
 
+    if (delay >= RETRY_SHOW_AFTER) {
+      this.store.typedCommit('socket/setRetryAt', Date.now() + delay)
+    }
+
     this.reconnectTimeout = setTimeout(() => {
-      this.reconnectTimeout = null
-      this.openSocket()
+      this.clearReconnectTimer()
+
+      // Resumed by retryNow() on visibilitychange or online
+      if (
+        document.hidden ||
+        !navigator.onLine
+      ) {
+        this.retryHeld = true
+      } else {
+        this.openSocket()
+      }
     }, delay)
   }
 
@@ -246,6 +264,12 @@ export class WebSocketClient {
     if (this.reconnectTimeout !== null) {
       clearTimeout(this.reconnectTimeout)
       this.reconnectTimeout = null
+    }
+
+    this.retryHeld = false
+
+    if (this.store.state.socket.retryAt !== null) {
+      this.store.typedCommit('socket/setRetryAt', null)
     }
   }
 
@@ -258,6 +282,7 @@ export class WebSocketClient {
       this.emit('server.info', { suppressError: true })
         .catch(() => {})
       this.armDeadTimer()
+      this.store.typedCommit('socket/setStalled', true)
     }, PING_AFTER)
   }
 
@@ -279,6 +304,10 @@ export class WebSocketClient {
     if (this.silenceTimeout !== null) {
       clearTimeout(this.silenceTimeout)
       this.silenceTimeout = null
+    }
+
+    if (this.store.state.socket.stalled) {
+      this.store.typedCommit('socket/setStalled', false)
     }
   }
 
