@@ -22,8 +22,4 @@ RUN \
 USER node
 WORKDIR /workspaces/fluidd
 
-# A globally installed `node` is what pnpm's project-aware shim dispatches from:
-# inside the workspace, `node` runs the version `devEngines.runtime` pins.
-RUN pnpm add --global node@^24.11.0
-
 RUN sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" "" --unattended

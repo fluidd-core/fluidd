@@ -31,8 +31,8 @@ second source for humans too.
 - **[Vite](https://vitejs.dev/) 8** as the build tool and dev server
 - **[Vitest](https://vitest.dev/) 5** for unit tests — `node` environment by default, with
   `jsdom` opted into per spec
-- **Node.js 24** — pinned in `package.json` via `devEngines.runtime`
-  (engines: `^22.12.0 || ^24`)
+- **Node.js 26** — pinned in `package.json` via `devEngines.runtime`
+  (engines: `^24 || ^26`)
 
 ### How it talks to Klipper
 
@@ -164,7 +164,7 @@ printer.
 
 ### Install Node.js
 
-Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v24.x.
+Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v26.x.
 
 Fluidd pins its own Node.js version in `package.json` via `devEngines.runtime`, so
 pnpm downloads and uses that version for the project regardless of the one you

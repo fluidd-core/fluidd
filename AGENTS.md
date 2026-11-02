@@ -75,8 +75,8 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 
 ### Build Toolchain
 
-- **Node.js 24** — pinned in `package.json` via `devEngines.runtime` `^24.11.0` with
-  `onFail: download` (engines: `^22.12.0 || ^24`). pnpm provisions it; there is no
+- **Node.js 26** — pinned in `package.json` via `devEngines.runtime` `^26.13.0` with
+  `onFail: download` (engines: `^24 || ^26`). pnpm provisions it; there is no
   `.node-version` file and Corepack is not used anywhere — the pnpm version itself is pinned
   the same way, through `devEngines.packageManager`. Setting `packageManager` **as well** is an
   error in pnpm 12 ("Cannot use both"), so the two fields are mutually exclusive
@@ -454,7 +454,7 @@ src/
 - The image has no `node` user and runs as root, so the Dockerfile creates one (uid 1000, zsh) to
   match `devcontainer.json`'s `remoteUser`, and `chown`s `/pnpm` to it — pnpm writes the downloaded
   runtime and its global shims there
-- `pnpm add --global node@^24.11.0` in the Dockerfile is **load-bearing**: without a globally
+- `pnpm add --global node@^26.13.0` in the Dockerfile is **load-bearing**: without a globally
   installed `node` there is no shim for pnpm to dispatch from, and a bare `node` in the container is
   simply "not found". With it, `node` inside the workspace runs the `devEngines.runtime` version
 - `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
