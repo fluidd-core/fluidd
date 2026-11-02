@@ -5,7 +5,7 @@ export const createState = (): SocketState => {
     status: 'initializing',
     acceptingNotifications: false,
     connectionId: null,
-    retryAt: null,
+    retry: null,
     stalled: false
   }
 }

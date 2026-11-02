@@ -1,5 +1,5 @@
 import type { MutationTree } from 'vuex'
-import type { SocketState, SocketStatus } from './types'
+import type { SocketRetry, SocketState, SocketStatus } from './types'
 import { createState } from './state'
 
 export const mutations = {
@@ -19,8 +19,8 @@ export const mutations = {
     state.connectionId = payload
   },
 
-  setRetryAt (state, payload: number | null) {
-    state.retryAt = payload
+  setRetry (state, payload: SocketRetry | null) {
+    state.retry = payload
   },
 
   setStalled (state, payload: boolean) {

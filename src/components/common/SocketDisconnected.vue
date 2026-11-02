@@ -13,6 +13,7 @@
           {{ apiUrl }}
         </div>
         <span v-if="socketDisconnected">{{ $t('app.socket.msg.no_connection') }}</span>
+        <span v-else-if="retryHeld">{{ $t('app.socket.msg.unable_to_connect') }}</span>
         <span v-else-if="retrySeconds !== null">{{ $t('app.socket.msg.retrying_in', { seconds: retrySeconds }) }}</span>
         <span v-else>{{ $t('app.socket.msg.connecting') }}</span>
       </v-col>
@@ -21,7 +22,7 @@
         lg="4"
       >
         <v-progress-linear
-          v-if="!socketDisconnected && retrySeconds === null"
+          v-if="!socketDisconnected && !waitingToRetry"
           class="mb-4"
           color="warning"
           indeterminate
@@ -30,7 +31,7 @@
         />
 
         <app-btn
-          v-if="retrySeconds !== null"
+          v-if="waitingToRetry"
           block
           color="info"
           class="me-2 mb-2"
@@ -67,6 +68,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import StateMixin from '@/mixins/state'
 import type { InstanceConfig } from '@/store/config/types'
+import type { SocketRetry } from '@/store/socket/types'
 
 @Component({
   components: {}
@@ -75,16 +77,8 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
   now = Date.now()
   nowInterval: ReturnType<typeof setInterval> | null = null
 
-  created () {
-    this.nowInterval = setInterval(() => {
-      this.now = Date.now()
-    }, 1000)
-  }
-
   beforeDestroy () {
-    if (this.nowInterval !== null) {
-      clearInterval(this.nowInterval)
-    }
+    this.stopNowInterval()
   }
 
   reload () {
@@ -95,13 +89,37 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
     return this.$typedGetters['config/getCurrentInstance']
   }
 
-  get retryAt (): number | null {
-    return this.$typedState.socket.retryAt
+  get retry (): SocketRetry | null {
+    return this.$typedState.socket.retry
   }
 
-  @Watch('retryAt')
-  onRetryAtChanged () {
+  get retryAt (): number | null {
+    return this.retry !== null && 'at' in this.retry
+      ? this.retry.at
+      : null
+  }
+
+  get retryHeld (): boolean {
+    return this.retry !== null && 'held' in this.retry
+  }
+
+  @Watch('retryAt', { immediate: true })
+  onRetryAtChanged (retryAt: number | null) {
+    this.stopNowInterval()
     this.now = Date.now()
+
+    if (retryAt !== null) {
+      this.nowInterval = setInterval(() => {
+        this.now = Date.now()
+      }, 1000)
+    }
+  }
+
+  stopNowInterval () {
+    if (this.nowInterval !== null) {
+      clearInterval(this.nowInterval)
+      this.nowInterval = null
+    }
   }
 
   get retrySeconds (): number | null {
@@ -110,6 +128,10 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
     return retryAt !== null
       ? Math.max(0, Math.ceil((retryAt - this.now) / 1000))
       : null
+  }
+
+  get waitingToRetry (): boolean {
+    return this.retry !== null
   }
 
   get apiUrl (): string {

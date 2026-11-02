@@ -969,6 +969,7 @@ app:
         / or refresh.
       retrying_in: Unable to connect to Moonraker. Retrying in {seconds} seconds...
       stalled: Waiting for Moonraker to respond...
+      unable_to_connect: Unable to connect to Moonraker.
   system_info:
     label:
       application: Application

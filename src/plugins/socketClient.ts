@@ -54,7 +54,6 @@ export class WebSocketClient {
   private cache: CachedParams | null = null
   private retryCount = 0
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
-  private retryHeld = false
   private silenceTimeout: ReturnType<typeof setTimeout> | null = null
 
   constructor (options: SocketPluginOptions) {
@@ -87,7 +86,7 @@ export class WebSocketClient {
   retryNow () {
     if (
       this.reconnectTimeout !== null ||
-      this.retryHeld
+      this.store.state.socket.retry !== null
     ) {
       this.connect()
     }
@@ -242,18 +241,17 @@ export class WebSocketClient {
     this.retryCount += 1
 
     if (delay >= RETRY_SHOW_AFTER) {
-      this.store.typedCommit('socket/setRetryAt', Date.now() + delay)
+      this.store.typedCommit('socket/setRetry', { at: Date.now() + delay })
     }
 
     this.reconnectTimeout = setTimeout(() => {
       this.clearReconnectTimer()
 
-      // Resumed by retryNow() on visibilitychange or online
       if (
         document.hidden ||
         !navigator.onLine
       ) {
-        this.retryHeld = true
+        this.store.typedCommit('socket/setRetry', { held: true })
       } else {
         this.openSocket()
       }
@@ -266,22 +264,22 @@ export class WebSocketClient {
       this.reconnectTimeout = null
     }
 
-    this.retryHeld = false
-
-    if (this.store.state.socket.retryAt !== null) {
-      this.store.typedCommit('socket/setRetryAt', null)
+    if (this.store.state.socket.retry !== null) {
+      this.store.typedCommit('socket/setRetry', null)
     }
   }
 
   private armPingTimer () {
     this.clearSilenceTimer()
 
-    // Unauthenticated sockets get no notifications
     this.silenceTimeout = setTimeout(() => {
       consola.debug(`${LOG_PREFIX} No message for ${PING_AFTER} ms`)
+
       this.emit('server.info', { suppressError: true })
         .catch(() => {})
+
       this.armDeadTimer()
+
       this.store.typedCommit('socket/setStalled', true)
     }, PING_AFTER)
   }
@@ -290,12 +288,12 @@ export class WebSocketClient {
     this.clearSilenceTimer()
 
     this.silenceTimeout = setTimeout(() => {
-      this.silenceTimeout = null
-
       const connection = this.connection
 
       consola.debug(`${LOG_PREFIX} No response for ${DEAD_AFTER} ms, replacing the connection`)
+
       this.handleClose()
+
       connection?.close()
     }, DEAD_AFTER)
   }
