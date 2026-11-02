@@ -378,6 +378,7 @@ app:
       snooze: Snooze
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
+      socket_retry_now: Retry now
       perform_time_analysis: Perform Time Analysis
       thumbnail_size: Thumbnail size
       upload: Upload
@@ -966,6 +967,9 @@ app:
       connecting: Connecting to Moonraker...
       no_connection: No Moonraker connection. Please check Moonraker status and
         / or refresh.
+      retrying_in: Unable to connect to Moonraker. Retrying in {seconds} seconds...
+      stalled: Waiting for Moonraker to respond...
+      unable_to_connect: Unable to connect to Moonraker.
   system_info:
     label:
       application: Application

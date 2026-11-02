@@ -74,6 +74,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ScrewsTiltAdjustDialog: typeof import('./src/components/common/ScrewsTiltAdjustDialog.vue')['default']
     SocketDisconnected: typeof import('./src/components/common/SocketDisconnected.vue')['default']
+    SocketStalledSnackbar: typeof import('./src/components/common/SocketStalledSnackbar.vue')['default']
     SystemCommands: typeof import('./src/components/common/SystemCommands.vue')['default']
     SystemControl: typeof import('./src/components/common/SystemControl.vue')['default']
     SystemLayout: typeof import('./src/components/common/SystemLayout.vue')['default']
