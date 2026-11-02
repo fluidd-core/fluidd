@@ -44,6 +44,11 @@ Click any G-code command name that appears in the console output to copy it
 into the input field. Only recognized Klipper commands are clickable — these
 are the same commands listed by `help`.
 
+## Clickable links
+
+URLs that appear in the console output open in a new tab when clicked. Files
+served by Moonraker usually download rather than display in the tab.
+
 ## Command reference
 
 Type `help` and press ++enter++ to list all available Klipper commands,

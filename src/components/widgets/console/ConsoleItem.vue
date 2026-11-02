@@ -20,6 +20,7 @@ import { Globals } from '@/globals'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { UpdateResponse } from '@/store/version/types'
 import { escapeRegExp } from 'lodash-es'
+import linkExternalUrls from '@/util/link-external-urls'
 
 @Component({})
 export default class ConsoleItem extends Vue {
@@ -54,15 +55,21 @@ export default class ConsoleItem extends Vue {
     if ('type' in this.value) {
       switch (this.value.type) {
         case 'command':
-          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
+          return `${Globals.CONSOLE_SEND_PREFIX}<a>${message}</a>`
 
         case 'response':
           return message
-            .replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => (
-              command in this.knownCommands
-                ? `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
-                : match
-            ))
+            .replace(/(https?:\/\/[^\s<>"'`]+)|([A-Z_][A-Z0-9_.]+)/g, (match, url, command) => {
+              if (url != null) {
+                return linkExternalUrls(url)
+              }
+
+              if (command in this.knownCommands) {
+                return `<a>${command.toUpperCase()}</a>`
+              }
+
+              return match
+            })
       }
     }
 
@@ -101,7 +108,10 @@ export default class ConsoleItem extends Vue {
       ? event.target.parentElement
       : event.target
 
-    if (target instanceof HTMLAnchorElement) {
+    if (
+      target instanceof HTMLAnchorElement &&
+      !target.hasAttribute('href')
+    ) {
       const command = target.innerText
         .replace(/^\s+|\s+$/gm, '')
 
@@ -114,6 +124,14 @@ export default class ConsoleItem extends Vue {
 <style lang="scss" scoped>
   .console-item {
     flex: 0 0 auto;
+  }
+
+  :deep(a) {
+    color: var(--v-primary-lighten1) !important;
+  }
+
+  :deep(a[href]) {
+    text-decoration: underline;
   }
 
   :deep(mark) {
