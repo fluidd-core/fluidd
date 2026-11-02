@@ -75,8 +75,8 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 
 ### Build Toolchain
 
-- **Node.js 24** — pinned in `package.json` via `devEngines.runtime` `^24.11.0` with
-  `onFail: download` (engines: `^22.12.0 || ^24`). pnpm provisions it; there is no
+- **Node.js 26** — pinned in `package.json` via `devEngines.runtime` `^26.13.0` with
+  `onFail: download` (engines: `^24 || ^26`). pnpm provisions it; there is no
   `.node-version` file and Corepack is not used anywhere — the pnpm version itself is pinned
   the same way, through `devEngines.packageManager`. Setting `packageManager` **as well** is an
   error in pnpm 12 ("Cannot use both"), so the two fields are mutually exclusive
@@ -446,17 +446,16 @@ src/
 ## Dev Container
 
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
-- Base image is `ghcr.io/pnpm/pnpm:12` — pnpm's official image, Debian-based, carrying only the
-  pnpm binary (`PNPM_HOME=/pnpm`, `/pnpm/bin` on `PATH`); Node.js is downloaded by pnpm from
-  `devEngines.runtime` on first use. It **must stay glibc** — `typescript-native-bridge` ships a Go
-  `c-shared` NAPI bridge with glibc-only native packages (no `-musl` build), so on Alpine it fails
-  to load and segfaults even with `gcompat`
-- The image has no `node` user and runs as root, so the Dockerfile creates one (uid 1000, zsh) to
-  match `devcontainer.json`'s `remoteUser`, and `chown`s `/pnpm` to it — pnpm writes the downloaded
-  runtime and its global shims there
-- `pnpm add --global node@^24.11.0` in the Dockerfile is **load-bearing**: without a globally
-  installed `node` there is no shim for pnpm to dispatch from, and a bare `node` in the container is
-  simply "not found". With it, `node` inside the workspace runs the `devEngines.runtime` version
+- Base image is `mcr.microsoft.com/devcontainers/javascript-node:26`, Debian-based. It **must stay
+  glibc** — `typescript-native-bridge` ships a Go `c-shared` NAPI bridge with glibc-only native
+  packages (no `-musl` build), so on Alpine it fails to load and segfaults even with `gcompat`
+- The image ships Node.js, pnpm, git, zsh, Oh My Zsh and the `node` user (uid 1000) that
+  `devcontainer.json`'s `remoteUser` names, so the Dockerfile only creates the `node_modules` volume
+  mount point, owned by `node`, which the named volume inherits on first creation. pnpm's store lands
+  inside that volume (`node_modules/.pnpm-store`), so hard links work and it survives rebuilds
+- The image's pnpm switches to `devEngines.packageManager` inside the project. A bare `node` is the
+  image's own version, which can lag the pin; anything run through pnpm or `node_modules/.bin` uses
+  `devEngines.runtime`
 - `postCreateCommand` runs `pnpm i --frozen-lockfile` automatically (which in turn runs `prepare`)
 
 ## Docker Images (production)
