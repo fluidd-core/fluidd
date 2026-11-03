@@ -623,7 +623,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$route.meta?.fileDropRoot
   }
 
-  includeTimelapseThumbnailFiles (items: FileBrowserEntry[]) {
+  getDirectoryPath (dirname: string) {
+    return dirname === '..'
+      ? this.currentPath.split('/').slice(0, -1).join('/')
+      : `${this.currentPath}/${dirname}`
+  }
+
+  includeTimelapseThumbnailFiles (items: FileBrowserEntry[]): FileBrowserEntry[] {
+    if (this.currentRoot !== 'timelapse') {
+      return items
+    }
+
     const thumbnailFilenames = new Set(items
       .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== '.jpg' && 'thumbnails' in item)
       .flatMap(item => item.thumbnails
@@ -634,7 +644,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const thumbnails = this.getAllFiles()
       .filter(file => file.type === 'file' && thumbnailFilenames.has(file.filename))
 
-    items.push(...thumbnails)
+    return [...items, ...thumbnails]
   }
 
   // If the root changes, reset the path and load the root path files.
@@ -686,14 +696,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (item.type === 'directory') {
       if (event.type === 'click') {
-        if (item.dirname === '..') {
-          const dirs = this.currentPath.split('/')
-          const newpath = dirs.slice(0, -1).join('/')
-
-          this.loadFiles(newpath)
-        } else {
-          this.loadFiles(`${this.currentPath}/${item.dirname}`)
-        }
+        this.loadFiles(this.getDirectoryPath(item.dirname))
 
         // Clear selected bulk items if we're navigating folders.
         this.selected = []
@@ -1044,22 +1047,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleMove (source: FileBrowserEntry | FileBrowserEntry[], destination: AppDirectory) {
-    let destinationPath = `${this.currentPath}/${destination.dirname}`
-    if (destination.dirname === '..') {
-      const arr = this.currentPath.split('/')
-      arr.pop()
-      destinationPath = arr.join('/')
-    }
+    const destinationPath = this.getDirectoryPath(destination.dirname)
 
     const items = Array.isArray(source)
       ? source
       : [source]
 
-    if (this.currentRoot === 'timelapse') {
-      this.includeTimelapseThumbnailFiles(items)
-    }
-
-    for (const item of items) {
+    for (const item of this.includeTimelapseThumbnailFiles(items)) {
       const src = `${this.currentPath}/${item.name}`
       const dest = destinationPath
         ? `${destinationPath}/${item.name}`
@@ -1122,11 +1116,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (result) {
       this.filePreviewState.open = false
 
-      if (this.currentRoot === 'timelapse') {
-        this.includeTimelapseThumbnailFiles(items)
-      }
-
-      for (const item of items) {
+      for (const item of this.includeTimelapseThumbnailFiles(items)) {
         if (item.type === 'file') {
           SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
         } else {
