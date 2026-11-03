@@ -6,7 +6,7 @@
     </div> -->
 
     <v-data-table
-      :value="selected"
+      v-model="selected"
       :headers="headers"
       :items="files"
       :dense="dense"
@@ -26,14 +26,45 @@
       hide-default-footer
       class="rounded-0"
       fixed-header
-      @input="handleSelected"
     >
+      <template #[`body.prepend`]="{ headers }">
+        <app-data-table-row
+          v-if="parentItem"
+          :headers="headers"
+          :item="{ name: parentItem.name }"
+          @click.prevent="$emit('row-click', parentItem, $event)"
+          @contextmenu.prevent="$emit('row-click', parentItem, $event)"
+          @dragover="handleDragOver(parentItem, $event)"
+          @dragenter.prevent
+          @dragleave.prevent="handleDragLeave"
+          @drop.prevent="handleDrop(parentItem, $event)"
+        >
+          <template #[`item.data-table-select`]>
+            {{ '' }}
+          </template>
+
+          <template #[`item.data-table-icons`]>
+            <v-layout
+              justify-center
+              class="no-pointer-events"
+            >
+              <v-icon
+                :small="dense"
+                color="primary"
+              >
+                $folderUp
+              </v-icon>
+            </v-layout>
+          </template>
+        </app-data-table-row>
+      </template>
+
       <template #item="{ headers, item, isSelected, select }">
         <app-data-table-row
           :key="item.name"
           :headers="headers"
           :item="item"
-          :is-selected="isSelected && item.name !== '..'"
+          :is-selected="isSelected"
           :draggable="isItemDraggable(item)"
           :custom-getter="getItemValue"
           @click.prevent="$emit('row-click', item, $event)"
@@ -47,14 +78,10 @@
         >
           <template #[`item.data-table-select`]>
             <v-simple-checkbox
-              v-if="item.name !== '..'"
               :value="isSelected"
               class="mt-1"
               @click.stop="select(!isSelected)"
             />
-            <template v-else>
-              {{ '' }}
-            </template>
           </template>
 
           <template #[`item.data-table-icons`]>
@@ -116,7 +143,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, VModel, PropSync } from 'vue-property-decorator'
-import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppDirectory, FileBrowserEntry, RootProperties } from '@/store/files/types'
 import FilesMixin from '@/mixins/files'
 
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
@@ -142,6 +169,9 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: Array, required: true })
   readonly files!: FileBrowserEntry[]
 
+  @Prop({ type: String, required: true })
+  readonly path!: string
+
   @Prop({ type: Boolean })
   readonly dense?: boolean
 
@@ -163,6 +193,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   dragItem: FileBrowserEntry | null = null
   ghost?: HTMLDivElement = undefined
+
+  // Only the name is displayed, the other values are placeholders.
+  get parentItem (): AppDirectory | undefined {
+    if (!this.path) return undefined
+
+    return {
+      type: 'directory',
+      name: '..',
+      dirname: '..',
+      modified: 0,
+      size: 0,
+      permissions: 'rw'
+    }
+  }
 
   // Is the history component enabled
   get showHistory (): boolean {
@@ -196,14 +240,9 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   get draggedItems () {
     if (this.dragItem) {
-      const filteredSelectedItems = this.selected
-        .filter(item => item.name !== '..')
-
-      const draggedItems = filteredSelectedItems.length > 0
-        ? filteredSelectedItems
+      return this.selected.length > 0
+        ? this.selected
         : [this.dragItem]
-
-      return draggedItems
     }
 
     return []
@@ -238,8 +277,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     })
 
     return items.sort((a, b) => {
-      if (a.type === 'directory' && (a.dirname === '..' || b.type !== 'directory')) return -1
-      if (b.type === 'directory' && (b.dirname === '..' || a.type !== 'directory')) return 1
+      if (a.type === 'directory' && b.type !== 'directory') return -1
+      if (b.type === 'directory' && a.type !== 'directory') return 1
 
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
@@ -291,19 +330,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     })
   }
 
-  handleSelected (selected: FileBrowserEntry[]) {
-    if (selected.length === 1) {
-      if (selected[0].name === '..') {
-        selected = []
-      } else {
-        selected = this.files
-          .filter(item => item.name === selected[0].name || item.name === '..')
-      }
-    }
-
-    this.$emit('input', selected)
-  }
-
   getItemIcon (item: FileBrowserEntry) {
     const readonly = !this.isItemWriteable(item)
 
@@ -322,8 +348,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       } else {
         return readonly ? '$fileLock' : '$file'
       }
-    } else if (item.name === '..') {
-      return '$folderUp'
     } else {
       return readonly ? '$folderLock' : '$folder'
     }
@@ -333,7 +357,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   isItemDraggable (item: FileBrowserEntry) {
     return (
       this.filesAndFoldersDragAndDrop &&
-      item.name !== '..' &&
       this.files.length > 0 &&
       (
         this.selected.length === 0 ||

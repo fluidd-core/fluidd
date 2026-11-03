@@ -51,6 +51,7 @@
       :loading="filesLoading"
       :search="search"
       :files="files"
+      :path="visiblePath"
       :drag-state.sync="dragState.browserState"
       :bulk-actions="bulkActions"
       :large-thumbnails="currentRoot === 'timelapse'"
@@ -564,7 +565,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       return !this.filters
         .some(filter => {
           if (filter === 'hidden_files') {
-            return /^\.(?!\.$)/.test(file.name)
+            return file.name.startsWith('.')
           }
 
           if (file.type !== 'file') {
@@ -1051,7 +1052,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
 
     const items = Array.isArray(source)
-      ? source.filter(item => item.name !== '..')
+      ? source
       : [source]
 
     if (this.currentRoot === 'timelapse') {
@@ -1110,7 +1111,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
 
     const items = Array.isArray(file)
-      ? file.filter(item => item.name !== '..')
+      ? file
       : [file]
 
     const result = await this.$confirm(
@@ -1183,7 +1184,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
 
     const items = Array.isArray(file)
-      ? file.filter(item => item.name !== '..')
+      ? file
       : [file]
     const filenames = items
       .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
@@ -1202,7 +1203,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       : `${this.currentPath}/${file.name}-${timestamp}.zip`
 
     const items = Array.isArray(file)
-      ? file.filter(item => item.name !== '..')
+      ? file
       : [file]
     const filenames = items
       .map(item => `${this.currentPath}/${item.name}`)
