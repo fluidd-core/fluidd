@@ -450,9 +450,13 @@ src/
   glibc** — `typescript-native-bridge` ships a Go `c-shared` NAPI bridge with glibc-only native
   packages (no `-musl` build), so on Alpine it fails to load and segfaults even with `gcompat`
 - The image ships Node.js, pnpm, git, zsh, Oh My Zsh and the `node` user (uid 1000) that
-  `devcontainer.json`'s `remoteUser` names, so the Dockerfile only creates the `node_modules` volume
-  mount point, owned by `node`, which the named volume inherits on first creation. pnpm's store lands
-  inside that volume (`node_modules/.pnpm-store`), so hard links work and it survives rebuilds
+  `devcontainer.json`'s `remoteUser` names, so there is no Dockerfile — `docker-compose.yml` uses the
+  image directly. The image defaults to `root`, and `remoteUser` only covers VS Code and lifecycle
+  commands, so the service also sets `user: node` and `working_dir`; a root `pnpm i` from
+  `docker compose exec` would leave files `node` cannot write. A fresh `node_modules` named volume is
+  root-owned, so `postCreateCommand` starts with `sudo chown node:node node_modules` (idempotent, not
+  recursive). pnpm's store lands inside that volume (`node_modules/.pnpm-store`), so hard links work
+  and it survives rebuilds
 - The image's pnpm switches to `devEngines.packageManager` inside the project. A bare `node` is the
   image's own version, which can lag the pin; anything run through pnpm or `node_modules/.bin` uses
   `devEngines.runtime`
