@@ -1182,7 +1182,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   handleEnqueue (file: FileBrowserEntry | FileBrowserEntry[]) {
     if (this.disabled) return
 
-    const items = Array.isArray(file) ? file : [file]
+    const items = Array.isArray(file)
+      ? file.filter(item => item.name !== '..')
+      : [file]
     const filenames = items
       .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
@@ -1199,10 +1201,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       ? `${this.currentPath}/${timestamp}.zip`
       : `${this.currentPath}/${file.name}-${timestamp}.zip`
 
-    const items = (Array.isArray(file) ? file : [file])
+    const items = Array.isArray(file)
+      ? file.filter(item => item.name !== '..')
+      : [file]
+    const filenames = items
       .map(item => `${this.currentPath}/${item.name}`)
 
-    SocketActions.serverFilesZip(dest, items)
+    SocketActions.serverFilesZip(dest, filenames)
   }
 
   /**
