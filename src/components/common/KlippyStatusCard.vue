@@ -40,10 +40,7 @@
                 type="error"
                 class="ma-0"
               >
-                <span
-                  class="text-pre-wrap"
-                  v-text="klippyStateMessage"
-                />
+                <span class="text-pre-wrap">{{ klippyStateMessage }}</span>
               </v-alert>
             </v-col>
             <v-col

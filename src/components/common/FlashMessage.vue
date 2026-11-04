@@ -8,10 +8,7 @@
     top
     centered
   >
-    <span
-      class="text-pre-wrap"
-      v-text="text"
-    />
+    <span class="text-pre-wrap">{{ text }}</span>
 
     <template #action="{ attrs }">
       <app-btn
