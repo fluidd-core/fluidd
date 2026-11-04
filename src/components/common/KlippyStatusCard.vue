@@ -40,7 +40,10 @@
                 type="error"
                 class="ma-0"
               >
-                <span v-safe-html="klippyStateMessage" />
+                <span
+                  class="text-pre-wrap"
+                  v-text="klippyStateMessage"
+                />
               </v-alert>
             </v-col>
             <v-col

@@ -57,8 +57,7 @@ export default class ConsoleItem extends Vue {
           return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
 
         case 'response':
-          // Newlines arrive as <br />
-          if (/<\/?(?!br\b)[a-zA-Z][^>]*>/.test(message)) {
+          if (/<\/?[a-z][^>]*>/i.test(message)) {
             return message
           }
 
