@@ -978,9 +978,9 @@ app:
       committed: 書込みする
       dirty: ダーティー
       invalid: 無効
-      old_component_version: >-
-        Fluidd のすべての機能をサポートしていない古いバージョンの %{name} を使用しています。<br> %{name} を少なくとも
-        %{version}に更新してください。
+      old_component_version: |-
+        Fluidd のすべての機能をサポートしていない古いバージョンの %{name} を使用しています。
+        %{name} を少なくとも %{version}に更新してください。
       os_packages: OSパッケージ
       package_list: パッケージリスト
       up_to_date: 最新の状態

@@ -929,9 +929,9 @@ app:
       package_list: Paketliste
       up_to_date: AKTUELL
       updates_available: Updates sind verfügbar
-      old_component_version: Sie verwenden eine veraltete Version von %{name}, 
-        welche nicht alle Features von Fluidd unterstützt.<b>Aktualisieren Sie 
-        %{name} auf mindestens %{version}.
+      old_component_version: |-
+        Sie verwenden eine veraltete Version von %{name}, welche nicht alle Features von Fluidd unterstützt.
+        Aktualisieren Sie %{name} auf mindestens %{version}.
       packages: '{count} Paket | {count} Pakete'
     status:
       finished: Aktualisierung abgeschlossen

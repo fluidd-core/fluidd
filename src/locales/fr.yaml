@@ -932,9 +932,9 @@ app:
       package_list: Liste des paquets
       up_to_date: A JOUR
       updates_available: Mises à jour disponibles
-      old_component_version: Vous utilisez une ancienne version de %{name} qui 
-        ne prend pas en charge toutes les fonctionnalités de Fluidd.<br>Mettre à
-        jour %{name} vers au moins %{version}.
+      old_component_version: |-
+        Vous utilisez une ancienne version de %{name} qui ne prend pas en charge toutes les fonctionnalités de Fluidd.
+        Mettre à jour %{name} vers au moins %{version}.
       packages: '{count} paquet | {count} paquets'
     status:
       finished: Mises à jour terminées

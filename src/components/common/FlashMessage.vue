@@ -8,7 +8,10 @@
     top
     centered
   >
-    <span v-safe-html="text" />
+    <span
+      class="text-pre-wrap"
+      v-text="text"
+    />
 
     <template #action="{ attrs }">
       <app-btn

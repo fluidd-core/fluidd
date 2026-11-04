@@ -790,8 +790,9 @@ app:
       package_list: 软件包列表
       up_to_date: 最新
       updates_available: 有可用更新
-      old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将 
-        %{name} 更新至 %{version}。
+      old_component_version: |-
+        您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。
+        至少将 %{name} 更新至 %{version}。
     status:
       finished: 更新已完成
       updating: 正在更新...

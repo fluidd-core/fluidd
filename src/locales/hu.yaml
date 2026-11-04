@@ -901,9 +901,9 @@ app:
       package_list: Csomaglista
       up_to_date: NAPRAKÉSZ
       updates_available: Frissítések állnak rendelkezésre
-      old_component_version: A(z) %{name} régi verzióját használod, amely nem 
-        támogatja a Fluidd összes funkcióját.<br>Frissítsd a(z) %{name} terméket
-        legalább %{version} értékre.
+      old_component_version: |-
+        A(z) %{name} régi verzióját használod, amely nem támogatja a Fluidd összes funkcióját.
+        Frissítsd a(z) %{name} terméket legalább %{version} értékre.
     status:
       finished: A frissítések befejeződtek
       updating: Frissítés...

@@ -435,11 +435,14 @@ export const SocketActions = {
     )
   },
 
-  serverInfo (options?: RequestOptions) {
+  serverInfo (raw = true, options?: RequestOptions) {
     return baseEmit(
       'server.info', {
         dispatch: 'server/onServerInfo',
-        ...options
+        ...options,
+        params: {
+          raw
+        }
       }
     )
   },

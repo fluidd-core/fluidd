@@ -921,9 +921,9 @@ app:
       package_list: Список пакетів
       up_to_date: Версія актуальна
       updates_available: Доступні оновлення
-      old_component_version: Ви використовуєте стару версію %{name}, яка не 
-        підтримує всі функції Fluidd.<br>Оновіть %{name} принаймні до 
-        %{version}.
+      old_component_version: |-
+        Ви використовуєте стару версію %{name}, яка не підтримує всі функції Fluidd.
+        Оновіть %{name} принаймні до %{version}.
       packages: '{count} пакет | {count} пакетів'
     status:
       finished: Оновлення завершено

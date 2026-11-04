@@ -950,9 +950,9 @@ app:
       invalid: NIEPRAWIDŁOWY
       dirty: BRUDNY
       package_list: Lista pakietów
-      old_component_version: Używasz starej wersji %{name}, która nie obsługuje 
-        wszystkich funkcji Fluidd.<br>Zaktualizuj %{name} do co najmniej 
-        %{version}.
+      old_component_version: |-
+        Używasz starej wersji %{name}, która nie obsługuje wszystkich funkcji Fluidd.
+        Zaktualizuj %{name} do co najmniej %{version}.
       packages: '{count} pakiet | {count} pakietów'
     btn:
       view_versions: Wyświetl wersje

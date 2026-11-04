@@ -75,7 +75,7 @@
               <v-list-item-subtitle
                 v-if="n.description"
                 v-safe-html="n.description"
-                class="notification-description"
+                class="notification-description text-pre-wrap"
               />
               <v-tooltip bottom>
                 <template #activator="{ on, attrs }">

@@ -981,9 +981,9 @@ app:
         {count} paket | {count} paketov
       up_to_date: POSODOBLJENO
       updates_available: Posodobitve so na voljo
-      old_component_version: >-
-        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.<br>Posodobite
-        %{name} na vsaj %{version}.
+      old_component_version: |-
+        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.
+        Posodobite %{name} na vsaj %{version}.
     status:
       finished: Posodobitve končane
       updating: Posodabljam...

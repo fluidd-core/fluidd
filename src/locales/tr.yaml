@@ -904,9 +904,9 @@ app:
       package_list: Paket Listesi
       up_to_date: GÜNCEL
       updates_available: Güncellemeler mevcut
-      old_component_version: >-
-        Tüm özellikleri desteklemeyen eski bir %{name} sürümünü kullanıyorsunuz.<br>%{name}'yi
-        en az %{version} sürümüne güncelleyin.
+      old_component_version: |-
+        Tüm özellikleri desteklemeyen eski bir %{name} sürümünü kullanıyorsunuz.
+        %{name}'yi en az %{version} sürümüne güncelleyin.
     status:
       finished: Güncellemeler tamamlandı
       updating: Güncelleniyor...
