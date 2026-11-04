@@ -57,6 +57,11 @@ export default class ConsoleItem extends Vue {
           return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
 
         case 'response':
+          // Newlines arrive as <br />
+          if (/<\/?(?!br\b)[a-zA-Z][^>]*>/.test(message)) {
+            return message
+          }
+
           return message
             .replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => (
               command in this.knownCommands
@@ -114,10 +119,19 @@ export default class ConsoleItem extends Vue {
 <style lang="scss" scoped>
   .console-item {
     flex: 0 0 auto;
-  }
 
-  :deep(mark) {
-    background-color: #ff0;
-    color: #000;
+    :deep(img),
+    :deep(svg),
+    :deep(video) {
+      height: auto;
+      max-width: 90%;
+      max-height: 250px;
+      object-fit: contain;
+    }
+
+    :deep(mark) {
+      background-color: #ff0;
+      color: #000;
+    }
   }
 </style>
