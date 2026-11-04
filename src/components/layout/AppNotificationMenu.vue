@@ -71,12 +71,15 @@
             :class="classes(n)"
           >
             <v-list-item-content>
-              <v-list-item-title v-safe-html="n.title" />
+              <v-list-item-title>
+                {{ n.title }}
+              </v-list-item-title>
               <v-list-item-subtitle
                 v-if="n.description"
-                v-safe-html="n.description"
                 class="notification-description"
-              />
+              >
+                <span class="text-pre-wrap">{{ n.description }}</span>
+              </v-list-item-subtitle>
               <v-tooltip bottom>
                 <template #activator="{ on, attrs }">
                   <v-list-item-subtitle

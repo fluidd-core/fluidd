@@ -393,8 +393,9 @@ app:
       password_changed: Hasło zostało zmienione
       pending_configuration_sections_deleted: Następujące sekcje zostały 
         oznaczone do usunięcia
-      welcome_back: Witaj ponownie.<br>Zaloguj się, aby pozostać w kontakcie z 
-        drukarką.
+      welcome_back: |-
+        Witaj ponownie.
+        Zaloguj się, aby pozostać w kontakcie z drukarką.
       bed_screws_adjust: Kliknij przycisk <b>Korekta</b>, jeśli konieczna jest 
         znaczna korekta bieżącej śruby; w przeciwnym razie kliknij przycisk 
         <b>Akceptuj</b>, aby kontynuować.
@@ -471,8 +472,10 @@ app:
         logi, zaktualizuj konfigurację i zrestartuj Moonraker.
       components_config: Konfigurację wtyczki Moonrakera można znaleźć <a 
         target="_blank" href="%{url}">tutaj.</a>
-      printer_powered_off: Drukarka jest obecnie wyłączona.<br/><br/> Aby 
-        włączyć drukarkę, kliknij przycisk po lewej stronie.
+      printer_powered_off: |-
+        Drukarka jest obecnie wyłączona.
+
+        Aby włączyć drukarkę, kliknij przycisk po lewej stronie.
     table:
       header:
         filament_name: Nazwa filamentu
@@ -950,9 +953,9 @@ app:
       invalid: NIEPRAWIDŁOWY
       dirty: BRUDNY
       package_list: Lista pakietów
-      old_component_version: Używasz starej wersji %{name}, która nie obsługuje 
-        wszystkich funkcji Fluidd.<br>Zaktualizuj %{name} do co najmniej 
-        %{version}.
+      old_component_version: |-
+        Używasz starej wersji %{name}, która nie obsługuje wszystkich funkcji Fluidd.
+        Zaktualizuj %{name} do co najmniej %{version}.
       packages: '{count} pakiet | {count} pakietów'
     btn:
       view_versions: Wyświetl wersje

@@ -397,8 +397,9 @@ app:
       failed_components: >-
         Moonraker has failed plugins, please check your logs, update your configuration
         and restart Moonraker.
-      printer_powered_off: >-
-        The printer is currently powered off.<br/><br/>
+      printer_powered_off: |-
+        The printer is currently powered off.
+
         To power on the printer, please click the button on the left.
     label:
       accel_to_decel: Accel to Decel
@@ -532,8 +533,9 @@ app:
       bed_screws_adjust: >-
         Click <b>Adjusted</b> if a significant adjustment is necessary on the current
         screw; otherwise, click <b>Accept</b> to continue.
-      welcome_back: >-
-        Welcome back.<br>Sign in below to stay in touch with your printer.
+      welcome_back: |-
+        Welcome back.
+        Sign in below to stay in touch with your printer.
       offline_ready: Fluidd is now ready to work offline.
       needs_refresh: New content available, please click the <b>Reload</b>
         button to update.
@@ -1078,9 +1080,9 @@ app:
         {count} package | {count} packages
       up_to_date: UP TO DATE
       updates_available: Updates are available
-      old_component_version: >-
-        You are using an old version of %{name} that does not support all features
-        of Fluidd.<br>Update %{name} to at least %{version}.
+      old_component_version: |-
+        You are using an old version of %{name} that does not support all features of Fluidd.
+        Update %{name} to at least %{version}.
     status:
       finished: Updates finished
       updating: Updating...

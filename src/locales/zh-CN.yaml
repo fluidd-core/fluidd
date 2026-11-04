@@ -222,7 +222,10 @@ app:
       app_warnings_found: '%{appName} 出现警告'
       components_config: '如需查看 Moonraker 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       failed_components: Moonraker 插件启用失败，请检查您的日志，更新您的配置并重新启动 Moonraker。
-      printer_powered_off: 此打印机当前已关机<br/><br/> 要开启该打印机, 请点击左侧按钮.
+      printer_powered_off: |-
+        此打印机当前已关机
+
+        要开启该打印机, 请点击左侧按钮.
     label:
       accel_to_decel: 加速到减速度
       acceleration: 加速度
@@ -345,7 +348,9 @@ app:
     msg:
       password_changed: 密码已更改
       bed_screws_adjust: 如果需要对当前螺钉进行重大调整，请单击<b>调整</b>；否则，请单击<b>接受</b>继续。
-      welcome_back: 欢迎回来。<br>在下面登录以与您的打印机保持联系。
+      welcome_back: |-
+        欢迎回来。
+        在下面登录以与您的打印机保持联系。
       offline_ready: Fluidd 现在可以离线工作了。
       needs_refresh: 有新内容可用，请单击 <b>重新加载</b> 按钮进行更新。
       pending_configuration_sections_deleted: 以下部分标记为删除
@@ -790,8 +795,9 @@ app:
       package_list: 软件包列表
       up_to_date: 最新
       updates_available: 有可用更新
-      old_component_version: 您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。<br>至少将 
-        %{name} 更新至 %{version}。
+      old_component_version: |-
+        您正在使用 %{name} 的旧版本，该版本不支持 Fluidd 的所有功能。
+        至少将 %{name} 更新至 %{version}。
     status:
       finished: 更新已完成
       updating: 正在更新...

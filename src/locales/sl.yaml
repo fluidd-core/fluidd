@@ -282,8 +282,9 @@ app:
       failed_components: >-
         Vtičniki za Moonraker so spodleteli. Prosimo, preverite dnevnike,
         posodobite konfiguracijo in ponovno zaženite Moonraker.
-      printer_powered_off: >-
-        Tiskalnik je trenutno izklopljen.<br/><br/>
+      printer_powered_off: |-
+        Tiskalnik je trenutno izklopljen.
+
         Za vklop tiskalnika, pritisnite gumb na levi.
     label:
       accel_to_decel: Pojemek
@@ -417,8 +418,9 @@ app:
       bed_screws_adjust: >-
         Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev na trenutnem
         vijaku. V nasprotnem primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
-      welcome_back: >-
-        Dobrodošli nazaj.<br>Vpišite se spodaj, da ostane v stiku s svojim tiskalnikom.
+      welcome_back: |-
+        Dobrodošli nazaj.
+        Vpišite se spodaj, da ostane v stiku s svojim tiskalnikom.
       offline_ready: Fluidd je pripravljen za delo brez povezave.
       needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb 
         <b>Ponovno naloži</b>, da ponovno naložite stran.
@@ -981,9 +983,9 @@ app:
         {count} paket | {count} paketov
       up_to_date: POSODOBLJENO
       updates_available: Posodobitve so na voljo
-      old_component_version: >-
-        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.<br>Posodobite
-        %{name} na vsaj %{version}.
+      old_component_version: |-
+        Uporabljate staro različico %{name}, ki ne podpira vseh funkcij programa Fluidd.
+        Posodobite %{name} na vsaj %{version}.
     status:
       finished: Posodobitve končane
       updating: Posodabljam...

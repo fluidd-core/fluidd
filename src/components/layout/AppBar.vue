@@ -25,10 +25,9 @@
       </app-btn>
 
       <v-toolbar-title class="printer-title text--secondary">
-        <router-link
-          v-safe-html="instanceName"
-          :to="{ name: 'home' }"
-        />
+        <router-link :to="{ name: 'home' }">
+          {{ instanceName }}
+        </router-link>
       </v-toolbar-title>
     </div>
 
