@@ -647,11 +647,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return [...items, ...thumbnails]
   }
 
-  // If the root changes, reset the path and load the root path files.
+  // If the root changes, restore that root's last path and load its files.
   handleRootChange (root: string) {
     if (root.length) {
       this.currentRoot = root
-      this.loadFiles(root)
+      this.loadFiles(this.currentPath)
     }
   }
 
