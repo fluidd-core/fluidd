@@ -383,7 +383,10 @@ src/
 - `src/components/ui/` components put a kebab-case class named after the component on their main
   element (`AppInlineChart` → `app-inline-chart`), with BEM `__element` classes for inner parts
   (`app-inline-chart__label`). Their scoped styles target these classes, not Vuetify's
-- Any link opening a new tab (`target="_blank"`) **must** also set `rel="noopener noreferrer"` — applies to `<a>`, `<v-btn>`/`<app-btn>` with `:href`, and any HTML strings rendered via `v-safe-html` (e.g. `src/util/link-external-urls.ts`)
+- Any link opening a new tab (`target="_blank"`) **must** also set `rel="noopener noreferrer"` — applies to `<a>`, `<v-btn>`/`<app-btn>` with `:href`, and any HTML strings rendered via `v-safe-html` (e.g. `src/util/html-helpers.ts`)
+- Render plain text as plain text: `<span class="text-pre-wrap">{{ value }}</span>`, on one line so `pre-wrap` does not reveal template whitespace, and not `v-text` (lint rejects it on components). `v-safe-html` parses its input as HTML, so `<none>` disappears and an unterminated `<min` loses the rest of the string; keep it for strings that really carry markup. Store raw newlines, never `<br>` — `server.info` is sent `raw` so Moonraker's warnings arrive that way too — and put real newlines in locale strings rendered as plain text
+- `src/util/html-helpers.ts` (import-free) builds HTML from plain text: `linkExternalUrls` escapes everything except the anchors it generates, which is why `AppWarnings` can stay on `v-safe-html` without losing text. `escapeHtml` escapes `&`, `<`, `>`, `"` and `'`, so its output is safe in text and quoted attribute values
+- `ConsoleItem` deliberately renders messages as HTML, so macros can output `<img>` and `<video>`. A `response` containing any tag is left untouched, with no command links, and tag-like text such as `<none>` is still lost there
 - Use `consola` for logging, not `console.log` (configured in `src/setupConsola.ts` — warn in prod, verbose in dev)
 - Type imports: `import type { ... }` for types only (`verbatimModuleSyntax: true`)
 - `satisfies` keyword for store module type checking

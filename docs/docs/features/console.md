@@ -44,6 +44,10 @@ Click any G-code command name that appears in the console output to copy it
 into the input field. Only recognized Klipper commands are clickable — these
 are the same commands listed by `help`.
 
+A message that contains HTML tags, such as one a macro sends with `RESPOND`, is
+shown as written, with none of its commands made clickable. To make a command in
+such a message clickable, wrap it in a bare `<a>` tag.
+
 ## Command reference
 
 Type `help` and press ++enter++ to list all available Klipper commands,

@@ -75,7 +75,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Globals } from '@/globals'
-import linkExternalUrls from '@/util/link-external-urls'
+import { linkExternalUrls } from '@/util/html-helpers'
 
 @Component({
   components: {}
