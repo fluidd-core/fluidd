@@ -22,7 +22,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { UpdateResponse } from '@/store/version/types'
-import { escapeHtml, hasHtmlTags } from '@/util/html-helpers'
+import { escapeHtml } from '@/util/html-helpers'
+import { hasRenderableHtml } from '@/util/sanitize-html'
 
 @Component({})
 export default class ConsoleItem extends Vue {
@@ -46,7 +47,7 @@ export default class ConsoleItem extends Vue {
           return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${escapedMessage}</a>`
 
         case 'response':
-          if (hasHtmlTags(message)) {
+          if (hasRenderableHtml(message)) {
             return message
           }
 

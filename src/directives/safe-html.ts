@@ -1,16 +1,6 @@
 import type { FunctionDirective } from 'vue'
-import DOMPurify from 'dompurify'
 import { markTextNodes } from '@/util/mark-text-nodes'
-
-DOMPurify.addHook('uponSanitizeAttribute', (currentNode, hookEvent) => {
-  if (
-    currentNode.tagName === 'A' &&
-    hookEvent.attrName === 'target' &&
-    hookEvent.attrValue === '_blank'
-  ) {
-    hookEvent.forceKeepAttr = true
-  }
-})
+import { sanitizeHtml } from '@/util/sanitize-html'
 
 export type SafeHtmlValue = string | { html: string, search?: string | null } | null | undefined
 
@@ -43,9 +33,7 @@ const safeHtml: FunctionDirective<HTMLElement, SafeHtmlValue> = (el, binding) =>
     }
   }
 
-  const fragment = DOMPurify.sanitize(html, {
-    RETURN_DOM_FRAGMENT: true
-  })
+  const fragment = sanitizeHtml(html)
 
   if (search) {
     markTextNodes(fragment, search)
