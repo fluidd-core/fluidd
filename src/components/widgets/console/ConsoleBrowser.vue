@@ -46,8 +46,7 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
-import type { ConsoleEntry } from '@/store/console/types'
-import type { UpdateResponse } from '@/store/version/types'
+import type { ConsoleEntry, ConsoleLogEntry } from '@/store/console/types'
 import type AppAutoScrollContainer from '@/components/ui/AppAutoScrollContainer.vue'
 
 @Component({
@@ -58,7 +57,7 @@ import type AppAutoScrollContainer from '@/components/ui/AppAutoScrollContainer.
 })
 export default class ConsoleBrowser extends Mixins(StateMixin) {
   @Prop({ type: [Array], default: () => [] })
-  readonly items!: ConsoleEntry[] | UpdateResponse[]
+  readonly items!: ConsoleEntry[] | ConsoleLogEntry[]
 
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean

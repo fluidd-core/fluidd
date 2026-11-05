@@ -18,7 +18,8 @@ const MODULES_TO_RESET_ON_DROP = [
   'jobQueue',
   'wait',
   'gcodePreview',
-  'extensions'
+  'extensions',
+  'firmware'
 ] as const
 
 let retryTimeout: ReturnType<typeof setTimeout>
@@ -345,6 +346,8 @@ export const actions = {
    */
   async notifyKlippyDisconnected ({ dispatch }) {
     await dispatch('resetKlippy', undefined, { root: true })
+
+    dispatch('extensions/onKlippyStateChanged', undefined, { root: true })
 
     SocketActions.serverInfo()
   },
