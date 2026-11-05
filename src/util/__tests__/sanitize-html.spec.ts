@@ -41,6 +41,34 @@ describe('sanitizeHtml', () => {
       .toBe(`<a href="${href}" target="_blank" rel="noopener noreferrer">x</a>`)
   })
 
+  it.each([
+    ['backslashes', '\\\\x.com'],
+    ['a slash and a backslash', '/\\x.com'],
+    ['a backslash and a slash', '\\/x.com'],
+    ['a scheme without slashes', 'https:x.com'],
+    ['a scheme with one slash', 'https:/x.com'],
+    ['a tab between the slashes', '/\t/x.com'],
+    ['a tab in the scheme', 'ht\ttps://x.com']
+  ])('opens a link with %s in a new tab', (_, href) => {
+    expect(serialize(sanitizeHtml(`<a href="${href}">x</a>`)))
+      .toBe(`<a href="${href}" target="_blank" rel="noopener noreferrer">x</a>`)
+  })
+
+  it('opens an absolute SVG link in a new tab', () => {
+    expect(serialize(sanitizeHtml('<svg><a href="https://x.com"><text>x</text></a></svg>')))
+      .toBe('<svg><a href="https://x.com" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>')
+  })
+
+  it('opens an absolute SVG xlink:href link in a new tab', () => {
+    expect(serialize(sanitizeHtml('<svg><a xlink:href="https://x.com"><text>x</text></a></svg>')))
+      .toBe('<svg><a xlink:href="https://x.com" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>')
+  })
+
+  it('keeps an explicit target="_blank" on relative SVG links', () => {
+    expect(serialize(sanitizeHtml('<svg><a href="/a" target="_blank"><text>x</text></a></svg>')))
+      .toBe('<svg><a href="/a" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>')
+  })
+
   it('trims the href before checking it', () => {
     expect(serialize(sanitizeHtml('<a href=" https://x.com">x</a>')))
       .toBe('<a href="https://x.com" target="_blank" rel="noopener noreferrer">x</a>')

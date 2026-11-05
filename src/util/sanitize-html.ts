@@ -2,7 +2,7 @@ import DOMPurify from 'dompurify'
 
 DOMPurify.addHook('uponSanitizeAttribute', (currentNode, hookEvent) => {
   if (
-    currentNode.tagName === 'A' &&
+    currentNode.localName === 'a' &&
     hookEvent.attrName === 'target' &&
     hookEvent.attrValue === '_blank'
   ) {
@@ -10,14 +10,35 @@ DOMPurify.addHook('uponSanitizeAttribute', (currentNode, hookEvent) => {
   }
 })
 
-const absoluteUrlRegExp = /^(?:https?:)?\/\//i
+const relativeBaseHost = 'relative.invalid'
+
+const isAbsoluteHttpUrl = (href: string) => {
+  try {
+    const url = new URL(href, `http://${relativeBaseHost}/`)
+
+    return (
+      (
+        url.protocol === 'http:' ||
+        url.protocol === 'https:'
+      ) &&
+      url.host !== relativeBaseHost
+    )
+  } catch {
+    return false
+  }
+}
 
 DOMPurify.addHook('afterSanitizeAttributes', (currentNode) => {
-  if (currentNode.tagName !== 'A') {
+  if (currentNode.localName !== 'a') {
     return
   }
 
-  if (absoluteUrlRegExp.test(currentNode.getAttribute('href') ?? '')) {
+  const href = currentNode.getAttribute('href') ?? currentNode.getAttribute('xlink:href')
+
+  if (
+    href != null &&
+    isAbsoluteHttpUrl(href)
+  ) {
     currentNode.setAttribute('target', '_blank')
   }
 
@@ -29,7 +50,7 @@ DOMPurify.addHook('afterSanitizeAttributes', (currentNode) => {
         .filter(Boolean)
     )
 
-    // rel.add('noopener')
+    rel.add('noopener')
     rel.add('noreferrer')
 
     currentNode.setAttribute('rel', [...rel].join(' '))
