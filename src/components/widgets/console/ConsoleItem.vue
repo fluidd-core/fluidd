@@ -7,7 +7,10 @@
       {{ itemTime }}&nbsp;
     </span>
     <span
-      v-safe-html:[search]="itemMessage"
+      v-safe-html="{
+        html: itemMessage,
+        search
+      }"
       :class="itemClass"
       @click.capture="itemClick"
     />
@@ -35,19 +38,19 @@ export default class ConsoleItem extends Vue {
 
   get itemMessage () {
     const message = this.value.message
-    const encodedMessage = escapeHtml(message)
+    const escapedMessage = escapeHtml(message)
 
     if ('type' in this.value) {
       switch (this.value.type) {
         case 'command':
-          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${encodedMessage}</a>`
+          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${escapedMessage}</a>`
 
         case 'response':
           if (hasHtmlTags(message)) {
             return message
           }
 
-          return encodedMessage
+          return escapedMessage
             .replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => (
               command in this.knownCommands
                 ? `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
@@ -56,7 +59,7 @@ export default class ConsoleItem extends Vue {
       }
     }
 
-    return encodedMessage
+    return escapedMessage
   }
 
   get itemTime () {
