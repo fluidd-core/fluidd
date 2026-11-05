@@ -1,4 +1,4 @@
-import { escapeHtml, linkExternalUrls, urlToAnchor } from '../html-helpers'
+import { escapeHtml, hasHtmlTags, linkExternalUrls, urlToAnchor } from '../html-helpers'
 
 const anchor = (url: string) => `<a target="_blank" rel="noopener noreferrer" href="${url}">${url}</a>`
 
@@ -97,5 +97,30 @@ describe('linkExternalUrls', () => {
   it('stops a URL at a tag-like delimiter', () => {
     expect(linkExternalUrls('https://x.com<br>'))
       .toBe(`${anchor('https://x.com')}&lt;br&gt;`)
+  })
+})
+
+describe('hasHtmlTags', () => {
+  it.each([
+    'plain text',
+    '<none>',
+    '<x>',
+    '<y>',
+    '<z>',
+    '<X>',
+    'a < b',
+    'value <min'
+  ])('is false for %s', (text) => {
+    expect(hasHtmlTags(text)).toBe(false)
+  })
+
+  it.each([
+    '<b>',
+    '<img src="a">',
+    '</x>',
+    '<foo>',
+    '<x> <b>'
+  ])('is true for %s', (text) => {
+    expect(hasHtmlTags(text)).toBe(true)
   })
 })

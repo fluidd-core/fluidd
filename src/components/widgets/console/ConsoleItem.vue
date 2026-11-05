@@ -7,7 +7,7 @@
       {{ itemTime }}&nbsp;
     </span>
     <span
-      v-safe-html="itemMessage"
+      v-safe-html:[search]="itemMessage"
       :class="itemClass"
       @click.capture="itemClick"
     />
@@ -19,7 +19,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { UpdateResponse } from '@/store/version/types'
-import { escapeRegExp } from 'lodash-es'
+import { escapeHtml, hasHtmlTags } from '@/util/html-helpers'
 
 @Component({})
 export default class ConsoleItem extends Vue {
@@ -34,34 +34,20 @@ export default class ConsoleItem extends Vue {
   }
 
   get itemMessage () {
-    const rawItemMessage = this.rawItemMessage
-
-    if (this.search) {
-      const searchRegexp = new RegExp(`(<[^>]*>)|${escapeRegExp(this.search)}`, 'gi')
-
-      return rawItemMessage
-        .replace(searchRegexp, (match, tag) => (
-          tag ?? `<mark>${match}</mark>`
-        ))
-    }
-
-    return rawItemMessage
-  }
-
-  get rawItemMessage () {
     const message = this.value.message
+    const encodedMessage = escapeHtml(message)
 
     if ('type' in this.value) {
       switch (this.value.type) {
         case 'command':
-          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
+          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${encodedMessage}</a>`
 
         case 'response':
-          if (/<\/?[a-z][^>]*>/i.test(message)) {
+          if (hasHtmlTags(message)) {
             return message
           }
 
-          return message
+          return encodedMessage
             .replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => (
               command in this.knownCommands
                 ? `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
@@ -70,7 +56,7 @@ export default class ConsoleItem extends Vue {
       }
     }
 
-    return message
+    return encodedMessage
   }
 
   get itemTime () {

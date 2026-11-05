@@ -2,6 +2,8 @@ const externalUrlRegExp = /https?:\/\/[^\s<>"'`]+/gi
 
 const trailingPunctuationRegExp = /[?!.,:*_~]+$/
 
+const htmlTagRegExp = /<(?!(?:none|[xyz])>)\/?[a-z][^>]*>/i
+
 // Trim trailing punctuation and unmatched closing parens (GFM autolink rules).
 const trimUrl = (url: string): string => {
   let result = url.replace(trailingPunctuationRegExp, '')
@@ -22,6 +24,8 @@ export const escapeHtml = (text: string) => text
   .replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;')
+
+export const hasHtmlTags = (text: string) => htmlTagRegExp.test(text)
 
 export const urlToAnchor = (url: string) => {
   const escapedUrl = escapeHtml(url)

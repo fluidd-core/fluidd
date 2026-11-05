@@ -19,12 +19,13 @@ The console toolbar provides quick access to common actions:
 - **Filter** — opens a menu to hide temperature waits and toggle your custom
   output filters
 - **Clear** — clears the console output
-- **Search** — filters the output and highlights matches (see below)
+- **Search** — highlights matches in the output (see below)
 
 ## Search
 
-Type in the toolbar search box to filter the console output to matching lines.
-Matching text is highlighted so it is easy to spot in long output.
+Type in the toolbar search box to highlight matching text in the console output,
+so it is easy to spot in long output. Search is case-insensitive and does not
+hide lines that don't match — use [output filters](#output-filters) for that.
 
 ## History
 

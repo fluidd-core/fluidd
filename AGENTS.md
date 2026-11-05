@@ -346,8 +346,9 @@ src/
   namespaces, and `tshelpers.d.ts`, which `src/typings` builds on (`TSHelpers.SnakeToCamelCase`)
 - **`environment: 'node'` is the default**, with `pool: 'vmThreads'` so each worker builds one
   environment instead of one per file. A spec needing a DOM opts in with a `@vitest-environment
-  jsdom` docblock — only the three Monarch tokenizer specs (monaco touches `window`) and the two
-  `http-endpoint-diagnostics` ones do. Building jsdom for all 21 files was ~40% of the run;
+  jsdom` docblock — only the three Monarch tokenizer specs (monaco touches `window`), the two
+  `http-endpoint-diagnostics` ones, and the `safe-html` and `mark-text-nodes` ones (DOMPurify and
+  `markTextNodes` need a DOM) do. Building jsdom for all 21 files was ~40% of the run;
   `environmentMatchGlobs` is not an alternative, it was removed in Vitest 3
 - **Under `vmThreads`, jsdom's `location` cannot be redefined** — `Object.defineProperty`,
   `vi.stubGlobal('location', …)` and `vi.spyOn(location, 'protocol', 'get')` all throw `Cannot
@@ -386,7 +387,8 @@ src/
 - Any link opening a new tab (`target="_blank"`) **must** also set `rel="noopener noreferrer"` — applies to `<a>`, `<v-btn>`/`<app-btn>` with `:href`, and any HTML strings rendered via `v-safe-html` (e.g. `src/util/html-helpers.ts`)
 - Render plain text as plain text: `<span class="text-pre-wrap">{{ value }}</span>`, on one line so `pre-wrap` does not reveal template whitespace, and not `v-text` (lint rejects it on components). `v-safe-html` parses its input as HTML, so `<none>` disappears and an unterminated `<min` loses the rest of the string; keep it for strings that really carry markup. Store raw newlines, never `<br>` — `server.info` is sent `raw` so Moonraker's warnings arrive that way too — and put real newlines in locale strings rendered as plain text
 - `src/util/html-helpers.ts` (import-free) builds HTML from plain text: `linkExternalUrls` escapes everything except the anchors it generates, which is why `AppWarnings` can stay on `v-safe-html` without losing text. `escapeHtml` escapes `&`, `<`, `>`, `"` and `'`, so its output is safe in text and quoted attribute values
-- `ConsoleItem` deliberately renders messages as HTML, so macros can output `<img>` and `<video>`. A `response` containing any tag is left untouched, with no command links, and tag-like text such as `<none>` is still lost there
+- `v-safe-html` (`src/directives/safe-html.ts`) sanitizes to a DOM fragment (`RETURN_DOM_FRAGMENT`) and inserts it with `replaceChildren`, never `innerHTML`: the nodes DOMPurify checked are the ones rendered, with no serialize and re-parse for mutation XSS to exploit. Its optional dynamic argument is a search term, `v-safe-html:[term]="html"`, highlighted by `markTextNodes` (`src/util/mark-text-nodes.ts`): the raw term, case-insensitive, wrapped in `<mark>` in text nodes only, skipping `<style>`. It re-renders when the value or the argument changes, so the comparison must cover `oldArg`
+- `ConsoleItem` deliberately renders `response` messages containing tags as HTML, so macros can output `<img>` and `<video>`; anything else is escaped with `escapeHtml` and gets command links if it is a `response`. `<none>`, `<x>`, `<y>` and `<z>` don't count as tags (`hasHtmlTags`), because Klipper and Kalico print such placeholders as plain text, so a new placeholder needs adding to that check; other tag-like text, such as the name in `Unknown algorithm <foo>`, still makes the message HTML and is lost. Stored messages stay raw, so console filters are unaffected. Search uses `v-safe-html:[search]`, so tags, attributes and entities can't be hit, plain-text and HTML messages match alike, and a match can't span two elements (such as the `$ ` prefix and the command link). `itemClick` resolves a click on a `<mark>` to its parent anchor
 - Use `consola` for logging, not `console.log` (configured in `src/setupConsola.ts` — warn in prod, verbose in dev)
 - Type imports: `import type { ... }` for types only (`verbatimModuleSyntax: true`)
 - `satisfies` keyword for store module type checking
