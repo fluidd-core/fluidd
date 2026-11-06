@@ -376,6 +376,23 @@
         <v-divider />
       </template>
 
+      <app-setting
+        :title="$t('app.setting.label.toolhead_drop_tool_gcode')"
+        :sub-title="$t('app.setting.tooltip.toolhead_drop_tool_gcode')"
+      >
+        <app-text-field
+          :value="toolheadDropToolGcode"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          submit-on-change
+          @submit="setToolheadDropToolGcode"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -475,6 +492,18 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadZSpeed',
       value: +value,
+      server: true
+    })
+  }
+
+  get toolheadDropToolGcode (): string {
+    return this.$typedState.config.uiSettings.general.toolheadDropToolGcode
+  }
+
+  setToolheadDropToolGcode (value: string) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadDropToolGcode',
+      value: value.trim(),
       server: true
     })
   }
