@@ -47,6 +47,7 @@ app:
     PrepDetected: "Filament detected but not loaded"
     Printing: "Printing"
     PrintStartDialog:
+      AutoMap: "Auto-map"
       StartJob: "Start Job"
       Title: "AFC Lane Assignment"
       NoLane: "No Lane"

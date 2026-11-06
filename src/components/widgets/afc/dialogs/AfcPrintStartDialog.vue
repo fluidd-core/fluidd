@@ -41,6 +41,34 @@
         :class="{ 'border-top': index > 0 }"
       />
     </v-card-text>
+
+    <template #actions>
+      <app-btn
+        text
+        color="primary"
+        type="button"
+        @click="handleAutoMap"
+      >
+        {{ $t('app.afc.PrintStartDialog.AutoMap') }}
+      </app-btn>
+
+      <v-spacer />
+
+      <app-btn
+        text
+        color="warning"
+        type="button"
+        @click="open = false"
+      >
+        {{ $t('app.general.btn.cancel') }}
+      </app-btn>
+      <app-btn
+        color="primary"
+        type="submit"
+      >
+        {{ $t('app.general.btn.print') }}
+      </app-btn>
+    </template>
   </app-dialog>
 </template>
 
@@ -52,6 +80,20 @@ import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/api/socketActions'
 import getFilePaths from '@/util/get-file-paths'
 import type { AppFileWithMeta } from '@/store/files/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import { TinyColor } from '@ctrl/tinycolor'
+
+// sRGB hex -> CIE Lab (D65), used for perceptual color distance
+const hexToLab = (hex: string): [number, number, number] => {
+  const { r, g, b } = new TinyColor(hex).toRgb()
+  const lin = (c: number) => (c /= 255) > 0.04045 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92
+  const [lr, lg, lb] = [lin(r), lin(g), lin(b)]
+  const f = (t: number) => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116
+  const x = f((lr * 0.4124 + lg * 0.3576 + lb * 0.1805) / 0.95047)
+  const y = f(lr * 0.2126 + lg * 0.7152 + lb * 0.0722)
+  const z = f((lr * 0.0193 + lg * 0.1192 + lb * 0.9505) / 1.08883)
+  return [116 * y - 16, 500 * (x - y), 200 * (y - z)]
+}
 @Component({
   components: {
     AfcPrintStartDialogTool: () => import('./AfcPrintStartDialogTool.vue')
@@ -120,6 +162,50 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
       if (weight > 0) tools.push(index)
       return tools
     }, [])
+  }
+
+  // Map each used tool to the closest loaded lane: same material first, then by color.
+  // Lanes are assigned once, so the resulting SET_MAP sequence is order independent.
+  handleAutoMap () {
+    const file = this.currentFile
+    if (!file) return
+
+    const lanes = this.afcLanes
+      .map(lane => ({ lane, info: this.getAfcLaneInfo(lane) }))
+      .filter(({ info }) => info.filamentLoaded && info.color)
+
+    const pairs = this.usedTools.flatMap(tool => {
+      const color = file.filament_colors?.[tool]
+      if (!color) return []
+      const material = (file.filament_type?.[tool] ?? '').toLowerCase()
+      const [l1, a1, b1] = hexToLab(color)
+
+      return lanes.map(({ lane, info }) => {
+        const [l2, a2, b2] = hexToLab(info.color)
+        const mismatch = material && !info.material.toLowerCase().includes(material) ? 1 : 0
+        return { tool, lane, mismatch, distance: Math.hypot(l1 - l2, a1 - a2, b1 - b2) }
+      })
+    }).sort((a, b) => a.mismatch - b.mismatch || a.distance - b.distance)
+
+    const usedLanes = new Set<string>()
+    const mapped = new Set<number>()
+    const gcode: string[] = []
+
+    for (const { tool, lane } of pairs) {
+      if (mapped.has(tool) || usedLanes.has(lane)) continue
+      mapped.add(tool)
+      usedLanes.add(lane)
+
+      const map = this.getAfcLaneObject(lane)?.map
+      const toolName = `T${tool}`
+      if (!(Array.isArray(map) ? map : [map]).some(t => t?.toLowerCase() === toolName.toLowerCase())) {
+        gcode.push(`SET_MAP LANE=${encodeGcodeParamValue(lane)} MAP=${encodeGcodeParamValue(toolName)}`)
+      }
+    }
+
+    if (gcode.length) {
+      this.sendGcode(gcode.join('\n'))
+    }
   }
 
   handlePrint () {
