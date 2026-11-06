@@ -245,8 +245,10 @@ app:
       failed_components: >-
         Moonraker heeft falende plugins, controleer je logs, update je
         configuratie en herstart moonraker.
-      printer_powered_off: De printer is momenteel uitgeschakeld.<br/><br/> Om 
-        de printer in te schakelen, klik A.U.B. op de knop aan de linkerzijde.
+      printer_powered_off: |-
+        De printer is momenteel uitgeschakeld.
+
+        Om de printer in te schakelen, klik A.U.B. op de knop aan de linkerzijde.
     label:
       accel_to_decel: Vertragingssnelheid
       acceleration: Versnelling
@@ -361,7 +363,9 @@ app:
       bed_screws_adjust: Klik <b>Aangepast</b> als een significante aanpassing 
         nodig is voor de huidige schroef; anders, klik <b>Accepteer</b> om door 
         te gaan.
-      welcome_back: Welkom terug.<br>Log hieronder in om je printer te beheren.
+      welcome_back: |-
+        Welkom terug.
+        Log hieronder in om je printer te beheren.
       pending_configuration_sections_deleted: De volgende secties zijn 
         gemarkeerd om te verwijderen
       needs_refresh: Nieuwe content beschikbaar, klik op de <b>Herladen</b> knop

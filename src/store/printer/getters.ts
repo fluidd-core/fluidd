@@ -63,10 +63,10 @@ export const getters = {
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
     if (state.info?.state_message) {
-      return state.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
+      return state.info.state_message.trim()
     }
     if (state.printer.webhooks.state_message) {
-      return state.printer.webhooks.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
+      return state.printer.webhooks.state_message.trim()
     }
     return 'Unknown'
   },

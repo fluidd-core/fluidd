@@ -38,19 +38,6 @@ export const getters = {
       const [root, ...restOfPath] = path.split('/')
       const pathFilename = restOfPath.join('/')
 
-      if (pathFilename !== '') {
-        const item: AppDirectory = {
-          type: 'directory',
-          name: '..',
-          dirname: '..',
-          modified: 0,
-          size: 0,
-          permissions: 'rw'
-        }
-
-        items.push(item)
-      }
-
       for (const dir of pathContent.dirs) {
         const item: AppDirectory = {
           ...dir,

@@ -240,7 +240,9 @@ app:
       components_config: 'Moonrakerのプラグイン設定は、こちら <a target="_blank" href="%{url}">です。</a>'
       failed_components: 
         Moonrakerはプラグインに失敗しています。ログを確認し、設定を更新して、moonrakerを再起動してください。
-      printer_powered_off: 現在、プリンターの電源はオフになっています。<br/><br/> 
+      printer_powered_off: |-
+        現在、プリンターの電源はオフになっています。
+
         プリンターの電源をオンにするには、左側のボタンをクリックしてください。
     label:
       accel_to_decel: 加減速
@@ -376,7 +378,9 @@ app:
       password_changed: パスワードの変更
       pending_configuration_sections_deleted: 次のセクションは削除の対象です
       rolledover_logs: '以下のアプリケーションログがロールオーバーされました： %{applications}'
-      welcome_back: お帰りなさい。<br>以下でログインして、プリンタと接続してください。
+      welcome_back: |-
+        お帰りなさい。
+        以下でログインして、プリンタと接続してください。
     simple_form:
       error:
         arrayofnums: 数字のみ
@@ -978,9 +982,9 @@ app:
       committed: 書込みする
       dirty: ダーティー
       invalid: 無効
-      old_component_version: >-
-        Fluidd のすべての機能をサポートしていない古いバージョンの %{name} を使用しています。<br> %{name} を少なくとも
-        %{version}に更新してください。
+      old_component_version: |-
+        Fluidd のすべての機能をサポートしていない古いバージョンの %{name} を使用しています。
+        %{name} を少なくとも %{version}に更新してください。
       os_packages: OSパッケージ
       package_list: パッケージリスト
       up_to_date: 最新の状態

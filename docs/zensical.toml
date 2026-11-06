@@ -140,14 +140,27 @@ full_output = "llms-full.txt"
 "Development" = ["development.md"]
 "FAQ" = ["faq.md"]
 
-# The default card layout reads `primary` from the palette, which we leave unset
-# (brand colours live in extra.css), and crashes on it — so pass colours
-# directly. The theme logo is the wide wordmark, which the card crops, so use
-# the square icon; its blues need a dark background to stay visible.
+# The palette leaves `primary` unset (brand colours live in extra.css), so the
+# default card layout would fall back to its own colours — pass ours directly.
+# The theme logo is the wide wordmark, which the card crops, so use the square
+# icon; its blues need a dark background to stay visible.
 [project.plugins.social.cards_layout_options]
 background_color = "#1E1E1E"
 color = "#FFFFFF"
 logo = "docs/assets/images/logo.svg"
+
+# Self-host the theme's Google Fonts and glightbox so visitors make no
+# third-party requests for them. An include list, not exclusions: the theme
+# bundle also references lazily loaded libraries we never use (pyodide, ace,
+# mermaid, plyr, vimeo), and plyr's would pull in Google's ad SDKs. Anything
+# unlisted stays external — notably the Weblate badge, which a build-time
+# copy would freeze.
+[project.plugins.privacy]
+assets_include = [
+  "fonts.googleapis.com/*",
+  "fonts.gstatic.com/*",
+  "unpkg.com/glightbox@*",
+]
 
 [project.plugins.minify]
 minify_html = true

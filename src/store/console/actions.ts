@@ -56,9 +56,6 @@ export const actions = {
    * Add a console entry
    */
   async onAddConsoleEntry ({ commit, dispatch }, payload: Omit<ConsoleEntry, 'id'>) {
-    payload.message = payload.message
-      .replace(/\r\n|\r|\n/g, '<br />')
-
     if (!payload.time || payload.time <= 0) {
       payload.time = Date.now() / 1000 | 0
     }
@@ -84,7 +81,6 @@ export const actions = {
       const entries = payload.gcode_store
         .map((entry, index): ConsoleEntry => {
           const message = Globals.CONSOLE_RECEIVE_PREFIX + entry.message
-            .replace(/\r\n|\r|\n/g, '<br />')
 
           const type = (
             entry.type === 'response' &&

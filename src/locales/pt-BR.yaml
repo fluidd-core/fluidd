@@ -322,8 +322,9 @@ app:
       device: Dispositivo
     msg:
       password_changed: Senha trocada
-      welcome_back: Bem-vindo de volta.<br>Faça login abaixo para manter contato
-        com sua impressora.
+      welcome_back: |-
+        Bem-vindo de volta.
+        Faça login abaixo para manter contato com sua impressora.
       offline_ready: Fluidd está pronto para trabalhar offline.
       needs_refresh: Novo conteúdo disponível, clique no botão <b>Recarregar</b>
         para atualizar.

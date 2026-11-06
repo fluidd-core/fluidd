@@ -250,8 +250,10 @@ app:
       failed_components: >-
         Moonraker'da başarısız eklentiler var, lütfen günlüklerinizi kontrol edin,
         yapılandırmanızı güncelleyin ve moonraker'ı yeniden başlatın.
-      printer_powered_off: Yazıcı şu anda kapalıdır.<br/><br/> Yazıcıyı açmak 
-        için lütfen soldaki düğmeye tıklayın.
+      printer_powered_off: |-
+        Yazıcı şu anda kapalıdır.
+
+        Yazıcıyı açmak için lütfen soldaki düğmeye tıklayın.
     label:
       accel_to_decel: Hızlanmadan Yavaşlamaya
       acceleration: Hızlanma
@@ -377,9 +379,9 @@ app:
       bed_screws_adjust: >-
         Mevcut vida için önemli bir ayarlama gerekiyorsa <b>Düzenlendi</b>'yi tıklayın;
         aksi halde devam etmek için <b>Kabul Et</b>'i tıklayın.
-      welcome_back: >-
-        Tekrar hoş geldiniz.<br>Yazıcınızla iletişimde kalabilmek için aşağıdan oturum
-        açın.
+      welcome_back: |-
+        Tekrar hoş geldiniz.
+        Yazıcınızla iletişimde kalabilmek için aşağıdan oturum açın.
       offline_ready: Fluidd artık çevrimdışı olarak kullanıma hazır.
       needs_refresh: Yeni içerik mevcut, lütfen güncellemek için <b>Yenile</b> 
         düğmesine tıklayın.
@@ -904,9 +906,9 @@ app:
       package_list: Paket Listesi
       up_to_date: GÜNCEL
       updates_available: Güncellemeler mevcut
-      old_component_version: >-
-        Tüm özellikleri desteklemeyen eski bir %{name} sürümünü kullanıyorsunuz.<br>%{name}'yi
-        en az %{version} sürümüne güncelleyin.
+      old_component_version: |-
+        Tüm özellikleri desteklemeyen eski bir %{name} sürümünü kullanıyorsunuz.
+        %{name}'yi en az %{version} sürümüne güncelleyin.
     status:
       finished: Güncellemeler tamamlandı
       updating: Güncelleniyor...

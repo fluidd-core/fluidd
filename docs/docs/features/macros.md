@@ -57,6 +57,9 @@ without the leading `#` (e.g., `f80` or `ff8800`).
 Buttons in a group are given equal widths and wrap onto further rows when they
 do not fit. Closing the dialog sends `action:prompt_end`.
 
+A `<text>` is shown as plain text, so any HTML appears as written. Only its first
+line is used — send one `action:prompt_text` for each line.
+
 ```ini
 [gcode_macro SHOW_PROMPT_BUTTON_GROUPS]
 gcode:

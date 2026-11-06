@@ -292,7 +292,9 @@ app:
     msg:
       password_changed: 密碼已更改
       bed_screws_adjust: 如果需要對當前螺釘進行重大調整，請單擊<b>已調整</b>； 否則，單擊<b>接受</b>繼續。
-      welcome_back: 歡迎回來。<br>在下面登錄以與您的打印機保持聯繫。
+      welcome_back: |-
+        歡迎回來。
+        在下面登錄以與您的打印機保持聯繫。
       offline_ready: Fluidd 現在可以離線工作了。
       needs_refresh: 有新內容可用，請單擊 <b>重新加載</b> 按鈕進行更新。
       pending_configuration_sections_deleted: 以下部分已標記為刪除

@@ -2,12 +2,15 @@ version: '3.8'
 
 services:
   fluidd:
-    build:
-      context: ./
+    # NOTE: must stay on a glibc base. typescript-native-bridge (the `typescript`
+    # catalog entry) ships a Go c-shared NAPI bridge with no musl build — on Alpine
+    # it fails to load, and segfaults even with `gcompat`. See issue #1938.
+    image: mcr.microsoft.com/devcontainers/javascript-node:26
+    user: node
+    working_dir: /workspaces/fluidd
     volumes:
       - ..:/workspaces/fluidd/:cached
       - node-modules:/workspaces/fluidd/node_modules
-      - pnpm-store:/workspaces/fluidd/.pnpm-store
     command: sleep infinity
     network_mode: service:klipper-simulavr
 
@@ -17,4 +20,3 @@ services:
 
 volumes:
   node-modules:
-  pnpm-store:

@@ -7,7 +7,10 @@
       {{ itemTime }}&nbsp;
     </span>
     <span
-      v-safe-html="itemMessage"
+      v-safe-html="{
+        html: itemMessage,
+        search
+      }"
       :class="itemClass"
       @click.capture="itemClick"
     />
@@ -19,7 +22,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import type { ConsoleEntry } from '@/store/console/types'
 import type { UpdateResponse } from '@/store/version/types'
-import { escapeRegExp } from 'lodash-es'
+import { escapeHtml } from '@/util/html-helpers'
+import { hasRenderableHtml } from '@/util/sanitize-html'
 
 @Component({})
 export default class ConsoleItem extends Vue {
@@ -34,30 +38,20 @@ export default class ConsoleItem extends Vue {
   }
 
   get itemMessage () {
-    const rawItemMessage = this.rawItemMessage
-
-    if (this.search) {
-      const searchRegexp = new RegExp(`(<[^>]*>)|${escapeRegExp(this.search)}`, 'gi')
-
-      return rawItemMessage
-        .replace(searchRegexp, (match, tag) => (
-          tag ?? `<mark>${match}</mark>`
-        ))
-    }
-
-    return rawItemMessage
-  }
-
-  get rawItemMessage () {
     const message = this.value.message
+    const escapedMessage = escapeHtml(message)
 
     if ('type' in this.value) {
       switch (this.value.type) {
         case 'command':
-          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
+          return `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${escapedMessage}</a>`
 
         case 'response':
-          return message
+          if (hasRenderableHtml(message)) {
+            return message
+          }
+
+          return escapedMessage
             .replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => (
               command in this.knownCommands
                 ? `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
@@ -66,7 +60,7 @@ export default class ConsoleItem extends Vue {
       }
     }
 
-    return message
+    return escapedMessage
   }
 
   get itemTime () {
@@ -114,10 +108,19 @@ export default class ConsoleItem extends Vue {
 <style lang="scss" scoped>
   .console-item {
     flex: 0 0 auto;
-  }
 
-  :deep(mark) {
-    background-color: #ff0;
-    color: #000;
+    :deep(img),
+    :deep(svg),
+    :deep(video) {
+      height: auto;
+      max-width: 90%;
+      max-height: 250px;
+      object-fit: contain;
+    }
+
+    :deep(mark) {
+      background-color: #ff0;
+      color: #000;
+    }
   }
 </style>

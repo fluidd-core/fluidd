@@ -29,10 +29,7 @@
           v-if="rpm"
           class="mr-2"
         >{{ rpm }}</small>
-        <span
-          v-safe-html="prettyValue"
-          class="focus--text"
-        />
+        <span class="focus--text">{{ prettyValue }}</span>
       </div>
     </v-layout>
   </div>
