@@ -5,7 +5,6 @@
       suffix="%"
       :value="value"
       :reset-value="0"
-      :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
       :rules="[
         customRules.minFan
       ]"
@@ -13,7 +12,12 @@
       :locked="isMobileUserAgent"
       :loading="hasWait(`${$waits.onSetFanSpeed}${fan.name}`)"
       @submit="handleChange"
-    />
+    >
+      <template #label>
+        <span class="text-pre-wrap">{{ fan.prettyName }}</span>
+        <small v-if="rpm">{{ rpm }}</small>
+      </template>
+    </app-named-slider>
 
     <v-layout
       v-else
