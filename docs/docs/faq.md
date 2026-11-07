@@ -33,6 +33,16 @@ Try these steps in order:
 4. If you are connecting from a different network or through a VPN, verify
    there are no firewall rules blocking the connection.
 
+Fluidd keeps retrying the connection on its own, waiting a little longer
+between attempts, up to 15 seconds. Once the wait is long enough, it shows a
+countdown and a **Retry now** button to try again straight away. Retries pause
+while the browser tab is hidden or the device is offline, and resume as soon
+as you return to the tab or the network comes back.
+
+If the connection is open but Moonraker stops responding, Fluidd shows a
+**Waiting for Moonraker to respond...** message and reconnects automatically
+if there is still no answer after a few seconds.
+
 ### My printer shows as disconnected
 
 This usually means Klipper is not running or has encountered a configuration

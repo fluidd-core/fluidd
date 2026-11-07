@@ -47,7 +47,8 @@ are the same commands listed by `help`.
 
 A message that contains HTML Fluidd can display, such as `<b>` or `<img>` sent
 by a macro with `RESPOND`, is rendered as HTML, with none of its commands made
-clickable. Any other tags in such a message are removed. To make a command in
+clickable. Images and videos are scaled down to fit the console. Any other
+tags in such a message are removed. To make a command in
 such a message clickable, wrap it in a bare `<a>` tag. Text in angle brackets
 that isn't HTML, such as `<temp>` in a macro description, is shown as written.
 
