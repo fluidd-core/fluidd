@@ -1,42 +1,42 @@
 <template>
-  <v-row no-gutters>
-    <v-col
-      v-safe-html="label"
-      cols="12"
-      sm="5"
-      align-self="center"
-      class="text-body-1"
-      :class="{ 'text--disabled': disabled }"
-    />
-    <v-col>
-      <app-text-field
-        v-model="inputValue"
-        :disabled="disabled || loading"
-        class="v-input--text-right"
-        dense
-        single-line
-        hide-details
-        outlined
-        v-bind="$attrs"
-        v-on="$listeners"
-      >
-        <template #prepend>
-          <app-btn
-            v-if="resetValue !== undefined"
-            :disabled="disabled"
-            style="margin-top: -4px;"
-            icon
-            small
-            @click="handleReset"
-          >
-            <v-icon small>
-              $reset
-            </v-icon>
-          </app-btn>
-        </template>
-      </app-text-field>
-    </v-col>
-  </v-row>
+  <app-named-container
+    :label="label"
+    :disabled="disabled"
+  >
+    <template
+      v-if="$scopedSlots.label"
+      #label
+    >
+      <slot name="label" />
+    </template>
+
+    <app-text-field
+      v-model="inputValue"
+      :disabled="disabled || loading"
+      class="v-input--text-right"
+      dense
+      single-line
+      hide-details
+      outlined
+      v-bind="$attrs"
+      v-on="$listeners"
+    >
+      <template #prepend>
+        <app-btn
+          v-if="resetValue !== undefined"
+          :disabled="disabled"
+          style="margin-top: -4px;"
+          icon
+          small
+          @click="handleReset"
+        >
+          <v-icon small>
+            $reset
+          </v-icon>
+        </app-btn>
+      </template>
+    </app-text-field>
+  </app-named-container>
 </template>
 
 <script lang="ts">
@@ -50,8 +50,8 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   @VModel({ })
   inputValue?: unknown
 
-  @Prop({ type: String, required: true })
-  readonly label!: string
+  @Prop({ type: String })
+  readonly label?: string
 
   @Prop({ })
   readonly resetValue?: unknown
