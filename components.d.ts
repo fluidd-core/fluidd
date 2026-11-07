@@ -39,6 +39,7 @@ declare module 'vue' {
     AppInlineChart: typeof import('./src/components/ui/AppInlineChart.vue')['default']
     AppInlineHelp: typeof import('./src/components/ui/AppInlineHelp.vue')['default']
     AppIroColorPicker: typeof import('./src/components/ui/AppIroColorPicker.vue')['default']
+    AppNamedContainer: typeof import('./src/components/ui/AppNamedContainer.vue')['default']
     AppNamedSelect: typeof import('./src/components/ui/AppNamedSelect.vue')['default']
     AppNamedSlider: typeof import('./src/components/ui/AppNamedSlider.vue')['default']
     AppNamedSwitch: typeof import('./src/components/ui/AppNamedSwitch.vue')['default']
