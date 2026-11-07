@@ -1,5 +1,8 @@
 <template>
-  <v-row no-gutters>
+  <v-row
+    class="app-named-container"
+    no-gutters
+  >
     <v-col
       cols="12"
       sm="5"

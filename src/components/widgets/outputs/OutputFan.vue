@@ -15,7 +15,10 @@
     >
       <template #label>
         <span class="text-pre-wrap">{{ fan.prettyName }}</span>
-        <small v-if="rpm">{{ rpm }}</small>
+        <small
+          v-if="rpm"
+          class="ml-1"
+        >{{ rpm }}</small>
       </template>
     </app-named-slider>
 
