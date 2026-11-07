@@ -1,29 +1,26 @@
 <template>
-  <v-layout align-center>
-    <span
-      v-safe-html="label"
-      class="label body-2 secondary--text"
+  <div class="status-label d-flex align-baseline">
+    <div
+      class="status-label__label body-2 secondary--text"
       :style="{
-        width: $filters.getPixelsString(labelWidth),
-        'min-width': $filters.getPixelsString(labelWidth)
+        flex: `0 0 ${$filters.getPixelsString(labelWidth)}`
       }"
-    />
-    <span class="value"><slot /></span>
-    <span
-      v-if="!$slots.default"
-      class="value"
-    >--</span>
-  </v-layout>
+    >
+      <slot name="label">
+        <span class="text-pre-wrap">{{ label }}</span>
+      </slot>
+    </div>
+    <span class="status-label__value"><slot>--</slot></span>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class AppSwitch extends Mixins(StateMixin) {
-  @Prop({ type: String, required: true })
-  readonly label!: string
+export default class StatusLabel extends Vue {
+  @Prop({ type: String })
+  readonly label?: string
 
   @Prop({ type: [String, Number], default: 80 })
   readonly labelWidth!: string | number
@@ -31,15 +28,12 @@ export default class AppSwitch extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .layout {
+  .status-label {
     margin: 0 0 2px 0;
   }
 
-  span.value {
-    > span {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .status-label__value {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 </style>

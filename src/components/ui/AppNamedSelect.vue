@@ -1,42 +1,42 @@
 <template>
-  <v-row no-gutters>
-    <v-col
-      v-safe-html="label"
-      cols="12"
-      sm="5"
-      align-self="center"
-      class="text-body-1"
-      :class="{ 'text--disabled': disabled }"
-    />
-    <v-col>
-      <v-select
-        v-model="inputValue"
-        class="mt-0"
-        :disabled="disabled || loading"
-        dense
-        single-line
-        outlined
-        hide-details
-        v-bind="$attrs"
-        v-on="$listeners"
-      >
-        <template #prepend>
-          <app-btn
-            v-if="resetValue !== undefined"
-            :disabled="disabled"
-            style="margin-top: -4px;"
-            icon
-            small
-            @click="handleReset"
-          >
-            <v-icon small>
-              $reset
-            </v-icon>
-          </app-btn>
-        </template>
-      </v-select>
-    </v-col>
-  </v-row>
+  <app-named-container
+    :label="label"
+    :disabled="disabled"
+  >
+    <template
+      v-if="$scopedSlots.label"
+      #label
+    >
+      <slot name="label" />
+    </template>
+
+    <v-select
+      v-model="inputValue"
+      class="mt-0"
+      :disabled="disabled || loading"
+      dense
+      single-line
+      outlined
+      hide-details
+      v-bind="$attrs"
+      v-on="$listeners"
+    >
+      <template #prepend>
+        <app-btn
+          v-if="resetValue !== undefined"
+          :disabled="disabled"
+          style="margin-top: -4px;"
+          icon
+          small
+          @click="handleReset"
+        >
+          <v-icon small>
+            $reset
+          </v-icon>
+        </app-btn>
+      </template>
+    </v-select>
+  </app-named-container>
 </template>
 
 <script lang="ts">
@@ -52,8 +52,8 @@ export default class AppNamedSelect extends Vue {
   @Prop({ })
   readonly resetValue?: unknown
 
-  @Prop({ type: String, required: true })
-  readonly label!: string
+  @Prop({ type: String })
+  readonly label?: string
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
