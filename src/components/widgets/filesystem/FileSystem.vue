@@ -609,8 +609,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   @Watch('files')
-  onFilesChange () {
-    // If our file list changes, reset selected files.
+  onFilesChange (files: FileBrowserEntry[]) {
+    if (this.selected.length === 0) {
+      return
+    }
+
+    // Keep the selected items that are still listed, so a change to another file
+    // (for example a snapshot that is rewritten every second) doesn't clear the selection.
+    // Swap in the refreshed entries, as some checks compare items by reference.
+    const filesByName = new Map(files.map(file => [file.name, file]))
+
+    this.selected = this.selected
+      .map(item => filesByName.get(item.name))
+      .filter(Boolean)
+  }
+
+  @Watch('currentPath')
+  onCurrentPathChange () {
+    // A different folder can have files with the same names, so start over.
     this.selected = []
   }
 
@@ -697,9 +713,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (item.type === 'directory') {
       if (event.type === 'click') {
         this.loadFiles(this.getDirectoryPath(item.dirname))
-
-        // Clear selected bulk items if we're navigating folders.
-        this.selected = []
 
         return
       } else if (item.dirname === '..' || item.permissions === 'r' || this.rootProperties.readonly) {
