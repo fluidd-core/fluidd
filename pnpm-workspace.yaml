@@ -15,14 +15,13 @@ catalog:
 overrides:
   dompurify: 'catalog:'
   echarts: 'catalog:'
-  glob: ^13.0.6
-  rollup: ^4.62.4
-  serialize-javascript: ^7.0.3
   typescript: 'catalog:'
-  typescript-eslint: ^8.66.0
   vite: 'catalog:'
   vue: 'catalog:'
   '@originjs/vite-plugin-content>xlsx': '-'
+  csv-parse@<7.0.2: ^7.0.2
+  glob@>=9.0.0 <=14.0.1: ^14.0.2
+  minimatch@>=7.0.0 <11.0.1: ^11.0.1
 
 peerDependencyRules:
   allowedVersions:
