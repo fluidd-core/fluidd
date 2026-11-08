@@ -175,12 +175,6 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return this.$vuetify.theme.currentTheme['primary-offset']?.toString() ?? ''
   }
 
-  // Our app is in a loading state when the socket isn't quite ready, or
-  // our translations are loading.
-  get updating (): boolean {
-    return this.$typedState.version.status?.busy ?? false
-  }
-
   get versionUpdating (): boolean {
     return this.$typedState.version.status?.busy ?? false
   }
@@ -194,7 +188,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   get firmwareUpdating (): boolean {
-    return this.$typedState.firmware.busy
+    return this.$typedGetters['firmware/isBusy']
   }
 
   get firmwareResponses (): FirmwareUpdateResponse[] {

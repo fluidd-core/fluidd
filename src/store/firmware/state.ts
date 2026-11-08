@@ -6,12 +6,10 @@ export const createState = (): FirmwareState => {
     status: null,
     statusError: null,
     retried: false,
-    busy: false,
-    runId: null,
-    responses: [],
-    lastResult: null,
-    lastMessage: null,
-    resultRunId: null,
+    refreshing: false,
+    pending: false,
+    run: null,
+    logRunId: null,
     dismissedRunId: null
   }
 }

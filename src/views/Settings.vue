@@ -80,10 +80,7 @@ export default class Settings extends Mixins(StateMixin) {
   }
 
   get supportsFirmware (): boolean {
-    return (
-      this.$typedGetters['firmware/isSupported'] ||
-      this.$typedGetters['firmware/isRegistered']
-    )
+    return this.$typedGetters['firmware/isAvailable']
   }
 
   get supportsAuth (): boolean {

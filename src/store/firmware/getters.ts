@@ -1,18 +1,20 @@
 import type { GetterTree } from 'vuex'
 import type { FirmwareState, FirmwareUpdateResponse } from './types'
 import type { RootState } from '../types'
-import { Waits } from '@/globals'
-import { SUPPORTED_API_VERSION, updatableMcus } from './helpers'
-
-export const AGENT_NAME = 'aldis'
+import { Globals, Waits } from '@/globals'
+import { SUPPORTED_API_VERSION, finishedRunOf, formatResponse, updatableMcus } from './helpers'
 
 export const getters = {
   isSupported: (_, __, rootState): boolean => {
-    return rootState.extensions.agents.some(agent => agent.name === AGENT_NAME)
+    return rootState.extensions.agents.some(agent => agent.name === Globals.MOONRAKER_AGENTS.aldis.name)
   },
 
   isRegistered: (_, __, rootState): boolean => {
-    return rootState.server.system_info?.available_services?.includes(AGENT_NAME) ?? false
+    return rootState.server.system_info?.available_services?.includes(Globals.MOONRAKER_AGENTS.aldis.name) ?? false
+  },
+
+  isAvailable: (_, getters): boolean => {
+    return getters.isSupported || getters.isRegistered
   },
 
   isLoading: (state, getters, ___, rootGetters): boolean => {
@@ -43,12 +45,37 @@ export const getters = {
     return updatableMcus(state.status)
   },
 
-  hasUpdates: (state): boolean => {
-    return updatableMcus(state.status).length > 0
+  hasUpdates: (_, getters): boolean => {
+    return getters.getUpdatableMcus.length > 0
+  },
+
+  isBusy: (state): boolean => {
+    return state.pending || state.run?.state === 'running'
   },
 
   getResponses: (state): FirmwareUpdateResponse[] => {
-    return [...state.responses]
+    const run = state.run
+
+    return (
+      run != null &&
+      run.run_id === state.logRunId
+    )
+      ? run.messages.map(formatResponse)
+      : []
+  },
+
+  getFinishedRun: (state): Aldis.Run | null => {
+    return finishedRunOf(state)
+  },
+
+  getLastResult: (_, getters): Aldis.RunResult | null => {
+    return getters.getFinishedRun?.result ?? null
+  },
+
+  getLastMessage: (_, getters): string | null => {
+    const messages = getters.getFinishedRun?.messages ?? []
+
+    return messages[messages.length - 1]?.message ?? null
   },
 
   getStatusError: (state): string | null => {

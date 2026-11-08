@@ -1,17 +1,23 @@
 import type { MutationTree } from 'vuex'
-import type { FirmwareRunState, FirmwareState } from './types'
+import type { FirmwareState } from './types'
 import { createState } from './state'
 
 export const mutations = {
   setReset (state) {
-    Object.assign(state, createState())
+    // Kept: the agent still reports the dismissed run after a reconnect
+    const { dismissedRunId } = state
+
+    Object.assign(state, {
+      ...createState(),
+      dismissedRunId
+    })
   },
 
   setInitialised (state, payload: boolean) {
     state.initialised = payload
   },
 
-  setStatus (state, payload: Aldis.StatusResponse) {
+  setStatus (state, payload: Aldis.StatusResponse | null) {
     state.status = payload
   },
 
@@ -19,24 +25,38 @@ export const mutations = {
     state.statusError = payload
   },
 
-  setRunState (state, payload: FirmwareRunState) {
-    state.busy = payload.busy
-    state.runId = payload.runId
-    state.responses = payload.responses
-    state.lastResult = payload.lastResult
-    state.lastMessage = payload.lastMessage
-    state.resultRunId = payload.resultRunId
-    state.dismissedRunId = payload.dismissedRunId
+  setRefreshing (state, payload: boolean) {
+    state.refreshing = payload
   },
 
-  setBusy (state, payload: boolean) {
-    state.busy = payload
-  },
-
-  setRunId (state, payload: string) {
-    if (state.runId === null) {
-      state.runId = payload
+  setRun (state, payload: Aldis.Run | null) {
+    if (
+      payload?.state === 'running' &&
+      payload.run_id !== state.run?.run_id
+    ) {
+      state.pending = false
+      state.logRunId = payload.run_id
     }
+
+    state.run = payload
+  },
+
+  setPending (state, payload: boolean) {
+    state.pending = payload
+  },
+
+  setRunStarted (state, payload: string) {
+    if (state.run?.run_id !== payload) {
+      state.run = {
+        run_id: payload,
+        state: 'running',
+        messages: [],
+        result: null
+      }
+      state.logRunId = payload
+    }
+
+    state.pending = false
   },
 
   setRetried (state, payload: boolean) {
@@ -44,24 +64,16 @@ export const mutations = {
   },
 
   setUpdateStarted (state) {
-    state.busy = true
-    state.runId = null
-    state.responses = []
-    state.lastResult = null
-    state.lastMessage = null
-    state.resultRunId = null
-    state.dismissedRunId = null
+    state.pending = true
+    state.logRunId = null
     state.retried = false
   },
 
   setClearResponses (state) {
-    state.responses = []
+    state.logRunId = null
   },
 
   setClearLastResult (state) {
-    state.dismissedRunId = state.resultRunId
-    state.lastResult = null
-    state.lastMessage = null
-    state.resultRunId = null
+    state.dismissedRunId = state.run?.run_id ?? null
   }
 } satisfies MutationTree<FirmwareState>

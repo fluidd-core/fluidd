@@ -137,10 +137,7 @@
           >
             <template #sub-title>
               <span v-if="mcu.transport">{{ transportLabel(mcu.transport) }} · </span>
-              <span>{{ mcu.running_version || $t('app.firmware.label.unknown_version') }}</span>
-              <span v-if="mcu.state === 'update_available' && host && host.software_version">
-                -> {{ host.software_version }}
-              </span>
+              <span>{{ mcuVersionLabel(mcu) }}</span>
             </template>
 
             <firmware-status
@@ -186,7 +183,7 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
   }
 
   get busy (): boolean {
-    return this.$typedState.firmware.busy
+    return this.$typedGetters['firmware/isBusy']
   }
 
   get status (): Aldis.StatusResponse | null {
@@ -226,11 +223,11 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
   }
 
   get lastResult (): Aldis.RunResult | null {
-    return this.$typedState.firmware.lastResult
+    return this.$typedGetters['firmware/getLastResult']
   }
 
   get lastMessage (): string | null {
-    return this.$typedState.firmware.lastMessage
+    return this.$typedGetters['firmware/getLastMessage']
   }
 
   get updateDisabled (): boolean {
@@ -254,6 +251,14 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
       value,
       server: true
     }).then(() => this.$typedDispatch('firmware/updateNotification'))
+  }
+
+  mcuVersionLabel (mcu: Aldis.Mcu): string {
+    if (mcu.state === 'update_available' && mcu.message) {
+      return mcu.message
+    }
+
+    return mcu.running_version || this.$t('app.firmware.label.unknown_version').toString()
   }
 
   transportLabel (transport: Aldis.Transport): string {

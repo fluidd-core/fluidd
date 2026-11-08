@@ -59,10 +59,7 @@ export default class AppSettingsNav extends Vue {
   }
 
   get supportsFirmware (): boolean {
-    return (
-      this.$typedGetters['firmware/isSupported'] ||
-      this.$typedGetters['firmware/isRegistered']
-    )
+    return this.$typedGetters['firmware/isAvailable']
   }
 
   get supportsTimelapse (): boolean {

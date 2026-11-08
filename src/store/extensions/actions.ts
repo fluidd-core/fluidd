@@ -4,14 +4,7 @@ import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { consola } from 'consola'
-
-const isAgentConnectedEvent = (event: Moonraker.Extensions.AgentEvent): event is Moonraker.Extensions.AgentConnectedEvent => (
-  event.event === 'connected'
-)
-
-const isAgentDisconnectedEvent = (event: Moonraker.Extensions.AgentEvent): event is Moonraker.Extensions.AgentDisconnectedEvent => (
-  event.event === 'disconnected'
-)
+import { isAgentConnectedEvent, isAgentDisconnectedEvent } from '@/util/is-agent-event'
 
 const findAgent = (name: string) => Object.values<{ name: string, eventDispatch: string, klippyDispatch?: string }>(Globals.MOONRAKER_AGENTS)
   .find(agent => agent.name === name)

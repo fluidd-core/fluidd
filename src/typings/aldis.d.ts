@@ -32,6 +32,7 @@ declare namespace Aldis {
     | 'indeterminate'
     | 'externally_managed'
     | 'unsupported_legacy'
+    | 'unsupported_mcu'
     | 'not_identified'
     | 'not_responding'
 

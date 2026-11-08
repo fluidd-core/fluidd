@@ -1,5 +1,5 @@
 import { isSocketError } from '@/util/is-socket-error'
-import type { FirmwareRunState, FirmwareUpdateResponse } from './types'
+import type { FirmwareState, FirmwareUpdateResponse } from './types'
 
 export const SUPPORTED_API_VERSION = 1
 
@@ -14,53 +14,89 @@ export const formatResponse = (payload: Aldis.UpdateResponse, id: number): Firmw
   phase: payload.phase
 })
 
-export const applyEvent = (state: FirmwareRunState, payload: Aldis.UpdateResponse): FirmwareRunState => {
-  const responses = [...state.responses, formatResponse(payload, state.responses.length)]
+export const applyEvent = (run: Aldis.Run | null, payload: Aldis.UpdateResponse): Aldis.Run => {
+  const current: Aldis.Run = run?.run_id === payload.run_id
+    ? run
+    : {
+        run_id: payload.run_id,
+        state: 'running',
+        messages: [],
+        result: null
+      }
 
-  const next: FirmwareRunState = state.runId === null
-    ? { ...state, responses, runId: payload.run_id, busy: true }
-    : { ...state, responses }
+  const messages = [...current.messages, payload]
 
   return payload.complete
-    ? { ...next, busy: false, lastResult: payload.result ?? null, lastMessage: payload.message, resultRunId: payload.run_id }
-    : next
+    ? {
+        ...current,
+        messages,
+        state: 'finished',
+        result: payload.result ?? null
+      }
+    : {
+        ...current,
+        messages
+      }
 }
 
-export const reconcileRun = (state: FirmwareRunState, run: Aldis.Run | null): FirmwareRunState => {
-  if (state.runId !== null || run == null) {
-    return state
-  }
-
-  if (run.state === 'running') {
-    return {
-      ...state,
-      busy: true,
-      runId: run.run_id,
-      responses: run.messages.map((message, id) => formatResponse(message, id))
+export const endLostRun = (run: Aldis.Run, message: string): Aldis.Run => ({
+  ...run,
+  state: 'finished',
+  result: null,
+  messages: [
+    ...run.messages,
+    {
+      run_id: run.run_id,
+      mcu: null,
+      phase: 'done',
+      message,
+      complete: true
     }
+  ]
+})
+
+export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null): Aldis.Run | null => {
+  if (run == null) {
+    return current
   }
 
-  if (state.lastResult === null && run.run_id !== state.dismissedRunId) {
-    const last = run.messages[run.messages.length - 1]
-
-    return {
-      ...state,
-      lastResult: run.result ?? null,
-      lastMessage: last?.message ?? null,
-      resultRunId: run.run_id
-    }
+  if (current?.run_id !== run.run_id) {
+    return run
   }
 
-  return state
+  if (current.state === 'running') {
+    return run.messages.length >= current.messages.length
+      ? run
+      : { ...run, messages: current.messages }
+  }
+
+  // A running snapshot predates the final event; a lost run takes the agent's outcome
+  return (
+    run.state === 'finished' &&
+    current.result == null
+  )
+    ? run
+    : current
+}
+
+export const finishedRunOf = (state: FirmwareState): Aldis.Run | null => {
+  const run = state.run
+
+  return (
+    run?.state === 'finished' &&
+    !state.pending &&
+    run.run_id !== state.dismissedRunId
+  )
+    ? run
+    : null
 }
 
 // The agent emits a run's final event before it marks the run finished, so a
 // refresh issued on that event can read pre-run MCU rows once. One retry fixes it.
-export const needsRetry = (state: FirmwareRunState, run: Aldis.Run | null): boolean => (
-  state.runId !== null &&
-  !state.busy &&
+export const needsRetry = (current: Aldis.Run | null, run: Aldis.Run | null): boolean => (
+  current?.state === 'finished' &&
   run?.state === 'running' &&
-  run.run_id === state.runId
+  run.run_id === current.run_id
 )
 
 export const updatableMcus = (status: Aldis.StatusResponse | null): string[] => {
@@ -73,7 +109,10 @@ export const updatableMcus = (status: Aldis.StatusResponse | null): string[] => 
   }
 
   return status.mcus
-    .filter(mcu => KNOWN_UPDATABLE_STATES.includes(mcu.state) && mcu.actions.includes('update'))
+    .filter(mcu => (
+      KNOWN_UPDATABLE_STATES.includes(mcu.state) &&
+      mcu.actions.includes('update')
+    ))
     .map(mcu => mcu.name)
 }
 
@@ -135,48 +174,33 @@ export const apiVersionOf = (value: unknown): number | null => (
 
 export const unsupportedStatus = (apiVersion: number): Aldis.StatusResponse => ({
   api_version: apiVersion,
-  host: { klippy_state: 'disconnected', klippy_message: '' },
+  host: {
+    klippy_state: 'disconnected',
+    klippy_message: ''
+  },
   blocker: null,
   mcus: [],
   run: null
 })
 
-const nestedAgentError = (error: unknown): Aldis.AgentError | null => {
-  if (
-    error != null &&
-    typeof error === 'object' &&
-    'data' in error &&
-    error.data != null &&
-    typeof error.data === 'object' &&
-    'message' in error.data &&
-    typeof error.data.message === 'string'
-  ) {
-    return error.data as Aldis.AgentError
-  }
-
-  return null
-}
+const isAgentError = (value: unknown): value is Aldis.AgentError => (
+  value != null &&
+  typeof value === 'object' &&
+  'message' in value &&
+  typeof value.message === 'string'
+)
 
 export const agentErrorMessage = (error: unknown): string => {
-  const nested = nestedAgentError(error)
-
-  if (nested) {
-    return nested.message
-  }
-
   if (isSocketError(error)) {
-    return error.message
+    return (
+      'data' in error &&
+      isAgentError(error.data)
+    )
+      ? error.data.message
+      : error.message
   }
 
   return error instanceof Error
     ? error.message
     : String(error)
-}
-
-export const agentErrorReason = (error: unknown): string | null => {
-  const reason = nestedAgentError(error)?.data?.reason
-
-  return typeof reason === 'string'
-    ? reason
-    : null
 }

@@ -1,30 +1,13 @@
 import type { ActionTree } from 'vuex'
-import type { FirmwareRunState, FirmwareState } from './types'
+import type { FirmwareState } from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
-import { SUPPORTED_API_VERSION, agentErrorMessage, apiVersionOf, applyEvent, isStatusResponse, isUpdateResponse, needsRetry, reconcileRun, unsupportedStatus } from './helpers'
+import { isAgentConnectedEvent, isAgentDisconnectedEvent } from '@/util/is-agent-event'
+import { SUPPORTED_API_VERSION, agentErrorMessage, apiVersionOf, applyEvent, endLostRun, isStatusResponse, isUpdateResponse, needsRetry, reconcileRun, unsupportedStatus } from './helpers'
 
 const NOTIFICATION_ID = 'firmware-updates-available'
-
-const isAgentConnectedEvent = (event: Moonraker.Extensions.AgentEvent): event is Moonraker.Extensions.AgentConnectedEvent => (
-  event.event === 'connected'
-)
-
-const isAgentDisconnectedEvent = (event: Moonraker.Extensions.AgentEvent): event is Moonraker.Extensions.AgentDisconnectedEvent => (
-  event.event === 'disconnected'
-)
-
-const runStateOf = (state: FirmwareState): FirmwareRunState => ({
-  busy: state.busy,
-  runId: state.runId,
-  responses: state.responses,
-  lastResult: state.lastResult,
-  lastMessage: state.lastMessage,
-  resultRunId: state.resultRunId,
-  dismissedRunId: state.dismissedRunId
-})
 
 export const actions = {
   async reset ({ commit }) {
@@ -41,7 +24,22 @@ export const actions = {
     await dispatch('refresh')
   },
 
-  async refresh ({ commit }) {
+  async refresh ({ state, commit, dispatch }) {
+    if (state.refreshing) {
+      return
+    }
+
+    commit('setRefreshing', true)
+
+    try {
+      await dispatch('fetchStatus')
+    } finally {
+      commit('setRefreshing', false)
+    }
+  },
+
+  // Bypasses the refresh guard: an in-flight refresh may predate the run finishing
+  async fetchStatus ({ commit }) {
     commit('setStatusError', null)
 
     try {
@@ -70,16 +68,19 @@ export const actions = {
 
     commit('setStatus', payload)
     commit('setStatusError', null)
-    commit('setRunState', reconcileRun(runStateOf(state), payload.run ?? null))
+    commit('setRun', reconcileRun(state.run, payload.run ?? null))
 
     await dispatch('updateNotification')
 
     if (payload.run?.state === 'finished') {
       commit('setRetried', false)
-    } else if (needsRetry(runStateOf(state), payload.run) && !state.retried) {
+    } else if (
+      needsRetry(state.run, payload.run) &&
+      !state.retried
+    ) {
       commit('setRetried', true)
 
-      await dispatch('refresh')
+      await dispatch('fetchStatus')
     }
   },
 
@@ -107,9 +108,9 @@ export const actions = {
     try {
       const result = await SocketActions.aldisUpdate(args)
 
-      commit('setRunId', result.run_id)
+      commit('setRunStarted', result.run_id)
     } catch (error) {
-      commit('setBusy', false)
+      commit('setPending', false)
 
       EventBus.$emit(agentErrorMessage(error), { type: 'error' })
 
@@ -126,10 +127,10 @@ export const actions = {
       payload.event === 'update_response' &&
       isUpdateResponse(payload.data)
     ) {
-      commit('setRunState', applyEvent(runStateOf(state), payload.data))
+      commit('setRun', applyEvent(state.run, payload.data))
 
       if (payload.data.complete) {
-        await dispatch('refresh')
+        await dispatch('fetchStatus')
       }
     }
   },
@@ -142,19 +143,19 @@ export const actions = {
 
   async onAgentDisconnected ({ state, commit, dispatch }) {
     commit('setInitialised', false)
+    commit('setStatus', null)
+    commit('setStatusError', null)
 
     await dispatch('notifications/clearNotification', NOTIFICATION_ID, { root: true })
 
-    if (state.busy) {
-      const message = i18n.t('app.firmware.status.lost_run').toString()
-      const current = runStateOf(state)
+    const message = i18n.t('app.firmware.status.lost_run').toString()
 
-      commit('setRunState', {
-        ...current,
-        busy: false,
-        responses: [...current.responses, { id: current.responses.length, message, mcu: null, phase: 'done' }],
-        lastMessage: message
-      })
+    if (state.run?.state === 'running') {
+      commit('setRun', endLostRun(state.run, message))
+    } else if (state.pending) {
+      EventBus.$emit(message, { type: 'error' })
     }
+
+    commit('setPending', false)
   }
 } satisfies ActionTree<FirmwareState, RootState>

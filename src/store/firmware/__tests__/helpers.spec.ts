@@ -1,8 +1,9 @@
 import {
   agentErrorMessage,
-  agentErrorReason,
   apiVersionOf,
   applyEvent,
+  endLostRun,
+  finishedRunOf,
   formatResponse,
   isStatusResponse,
   isUpdateResponse,
@@ -11,17 +12,7 @@ import {
   unsupportedStatus,
   updatableMcus
 } from '../helpers'
-import type { FirmwareRunState } from '../types'
-
-const idle = (): FirmwareRunState => ({
-  busy: false,
-  runId: null,
-  responses: [],
-  lastResult: null,
-  lastMessage: null,
-  resultRunId: null,
-  dismissedRunId: null
-})
+import { createState } from '../state'
 
 const event = (overrides: Partial<Aldis.UpdateResponse> = {}): Aldis.UpdateResponse => ({
   run_id: 'r1',
@@ -39,7 +30,11 @@ const result: Aldis.RunResult = {
   mcus: [{ name: 'can', outcome: 'updated', message: 'updated' }]
 }
 
-const reconcileUnknown = (state: FirmwareRunState, run: unknown): FirmwareRunState => reconcileRun(state, run as Aldis.Run | null)
+const final = event({ mcu: null, phase: 'done', message: '1 updated', complete: true, result })
+
+const running: Aldis.Run = { run_id: 'r1', state: 'running', messages: [event(), event({ message: 'wrote 49152 bytes' })], result: null }
+
+const finished: Aldis.Run = { run_id: 'r1', state: 'finished', messages: [...running.messages, final], result }
 
 const status = (overrides: Partial<Aldis.StatusResponse> = {}): Aldis.StatusResponse => ({
   api_version: 1,
@@ -65,133 +60,122 @@ describe('formatResponse', () => {
 })
 
 describe('applyEvent', () => {
-  it('appends and adopts the run from the first event', () => {
-    const next = applyEvent(idle(), event())
-
-    expect(next.busy).toBe(true)
-    expect(next.runId).toBe('r1')
-    expect(next.responses.map(r => r.message)).toEqual(['can: flashing firmware'])
+  it('starts a run from its first event', () => {
+    expect(applyEvent(null, event())).toEqual({ run_id: 'r1', state: 'running', messages: [event()], result: null })
   })
 
-  it('keeps the existing run id and appends with the next id', () => {
-    const next = applyEvent(applyEvent(idle(), event()), event({ message: 'wrote 49152 bytes' }))
+  it('appends to the same run', () => {
+    const next = applyEvent(applyEvent(null, event()), event({ message: 'wrote 49152 bytes' }))
 
-    expect(next.responses.map(r => r.id)).toEqual([0, 1])
+    expect(next.messages.map(m => m.message)).toEqual(['flashing firmware', 'wrote 49152 bytes'])
   })
 
-  it('ends the run on the final payload', () => {
-    const next = applyEvent(applyEvent(idle(), event()), event({ mcu: null, phase: 'done', message: '1 updated', complete: true, result }))
+  it('finishes the run on the final payload', () => {
+    const next = applyEvent(applyEvent(null, event()), final)
 
-    expect(next.busy).toBe(false)
-    expect(next.lastResult).toEqual(result)
-    expect(next.lastMessage).toBe('1 updated')
-    expect(next.responses).toHaveLength(2)
+    expect(next.state).toBe('finished')
+    expect(next.result).toEqual(result)
+    expect(next.messages).toHaveLength(2)
+  })
+
+  it('normalises a missing result to null', () => {
+    expect(applyEvent(null, { ...final, result: undefined }).result).toBeNull()
+  })
+
+  it('replaces the run when another one starts', () => {
+    const done = applyEvent(applyEvent(null, event()), final)
+
+    expect(applyEvent(done, event({ run_id: 'r2' }))).toEqual({ run_id: 'r2', state: 'running', messages: [event({ run_id: 'r2' })], result: null })
+  })
+})
+
+describe('endLostRun', () => {
+  it('finishes the run without a result and logs why', () => {
+    const next = endLostRun(running, 'lost')
+
+    expect(next.state).toBe('finished')
+    expect(next.result).toBeNull()
+    expect(next.messages.map(m => m.message)).toEqual(['flashing firmware', 'wrote 49152 bytes', 'lost'])
   })
 })
 
 describe('reconcileRun', () => {
-  const running: Aldis.Run = { run_id: 'r1', state: 'running', messages: [event(), event({ message: 'wrote 49152 bytes' })], result: null }
-  const finished: Aldis.Run = { run_id: 'r1', state: 'finished', messages: [...running.messages, event({ mcu: null, phase: 'done', message: '1 updated', complete: true, result })], result }
-
-  it('hydrates a running run when the page knows none', () => {
-    const next = reconcileRun(idle(), running)
-
-    expect(next.busy).toBe(true)
-    expect(next.runId).toBe('r1')
-    expect(next.responses.map(r => r.message)).toEqual(['can: flashing firmware', 'can: wrote 49152 bytes'])
+  it('keeps the run when there is no snapshot', () => {
+    expect(reconcileRun(running, null)).toBe(running)
+    expect(reconcileRun(null, null)).toBeNull()
   })
 
-  it('ignores every snapshot once a run id is known', () => {
-    const followed = applyEvent(idle(), event())
-
-    expect(reconcileRun(followed, running)).toBe(followed)
-    expect(reconcileRun(followed, finished)).toBe(followed)
-    expect(reconcileRun(followed, null)).toBe(followed)
+  it('adopts a running run', () => {
+    expect(reconcileRun(null, running)).toBe(running)
   })
 
-  it('fills the last result from a finished run without touching the log', () => {
-    const next = reconcileRun(idle(), finished)
-
-    expect(next.busy).toBe(false)
-    expect(next.runId).toBeNull()
-    expect(next.responses).toEqual([])
-    expect(next.lastResult).toEqual(result)
-    expect(next.lastMessage).toBe('1 updated')
+  it('takes a running snapshot holding at least the events seen', () => {
+    expect(reconcileRun(applyEvent(null, event()), running)).toBe(running)
   })
 
-  it('does not overwrite a result the page already holds', () => {
-    const held = { ...idle(), lastResult: result, lastMessage: 'held' }
+  it('keeps the events seen when the snapshot holds fewer', () => {
+    const followed = applyEvent(applyEvent(applyEvent(null, event()), event()), event())
 
-    expect(reconcileRun(held, finished).lastMessage).toBe('held')
+    expect(reconcileRun(followed, running)?.messages).toHaveLength(3)
   })
 
-  it('leaves an idle page alone when there is no run', () => {
-    expect(reconcileRun(idle(), null)).toEqual(idle())
+  it('ignores a running snapshot taken before the final event', () => {
+    const done = applyEvent(running, final)
+
+    expect(reconcileRun(done, running)).toBe(done)
+    expect(reconcileRun(done, finished)).toBe(done)
   })
 
-  it('does not refill a result the user dismissed', () => {
-    const next = reconcileRun(idle(), finished)
-    const dismissed = { ...next, lastResult: null, lastMessage: null, dismissedRunId: next.resultRunId, resultRunId: null }
-
-    expect(reconcileRun(dismissed, finished).lastResult).toBeNull()
+  it('ends a run whose final event this page missed', () => {
+    expect(reconcileRun(applyEvent(null, event()), finished)).toBe(finished)
   })
 
-  it('refills a different run\'s result after a dismissal', () => {
-    const next = reconcileRun(idle(), finished)
-    const dismissed = { ...next, lastResult: null, lastMessage: null, dismissedRunId: next.resultRunId, resultRunId: null }
-    const other: Aldis.Run = { run_id: 'r2', state: 'finished', messages: [event({ run_id: 'r2', mcu: null, phase: 'done', message: '1 updated', complete: true, result })], result }
-
-    expect(reconcileRun(dismissed, other).lastResult).toEqual(result)
+  it('takes the agent\'s outcome for a lost run', () => {
+    expect(reconcileRun(endLostRun(running, 'lost'), finished)).toBe(finished)
   })
 
-  it('treats an undefined run as absent', () => {
-    expect(reconcileUnknown(idle(), undefined)).toEqual(idle())
+  it('adopts a different running run after one has finished', () => {
+    const other: Aldis.Run = { ...running, run_id: 'r2', messages: [event({ run_id: 'r2' })] }
+
+    expect(reconcileRun(finished, other)).toBe(other)
   })
 
-  it('fills the result of a finished run', () => {
-    expect(reconcileRun(idle(), finished).lastResult).toEqual(result)
+  it('adopts a finished run when idle', () => {
+    expect(reconcileRun(null, finished)).toBe(finished)
   })
 
-  it('normalises a missing result to null', () => {
-    const finishedWithoutResult = {
-      run_id: 'r1',
-      state: 'finished',
-      messages: [event({ mcu: null, phase: 'done', message: '1 updated', complete: true })]
-    }
+  it('takes a different finished run', () => {
+    expect(reconcileRun({ ...running, run_id: 'r0' }, finished)).toBe(finished)
+  })
+})
 
-    expect(reconcileUnknown(idle(), finishedWithoutResult).lastResult).toBeNull()
+describe('finishedRunOf', () => {
+  it('returns a finished run', () => {
+    expect(finishedRunOf({ ...createState(), run: finished })).toBe(finished)
   })
 
-  it('walks the normal run: click, events, snapshot, final event, stale snapshot, finish', () => {
-    let state: FirmwareRunState = { ...idle(), busy: true }
-    state = applyEvent(state, event())
-    state = reconcileRun(state, running)
-    expect(state.responses).toHaveLength(1)
-    state = applyEvent(state, event({ mcu: null, phase: 'done', message: '1 updated', complete: true, result }))
-    expect(state.busy).toBe(false)
-    state = reconcileRun(state, running)
-    expect(state.busy).toBe(false)
-    state = { ...state, responses: [] }
-    state = reconcileRun(state, finished)
-    expect(state.responses).toEqual([])
+  it.each([
+    ['running', { ...createState(), run: running }],
+    ['pending', { ...createState(), pending: true, run: finished }],
+    ['dismissed', { ...createState(), run: finished, dismissedRunId: 'r1' }]
+  ])('is null when %s', (_, state) => {
+    expect(finishedRunOf(state)).toBeNull()
   })
 })
 
 describe('needsRetry', () => {
-  it('asks for a retry when a completed run is still reported running', () => {
-    const done = { ...idle(), runId: 'r1', busy: false }
-
-    expect(needsRetry(done, { run_id: 'r1', state: 'running', messages: [], result: null })).toBe(true)
+  it('asks for a retry when a finished run is still reported running', () => {
+    expect(needsRetry(finished, running)).toBe(true)
   })
 
   it.each([
-    ['busy', { ...idle(), runId: 'r1', busy: true }, { run_id: 'r1', state: 'running' as const, messages: [], result: null }],
-    ['finished', { ...idle(), runId: 'r1', busy: false }, { run_id: 'r1', state: 'finished' as const, messages: [], result: null }],
-    ['other run', { ...idle(), runId: 'r1', busy: false }, { run_id: 'r2', state: 'running' as const, messages: [], result: null }],
-    ['no run', { ...idle(), runId: 'r1', busy: false }, null],
-    ['no run id', idle(), { run_id: 'r1', state: 'running' as const, messages: [], result: null }]
-  ])('does not retry when %s', (_, state, run) => {
-    expect(needsRetry(state, run)).toBe(false)
+    ['running', running, running],
+    ['finished', finished, finished],
+    ['other run', finished, { ...running, run_id: 'r2' }],
+    ['no snapshot', finished, null],
+    ['no run', null, running]
+  ])('does not retry when %s', (_, current, run) => {
+    expect(needsRetry(current, run)).toBe(false)
   })
 })
 
@@ -313,14 +297,12 @@ describe('agentErrorMessage', () => {
     const error = { code: 424, message: 'Agent aldis RPC error', data: { code: -32000, message: 'update already running', data: { reason: 'busy' } } }
 
     expect(agentErrorMessage(error)).toBe('update already running')
-    expect(agentErrorReason(error)).toBe('busy')
   })
 
   it('falls back to the outer message for a Moonraker-level error', () => {
     const error = { code: 400, message: 'Agent aldis not connected' }
 
     expect(agentErrorMessage(error)).toBe('Agent aldis not connected')
-    expect(agentErrorReason(error)).toBeNull()
   })
 
   it('handles thrown Errors and unknown values', () => {

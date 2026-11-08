@@ -5,19 +5,14 @@ export interface FirmwareUpdateResponse {
   phase: string;
 }
 
-export interface FirmwareRunState {
-  busy: boolean;
-  runId: string | null;
-  responses: FirmwareUpdateResponse[];
-  lastResult: Aldis.RunResult | null;
-  lastMessage: string | null;
-  resultRunId: string | null;
-  dismissedRunId: string | null;
-}
-
-export interface FirmwareState extends FirmwareRunState {
+export interface FirmwareState {
   initialised: boolean;
   status: Aldis.StatusResponse | null;
   statusError: string | null;
   retried: boolean;
+  refreshing: boolean;
+  pending: boolean;
+  run: Aldis.Run | null;
+  logRunId: string | null;
+  dismissedRunId: string | null;
 }

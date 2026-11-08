@@ -450,7 +450,7 @@ export const SocketActions = {
   aldisStatus (options?: RequestOptions) {
     return SocketActions.serverExtensionsRequest<Aldis.StatusResponse>(
       {
-        agent: 'aldis',
+        agent: Globals.MOONRAKER_AGENTS.aldis.name,
         method: 'status'
       },
       {
@@ -465,7 +465,7 @@ export const SocketActions = {
   aldisUpdate (args: Aldis.UpdateArguments, options?: RequestOptions) {
     return SocketActions.serverExtensionsRequest<Aldis.UpdateResult>(
       {
-        agent: 'aldis',
+        agent: Globals.MOONRAKER_AGENTS.aldis.name,
         method: 'update',
         arguments: args
       },
