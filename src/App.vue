@@ -64,6 +64,8 @@
 
       <register-service-worker />
 
+      <socket-stalled-snackbar v-if="socketReady" />
+
       <template v-if="socketConnected">
         <file-system-download-dialog />
         <file-system-upload-dialog />

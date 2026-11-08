@@ -265,7 +265,9 @@ app:
       failed_components: >-
         Moonraker a des plugins en échec, veuillez vérifier vos journaux, mettre à
         jour votre configuration et redémarrer Moonraker.
-      printer_powered_off: L'imprimante est actuellement hors tension.<br/><br/>
+      printer_powered_off: |-
+        L'imprimante est actuellement hors tension.
+
         Pour l'allumer, veuillez cliquer sur le bouton à gauche.
     label:
       accel_to_decel: Accél. à décél.
@@ -402,8 +404,9 @@ app:
       needs_refresh: Nouveau contenu disponible, veuillez cliquer sur le bouton 
         <b>Recharger</b> pour mettre à jour.
       rolledover_logs: "Les journaux d'application suivants ont été transférés : %{applications}"
-      welcome_back: Bienvenue. <br>Connectez-vous ci-dessous pour rester en 
-        communication avec votre imprimante.
+      welcome_back: |-
+        Bienvenue.
+        Connectez-vous ci-dessous pour rester en communication avec votre imprimante.
       offline_ready: Fluidd est maintenant prêt à travailler hors ligne.
       fluidd_settings_restore_failed: Échec de la restauration des paramètres 
         Fluidd !
@@ -932,9 +935,9 @@ app:
       package_list: Liste des paquets
       up_to_date: A JOUR
       updates_available: Mises à jour disponibles
-      old_component_version: Vous utilisez une ancienne version de %{name} qui 
-        ne prend pas en charge toutes les fonctionnalités de Fluidd.<br>Mettre à
-        jour %{name} vers au moins %{version}.
+      old_component_version: |-
+        Vous utilisez une ancienne version de %{name} qui ne prend pas en charge toutes les fonctionnalités de Fluidd.
+        Mettre à jour %{name} vers au moins %{version}.
       packages: '{count} paquet | {count} paquets'
     status:
       finished: Mises à jour terminées

@@ -158,6 +158,8 @@ app:
     overlay:
       drag_file_load: <strong>Ziehe</strong> eine Gcode-Datei hierher, um sie zu
         laden
+    role:
+      none: Unbekannt
   general:
     btn:
       add: Hinzufügen
@@ -256,8 +258,10 @@ app:
       failed_components: >-
         Moonraker hat fehlerhafte Plugins, bitte überprüfen Sie Ihre Logs,
         aktualisieren Sie Ihre Konfiguration und starten Sie Moonraker neu.
-      printer_powered_off: Der Drucker ist zur Zeit ausgeschaltet.<br/><br/>Um 
-        den Drucker einzuschalten, drücken Sie bitten den Knopf links.
+      printer_powered_off: |-
+        Der Drucker ist zur Zeit ausgeschaltet.
+
+        Um den Drucker einzuschalten, drücken Sie bitten den Knopf links.
     label:
       accel_to_decel: Beschleunigen zu Bremsen
       acceleration: Beschleunigung
@@ -389,9 +393,9 @@ app:
         Klicken Sie auf <b>Angepasst</b>, wenn eine signifikante Anpassung an der
         aktuellen Schraube erforderlich ist.
         Klicken Sie andernfalls auf <b>Akzeptieren</b>, um fortzufahren.
-      welcome_back: >-
-        Willkommen zurück.<br>Melden Sie sich unten an, um mit Ihrem Drucker in Kontakt
-        zu bleiben.
+      welcome_back: |-
+        Willkommen zurück.
+        Melden Sie sich unten an, um mit Ihrem Drucker in Kontakt zu bleiben.
       needs_refresh: Neue Inhalte verfügbar, bitte klicken Sie den 
         <b>Aktualisieren</b>-Button, um zu aktualisieren.
       offline_ready: Fluidd ist jetzt bereit, offline zu arbeiten.
@@ -927,9 +931,9 @@ app:
       package_list: Paketliste
       up_to_date: AKTUELL
       updates_available: Updates sind verfügbar
-      old_component_version: Sie verwenden eine veraltete Version von %{name}, 
-        welche nicht alle Features von Fluidd unterstützt.<b>Aktualisieren Sie 
-        %{name} auf mindestens %{version}.
+      old_component_version: |-
+        Sie verwenden eine veraltete Version von %{name}, welche nicht alle Features von Fluidd unterstützt.
+        Aktualisieren Sie %{name} auf mindestens %{version}.
       packages: '{count} Paket | {count} Pakete'
     status:
       finished: Aktualisierung abgeschlossen

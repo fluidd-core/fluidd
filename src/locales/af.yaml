@@ -328,8 +328,9 @@ app:
       bed_screws_adjust: >-
         Klik <b>Aangepas</b> as 'n noemenswaardige verstelling van die huidige skroef
         nodig is; anders, klink <b>Aanvaar</b> om te begin.
-      welcome_back: >-
-        Welkom terug.<br>Teken hier onder in om in verbinding te bly met jou drukker.
+      welcome_back: |-
+        Welkom terug.
+        Teken hier onder in om in verbinding te bly met jou drukker.
       offline_ready: Fluidd is nou gereed om vanlyn te werk.
       needs_refresh: Nuwe inhoud beskikbaar, druk die <b>Herlaai</b> knoppie om 
         op te dateer.

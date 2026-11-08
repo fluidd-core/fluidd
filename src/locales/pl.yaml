@@ -347,6 +347,7 @@ app:
       scroll_to_latest: Przewiń do najnowszych
       reset_to_default: Przywróć domyślne
       export_csv: Eksportuj CSV
+      socket_retry_now: Ponów teraz
     title:
       home: Pulpit
       camera: Kamera | Kamery
@@ -392,8 +393,9 @@ app:
       password_changed: Hasło zostało zmienione
       pending_configuration_sections_deleted: Następujące sekcje zostały 
         oznaczone do usunięcia
-      welcome_back: Witaj ponownie.<br>Zaloguj się, aby pozostać w kontakcie z 
-        drukarką.
+      welcome_back: |-
+        Witaj ponownie.
+        Zaloguj się, aby pozostać w kontakcie z drukarką.
       bed_screws_adjust: Kliknij przycisk <b>Korekta</b>, jeśli konieczna jest 
         znaczna korekta bieżącej śruby; w przeciwnym razie kliknij przycisk 
         <b>Akceptuj</b>, aby kontynuować.
@@ -470,8 +472,10 @@ app:
         logi, zaktualizuj konfigurację i zrestartuj Moonraker.
       components_config: Konfigurację wtyczki Moonrakera można znaleźć <a 
         target="_blank" href="%{url}">tutaj.</a>
-      printer_powered_off: Drukarka jest obecnie wyłączona.<br/><br/> Aby 
-        włączyć drukarkę, kliknij przycisk po lewej stronie.
+      printer_powered_off: |-
+        Drukarka jest obecnie wyłączona.
+
+        Aby włączyć drukarkę, kliknij przycisk po lewej stronie.
     table:
       header:
         filament_name: Nazwa filamentu
@@ -557,6 +561,10 @@ app:
       layers: Warstwy
       show_current_layer: Pokaż aktualną warstwę
       parsed: Przeanalizowano
+      color_by_fan: Prędkość wentylatora (%)
+      color_by_feature: Typ funkcji
+      color_by_speed: Prędkość (mm/s)
+      color_by_tool: Narzędzie
     btn:
       load_current_file: Wczytaj aktualny plik
     msg:
@@ -565,6 +573,22 @@ app:
     overlay:
       drag_file_load: <strong>Przeciągnij</strong> plik G-Code tutaj, aby go 
         wczytać
+    role:
+      bridge_infill: Wypełnienie mostu
+      custom: Niestandardowe
+      external_perimeter: Zewnętrzny obwód
+      gap_fill: Wypełnienie szczelin
+      internal_infill: Wypełnienie wewnętrzne
+      ironing: Prasowanie
+      none: Nieznane
+      overhang_perimeter: Obwód nawisu
+      perimeter: Obwód
+      skirt: Skirt/Brim
+      solid_infill: Wypełnienie pełne
+      support_material: Materiał podporowy
+      support_material_interface: Interfejs materiału podporowego
+      top_solid_infill: Górne wypełnienie pełne
+      wipe_tower: Wieża czyszcząca
   tool:
     btn:
       home_all: Wszystkie
@@ -929,9 +953,9 @@ app:
       invalid: NIEPRAWIDŁOWY
       dirty: BRUDNY
       package_list: Lista pakietów
-      old_component_version: Używasz starej wersji %{name}, która nie obsługuje 
-        wszystkich funkcji Fluidd.<br>Zaktualizuj %{name} do co najmniej 
-        %{version}.
+      old_component_version: |-
+        Używasz starej wersji %{name}, która nie obsługuje wszystkich funkcji Fluidd.
+        Zaktualizuj %{name} do co najmniej %{version}.
       packages: '{count} pakiet | {count} pakietów'
     btn:
       view_versions: Wyświetl wersje
@@ -955,6 +979,10 @@ app:
       no_connection: Brak połączenia z Moonraker. Sprawdź status Moonrakera 
         i/lub odśwież stronę.
       connecting: Łączenie z Moonraker...
+      retrying_in: Nie można nawiązać połączenia z Moonrakerem. Ponawianie za 
+        {seconds} sek....
+      stalled: Oczekiwanie na odpowiedź Moonrakera...
+      unable_to_connect: Nie można połączyć się z Moonrakerem.
   timelapse:
     title:
       timelapse_settings: Ustawienia timelapse

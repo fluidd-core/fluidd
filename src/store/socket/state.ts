@@ -4,6 +4,8 @@ export const createState = (): SocketState => {
   return {
     status: 'initializing',
     acceptingNotifications: false,
-    connectionId: null
+    connectionId: null,
+    retry: null,
+    stalled: false
   }
 }

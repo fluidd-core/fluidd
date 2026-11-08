@@ -18,7 +18,7 @@
   },
   "features": {
   },
-  "postCreateCommand": "pnpm i --frozen-lockfile",
+  "postCreateCommand": "sudo chown node:node node_modules && pnpm i --frozen-lockfile",
   "customizations": {
     "vscode": {
       "extensions": [

@@ -51,6 +51,7 @@
       :loading="filesLoading"
       :search="search"
       :files="files"
+      :path="visiblePath"
       :drag-state.sync="dragState.browserState"
       :bulk-actions="bulkActions"
       :large-thumbnails="currentRoot === 'timelapse'"
@@ -564,7 +565,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       return !this.filters
         .some(filter => {
           if (filter === 'hidden_files') {
-            return /^\.(?!\.$)/.test(file.name)
+            return file.name.startsWith('.')
           }
 
           if (file.type !== 'file') {
@@ -608,8 +609,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   @Watch('files')
-  onFilesChange () {
-    // If our file list changes, reset selected files.
+  onFilesChange (files: FileBrowserEntry[]) {
+    if (this.selected.length === 0) {
+      return
+    }
+
+    // Keep the selected items that are still listed, so a change to another file
+    // (for example a snapshot that is rewritten every second) doesn't clear the selection.
+    // Swap in the refreshed entries, as some checks compare items by reference.
+    const filesByName = new Map(files.map(file => [file.name, file]))
+
+    this.selected = this.selected
+      .map(item => filesByName.get(item.name))
+      .filter(Boolean)
+  }
+
+  @Watch('currentPath')
+  onCurrentPathChange () {
+    // A different folder can have files with the same names, so start over.
     this.selected = []
   }
 
@@ -622,7 +639,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$route.meta?.fileDropRoot
   }
 
-  includeTimelapseThumbnailFiles (items: FileBrowserEntry[]) {
+  getDirectoryPath (dirname: string) {
+    return dirname === '..'
+      ? this.currentPath.split('/').slice(0, -1).join('/')
+      : `${this.currentPath}/${dirname}`
+  }
+
+  includeTimelapseThumbnailFiles (items: FileBrowserEntry[]): FileBrowserEntry[] {
+    if (this.currentRoot !== 'timelapse') {
+      return items
+    }
+
     const thumbnailFilenames = new Set(items
       .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== '.jpg' && 'thumbnails' in item)
       .flatMap(item => item.thumbnails
@@ -633,14 +660,14 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const thumbnails = this.getAllFiles()
       .filter(file => file.type === 'file' && thumbnailFilenames.has(file.filename))
 
-    items.push(...thumbnails)
+    return [...items, ...thumbnails]
   }
 
-  // If the root changes, reset the path and load the root path files.
+  // If the root changes, restore that root's last path and load its files.
   handleRootChange (root: string) {
     if (root.length) {
       this.currentRoot = root
-      this.loadFiles(root)
+      this.loadFiles(this.currentPath)
     }
   }
 
@@ -685,17 +712,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (item.type === 'directory') {
       if (event.type === 'click') {
-        if (item.dirname === '..') {
-          const dirs = this.currentPath.split('/')
-          const newpath = dirs.slice(0, -1).join('/')
-
-          this.loadFiles(newpath)
-        } else {
-          this.loadFiles(`${this.currentPath}/${item.dirname}`)
-        }
-
-        // Clear selected bulk items if we're navigating folders.
-        this.selected = []
+        this.loadFiles(this.getDirectoryPath(item.dirname))
 
         return
       } else if (item.dirname === '..' || item.permissions === 'r' || this.rootProperties.readonly) {
@@ -1043,22 +1060,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleMove (source: FileBrowserEntry | FileBrowserEntry[], destination: AppDirectory) {
-    let destinationPath = `${this.currentPath}/${destination.dirname}`
-    if (destination.dirname === '..') {
-      const arr = this.currentPath.split('/')
-      arr.pop()
-      destinationPath = arr.join('/')
-    }
+    const destinationPath = this.getDirectoryPath(destination.dirname)
 
     const items = Array.isArray(source)
-      ? source.filter(item => item.name !== '..')
+      ? source
       : [source]
 
-    if (this.currentRoot === 'timelapse') {
-      this.includeTimelapseThumbnailFiles(items)
-    }
-
-    for (const item of items) {
+    for (const item of this.includeTimelapseThumbnailFiles(items)) {
       const src = `${this.currentPath}/${item.name}`
       const dest = destinationPath
         ? `${destinationPath}/${item.name}`
@@ -1110,7 +1118,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
 
     const items = Array.isArray(file)
-      ? file.filter(item => item.name !== '..')
+      ? file
       : [file]
 
     const result = await this.$confirm(
@@ -1121,11 +1129,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (result) {
       this.filePreviewState.open = false
 
-      if (this.currentRoot === 'timelapse') {
-        this.includeTimelapseThumbnailFiles(items)
-      }
-
-      for (const item of items) {
+      for (const item of this.includeTimelapseThumbnailFiles(items)) {
         if (item.type === 'file') {
           SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
         } else {
@@ -1182,7 +1186,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   handleEnqueue (file: FileBrowserEntry | FileBrowserEntry[]) {
     if (this.disabled) return
 
-    const items = Array.isArray(file) ? file : [file]
+    const items = Array.isArray(file)
+      ? file
+      : [file]
     const filenames = items
       .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(item.extension))
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
@@ -1199,10 +1205,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       ? `${this.currentPath}/${timestamp}.zip`
       : `${this.currentPath}/${file.name}-${timestamp}.zip`
 
-    const items = (Array.isArray(file) ? file : [file])
+    const items = Array.isArray(file)
+      ? file
+      : [file]
+    const filenames = items
       .map(item => `${this.currentPath}/${item.name}`)
 
-    SocketActions.serverFilesZip(dest, items)
+    SocketActions.serverFilesZip(dest, filenames)
   }
 
   /**
