@@ -50,7 +50,7 @@ describe('markTextNodes', () => {
 
   it('does not touch tags or attributes', () => {
     expect(mark('<a class="a" title="a>a">ab</a>', 'a'))
-      .toBe('<a class="a" title="a>a"><mark>a</mark>b</a>')
+      .toBe('<a class="a" title="a&gt;a"><mark>a</mark>b</a>')
   })
 
   it('marks text inside nested elements', () => {
