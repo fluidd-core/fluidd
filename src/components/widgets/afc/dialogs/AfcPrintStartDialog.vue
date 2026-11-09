@@ -3,7 +3,6 @@
     v-model="open"
     :title="$t('app.afc.PrintStartDialog.Title')"
     width="600"
-    :save-button-text="$t('app.general.btn.print')"
     @save="handlePrint"
   >
     <!-- Thumbnail preview -->
