@@ -346,6 +346,8 @@ export const actions = {
   async notifyKlippyDisconnected ({ dispatch }) {
     await dispatch('resetKlippy', undefined, { root: true })
 
+    dispatch('extensions/onKlippyStateChanged', undefined, { root: true })
+
     SocketActions.serverInfo()
   },
 

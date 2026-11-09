@@ -69,7 +69,20 @@
       <template v-if="socketConnected">
         <file-system-download-dialog />
         <file-system-upload-dialog />
-        <updating-dialog />
+        <updating-dialog
+          :updating="versionUpdating"
+          :responses="versionResponses"
+          :title-updating="$t('app.version.status.updating')"
+          :title-finished="$t('app.version.status.finished')"
+          @close="handleVersionDialogClose"
+        />
+        <updating-dialog
+          :updating="firmwareUpdating"
+          :responses="firmwareResponses"
+          :title-updating="$t('app.firmware.status.updating')"
+          :title-finished="$t('app.firmware.status.finished')"
+          @close="handleFirmwareDialogClose"
+        />
         <spool-selection-dialog />
         <action-command-prompt-dialog />
         <keyboard-shortcuts-dialog />
@@ -109,6 +122,8 @@ import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
 import AfcPrintStartDialog from './components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
+import type { UpdateResponse } from '@/store/version/types'
+import type { ConsoleLogEntry } from '@/store/console/types'
 
 @Component<App>({
   metaInfo () {
@@ -160,10 +175,28 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return this.$vuetify.theme.currentTheme['primary-offset']?.toString() ?? ''
   }
 
-  // Our app is in a loading state when the socket isn't quite ready, or
-  // our translations are loading.
-  get updating (): boolean {
+  get versionUpdating (): boolean {
     return this.$typedState.version.status?.busy ?? false
+  }
+
+  get versionResponses (): UpdateResponse[] {
+    return this.$typedGetters['version/getResponses']
+  }
+
+  handleVersionDialogClose () {
+    this.$typedCommit('version/setClearUpdateResponse')
+  }
+
+  get firmwareUpdating (): boolean {
+    return this.$typedGetters['firmware/isBusy']
+  }
+
+  get firmwareResponses (): ConsoleLogEntry[] {
+    return this.$typedGetters['firmware/getResponses']
+  }
+
+  handleFirmwareDialogClose () {
+    this.$typedCommit('firmware/setClearResponses')
   }
 
   get inLayout (): boolean {
