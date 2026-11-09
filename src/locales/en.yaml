@@ -50,6 +50,7 @@ app:
       AutoMap: "Auto-map"
       AutoMapNoLanes: "No lane with filament loaded"
       AutoMapUnchanged: "Lanes already match the file"
+      AutoMapUnmapped: "No loaded lane left for {tools}"
       StartJob: "Start Job"
       Title: "AFC Lane Assignment"
       NoLane: "No Lane"

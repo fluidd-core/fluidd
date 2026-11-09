@@ -46,6 +46,7 @@
         text
         color="primary"
         type="button"
+        :disabled="!currentFile || !usedTools.length"
         @click="handleAutoMap"
       >
         {{ $t('app.afc.PrintStartDialog.AutoMap') }}
@@ -156,7 +157,7 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
   // Map used tools to loaded lanes with the lowest total cost (see util/afc-auto-map)
   handleAutoMap () {
     const file = this.currentFile
-    if (!file) return
+    if (!file || !this.usedTools.length) return
 
     const isMapped = (lane: string, tool: number) => {
       const map = this.getAfcLaneObject(lane)?.map
@@ -186,13 +187,20 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
       return
     }
 
-    const gcode = [...autoMap(tools, lanes)]
+    const mapping = autoMap(tools, lanes)
+    const unmapped = tools.filter(({ tool }) => !mapping.has(tool)).map(({ tool }) => `T${tool}`)
+
+    const gcode = [...mapping]
       .filter(([tool, lane]) => !isMapped(lane, tool))
       .map(([tool, lane]) => `SET_MAP LANE=${encodeGcodeParamValue(lane)} MAP=${encodeGcodeParamValue(`T${tool}`)}`)
 
     if (gcode.length) {
       this.sendGcode(gcode.join('\n'))
-    } else {
+    }
+
+    if (unmapped.length) {
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnmapped', { tools: unmapped.join(', ') }).toString(), { type: 'warning' })
+    } else if (!gcode.length) {
       EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnchanged').toString(), { type: 'success' })
     }
   }
