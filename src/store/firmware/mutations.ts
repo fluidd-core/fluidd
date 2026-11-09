@@ -18,7 +18,7 @@ export const mutations = {
   },
 
   setStatus (state, payload: Aldis.StatusResponse | null) {
-    state.status = payload
+    state.status = payload && Object.freeze(payload)
   },
 
   setStatusError (state, payload: string | null) {
@@ -38,7 +38,7 @@ export const mutations = {
       state.logRunId = payload.run_id
     }
 
-    state.run = payload
+    state.run = payload && Object.freeze(payload)
   },
 
   setPending (state, payload: boolean) {

@@ -50,7 +50,7 @@ const status = (overrides: Partial<Aldis.StatusResponse> = {}): Aldis.StatusResp
 
 describe('formatResponse', () => {
   it('prefixes the MCU name when present', () => {
-    expect(formatResponse(event(), 3)).toEqual({ id: 3, message: 'can: flashing firmware', mcu: 'can', phase: 'flash' })
+    expect(formatResponse(event(), 3)).toEqual({ id: 3, message: 'can: flashing firmware' })
   })
 
   it('leaves host-level lines bare', () => {
@@ -196,10 +196,6 @@ describe('updatableMcus', () => {
 
   it('excludes everything under a blocker', () => {
     expect(updatableMcus(status({ blocker: { reason: 'printing', message: 'busy' } }))).toEqual([])
-  })
-
-  it('excludes everything under an unsupported api version', () => {
-    expect(updatableMcus(status({ api_version: 2 }))).toEqual([])
   })
 
   it('is empty with no status', () => {

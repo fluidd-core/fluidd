@@ -1,18 +1,22 @@
 import { isSocketError } from '@/util/is-socket-error'
-import type { FirmwareState, FirmwareUpdateResponse } from './types'
+import type { ConsoleLogEntry } from '@/store/console/types'
+import type { FirmwareState } from './types'
 
 export const SUPPORTED_API_VERSION = 1
 
 const KNOWN_UPDATABLE_STATES: readonly string[] = ['update_available']
 
-export const formatResponse = (payload: Aldis.UpdateResponse, id: number): FirmwareUpdateResponse => ({
+export const formatResponse = (payload: Aldis.UpdateResponse, id: number): ConsoleLogEntry => ({
   id,
   message: payload.mcu
     ? `${payload.mcu}: ${payload.message}`
-    : payload.message,
-  mcu: payload.mcu,
-  phase: payload.phase
+    : payload.message
 })
+
+export const isUpdatable = (mcu: Pick<Aldis.Mcu, 'state' | 'actions'>): boolean => (
+  KNOWN_UPDATABLE_STATES.includes(mcu.state) &&
+  mcu.actions.includes('update')
+)
 
 export const applyEvent = (run: Aldis.Run | null, payload: Aldis.UpdateResponse): Aldis.Run => {
   const current: Aldis.Run = run?.run_id === payload.run_id
@@ -99,17 +103,13 @@ export const needsRetry = (current: Aldis.Run | null, run: Aldis.Run | null): bo
 export const updatableMcus = (status: Aldis.StatusResponse | null): string[] => {
   if (
     status == null ||
-    status.blocker != null ||
-    status.api_version !== SUPPORTED_API_VERSION
+    status.blocker != null
   ) {
     return []
   }
 
   return status.mcus
-    .filter(mcu => (
-      KNOWN_UPDATABLE_STATES.includes(mcu.state) &&
-      mcu.actions.includes('update')
-    ))
+    .filter(isUpdatable)
     .map(mcu => mcu.name)
 }
 

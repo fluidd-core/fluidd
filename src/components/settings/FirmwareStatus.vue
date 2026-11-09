@@ -46,6 +46,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
+import { isUpdatable } from '@/store/firmware/helpers'
 
 @Component({})
 export default class FirmwareStatus extends Vue {
@@ -62,7 +63,10 @@ export default class FirmwareStatus extends Vue {
   readonly disabled?: boolean
 
   get updatable (): boolean {
-    return this.state === 'update_available' && this.actions.includes('update')
+    return isUpdatable({
+      state: this.state,
+      actions: this.actions
+    })
   }
 
   get stateLabel (): string {

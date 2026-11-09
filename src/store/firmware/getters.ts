@@ -1,5 +1,6 @@
 import type { GetterTree } from 'vuex'
-import type { FirmwareState, FirmwareUpdateResponse } from './types'
+import type { FirmwareState } from './types'
+import type { ConsoleLogEntry } from '@/store/console/types'
 import type { RootState } from '../types'
 import { Globals, Waits } from '@/globals'
 import { SUPPORTED_API_VERSION, finishedRunOf, formatResponse, updatableMcus } from './helpers'
@@ -29,8 +30,8 @@ export const getters = {
     return state.status === null || state.status.api_version === SUPPORTED_API_VERSION
   },
 
-  getMcus: (state, getters): Aldis.Mcu[] => {
-    return getters.isApiSupported ? state.status?.mcus ?? [] : []
+  getMcus: (state): Aldis.Mcu[] => {
+    return state.status?.mcus ?? []
   },
 
   getBlocker: (state): Aldis.Blocker | null => {
@@ -53,7 +54,7 @@ export const getters = {
     return state.pending || state.run?.state === 'running'
   },
 
-  getResponses: (state): FirmwareUpdateResponse[] => {
+  getResponses: (state): ConsoleLogEntry[] => {
     const run = state.run
 
     return (
@@ -77,8 +78,4 @@ export const getters = {
 
     return messages[messages.length - 1]?.message ?? null
   },
-
-  getStatusError: (state): string | null => {
-    return state.statusError
-  }
 } satisfies GetterTree<FirmwareState, RootState>

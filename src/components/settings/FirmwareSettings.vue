@@ -191,7 +191,7 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
   }
 
   get statusError (): string | null {
-    return this.$typedGetters['firmware/getStatusError']
+    return this.$typedState.firmware.statusError
   }
 
   get host (): Aldis.Host | null {

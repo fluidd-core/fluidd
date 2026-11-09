@@ -52,7 +52,10 @@ export const actions = {
   async onStatus ({ state, commit, dispatch }, payload: Aldis.StatusResponse) {
     const apiVersion = apiVersionOf(payload)
 
-    if (apiVersion !== null && apiVersion !== SUPPORTED_API_VERSION) {
+    if (
+      apiVersion !== null &&
+      apiVersion !== SUPPORTED_API_VERSION
+    ) {
       commit('setStatus', unsupportedStatus(apiVersion))
       commit('setStatusError', null)
 

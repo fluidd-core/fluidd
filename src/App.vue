@@ -123,7 +123,7 @@ import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@
 import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
 import AfcPrintStartDialog from './components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
 import type { UpdateResponse } from '@/store/version/types'
-import type { FirmwareUpdateResponse } from '@/store/firmware/types'
+import type { ConsoleLogEntry } from '@/store/console/types'
 
 @Component<App>({
   metaInfo () {
@@ -191,7 +191,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return this.$typedGetters['firmware/isBusy']
   }
 
-  get firmwareResponses (): FirmwareUpdateResponse[] {
+  get firmwareResponses (): ConsoleLogEntry[] {
     return this.$typedGetters['firmware/getResponses']
   }
 
