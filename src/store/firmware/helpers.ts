@@ -70,11 +70,8 @@ export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null): 
       : { ...run, messages: current.messages }
   }
 
-  // A running snapshot predates the final event; a lost run takes the agent's outcome
-  return (
-    run.state === 'finished' &&
-    current.result == null
-  )
+  // A lost run takes the agent's view; otherwise a running snapshot predates the final event
+  return current.result == null
     ? run
     : current
 }

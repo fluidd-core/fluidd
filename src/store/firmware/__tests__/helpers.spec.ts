@@ -134,6 +134,10 @@ describe('reconcileRun', () => {
     expect(reconcileRun(endLostRun(running, 'lost'), finished)).toBe(finished)
   })
 
+  it('resumes a lost run the agent still reports running', () => {
+    expect(reconcileRun(endLostRun(running, 'lost'), running)).toBe(running)
+  })
+
   it('adopts a different running run after one has finished', () => {
     const other: Aldis.Run = { ...running, run_id: 'r2', messages: [event({ run_id: 'r2' })] }
 
