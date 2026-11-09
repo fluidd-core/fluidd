@@ -144,11 +144,21 @@ const isBlocker = (value: unknown): value is Aldis.Blocker => (
   'message' in value && typeof value.message === 'string'
 )
 
+const isHost = (value: unknown): value is Aldis.Host => (
+  value != null &&
+  typeof value === 'object' &&
+  'klippy_state' in value && typeof value.klippy_state === 'string' &&
+  'klippy_message' in value && typeof value.klippy_message === 'string' &&
+  (!('software_version' in value) || typeof value.software_version === 'string') &&
+  (!('klipper_path' in value) || typeof value.klipper_path === 'string') &&
+  (!('checkout_version' in value) || typeof value.checkout_version === 'string')
+)
+
 export const isStatusResponse = (value: unknown): value is Aldis.StatusResponse => (
   value != null &&
   typeof value === 'object' &&
   'api_version' in value && typeof value.api_version === 'number' &&
-  'host' in value && value.host != null && typeof value.host === 'object' &&
+  'host' in value && isHost(value.host) &&
   'mcus' in value && Array.isArray(value.mcus) &&
   value.mcus.every(mcu => (
     mcu != null &&

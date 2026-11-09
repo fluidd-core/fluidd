@@ -99,7 +99,7 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
   @Watch('endedWithNothingToShow')
   onEndedWithNothingToShow (ended: boolean) {
     if (ended) {
-      this.invokedDialog = false
+      this.open = false
     }
   }
 }

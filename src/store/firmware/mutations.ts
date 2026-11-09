@@ -59,12 +59,12 @@ export const mutations = {
 
   setRunStarted (state, payload: string) {
     if (state.run?.run_id !== payload) {
-      state.run = {
+      state.run = Object.freeze({
         run_id: payload,
         state: 'running',
         messages: [],
         result: null
-      }
+      })
       state.logRunId = payload
     }
 
