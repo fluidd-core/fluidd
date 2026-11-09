@@ -59,6 +59,11 @@ export const getters = {
         return versionInfo.package_count > 0
       }
 
+      // `git describe` versions don't compare as SemVer
+      if ('commits_behind_count' in versionInfo) {
+        return versionInfo.commits_behind_count > 0
+      }
+
       if ('version' in versionInfo && 'remote_version' in versionInfo) {
         const version = valid(versionInfo.version, { loose: true })
         const remoteVersion = valid(versionInfo.remote_version, { loose: true })
