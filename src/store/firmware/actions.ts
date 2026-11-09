@@ -151,8 +151,6 @@ export const actions = {
     commit('setStatus', null)
     commit('setStatusError', null)
 
-    await dispatch('notifications/clearNotification', NOTIFICATION_ID, { root: true })
-
     const message = i18n.t('app.firmware.status.lost_run').toString()
 
     if (state.run?.state === 'running') {
@@ -162,5 +160,7 @@ export const actions = {
     }
 
     commit('setPending', false)
+
+    await dispatch('notifications/clearNotification', NOTIFICATION_ID, { root: true })
   }
 } satisfies ActionTree<FirmwareState, RootState>
