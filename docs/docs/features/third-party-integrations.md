@@ -132,6 +132,15 @@ for details.
 
 [Spoolman on GitHub](https://github.com/Donkie/Spoolman){.md-button}
 
+### aldis
+
+Update MCU firmware from Fluidd via the
+[aldis](https://github.com/mjonuschat/aldis) Moonraker agent. Once the agent is
+running, a **Firmware Updates** card appears in **Settings**, showing each
+MCU's firmware state and letting you update one or all of them.
+
+[aldis on GitHub](https://github.com/mjonuschat/aldis){.md-button}
+
 ### Timelapse
 
 Render and browse timelapse videos via Moonraker's timelapse component.
