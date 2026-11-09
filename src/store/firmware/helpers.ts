@@ -39,7 +39,8 @@ export const applyEvent = (run: Aldis.Run | null, payload: Aldis.UpdateResponse)
       }
     : {
         ...current,
-        messages
+        messages,
+        state: 'running'
       }
 }
 
@@ -59,7 +60,7 @@ export const endLostRun = (run: Aldis.Run, message: string): Aldis.Run => ({
   ]
 })
 
-export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null): Aldis.Run | null => {
+export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null, lostRunId: string | null = null): Aldis.Run | null => {
   if (run == null) {
     return current
   }
@@ -75,7 +76,7 @@ export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null): 
   }
 
   // A lost run takes the agent's view; otherwise a running snapshot predates the final event
-  return current.result == null
+  return current.run_id === lostRunId
     ? run
     : current
 }
@@ -142,6 +143,13 @@ const isRun = (value: unknown): value is Aldis.Run => (
   (!('result' in value) || value.result == null || isRunResult(value.result))
 )
 
+const isBlocker = (value: unknown): value is Aldis.Blocker => (
+  value != null &&
+  typeof value === 'object' &&
+  'reason' in value && typeof value.reason === 'string' &&
+  'message' in value && typeof value.message === 'string'
+)
+
 export const isStatusResponse = (value: unknown): value is Aldis.StatusResponse => (
   value != null &&
   typeof value === 'object' &&
@@ -157,6 +165,7 @@ export const isStatusResponse = (value: unknown): value is Aldis.StatusResponse 
     'message' in mcu && typeof mcu.message === 'string' &&
     'running_version' in mcu && (mcu.running_version === null || typeof mcu.running_version === 'string')
   )) &&
+  (!('blocker' in value) || value.blocker == null || isBlocker(value.blocker)) &&
   (!('run' in value) || value.run == null || isRun(value.run))
 )
 

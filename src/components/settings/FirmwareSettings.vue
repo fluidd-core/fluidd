@@ -262,9 +262,17 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
   }
 
   transportLabel (transport: Aldis.Transport): string {
-    return transport.type === 'can'
-      ? `${transport.interface} · ${transport.uuid}`
-      : transport.device
+    const { type } = transport
+
+    if (transport.type === 'can') {
+      return `${transport.interface} · ${transport.uuid}`
+    }
+
+    if (transport.type === 'serial') {
+      return transport.device
+    }
+
+    return type
   }
 
   refresh () {

@@ -7,5 +7,6 @@ export interface FirmwareState {
   pending: boolean;
   run: Readonly<Aldis.Run> | null;
   logRunId: string | null;
+  lostRunId: string | null;
   dismissedRunId: string | null;
 }

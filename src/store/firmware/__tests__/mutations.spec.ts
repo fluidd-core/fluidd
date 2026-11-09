@@ -5,7 +5,7 @@ const run = (state: Aldis.Run['state'], runId = 'r1'): Aldis.Run => ({ run_id: r
 
 describe('setReset', () => {
   it('keeps the dismissed run id and clears everything else', () => {
-    const state = { ...createState(), refreshing: true, pending: true, run: run('running'), logRunId: 'r1', dismissedRunId: 'r0' }
+    const state = { ...createState(), refreshing: true, pending: true, run: run('running'), logRunId: 'r1', lostRunId: 'r1', dismissedRunId: 'r0' }
 
     mutations.setReset(state)
 
@@ -54,6 +54,25 @@ describe('setRun', () => {
     mutations.setRun(state, run('finished'))
 
     expect(state.logRunId).toBeNull()
+  })
+})
+
+describe('setRun and lostRunId', () => {
+  it('keeps the lost run id while the run is unchanged', () => {
+    const current = run('finished')
+    const state = { ...createState(), run: current, lostRunId: 'r1' }
+
+    mutations.setRun(state, current)
+
+    expect(state.lostRunId).toBe('r1')
+  })
+
+  it('clears the lost run id once the run changes', () => {
+    const state = { ...createState(), run: run('finished'), lostRunId: 'r1' }
+
+    mutations.setRun(state, run('running'))
+
+    expect(state.lostRunId).toBeNull()
   })
 })
 

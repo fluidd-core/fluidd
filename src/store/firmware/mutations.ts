@@ -38,7 +38,15 @@ export const mutations = {
       state.logRunId = payload.run_id
     }
 
+    if (payload !== state.run) {
+      state.lostRunId = null
+    }
+
     state.run = payload && Object.freeze(payload)
+  },
+
+  setLostRunId (state, payload: string) {
+    state.lostRunId = payload
   },
 
   setPending (state, payload: boolean) {

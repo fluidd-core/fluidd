@@ -71,7 +71,7 @@ export const actions = {
 
     commit('setStatus', payload)
     commit('setStatusError', null)
-    commit('setRun', reconcileRun(state.run, payload.run ?? null))
+    commit('setRun', reconcileRun(state.run, payload.run ?? null, state.lostRunId))
 
     await dispatch('updateNotification')
 
@@ -111,7 +111,9 @@ export const actions = {
     try {
       const result = await SocketActions.aldisUpdate(args)
 
-      commit('setRunStarted', result.run_id)
+      if (typeof result.run_id === 'string') {
+        commit('setRunStarted', result.run_id)
+      }
     } catch (error) {
       commit('setPending', false)
 
@@ -140,7 +142,7 @@ export const actions = {
 
   async onKlippyStateChanged ({ state, dispatch }) {
     if (state.initialised) {
-      await dispatch('refresh')
+      await dispatch('fetchStatus')
     }
   },
 
@@ -155,6 +157,7 @@ export const actions = {
 
     if (state.run?.state === 'running') {
       commit('setRun', endLostRun(state.run, message))
+      commit('setLostRunId', state.run.run_id)
     } else if (state.pending) {
       EventBus.$emit(message, { type: 'error' })
     }

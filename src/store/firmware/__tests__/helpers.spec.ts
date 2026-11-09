@@ -89,6 +89,12 @@ describe('applyEvent', () => {
   })
 })
 
+describe('applyEvent on a lost run', () => {
+  it('resumes the run when the agent keeps sending progress', () => {
+    expect(applyEvent(endLostRun(running, 'lost'), event({ message: 'verified' })).state).toBe('running')
+  })
+})
+
 describe('endLostRun', () => {
   it('finishes the run without a result and logs why', () => {
     const next = endLostRun(running, 'lost')
@@ -131,11 +137,17 @@ describe('reconcileRun', () => {
   })
 
   it('takes the agent\'s outcome for a lost run', () => {
-    expect(reconcileRun(endLostRun(running, 'lost'), finished)).toBe(finished)
+    expect(reconcileRun(endLostRun(running, 'lost'), finished, 'r1')).toBe(finished)
   })
 
   it('resumes a lost run the agent still reports running', () => {
-    expect(reconcileRun(endLostRun(running, 'lost'), running)).toBe(running)
+    expect(reconcileRun(endLostRun(running, 'lost'), running, 'r1')).toBe(running)
+  })
+
+  it('does not treat a finished run without a result as lost', () => {
+    const done = applyEvent(running, { ...final, result: undefined })
+
+    expect(reconcileRun(done, running)).toBe(done)
   })
 
   it('adopts a different running run after one has finished', () => {
@@ -248,6 +260,10 @@ describe('isStatusResponse', () => {
     expect(isStatusResponse(withoutRun)).toBe(true)
   })
 
+  it('accepts a blocker', () => {
+    expect(isStatusResponse(status({ blocker: { reason: 'printing', message: 'busy' } }))).toBe(true)
+  })
+
   it('accepts an MCU with a null running_version', () => {
     const s = status({ mcus: [{ name: 'x', transport: null, running_version: null, state: 'current', message: '', actions: [] }] })
 
@@ -259,6 +275,8 @@ describe('isStatusResponse', () => {
     {},
     { ...status(), mcus: 'x' },
     { ...status(), mcus: [{ name: 'x', transport: null, running_version: null, state: 'current', message: '' }] },
+    { ...status(), blocker: 'printing' },
+    { ...status(), blocker: { reason: 'printing' } },
     { ...status(), run: 'bad' },
     { ...status(), run: { run_id: 'r1', state: 'running', messages: 'x', result: null } },
     { ...status(), run: { run_id: 'r1', state: 'running', messages: [{ ...event(), message: null }], result: null } },

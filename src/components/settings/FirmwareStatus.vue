@@ -24,6 +24,7 @@
 
     <v-tooltip
       v-else
+      :disabled="!message"
       left
     >
       <template #activator="{ on, attrs }">
