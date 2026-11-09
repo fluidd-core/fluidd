@@ -81,21 +81,9 @@ import { SocketActions } from '@/api/socketActions'
 import getFilePaths from '@/util/get-file-paths'
 import type { AppFileWithMeta } from '@/store/files/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
-import { TinyColor } from '@ctrl/tinycolor'
+import { autoMap, type AutoMapLane, type AutoMapTool } from '@/util/afc-auto-map'
+import { EventBus } from '@/eventBus'
 
-// sRGB hex -> CIE Lab (D65), used for perceptual color distance
-const hexToLab = (hex: string): [number, number, number] | undefined => {
-  const color = new TinyColor(hex)
-  if (!color.isValid) return undefined
-  const { r, g, b } = color.toRgb()
-  const lin = (c: number) => (c /= 255) > 0.04045 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92
-  const [lr, lg, lb] = [lin(r), lin(g), lin(b)]
-  const f = (t: number) => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116
-  const x = f((lr * 0.4124 + lg * 0.3576 + lb * 0.1805) / 0.95047)
-  const y = f(lr * 0.2126 + lg * 0.7152 + lb * 0.0722)
-  const z = f((lr * 0.0193 + lg * 0.1192 + lb * 0.9505) / 1.08883)
-  return [116 * y - 16, 500 * (x - y), 200 * (y - z)]
-}
 @Component({
   components: {
     AfcPrintStartDialogTool: () => import('./AfcPrintStartDialogTool.vue')
@@ -166,51 +154,47 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
     }, [])
   }
 
-  // Map each used tool to the closest loaded lane: same material first, then by color,
-  // then the lane the tool is already mapped to (keeps results deterministic without color data).
-  // Lanes are assigned once, so the resulting SET_MAP sequence is order independent.
+  // Map used tools to loaded lanes with the lowest total cost (see util/afc-auto-map)
   handleAutoMap () {
     const file = this.currentFile
     if (!file) return
-
-    const lanes = this.afcLanes
-      .map(lane => ({ lane, info: this.getAfcLaneInfo(lane) }))
-      .filter(({ info }) => info.filamentLoaded)
 
     const isMapped = (lane: string, tool: number) => {
       const map = this.getAfcLaneObject(lane)?.map
       return (Array.isArray(map) ? map : [map]).some(t => t?.toLowerCase() === `t${tool}`)
     }
 
-    const pairs = this.usedTools.flatMap(tool => {
-      const color = file.filament_colors?.[tool]
-      const material = (file.filament_type?.[tool] ?? '').toLowerCase()
-      const lab1 = color ? hexToLab(color) : undefined
+    const tools: AutoMapTool[] = this.usedTools.map(tool => ({
+      tool,
+      color: file.filament_colors?.[tool],
+      material: file.filament_type?.[tool],
+      weight: file.filament_weights?.[tool]
+    }))
 
-      return lanes.map(({ lane, info }) => {
-        const lab2 = info.color ? hexToLab(info.color) : undefined
-        const mismatch = material && !info.material.toLowerCase().includes(material) ? 1 : 0
-        const distance = lab1 && lab2 ? Math.hypot(lab1[0] - lab2[0], lab1[1] - lab2[1], lab1[2] - lab2[2]) : Infinity
-        return { tool, lane, mismatch, distance, current: isMapped(lane, tool) ? 0 : 1 }
-      })
-    }).sort((a, b) => a.mismatch - b.mismatch || a.distance - b.distance || a.current - b.current)
+    const lanes: AutoMapLane[] = this.afcLanes
+      .map(lane => ({ lane, info: this.getAfcLaneInfo(lane) }))
+      .filter(({ info }) => info.filamentLoaded)
+      .map(({ lane, info }) => ({
+        lane,
+        color: info.color,
+        material: info.material,
+        weight: info.remainingWeight,
+        current: this.usedTools.reduce<boolean[]>((acc, tool) => { acc[tool] = isMapped(lane, tool); return acc }, [])
+      }))
 
-    const usedLanes = new Set<string>()
-    const mapped = new Set<number>()
-    const gcode: string[] = []
-
-    for (const { tool, lane } of pairs) {
-      if (mapped.has(tool) || usedLanes.has(lane)) continue
-      mapped.add(tool)
-      usedLanes.add(lane)
-
-      if (!isMapped(lane, tool)) {
-        gcode.push(`SET_MAP LANE=${encodeGcodeParamValue(lane)} MAP=${encodeGcodeParamValue(`T${tool}`)}`)
-      }
+    if (!lanes.length) {
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapNoLanes').toString(), { type: 'warning' })
+      return
     }
+
+    const gcode = [...autoMap(tools, lanes)]
+      .filter(([tool, lane]) => !isMapped(lane, tool))
+      .map(([tool, lane]) => `SET_MAP LANE=${encodeGcodeParamValue(lane)} MAP=${encodeGcodeParamValue(`T${tool}`)}`)
 
     if (gcode.length) {
       this.sendGcode(gcode.join('\n'))
+    } else {
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnchanged').toString(), { type: 'success' })
     }
   }
 
