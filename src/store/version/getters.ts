@@ -61,7 +61,10 @@ export const getters = {
 
       // `git describe` versions don't compare as SemVer
       if ('commits_behind_count' in versionInfo) {
-        return versionInfo.commits_behind_count > 0
+        return (
+          versionInfo.current_hash !== versionInfo.remote_hash &&
+          versionInfo.commits_behind_count > 0
+        )
       }
 
       if ('version' in versionInfo && 'remote_version' in versionInfo) {
