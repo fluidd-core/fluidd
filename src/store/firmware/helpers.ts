@@ -19,28 +19,22 @@ export const isUpdatable = (mcu: Pick<Aldis.Mcu, 'state' | 'actions'>): boolean 
 )
 
 export const applyEvent = (run: Aldis.Run | null, payload: Aldis.UpdateResponse): Aldis.Run => {
-  const current: Aldis.Run = run?.run_id === payload.run_id
-    ? run
-    : {
-        run_id: payload.run_id,
-        state: 'running',
-        messages: [],
-        result: null
-      }
-
-  const messages = [...current.messages, payload]
+  const messages = run?.run_id === payload.run_id
+    ? [...run.messages, payload]
+    : [payload]
 
   return payload.complete
     ? {
-        ...current,
-        messages,
+        run_id: payload.run_id,
         state: 'finished',
+        messages,
         result: payload.result ?? null
       }
     : {
-        ...current,
+        run_id: payload.run_id,
+        state: 'running',
         messages,
-        state: 'running'
+        result: null
       }
 }
 
@@ -60,7 +54,7 @@ export const endLostRun = (run: Aldis.Run, message: string): Aldis.Run => ({
   ]
 })
 
-export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null, lostRunId: string | null = null): Aldis.Run | null => {
+export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null, lost = false): Aldis.Run | null => {
   if (run == null) {
     return current
   }
@@ -76,7 +70,7 @@ export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null, l
   }
 
   // A lost run takes the agent's view; otherwise a running snapshot predates the final event
-  return current.run_id === lostRunId
+  return lost
     ? run
     : current
 }

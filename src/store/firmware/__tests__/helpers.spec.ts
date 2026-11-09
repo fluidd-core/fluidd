@@ -91,7 +91,9 @@ describe('applyEvent', () => {
 
 describe('applyEvent on a lost run', () => {
   it('resumes the run when the agent keeps sending progress', () => {
-    expect(applyEvent(endLostRun(running, 'lost'), event({ message: 'verified' })).state).toBe('running')
+    const next = applyEvent(endLostRun(running, 'lost'), event({ message: 'verified' }))
+
+    expect(next.state).toBe('running')
   })
 })
 
@@ -137,11 +139,11 @@ describe('reconcileRun', () => {
   })
 
   it('takes the agent\'s outcome for a lost run', () => {
-    expect(reconcileRun(endLostRun(running, 'lost'), finished, 'r1')).toBe(finished)
+    expect(reconcileRun(endLostRun(running, 'lost'), finished, true)).toBe(finished)
   })
 
   it('resumes a lost run the agent still reports running', () => {
-    expect(reconcileRun(endLostRun(running, 'lost'), running, 'r1')).toBe(running)
+    expect(reconcileRun(endLostRun(running, 'lost'), running, true)).toBe(running)
   })
 
   it('does not treat a finished run without a result as lost', () => {

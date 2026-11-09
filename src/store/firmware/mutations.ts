@@ -1,6 +1,7 @@
 import type { MutationTree } from 'vuex'
 import type { FirmwareState } from './types'
 import { createState } from './state'
+import { endLostRun } from './helpers'
 
 export const mutations = {
   setReset (state) {
@@ -39,14 +40,17 @@ export const mutations = {
     }
 
     if (payload !== state.run) {
-      state.lostRunId = null
+      state.runLost = false
     }
 
     state.run = payload && Object.freeze(payload)
   },
 
-  setLostRunId (state, payload: string) {
-    state.lostRunId = payload
+  setRunLost (state, payload: string) {
+    if (state.run != null) {
+      state.run = Object.freeze(endLostRun(state.run, payload))
+      state.runLost = true
+    }
   },
 
   setPending (state, payload: boolean) {

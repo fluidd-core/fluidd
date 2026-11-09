@@ -5,7 +5,7 @@ import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { isAgentConnectedEvent, isAgentDisconnectedEvent } from '@/util/is-agent-event'
-import { SUPPORTED_API_VERSION, agentErrorMessage, apiVersionOf, applyEvent, endLostRun, isStatusResponse, isUpdateResponse, needsRetry, reconcileRun, unsupportedStatus } from './helpers'
+import { SUPPORTED_API_VERSION, agentErrorMessage, apiVersionOf, applyEvent, isStatusResponse, isUpdateResponse, needsRetry, reconcileRun, unsupportedStatus } from './helpers'
 
 const NOTIFICATION_ID = 'firmware-updates-available'
 
@@ -71,7 +71,7 @@ export const actions = {
 
     commit('setStatus', payload)
     commit('setStatusError', null)
-    commit('setRun', reconcileRun(state.run, payload.run ?? null, state.lostRunId))
+    commit('setRun', reconcileRun(state.run, payload.run ?? null, state.runLost))
 
     await dispatch('updateNotification')
 
@@ -156,8 +156,7 @@ export const actions = {
     const message = i18n.t('app.firmware.status.lost_run').toString()
 
     if (state.run?.state === 'running') {
-      commit('setRun', endLostRun(state.run, message))
-      commit('setLostRunId', state.run.run_id)
+      commit('setRunLost', message)
     } else if (state.pending) {
       EventBus.$emit(message, { type: 'error' })
     }

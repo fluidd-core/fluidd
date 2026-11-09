@@ -10,7 +10,7 @@ export const createState = (): FirmwareState => {
     pending: false,
     run: null,
     logRunId: null,
-    lostRunId: null,
+    runLost: false,
     dismissedRunId: null
   }
 }
