@@ -1,5 +1,5 @@
 import type { ActionTree } from 'vuex'
-import type { KlippyApp, PrinterState, SocketNotifyPayload } from './types'
+import type { KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
 import { handleAddChartEntry, handleAddSensorChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
@@ -117,7 +117,7 @@ export const actions = {
       queryEndstops.last_query[key] = +(payload[key] === 'TRIGGERED')
     }
 
-    commit('setSocketNotify', { key: 'query_endstops', payload: queryEndstops })
+    commit('setSocketNotify', { query_endstops: queryEndstops })
   },
 
   /**
@@ -250,11 +250,8 @@ export const actions = {
       handleMcuStatsChange(payload, rootState, commit)
       handleTrinamicDriversChange(payload, rootState, dispatch, getters)
 
-      for (const key in payload) {
-        const val = payload[key]
-        // Commit the value.
-        commit('setSocketNotify', { key, payload: val })
-      }
+      // One commit for the whole flush
+      commit('setSocketNotify', payload)
 
       // Add a temp chart entry
       const retention: number = rootGetters['charts/getChartRetention']
@@ -264,7 +261,7 @@ export const actions = {
     }
   },
 
-  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload: SocketNotifyPayload) {
+  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload: Partial<Klipper.PrinterState>) {
     // Do NOT accept updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.

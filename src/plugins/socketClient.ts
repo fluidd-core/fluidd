@@ -14,9 +14,8 @@ const RETRY_SHOW_AFTER = 5000
 const PING_AFTER = 10_000
 const DEAD_AFTER = 10_000
 
-const FAST_NOTIFY_KEYS = [
-  'motion_report'
-] as const
+// Arrays are replaced, not merged index by index
+const mergeCustomizer = (dest: unknown, src: unknown) => Array.isArray(dest) ? src : undefined
 
 const retryDelay = (attempt: number): number => {
   const base = RETRY_MIN * 2 ** Math.min(attempt, 16)
@@ -130,7 +129,7 @@ export class WebSocketClient {
         consola.error(`${LOG_PREFIX} Connection error:`, event)
       }
 
-      connection.onmessage = async (message) => {
+      connection.onmessage = (message) => {
         if (this.connection !== connection) return
 
         this.armPingTimer()
@@ -199,24 +198,30 @@ export class WebSocketClient {
           // so we cache these and send them through every second.
           const [params, eventtime] = socketResponse.params
 
-          // If any of these properties exist, bypass the cache and send immediately
-          for (const key of FAST_NOTIFY_KEYS) {
-            if (key in params) {
-              this.store.typedDispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
-              delete params[key]
-            }
+          const timestamp = eventtime
+            ? eventtime * 1000
+            : Date.now()
+
+          if (!this.cache) {
+            this.cache = { timestamp, params: {} }
           }
 
-          const timestamp = eventtime ? eventtime * 1000 : Date.now()
-
-          this.cache = !this.cache
-            ? { timestamp, params }
-            : { timestamp: this.cache.timestamp, params: mergeWith(this.cache.params, params, (dest, src) => Array.isArray(dest) ? src : undefined) }
-
-          // If there's a second or more difference, flush the cache.
           if (timestamp - this.cache.timestamp >= 1000) {
+            // A second or more has passed, so flush the cache
+            mergeWith(this.cache.params, params, mergeCustomizer)
+
             this.store.typedDispatch('socket/notifyStatusUpdate', this.cache.params)
+
             this.cache = { timestamp, params: {} }
+          } else {
+            // motion_report bypasses the cache and is sent immediately
+            const { motion_report, ...otherParams } = params
+
+            if (motion_report != null) {
+              this.store.typedDispatch('printer/onFastNotifyStatusUpdate', { motion_report }, { root: true })
+            }
+
+            mergeWith(this.cache.params, otherParams, mergeCustomizer)
           }
         }
       }
