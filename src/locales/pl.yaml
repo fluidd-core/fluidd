@@ -1460,8 +1460,49 @@ app:
       SpoolId: 'ID #{id}'
       SpoolWeightRemaining: Pozostało {remaining} g (zużyto {used} g)
       LaneWeightRemaining: 'Pozostała masa: {weight} g'
+      AutoMap: Automatyczne mapowanie
+      AutoMapNoLanes: Brak toru z załadowanym filamentem
+      AutoMapUnchanged: Tory są już zgodne z plikiem
+      AutoMapUnmapped: Brak wolnego toru dla {tools}
     SelectTool: Wybierz narzędzie
     ToolSwap: Wymiana głowic narzędziowych
     ToolPickup: Pobieranie głowicy narzędziowej
     ToolDock: Odkładanie głowicy narzędziowej
     UnselectTool: Odznacz narzędzie
+  firmware:
+    btn:
+      refresh: Odśwież
+      update: Zaktualizuj
+      update_all: Zaktualizuj wszystko
+      view: Zobacz firmware
+    label:
+      enable_notifications: Włącz powiadomienia
+      host: Usługa Klipper
+      host_hint: Firmware MCU jest porównywane z tą wersją
+      loading: Sprawdzanie firmware...
+      malformed_status: Agent firmware wysłał status, którego Fluidd nie mógł 
+        odczytać.
+      not_running: Agent firmware aldis nie jest uruchomiony. Uruchom usługę 
+        aldis z listy usług w menu hosta.
+      restart_pending_hint: Zrestartuj Klippera z listy usług w menu hosta.
+      status_error: 'Nie udało się odczytać statusu firmware: %{message}. Odśwież,
+        aby spróbować ponownie.'
+      unknown_version: nieznana
+      unsupported_api: Ta wersja Fluidd nie obsługuje API aldis w wersji 
+        %{version}.
+      updates_available: Dostępne są aktualizacje firmware
+    state:
+      current: AKTUALNY
+      externally_managed: ZEWNĘTRZNY
+      indeterminate: NIEOKREŚLONY
+      not_identified: NIEZIDENTYFIKOWANY
+      not_responding: NIE ODPOWIADA
+      unsupported_legacy: PRZESTARZAŁY
+      unsupported_mcu: NIEWSPIERANY
+      update_available: DOSTĘPNA AKTUALIZACJA
+    status:
+      finished: Aktualizacje firmware zostały zakończone
+      lost_run: Utracono informacje o przebiegu operacji. Sprawdź dziennik 
+        przebiegu w katalogu logs/aldis.
+      updating: Aktualizowanie firmware...
+    title: Aktualizacje firmware
