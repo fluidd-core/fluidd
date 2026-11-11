@@ -53,20 +53,22 @@ export const mutations = {
     screwsTiltAdjust.results = Object.freeze({})
   },
 
-  setSocketNotify<T extends keyof Klipper.PrinterState> (state: PrinterState, payload: { key: T, payload: Klipper.PrinterState[T] }) {
-    const { key: payloadKey, payload: payloadValue } = payload
+  setSocketNotify (state, payload: Partial<Klipper.PrinterState>) {
+    for (const payloadKey in payload) {
+      const payloadValue = payload[payloadKey]
 
-    let stateObject = state.printer[payloadKey]
+      let stateObject = state.printer[payloadKey]
 
-    if (stateObject == null) {
-      // Object is not set yet, so create it.
-      stateObject = {}
-      Vue.set(state.printer, payloadKey, stateObject)
-    }
+      if (stateObject == null) {
+        // Object is not set yet, so create it.
+        stateObject = {}
+        Vue.set(state.printer, payloadKey, stateObject)
+      }
 
-    for (const key in payloadValue) {
-      if (stateObject[key] !== payloadValue[key]) {
-        Vue.set(stateObject, key, Object.freeze(payloadValue[key]))
+      for (const key in payloadValue) {
+        if (stateObject[key] !== payloadValue[key]) {
+          Vue.set(stateObject, key, Object.freeze(payloadValue[key]))
+        }
       }
     }
   }
