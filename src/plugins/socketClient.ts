@@ -198,21 +198,18 @@ export class WebSocketClient {
           // so we cache these and send them through every second.
           const [params, eventtime] = socketResponse.params
 
-          const timestamp = eventtime
-            ? eventtime * 1000
-            : Date.now()
-
           if (!this.cache) {
-            this.cache = { timestamp, params: {} }
-          }
+            // First status update since connecting, send it immediately
+            this.store.typedDispatch('socket/notifyStatusUpdate', params)
 
-          if (timestamp - this.cache.timestamp >= 1000) {
+            this.cache = { eventtime, params: {} }
+          } else if (eventtime - this.cache.eventtime >= 1) {
             // A second or more has passed, so flush the cache
             mergeWith(this.cache.params, params, mergeCustomizer)
 
             this.store.typedDispatch('socket/notifyStatusUpdate', this.cache.params)
 
-            this.cache = { timestamp, params: {} }
+            this.cache = { eventtime, params: {} }
           } else {
             // motion_report bypasses the cache and is sent immediately
             const { motion_report, ...otherParams } = params
@@ -496,6 +493,6 @@ type SocketNotificationResponse = {
 type SocketResponse = SocketApiResponse | SocketApiErrorResponse | SocketNotificationResponse
 
 interface CachedParams {
-  timestamp: number;
+  eventtime: number; // Klipper's eventtime, in seconds
   params: Record<string, any>;
 }
