@@ -12,6 +12,7 @@
       >
         <video
           v-if="isVideo"
+          :key="src"
           controls
           disablePictureInPicture
           playsinline
