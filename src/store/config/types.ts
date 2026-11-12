@@ -111,6 +111,7 @@ export interface GeneralConfig {
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
   toolheadControlStyle: ToolheadControlStyle;
+  toolheadDropToolGcode: string;
   toolheadMoveDistances: number[];
   toolheadXYMoveDistances: number[];
   toolheadZMoveDistances: number[];

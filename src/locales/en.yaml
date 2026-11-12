@@ -901,6 +901,7 @@ app:
       to_browser_local_storage: To browser local storage
       to_browser_session_storage: To browser session storage
       toolhead_control_style: Toolhead control style
+      toolhead_drop_tool_gcode: Drop tool G-code
       toolhead_move_distances: Toolhead distance values
       toolhead_xy_move_distances: Toolhead XY distance values
       toolhead_z_move_distances: Toolhead Z distance values
@@ -1044,6 +1045,7 @@ app:
       motors_off: Motors Off
       relative_positioning: Relative Positioning
       retracting: Retracting
+      drop_tool: Drop current tool
       select_tool: Select tool %{tool}
       tools: Tools
     label:
