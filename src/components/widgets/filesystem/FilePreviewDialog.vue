@@ -5,7 +5,10 @@
     :width="calculatedWidth"
     no-actions
   >
-    <v-card-text class="py-4">
+    <v-card-text
+      v-if="open"
+      class="py-4"
+    >
       <v-layout
         v-if="!isMarkdown"
         justify-center
