@@ -251,8 +251,10 @@ app:
       failed_components: >-
         Moonraker ha fallado en los complementos. Verifique los registros,
         actualice su configuración y reinicie Moonraker.
-      printer_powered_off: La impresora está ahora mismo apagada. <br/><br/>Para
-        encender la impresora presione el botón en la izquierda.
+      printer_powered_off: |-
+        La impresora está ahora mismo apagada.
+
+        Para encender la impresora presione el botón en la izquierda.
     label:
       accel_to_decel: Aceleración a deceleración
       acceleration: Aceleración
@@ -378,8 +380,9 @@ app:
       password_changed: Contraseña cambiada
       fluidd_settings_restore_failed: Fallo al restaurar los Ajustes de Fluid!
       offline_ready: Fluidd se encuentra listo para trabajar fuera de línea.
-      welcome_back: Bienvenido de nuevo. <br>A continuación, inicie sesión para 
-        mantenerse conectado a su impresora.
+      welcome_back: |-
+        Bienvenido de nuevo.
+        A continuación, inicie sesión para mantenerse conectado a su impresora.
       needs_refresh: Nuevo contenido disponible. Haga clic en botón 
         <b>Actualizar</b> para ver los cambios.
       pending_configuration_sections_deleted: Las siguientes secciones se 

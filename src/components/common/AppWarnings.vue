@@ -15,6 +15,7 @@
           v-for="(warning, index) in printerWarnings"
           :key="index"
           v-safe-html="linkExternalUrls(warning)"
+          class="text-pre-wrap"
         />
       </ul>
     </template>
@@ -28,6 +29,7 @@
           v-for="(warning, index) in klipperWarnings"
           :key="index"
           v-safe-html="linkExternalUrls(warning.message)"
+          class="text-pre-wrap"
         />
       </ul>
     </template>
@@ -41,6 +43,7 @@
           v-for="(failedComponent, index) in moonrakerFailedComponents"
           :key="index"
           v-safe-html="linkExternalUrls(failedComponent)"
+          class="text-pre-wrap"
         />
       </ul>
     </template>
@@ -54,6 +57,7 @@
           v-for="(warning, index) in moonrakerWarnings"
           :key="index"
           v-safe-html="linkExternalUrls(warning)"
+          class="text-pre-wrap"
         />
       </ul>
     </template>
@@ -71,7 +75,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Globals } from '@/globals'
-import linkExternalUrls from '@/util/link-external-urls'
+import { linkExternalUrls } from '@/util/html-helpers'
 
 @Component({
   components: {}

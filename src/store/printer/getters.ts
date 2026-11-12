@@ -63,10 +63,10 @@ export const getters = {
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
     if (state.info?.state_message) {
-      return state.info.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
+      return state.info.state_message.trim()
     }
     if (state.printer.webhooks.state_message) {
-      return state.printer.webhooks.state_message.trim().replace(/\r\n|\r|\n/g, '<br />')
+      return state.printer.webhooks.state_message.trim()
     }
     return 'Unknown'
   },
@@ -277,7 +277,7 @@ export const getters = {
     const totalDuration = state.printer.print_stats?.total_duration ?? 0
     const printDuration = state.printer.print_stats?.print_duration ?? 0
 
-    const fileLeft = printDuration > 0 && fileProgress > 0
+    const fileLeft = printDuration > 0 && fileProgress >= 0.01
       ? printDuration / fileProgress - printDuration
       : 0
 
@@ -816,7 +816,10 @@ export const getters = {
         key.startsWith('temperature_sensor ') ||
         key.startsWith('temperature_probe ')
       ),
-      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => (
+        key.startsWith('tmc2240 ') ||
+        key.startsWith('tmc5262 ')
+      ),
       (key: string) => key === 'z_thermal_adjust'
     ]
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
@@ -834,7 +837,7 @@ export const getters = {
             const name = nameFromSplit || key
 
             if (!name.startsWith('_')) {
-              const prettyName = type === 'tmc2240'
+              const prettyName = /^tmc\d{4}$/.test(type)
                 ? i18n.t('app.general.label.stepper_driver',
                   {
                     name:
@@ -916,7 +919,10 @@ export const getters = {
         key.startsWith('temperature_sensor ') ||
         key.startsWith('temperature_probe ')
       ),
-      (key: string) => key.startsWith('tmc2240 '),
+      (key: string) => (
+        key.startsWith('tmc2240 ') ||
+        key.startsWith('tmc5262 ')
+      ),
       (key: string) => key === 'z_thermal_adjust'
     ]
 

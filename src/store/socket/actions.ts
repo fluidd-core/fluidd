@@ -17,7 +17,8 @@ const MODULES_TO_RESET_ON_DROP = [
   'webcams',
   'jobQueue',
   'wait',
-  'gcodePreview'
+  'gcodePreview',
+  'extensions'
 ] as const
 
 let retryTimeout: ReturnType<typeof setTimeout>
@@ -345,6 +346,8 @@ export const actions = {
   async notifyKlippyDisconnected ({ dispatch }) {
     await dispatch('resetKlippy', undefined, { root: true })
 
+    dispatch('extensions/onKlippyStateChanged', undefined, { root: true })
+
     SocketActions.serverInfo()
   },
 
@@ -405,6 +408,10 @@ export const actions = {
 
   async notifyTimelapseEvent ({ dispatch }, payload: Moonraker.NotificationPayload<'notify_timelapse_event'>) {
     dispatch('timelapse/onEvent', payload, { root: true })
+  },
+
+  async notifyAgentEvent ({ dispatch }, payload: Moonraker.NotificationPayload<'notify_agent_event'>) {
+    dispatch('extensions/onAgentEvent', payload, { root: true })
   },
 
   async notifyAnnouncementUpdate ({ dispatch }, payload: Moonraker.NotificationPayload<'notify_announcement_update'>) {

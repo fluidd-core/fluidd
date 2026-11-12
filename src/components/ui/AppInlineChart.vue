@@ -1,20 +1,21 @@
 <template>
   <v-col
     v-if="hasData"
+    class="app-inline-chart"
     cols="4"
-    class="chart-wrapper"
   >
     <app-chart
+      class="app-inline-chart__chart"
       :data="data"
       :options="options"
       height="120px"
     />
 
-    <div class="chart-label-wrapper">
+    <div class="app-inline-chart__label-wrapper">
       <div
         v-for="{ label, value } in items"
         :key="label.value"
-        class="chart-label"
+        class="app-inline-chart__label"
       >
         <span>{{ label.text }}</span>
         <span>{{ value }}</span>
@@ -68,13 +69,15 @@ export default class AppInlineChart extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .chart-label-wrapper {
-    margin-top: 6px;
-    display: block;
-  }
+  .app-inline-chart {
+    .app-inline-chart__label-wrapper {
+      margin-top: 6px;
+      display: block;
+    }
 
-  .chart-label {
-    display: flex;
-    justify-content: space-between;
+    .app-inline-chart__label {
+      display: flex;
+      justify-content: space-between;
+    }
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="chart"
+    class="app-chart"
     :style="{
       height: $filters.getPixelsString(height)
     }"
@@ -91,7 +91,7 @@ export default class AppChart extends Vue {
 </script>
 
 <style lang='scss' scoped>
-  .chart {
+  .app-chart {
     width: 100%;
   }
 </style>

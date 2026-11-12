@@ -18,7 +18,9 @@
           @submit.prevent="handleLogin"
         >
           <div class="text-center">
-            <p v-safe-html="$t('app.general.msg.welcome_back')" />
+            <p>
+              <span class="text-pre-wrap">{{ $t('app.general.msg.welcome_back') }}</span>
+            </p>
 
             <v-alert
               v-if="error"

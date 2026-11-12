@@ -41,7 +41,6 @@ export const actions = {
             ? dispatch(component.dispatch, undefined, { root: true })
             : null
         ))
-        .filter(promise => promise)
 
       await Promise.all(promises)
     }
@@ -79,6 +78,8 @@ export const actions = {
    * On server info
    */
   async onServerInfo ({ commit, dispatch, state }, payload: Moonraker.Server.InfoResponse) {
+    const klippyStateChanged = payload.klippy_state !== state.info.klippy_state
+
     clearTimeout(retryTimeout)
 
     if (payload.klippy_connected) {
@@ -94,6 +95,10 @@ export const actions = {
     }
 
     commit('setServerInfo', payload)
+
+    if (klippyStateChanged) {
+      dispatch('extensions/onKlippyStateChanged', undefined, { root: true })
+    }
 
     dispatch('checkMoonrakerMinVersion')
 

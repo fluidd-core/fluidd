@@ -1,5 +1,6 @@
 <template>
   <v-chip
+    class="app-chip-color"
     :style="{
       background: color
     }"
@@ -26,11 +27,11 @@ export default class AppChipColor extends Vue {
 <style lang="scss" scoped>
   @import 'vuetify/src/styles/styles.sass';
 
-  @include theme(v-chip) using ($material) {
+  @include theme(app-chip-color) using ($material) {
     border-color: map-deep-get($material, 'text', 'primary');
   }
 
-  .v-chip {
+  .app-chip-color {
     border-style: solid;
     padding: 0;
     width: 24px;

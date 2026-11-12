@@ -1,5 +1,5 @@
 <template>
-  <app-btn-group>
+  <app-btn-group class="app-up-down-btn-group">
     <app-btn
       v-for="value in valuesDown"
       :key="`l${value}`"
@@ -53,8 +53,10 @@ export default class AppUpDownBtnGroup extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .v-btn.value {
-    min-width: 44px;
-    padding: 0px;
+  .app-up-down-btn-group {
+    .v-btn.value {
+      min-width: 44px;
+      padding: 0px;
+    }
   }
 </style>

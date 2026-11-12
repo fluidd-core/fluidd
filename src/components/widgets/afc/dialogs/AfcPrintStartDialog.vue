@@ -3,7 +3,6 @@
     v-model="open"
     :title="$t('app.afc.PrintStartDialog.Title')"
     width="600"
-    :save-button-text="$t('app.general.btn.print')"
     @save="handlePrint"
   >
     <!-- Thumbnail preview -->
@@ -41,6 +40,35 @@
         :class="{ 'border-top': index > 0 }"
       />
     </v-card-text>
+
+    <template #actions>
+      <app-btn
+        text
+        color="primary"
+        type="button"
+        :disabled="!currentFile || !usedTools.length"
+        @click="handleAutoMap"
+      >
+        {{ $t('app.afc.PrintStartDialog.AutoMap') }}
+      </app-btn>
+
+      <v-spacer />
+
+      <app-btn
+        text
+        color="warning"
+        type="button"
+        @click="open = false"
+      >
+        {{ $t('app.general.btn.cancel') }}
+      </app-btn>
+      <app-btn
+        color="primary"
+        type="submit"
+      >
+        {{ $t('app.general.btn.print') }}
+      </app-btn>
+    </template>
   </app-dialog>
 </template>
 
@@ -52,6 +80,10 @@ import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/api/socketActions'
 import getFilePaths from '@/util/get-file-paths'
 import type { AppFileWithMeta } from '@/store/files/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import { autoMap, type AutoMapLane, type AutoMapTool } from '@/util/afc-auto-map'
+import { EventBus } from '@/eventBus'
+
 @Component({
   components: {
     AfcPrintStartDialogTool: () => import('./AfcPrintStartDialogTool.vue')
@@ -120,6 +152,57 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
       if (weight > 0) tools.push(index)
       return tools
     }, [])
+  }
+
+  // Map used tools to loaded lanes with the lowest total cost (see util/afc-auto-map)
+  handleAutoMap () {
+    const file = this.currentFile
+    if (!file || !this.usedTools.length) return
+
+    const isMapped = (lane: string, tool: number) => {
+      const map = this.getAfcLaneObject(lane)?.map
+      return (Array.isArray(map) ? map : [map]).some(t => t?.toLowerCase() === `t${tool}`)
+    }
+
+    const tools: AutoMapTool[] = this.usedTools.map(tool => ({
+      tool,
+      color: file.filament_colors?.[tool],
+      material: file.filament_type?.[tool],
+      weight: file.filament_weights?.[tool]
+    }))
+
+    const lanes: AutoMapLane[] = this.afcLanes
+      .map(lane => ({ lane, info: this.getAfcLaneInfo(lane) }))
+      .filter(({ info }) => info.filamentLoaded)
+      .map(({ lane, info }) => ({
+        lane,
+        color: info.color,
+        material: info.material,
+        weight: info.remainingWeight,
+        current: this.usedTools.reduce<boolean[]>((acc, tool) => { acc[tool] = isMapped(lane, tool); return acc }, [])
+      }))
+
+    if (!lanes.length) {
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapNoLanes').toString(), { type: 'warning' })
+      return
+    }
+
+    const mapping = autoMap(tools, lanes)
+    const unmapped = tools.filter(({ tool }) => !mapping.has(tool)).map(({ tool }) => `T${tool}`)
+
+    const gcode = [...mapping]
+      .filter(([tool, lane]) => !isMapped(lane, tool))
+      .map(([tool, lane]) => `SET_MAP LANE=${encodeGcodeParamValue(lane)} MAP=${encodeGcodeParamValue(`T${tool}`)}`)
+
+    if (gcode.length) {
+      this.sendGcode(gcode.join('\n'))
+    }
+
+    if (unmapped.length) {
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnmapped', { tools: unmapped.join(', ') }).toString(), { type: 'warning' })
+    } else if (!gcode.length) {
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnchanged').toString(), { type: 'success' })
+    }
   }
 
   handlePrint () {

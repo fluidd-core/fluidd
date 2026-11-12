@@ -8,7 +8,7 @@ export interface HistoryState {
 }
 
 export interface HistoryItem extends Omit<Moonraker.History.Job, 'metadata'> {
-  metadata?: AppFileMeta;
+  metadata: Partial<AppFileMeta>;
 }
 
 export type HistoryItemStatus = 'completed' | 'cancelled' | 'error' | 'printing' | 'in_progress' | 'server_exit' | 'klippy_shutdown' | 'klippy_disconnect' | 'interrupted'

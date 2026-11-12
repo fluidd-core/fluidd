@@ -8,8 +8,8 @@
     <template #activator="{ on, attrs }">
       <v-icon
         :color="type"
-        class="ml-2"
-        v-bind="{...$attrs, attrs}"
+        class="app-inline-help ml-2"
+        v-bind="{...$attrs, ...attrs}"
         v-on="{...$listeners, ...on}"
       >
         {{ (type === 'error' || type === 'warning') ? '$warning' : '$help' }}

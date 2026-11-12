@@ -6,7 +6,7 @@ declare namespace Moonraker.ProcStats {
     network: Record<string, NetworkStats>;
     system_cpu_usage: Record<string, number>;
     system_uptime: number;
-    system_memory: SystemMemory;
+    system_memory: SystemMemory | Record<string, never>;
     websocket_connections: number;
   }
 
@@ -15,7 +15,7 @@ declare namespace Moonraker.ProcStats {
     cpu_temp: number | null;
     network: Record<string, NetworkStats>;
     system_cpu_usage: Record<string, number>;
-    system_memory: SystemMemory;
+    system_memory: SystemMemory | Record<string, never>;
     websocket_connections: number;
   }
 

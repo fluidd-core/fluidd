@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-data-table-cell-colors">
     <v-tooltip
       v-for="(color, index) in colors"
       :key="index"

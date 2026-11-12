@@ -329,7 +329,9 @@ app:
       bed_screws_adjust: 현재 나사를 크게 조정해야 하는 경우 조정됨을 <b>클릭</b>하고, 그렇지 않은 경우 
         <b>수락</b>을 클릭하여 계속합니다.
       rolledover_logs: '다음 애플리케이션 로그가 롤오버되었습니다: %{applications}'
-      welcome_back: 다시 오신 것을 환영합니다.<br>아래에서 로그인하여 프린터와 연결하세요.
+      welcome_back: |-
+        다시 오신 것을 환영합니다.
+        아래에서 로그인하여 프린터와 연결하세요.
       offline_ready: 이제 Fluidd가 오프라인에서 작동할 준비가 되었습니다.
       pending_configuration_sections_deleted: 삭제 대상으로 표시된 섹션은 다음과 같습니다
       needs_refresh: 새로운 콘텐츠를 사용하려면 <b>리로드</b> 버튼을 클릭하여 업데이트하세요.

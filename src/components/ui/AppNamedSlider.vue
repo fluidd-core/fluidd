@@ -4,52 +4,50 @@
     class="flex"
     @submit.prevent
   >
-    <v-row no-gutters>
-      <!-- Label -->
-      <v-col
-        v-safe-html="label"
-        cols="12"
-        sm="5"
-        align-self="center"
-        class="text-body-1"
-        :class="{ 'text--disabled': disabled }"
-      />
+    <app-named-container
+      :label="label"
+      :disabled="disabled"
+    >
+      <template
+        v-if="$scopedSlots.label"
+        #label
+      >
+        <slot name="label" />
+      </template>
 
       <!-- Current value -->
-      <v-col>
-        <v-text-field
-          v-model="currentValue"
-          :rules="textRules"
-          :disabled="disabled || loading"
-          :step="step"
-          class="v-input--text-right"
-          type="number"
-          dense
-          single-line
-          outlined
-          hide-details
-          v-bind="$attrs"
-          @focus="handleFocus"
-          @blur="handleBlur"
-          @keyup.enter.exact="handleSubmit(+currentValue)"
-        >
-          <template #prepend>
-            <app-btn
-              v-if="resetValue !== undefined"
-              :disabled="disabled || loading"
-              style="margin-top: -4px;"
-              icon
-              small
-              @click="handleReset"
-            >
-              <v-icon small>
-                $reset
-              </v-icon>
-            </app-btn>
-          </template>
-        </v-text-field>
-      </v-col>
-    </v-row>
+      <v-text-field
+        v-model="currentValue"
+        :rules="textRules"
+        :disabled="disabled || loading"
+        :step="step"
+        class="v-input--text-right"
+        type="number"
+        dense
+        single-line
+        outlined
+        hide-details
+        v-bind="$attrs"
+        @focus="handleFocus"
+        @blur="handleBlur"
+        @keyup.enter.exact="handleSubmit(+currentValue)"
+      >
+        <template #prepend>
+          <app-btn
+            v-if="resetValue !== undefined"
+            :disabled="disabled || loading"
+            style="margin-top: -4px;"
+            icon
+            small
+            @click="handleReset"
+          >
+            <v-icon small>
+              $reset
+            </v-icon>
+          </app-btn>
+        </template>
+      </v-text-field>
+    </app-named-container>
 
     <v-slider
       v-model="sliderValue"
@@ -95,8 +93,8 @@ export default class AppNamedSlider extends Vue {
   @Prop({ type: Number })
   readonly resetValue?: number
 
-  @Prop({ type: String, required: true })
-  readonly label!: string
+  @Prop({ type: String })
+  readonly label?: string
 
   @Prop({ type: Array })
   readonly rules?: InputValidationRules[]

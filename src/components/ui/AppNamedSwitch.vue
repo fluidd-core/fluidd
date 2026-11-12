@@ -4,10 +4,13 @@
     align-center
   >
     <div
-      v-safe-html="label"
       class="text-body-1"
       :class="{ 'text--disabled': disabled }"
-    />
+    >
+      <slot name="label">
+        <span class="text-pre-wrap">{{ label }}</span>
+      </slot>
+    </div>
     <v-switch
       v-model="inputValue"
       class="mt-0"
@@ -29,8 +32,8 @@ export default class AppNamedSwitch extends Vue {
   @VModel({ type: Boolean })
   inputValue?: boolean
 
-  @Prop({ type: String, required: true })
-  readonly label!: string
+  @Prop({ type: String })
+  readonly label?: string
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean

@@ -4,7 +4,7 @@ declare namespace Klipper {
 
   export type ExtruderKey = 'extruder' | `extruder${NonZeroDigit}` | `extruder${NonZeroDigit}${Digit}`
 
-  export type TmcKey = `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160'} ${string}`
+  export type TmcKey = `tmc${'2130' | '2208' | '2209' | '2660' | '2240' | '5160' | '5262'} ${string}`
 
   export type MmuUnitKey = `unit_${Digit}` | `unit_${NonZeroDigit}${Digit}`
 

@@ -15,6 +15,7 @@ export default (name: string) => {
     'temperature_sensor',
     'temperature_probe',
     'tmc2240',
+    'tmc5262',
     'z_thermal_adjust'
   ]
 

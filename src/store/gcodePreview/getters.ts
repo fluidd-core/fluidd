@@ -1,13 +1,75 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, Tool } from './types'
-import { MoveFlags } from './types'
+import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, ColorStop, Tool, ValueRange } from './types'
+import { ExtrusionRole, MoveFlags } from './types'
 import type { RootState } from '../types'
-import { binarySearch, buildLayerPaths } from '@/util/gcode-preview'
+import { binarySearch, buildLayerPaths, rangeColors } from '@/util/gcode-preview'
 import decimalRound from '@/util/decimal-round'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
 const lightDefaultColors = Object.freeze(['#000', ...defaultColors])
 const darkDefaultColors = Object.freeze(['#FFF', ...defaultColors])
+
+const roleColors = [
+  '#E6B3B3', // None
+  '#FFE64D', // Perimeter
+  '#FF7D38', // ExternalPerimeter
+  '#1F1FFF', // OverhangPerimeter
+  '#B03029', // InternalInfill
+  '#9654CC', // SolidInfill
+  '#F04040', // TopSolidInfill
+  '#FF8C69', // Ironing
+  '#4D80BA', // BridgeInfill
+  '#FFFFFF', // GapFill
+  '#00876E', // Skirt
+  '#00FF00', // SupportMaterial
+  '#008000', // SupportMaterialInterface
+  '#B3E3AB', // WipeTower
+  '#5ED194' // Custom
+]
+const groupColors = (prefix: string, colors: readonly string[]) => Object.freeze(
+  colors
+    .reduce<Record<string, string>>((groups, color, index) => {
+      groups[`${prefix}${index}`] = color
+
+      return groups
+    }, {})
+)
+
+const darkRoleColors = groupColors('R', roleColors)
+// white gap fill disappears on a light background
+const lightRoleColors = groupColors('R', roleColors.map((color, role) => role === ExtrusionRole.GapFill ? '#333333' : color))
+
+const speedColors = groupColors('S', rangeColors)
+const fanColors = groupColors('F', rangeColors)
+
+// same stops as PrusaSlicer's range legend: one per distinct value when there are at most 2
+const rangeStops = (range: Readonly<ValueRange> | null, scale: number): readonly ColorStop[] => {
+  if (!range) {
+    return []
+  }
+
+  const min = range.min * scale
+  const max = range.max * scale
+
+  if (range.count <= 2) {
+    return Object.freeze(
+      [
+        { value: min, color: rangeColors[0] },
+        { value: max, color: rangeColors[rangeColors.length - 1] }
+      ].slice(0, range.count)
+    )
+  }
+
+  const step = (max - min) / (rangeColors.length - 1)
+
+  return Object.freeze(
+    rangeColors
+      .map((color, index) => ({
+        value: min + step * index,
+        color
+      }))
+  )
+}
 
 export const getters = {
   getLayers: (state, getters, rootState): readonly Layer[] => {
@@ -170,7 +232,36 @@ export const getters = {
         return tools
       }, {})
 
-    return tools
+    return Object.freeze(tools)
+  },
+
+  getRoleColors: (state, getters, rootState): Record<string, string> => {
+    return rootState.config.uiSettings.theme.isDark
+      ? darkRoleColors
+      : lightRoleColors
+  },
+
+  getSpeedStops: (state): readonly ColorStop[] => {
+    // mm/min to mm/s
+    return rangeStops(state.speedRange, 1 / 60)
+  },
+
+  getFanStops: (state): readonly ColorStop[] => {
+    // M106 S to percent
+    return rangeStops(state.fanRange, 100 / 255)
+  },
+
+  getExtrusionColors: (state, getters, rootState): Record<string, string> => {
+    switch (rootState.config.uiSettings.gcodePreview.colorMode) {
+      case 'role':
+        return getters.getRoleColors
+      case 'speed':
+        return speedColors
+      case 'fan':
+        return fanColors
+      default:
+        return getters.getToolColors
+    }
   },
 
   getPaths: (state) => (startMove: number, endMove: number, options?: BuildLayerPathsOptions): Readonly<LayerPaths> => {

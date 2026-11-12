@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-data-table-cell-temps">
     <v-chip
       v-for="(temp, index) in temps"
       :key="index"
@@ -21,7 +21,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component({
   inheritAttrs: false
 })
-export default class AppDataTableCellColors extends Vue {
+export default class AppDataTableCellTemps extends Vue {
   @Prop({ type: Array, required: true })
   readonly temps!: string[]
 }

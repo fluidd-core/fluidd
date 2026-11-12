@@ -1,6 +1,7 @@
 <template>
   <app-focusable-container
     ref="container"
+    class="gcode-preview"
     :disabled="disabled"
     @focus="focused = true"
     @blur="focused = false"
@@ -177,10 +178,10 @@
           class="layer"
         >
           <path
-            v-for="(extrusion, tool) in svgPathCurrent.extrusions"
-            :key="tool"
+            v-for="(extrusion, group) in svgPathCurrent.extrusions"
+            :key="group"
             :d="extrusion"
-            :stroke="toolColors[tool]"
+            :stroke="extrusionColors[group]"
             :stroke-width="extrusionLineWidth"
             :shape-rendering="shapeRendering"
           />
@@ -315,17 +316,45 @@
           <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
         </v-btn>
       </div>
-      <div
-        v-if="tools.length > 0"
+      <gcode-preview-select
+        v-model="colorMode"
+        :items="colorModes"
         class="mt-1"
-      >
-        <gcode-preview-tool
-          v-for="(color, tool) in toolColors"
-          :key="tool"
-          :tool="tool"
-          :color="color"
-          :active="svgPathCurrent.tool === tool"
-        />
+      />
+      <div class="legend mb-1">
+        <template v-if="colorMode === 'role'">
+          <gcode-preview-tool
+            v-for="role in roles"
+            :key="`role:${role}`"
+            :label="$t(`app.gcode.role.${roleNames[role]}`).toString()"
+            :color="extrusionColors[`R${role}`]"
+          />
+        </template>
+        <template v-else-if="colorMode === 'speed'">
+          <gcode-preview-tool
+            v-for="stop in speedStops"
+            :key="`speed:${stop.color}`"
+            :label="speedLabel(stop)"
+            :color="stop.color"
+          />
+        </template>
+        <template v-else-if="colorMode === 'fan'">
+          <gcode-preview-tool
+            v-for="stop in fanStops"
+            :key="`fan:${stop.color}`"
+            :label="Math.round(stop.value)"
+            :color="stop.color"
+          />
+        </template>
+        <template v-else-if="tools.length > 0">
+          <gcode-preview-tool
+            v-for="(color, tool) in toolColors"
+            :key="tool"
+            :label="tool"
+            :color="color"
+            :active="svgPathCurrent.tool === tool"
+          />
+        </template>
       </div>
     </div>
     <div
@@ -343,18 +372,29 @@ import { markRaw } from 'vue'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import panzoom, { type PanZoom } from 'panzoom'
-import type { BBox, BuildLayerPathsOptions, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
+import type { BBox, BuildLayerPathsOptions, ColorMode, ColorStop, Layer, LayerPaths, Tool } from '@/store/gcodePreview/types'
+import { ExtrusionRole } from '@/store/gcodePreview/types'
+import { snakeCase } from 'lodash-es'
 import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
+import GcodePreviewSelect from './GcodePreviewSelect.vue'
 import GcodePreviewTool from './GcodePreviewTool.vue'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { BedSize } from '@/store/printer/types'
+
+const roleNames = Object.entries(ExtrusionRole)
+  .reduce<Record<number, string>>((names, [name, role]) => {
+    names[role] = snakeCase(name)
+
+    return names
+  }, {})
 
 @Component({
   components: {
     ExcludeObjects,
     GcodePreviewButton,
+    GcodePreviewSelect,
     GcodePreviewTool
   }
 })
@@ -520,6 +560,71 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
+  get colorMode (): ColorMode {
+    return this.$typedState.config.uiSettings.gcodePreview.colorMode
+  }
+
+  set colorMode (value: ColorMode) {
+    this.$typedDispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.colorMode',
+      value,
+      server: true
+    })
+  }
+
+  get colorModes () {
+    return [
+      {
+        text: this.$t('app.gcode.label.color_by_tool').toString(),
+        value: 'tool',
+        icon: '$printer3dNozzle'
+      },
+      {
+        text: this.$t('app.gcode.label.color_by_feature').toString(),
+        value: 'role',
+        icon: '$featureType'
+      },
+      {
+        text: this.$t('app.gcode.label.color_by_speed').toString(),
+        value: 'speed',
+        icon: '$speedometer'
+      },
+      {
+        text: this.$t('app.gcode.label.color_by_fan').toString(),
+        value: 'fan',
+        icon: '$fan'
+      }
+    ]
+  }
+
+  get roles (): readonly ExtrusionRole[] {
+    const roles = this.$typedState.gcodePreview.roles
+
+    return roles.some(role => role !== ExtrusionRole.None)
+      ? roles
+      : []
+  }
+
+  get roleNames (): Record<number, string> {
+    return roleNames
+  }
+
+  get speedStops (): readonly ColorStop[] {
+    return this.$typedGetters['gcodePreview/getSpeedStops']
+  }
+
+  get fanStops (): readonly ColorStop[] {
+    return this.$typedGetters['gcodePreview/getFanStops']
+  }
+
+  speedLabel (stop: ColorStop): string {
+    return stop.value.toFixed(1)
+  }
+
+  get extrusionColors (): Record<string, string> {
+    return this.$typedGetters['gcodePreview/getExtrusionColors']
+  }
+
   get shapeRendering () {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
@@ -628,6 +733,9 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     const layer: Layer | undefined = this.$typedGetters['gcodePreview/getLayers'][this.layer]
 
     const options: BuildLayerPathsOptions = {
+      colorBy: this.colorMode,
+      speedRange: this.$typedState.gcodePreview.speedRange,
+      fanRange: this.$typedState.gcodePreview.fanRange,
       includeExtrusions: this.showExtrusions,
       includeMoves: this.showMoves,
       includeRetractions: this.showRetractions,
@@ -835,6 +943,12 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     top: 0;
     border-bottom-right-radius: 4px;
   }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 280px;
+  }
+
   .preview-name {
     bottom: 0;
     border-top-right-radius: 4px;
@@ -847,7 +961,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  :deep(.v-input__slot) {
+  .gcode-preview :deep(.app-focusable-container__slot) {
     overflow: hidden;
     max-height: calc(100vh - 398px);
     max-height: calc(100svh - 398px);

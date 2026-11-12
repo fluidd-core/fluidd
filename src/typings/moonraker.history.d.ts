@@ -34,8 +34,8 @@ declare namespace Moonraker.History {
   export interface AuxiliaryTotal {
     provider: string;
     field: string;
-    maximum: number;
-    total: number;
+    maximum: number | null;
+    total: number | null;
   }
 
   export interface ChangedEvent {
@@ -49,7 +49,7 @@ declare namespace Moonraker.History {
     end_time: number | null;
     filament_used: number;
     filename: string;
-    metadata?: Moonraker.Files.Metadata;
+    metadata: Moonraker.Files.Metadata | Record<string, never>;
     print_duration: number;
     status: HistoryItemStatus;
     start_time: number;

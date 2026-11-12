@@ -1,6 +1,6 @@
 <template>
   <v-overlay
-    class="dragOverlay"
+    class="app-drag-overlay"
     :opacity="0.85"
     v-bind="$attrs"
     v-on="$listeners"
@@ -46,12 +46,12 @@ export default class AppDragOverlay extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .dragOverlay.v-overlay--active {
+  .app-drag-overlay.v-overlay--active {
     border: dashed 3px #616161;
     pointer-events: none !important;
   }
 
-  .dragOverlay :deep(.v-overlay__content) {
+  .app-drag-overlay :deep(.v-overlay__content) {
     width: 100%;
   }
 </style>

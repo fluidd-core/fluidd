@@ -60,13 +60,13 @@
           <template #title>
             {{ packageTitle(component) }}
             <v-tooltip
-              v-if="'remote_url' in component && component.remote_url !== '?'"
+              v-if="getBaseUrl(component)"
               bottom
             >
               <template #activator="{ attrs, on }">
                 <a
                   v-bind="attrs"
-                  :href="component.remote_url"
+                  :href="getBaseUrl(component)"
                   target="_blank"
                   rel="noopener noreferrer"
                   v-on="on"
@@ -79,7 +79,7 @@
                   </v-icon>
                 </a>
               </template>
-              <span>{{ component.remote_url }}</span>
+              <span>{{ getBaseUrl(component) }}</span>
             </v-tooltip>
           </template>
 
@@ -100,7 +100,7 @@
           </template>
 
           <v-tooltip
-            v-if="hasUpdate(component.name)"
+            v-if="hasUpdate(component.name) && hasInformation(component)"
             left
           >
             <template #activator="{ attrs, on }">
@@ -287,25 +287,58 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   getBaseUrl (component: VersionInfo) {
-    if ('remote_url' in component && component.remote_url) {
+    if (
+      'remote_url' in component &&
+      /^https?:\/\//i.test(component.remote_url)
+    ) {
       return component.remote_url
     }
-    if ('owner' in component) {
+
+    if (
+      'owner' in component &&
+      component.owner !== '?' &&
+      component.repo_name !== '?'
+    ) {
       return `https://github.com/${component.owner}/${component.repo_name || component.name}`
     }
+
     return ''
+  }
+
+  getInformationUrl (component: VersionInfo) {
+    switch (component.configured_type) {
+      case 'git_repo':
+      case 'system':
+        return ''
+
+      case 'python':
+        if (component.channel !== 'dev') {
+          return component.changelog_url
+        }
+        break
+    }
+
+    const baseUrl = this.getBaseUrl(component)
+
+    if (!baseUrl) {
+      return ''
+    }
+
+    return component.configured_type === 'python'
+      ? `${baseUrl}/compare/${component.current_hash}..${component.remote_hash}`
+      : `${baseUrl}/releases`
+  }
+
+  hasInformation (component: VersionInfo) {
+    return (
+      component.configured_type === 'git_repo' ||
+      component.configured_type === 'system' ||
+      this.getInformationUrl(component) !== ''
+    )
   }
 
   handleInformationDialog (component: VersionInfo) {
     switch (component.configured_type) {
-      case 'python':
-        if (component.channel === 'dev') {
-          window.open(`${this.getBaseUrl(component)}/compare/${component.current_hash}..${component.remote_hash}`)
-        } else {
-          window.open(component.changelog_url)
-        }
-        break
-
       case 'git_repo':
       case 'system':
         this.informationDialogState = {
@@ -315,7 +348,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
         break
 
       default:
-        window.open(`${this.getBaseUrl(component)}/releases`)
+        window.open(this.getInformationUrl(component))
         break
     }
   }

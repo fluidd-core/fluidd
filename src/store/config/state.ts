@@ -41,6 +41,7 @@ export const createState = (): ConfigState => {
         useGcodeCoords: false,
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
+        enableFirmwareNotifications: false,
         confirmOnEstop: false,
         confirmOnPowerDeviceChange: false,
         confirmOnSaveConfigAndRestart: true,
@@ -119,7 +120,8 @@ export const createState = (): ConfigState => {
         showExtrusions: true,
         showRetractions: true,
         showParts: true,
-        followProgress: false
+        followProgress: false,
+        colorMode: 'tool'
       },
       fileSystem: {
         activeFilters: {},

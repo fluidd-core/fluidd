@@ -8,18 +8,21 @@ allowBuilds:
 catalog:
   dompurify: ^3.4.17
   echarts: ^6.1.0
-  typescript: npm:typescript-native-bridge@6.0.3-bridge.18.tsgo.7.0.2
+  typescript: npm:typescript-native-bridge@6.0.3-bridge.19.tsgo.7.0.2
   vite: ^8.3.4
   vue: ^2.7.16
 
 overrides:
   dompurify: 'catalog:'
   echarts: 'catalog:'
-  glob: ^13.0.6
-  rollup: ^4.62.4
-  serialize-javascript: ^7.0.3
   typescript: 'catalog:'
-  typescript-eslint: ^8.66.0
   vite: 'catalog:'
   vue: 'catalog:'
   '@originjs/vite-plugin-content>xlsx': '-'
+  csv-parse@<7.0.2: ^7.0.2
+  glob@>=9.0.0 <=14.0.1: ^14.0.2
+  minimatch@>=7.0.0 <11.0.1: ^11.0.1
+
+peerDependencyRules:
+  allowedVersions:
+    '@vue/tsconfig>typescript': '*'

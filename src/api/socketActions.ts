@@ -435,10 +435,42 @@ export const SocketActions = {
     )
   },
 
-  serverInfo (options?: RequestOptions) {
+  serverInfo (raw = true, options?: RequestOptions) {
     return baseEmit(
       'server.info', {
         dispatch: 'server/onServerInfo',
+        ...options,
+        params: {
+          raw
+        }
+      }
+    )
+  },
+
+  aldisStatus (options?: RequestOptions) {
+    return SocketActions.serverExtensionsRequest<Aldis.StatusResponse>(
+      {
+        agent: Globals.MOONRAKER_AGENTS.aldis.name,
+        method: 'status'
+      },
+      {
+        dispatch: 'firmware/onStatus',
+        wait: Waits.onFirmwareRefresh,
+        suppressError: true,
+        ...options
+      }
+    )
+  },
+
+  aldisUpdate (args: Aldis.UpdateArguments, options?: RequestOptions) {
+    return SocketActions.serverExtensionsRequest<Aldis.UpdateResult>(
+      {
+        agent: Globals.MOONRAKER_AGENTS.aldis.name,
+        method: 'update',
+        arguments: args
+      },
+      {
+        suppressError: true,
         ...options
       }
     )
@@ -883,6 +915,24 @@ export const SocketActions = {
     )
   },
 
+  serverExtensionsList (options?: RequestOptions) {
+    return baseEmit(
+      'server.extensions.list', {
+        dispatch: 'extensions/onExtensionsList',
+        ...options
+      }
+    )
+  },
+
+  serverExtensionsRequest<T = unknown> (params: Moonraker.MethodParams<'server.extensions.request'>, options?: RequestOptions) {
+    return baseEmit<'server.extensions.request', T>(
+      'server.extensions.request', {
+        ...options,
+        params
+      }
+    )
+  },
+
   serverWebcamsList (options?: RequestOptions) {
     return baseEmit(
       'server.webcams.list', {
@@ -1097,7 +1147,7 @@ export const SocketActions = {
     )
   },
 
-  serverSpoolmanProxyGet<T> (path: string, options?: RequestOptions) {
+  serverSpoolmanProxyGet<T = unknown> (path: string, options?: RequestOptions) {
     return baseEmit<'server.spoolman.proxy', Moonraker.Spoolman.ProxyResponse<T>>(
       'server.spoolman.proxy', {
         ...options,

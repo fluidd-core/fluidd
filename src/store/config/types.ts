@@ -1,4 +1,5 @@
 import type { FileFilterType } from '../files/types'
+import type { ColorMode } from '../gcodePreview/types'
 
 export interface ConfigState {
   [key: string]: any;
@@ -119,6 +120,7 @@ export interface GeneralConfig {
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
+  enableFirmwareNotifications: boolean;
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
@@ -282,6 +284,7 @@ export interface GcodePreviewConfig {
   showRetractions: boolean;
   showParts: boolean;
   followProgress: boolean;
+  colorMode: ColorMode;
 }
 
 export interface FileSystemConfig {

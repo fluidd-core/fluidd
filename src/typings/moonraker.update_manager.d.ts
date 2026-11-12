@@ -22,7 +22,7 @@ declare namespace Moonraker.UpdateManager {
   export interface GitRepo {
     configured_type: 'git_repo';
     name?: string;
-    detected_type: string;
+    detected_type: 'git_repo';
     channel: 'stable' | 'beta' | 'dev';
     channel_invalid: boolean;
     debug_enabled: boolean;
@@ -62,8 +62,8 @@ declare namespace Moonraker.UpdateManager {
   }
 
   export interface NetHosted {
-    configured_type: 'web' | 'zip';
-    name?: string;
+    configured_type: 'web' | 'zip' | 'executable';
+    name: string;
     channel: 'stable' | 'beta';
     channel_invalid: boolean;
     debug_enabled: boolean;
@@ -82,7 +82,7 @@ declare namespace Moonraker.UpdateManager {
   export interface Python {
     configured_type: 'python';
     detected_type: 'python_package';
-    name?: string;
+    name: string;
     channel: 'stable' | 'beta' | 'dev';
     channel_invalid: boolean;
     debug_enabled: boolean;
@@ -99,7 +99,6 @@ declare namespace Moonraker.UpdateManager {
     is_dirty: boolean;
     pristine: boolean;
     changelog_url: string;
-    anomalies: string[];
     warnings: string[];
     info_tags: string[];
   }
