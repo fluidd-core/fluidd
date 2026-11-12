@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.38.0](https://github.com/fluidd-core/fluidd/compare/v1.37.7...v1.38.0) (2026-11-12)
+
+### Features
+
+* adds Moonraker extensions API support ([#1999](https://github.com/fluidd-core/fluidd/issues/1999)) ([0d7a520](https://github.com/fluidd-core/fluidd/commit/0d7a5208dc04d1afccda40aaf27b5c4b099dd2cc))
+* adds TMC5262 support ([#1993](https://github.com/fluidd-core/fluidd/issues/1993)) ([e129edd](https://github.com/fluidd-core/fluidd/commit/e129eddf10adf2af90a9ef072d050329e536b810))
+* **AFC:** add auto-map button to print dialog ([#2017](https://github.com/fluidd-core/fluidd/issues/2017)) ([1499b56](https://github.com/fluidd-core/fluidd/commit/1499b561aa3e8e074e2aa2bb231eafb970638ff8))
+* **GcodePreview:** color by feature, speed or fan ([#2001](https://github.com/fluidd-core/fluidd/issues/2001)) ([738ff93](https://github.com/fluidd-core/fluidd/commit/738ff932030588adb65684f49be4db893ad03216))
+* **i18n-de:** Update German translations ([373e208](https://github.com/fluidd-core/fluidd/commit/373e208415bf007a1f271bce96f45afa397027c8))
+* **i18n-pl:** Update Polish translations ([9faf00d](https://github.com/fluidd-core/fluidd/commit/9faf00dc75a2164de2d2e6291feac92aaabcb18c))
+* **i18n-pl:** Update Polish translations ([ac706d5](https://github.com/fluidd-core/fluidd/commit/ac706d54b7fc831d7c2c9447145bf5ed92b44489))
+* **i18n-sl:** Update Slovenian translations ([9463af9](https://github.com/fluidd-core/fluidd/commit/9463af933f20c2b6d69f1dc90226cad6113f5295))
+* **socket:** improve websocket reconnection ([#2007](https://github.com/fluidd-core/fluidd/issues/2007)) ([65d3cc8](https://github.com/fluidd-core/fluidd/commit/65d3cc87e6f0f7403d4b23ae03fc7cabe6c28f5e))
+* synthesize agent connection events ([#2000](https://github.com/fluidd-core/fluidd/issues/2000)) ([83d652f](https://github.com/fluidd-core/fluidd/commit/83d652f2f4dc53ff292fdef4e8331bfcfafdfb18))
+* Web based firmware updates ([#1966](https://github.com/fluidd-core/fluidd/issues/1966)) ([569b0ee](https://github.com/fluidd-core/fluidd/commit/569b0ee6de17f2ed005f9c83f0805b4a3fb7a9f2))
+
+### Bug Fixes
+
+* **AFC:** show print dialog without metadata ([#2016](https://github.com/fluidd-core/fluidd/issues/2016)) ([b89cb2c](https://github.com/fluidd-core/fluidd/commit/b89cb2cd5734be3899ae5214171afe6fd927440d))
+* avoid runaway file ETA during start macro ([#1988](https://github.com/fluidd-core/fluidd/issues/1988)) ([563e842](https://github.com/fluidd-core/fluidd/commit/563e8427a97c5d1108a737290607aa825ae6e846))
+* **console:** constrain media, skip HTML commands ([0e4b866](https://github.com/fluidd-core/fluidd/commit/0e4b8667c7dda9f4d43737386b6500690cbdb768))
+* **FileSystem:** keep current path on root change ([c40b547](https://github.com/fluidd-core/fluidd/commit/c40b547998ffa8254a0db58c93df83d94163ebba))
+* **FileSystem:** skip parent folder on enqueue/zip ([528b0c0](https://github.com/fluidd-core/fluidd/commit/528b0c0fc59035d9cbd28771ccdd68aef0847ec2))
+* keep file permissions on metadata updates ([#1996](https://github.com/fluidd-core/fluidd/issues/1996)) ([681674a](https://github.com/fluidd-core/fluidd/commit/681674a35c4c8552688067e09b8bbc42bfedf630))
+* keep file selection when the list refreshes ([#2004](https://github.com/fluidd-core/fluidd/issues/2004)) ([9313842](https://github.com/fluidd-core/fluidd/commit/93138420155e5e68f09abacf44e31f1d482d954a))
+* keep tag-like text in console and warnings ([#2015](https://github.com/fluidd-core/fluidd/issues/2015)) ([64426b9](https://github.com/fluidd-core/fluidd/commit/64426b936ec3cdd6f55d90792884a4599c1e9b89))
+* reload the video preview on file change ([#2025](https://github.com/fluidd-core/fluidd/issues/2025)) ([0a56480](https://github.com/fluidd-core/fluidd/commit/0a5648043b86152cfe21c1947246e109a8cbc2b7))
+* render control labels as plain text ([#2019](https://github.com/fluidd-core/fluidd/issues/2019)) ([b6964eb](https://github.com/fluidd-core/fluidd/commit/b6964eb20008bc8f9f9316c735f3c30d47c8c677))
+* render plain text, keep line breaks ([#2014](https://github.com/fluidd-core/fluidd/issues/2014)) ([549458d](https://github.com/fluidd-core/fluidd/commit/549458da50d0de76336182919ebfcecd4ea9d20f))
+* show repo link for web and python updates ([#1989](https://github.com/fluidd-core/fluidd/issues/1989)) ([68ba165](https://github.com/fluidd-core/fluidd/commit/68ba165795b75803ea48daf53c3ddf9cd9b1f2ef))
+* use commits behind for git repo updates ([#2022](https://github.com/fluidd-core/fluidd/issues/2022)) ([37885d0](https://github.com/fluidd-core/fluidd/commit/37885d02b362ee45e1fa60546793d766dfd45465))
+
+### Code Refactorings
+
+* commit status updates in one batch ([#2023](https://github.com/fluidd-core/fluidd/issues/2023)) ([a219a8f](https://github.com/fluidd-core/fluidd/commit/a219a8fa91f17367f960b5608981440903dd969d))
+* **FileSystem:** pin parent dir row ([#2013](https://github.com/fluidd-core/fluidd/issues/2013)) ([6a304c9](https://github.com/fluidd-core/fluidd/commit/6a304c9939fd8c57759eda5374d7d0676e6502ff))
+* keep raw newlines in the store ([e194c8f](https://github.com/fluidd-core/fluidd/commit/e194c8f947f6de4b07a4bee90d31a44a4a291e22))
+
 ## [1.37.7](https://github.com/fluidd-core/fluidd/compare/v1.37.6...v1.37.7) (2026-10-16)
 
 ### Features
