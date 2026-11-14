@@ -319,7 +319,7 @@ describe('parseGcode', () => {
     ])
 
     expect([...moves.temp]).toEqual([0, 200, 215, 215, 215])
-    expect(tempRange).toEqual({ min: 200, max: 215, count: 2 })
+    expect(tempRange).toEqual({ min: 0, max: 215, count: 3 })
   })
 
   it('records SET_HEATER_TEMPERATURE for extruders only', async () => {
@@ -373,16 +373,5 @@ describe('parseGcode', () => {
 
     expect([...moves.tool]).toEqual([0, 1])
     expect([...moves.temp]).toEqual([200, 200])
-  })
-
-  it('keeps unknown temperatures out of the range', async () => {
-    const { moves, tempRange } = await parse([
-      'G1 X10 E1',
-      'M104 S0',
-      'G1 X20 E2'
-    ])
-
-    expect([...moves.temp]).toEqual([0, 0])
-    expect(tempRange).toBeNull()
   })
 })

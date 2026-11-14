@@ -53,7 +53,7 @@ export type ColorMode = 'tool' | 'role' | 'speed' | 'fan' | 'temp'
  * last `Arc` move, so only read them when that move has the `Arc` flag set.
  *
  * `speed` is in mm/min, `fan` is the part cooling fan as `M106 S` (0-255),
- * `temp` is in °C (0 = unknown).
+ * `temp` is in °C.
  */
 export interface MoveStore {
   readonly x: Float32Array<ArrayBuffer>;

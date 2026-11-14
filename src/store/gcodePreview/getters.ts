@@ -2,7 +2,7 @@ import type { GetterTree } from 'vuex'
 import type { BBox, BuildLayerPathsOptions, GcodePreviewState, Layer, LayerPaths, Part, ColorStop, Tool, ValueRange } from './types'
 import { ExtrusionRole, MoveFlags } from './types'
 import type { RootState } from '../types'
-import { binarySearch, buildLayerPaths, rangeColors, unknownRangeBucket } from '@/util/gcode-preview'
+import { binarySearch, buildLayerPaths, rangeColors } from '@/util/gcode-preview'
 import decimalRound from '@/util/decimal-round'
 
 const defaultColors = ['#1fb0ff', '#ff5252', '#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B']
@@ -41,10 +41,7 @@ const lightRoleColors = groupColors('R', roleColors.map((color, role) => role ==
 
 const speedColors = groupColors('S', rangeColors)
 const fanColors = groupColors('F', rangeColors)
-const tempColors = Object.freeze({
-  ...groupColors('C', rangeColors),
-  [`C${unknownRangeBucket}`]: '#808080'
-})
+const tempColors = groupColors('C', rangeColors)
 
 // same stops as PrusaSlicer's range legend: one per distinct value when there are at most 2
 const rangeStops = (range: Readonly<ValueRange> | null, scale: number): readonly ColorStop[] => {

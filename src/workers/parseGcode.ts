@@ -680,10 +680,7 @@ const parseGcode = async (
 
             speedRange = updateRange(speedRange, feedrate)
             fanRange = updateRange(fanRange, fan)
-
-            if (temp > 0) {
-              tempRange = updateRange(tempRange, temp)
-            }
+            tempRange = updateRange(tempRange, temp)
           }
 
           moveCount++

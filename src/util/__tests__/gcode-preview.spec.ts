@@ -281,17 +281,17 @@ describe('buildLayerPaths', () => {
     })
   })
 
-  it('groups extrusions by temperature bucket, with unknown temperatures apart', () => {
+  it('groups extrusions by temperature bucket', () => {
     const paths = buildLayerPaths(createMoveStore([
       { x: 0, y: 0 },
       { x: 10, y: 0, temp: 0, flags: MoveFlags.Extruding },
       { x: 20, y: 0, temp: 200, flags: MoveFlags.Extruding },
       { x: 30, y: 0, temp: 250, flags: MoveFlags.Extruding }
-    ]), 0, 3, { colorBy: 'temp', tempRange: { min: 200, max: 250 } })
+    ]), 0, 3, { colorBy: 'temp', tempRange: { min: 0, max: 250 } })
 
     expect(paths.extrusions).toEqual({
-      C11: 'M0,0L10,0',
-      C0: 'M10,0L20,0',
+      C0: 'M0,0L10,0',
+      C8: 'M10,0L20,0',
       C10: 'M20,0L30,0'
     })
   })

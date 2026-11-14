@@ -10,8 +10,6 @@ export const rangeColors = Object.freeze([
 
 const lastRangeBucket = rangeColors.length - 1
 
-export const unknownRangeBucket = rangeColors.length
-
 // nearest of the evenly spaced rangeColors stops from min to max, like PrusaSlicer's range legend
 export const rangeBucket = (value: number, range: Readonly<MinMax> | null | undefined): number => {
   if (!range || range.max <= range.min) {
@@ -176,14 +174,9 @@ export const buildLayerPaths = (
         case 'fan':
           group = rangeBucket(fan[index], fanRange)
           break
-        case 'temp': {
-          const value = temp[index]
-
-          group = value > 0
-            ? rangeBucket(value, tempRange)
-            : unknownRangeBucket
+        case 'temp':
+          group = rangeBucket(temp[index], tempRange)
           break
-        }
         default:
           group = currentTool
       }
