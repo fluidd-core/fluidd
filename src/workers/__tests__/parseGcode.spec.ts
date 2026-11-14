@@ -330,10 +330,12 @@ describe('parseGcode', () => {
       'SET_HEATER_TEMPERATURE HEATER=extruder1 TARGET=230',
       'G1 X20 E2',
       'T1',
-      'G1 X30 E3'
+      'G1 X30 E3',
+      'SET_HEATER_TEMPERATURE HEATER=extruder1',
+      'G1 X40 E4'
     ])
 
-    expect([...moves.temp]).toEqual([210, 210, 230])
+    expect([...moves.temp]).toEqual([210, 210, 230, 0])
   })
 
   it('tracks temperatures per extruder across tool changes', async () => {

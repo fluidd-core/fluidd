@@ -373,17 +373,11 @@ const parseGcode = async (
             fwretraction.extrudeExtra = +args.unretract_extra_length
           }
           break
-        case 'SET_HEATER_TEMPERATURE': {
-          const match = /^extruder(\d*)$/i.exec(args.heater ?? '')
-
-          if (
-            match &&
-            'target' in args
-          ) {
-            setToolTemp(match[1] ? +match[1] : 0, +args.target)
+        case 'SET_HEATER_TEMPERATURE':
+          if ('heater' in args && /^extruder\d{0,2}$/i.test(args.heater)) {
+            setToolTemp(+args.heater.substring(8), +(args.target ?? 0))
           }
           break
-        }
       }
     } else if (type === 'gcode') {
       switch (command) {
