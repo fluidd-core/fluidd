@@ -33,15 +33,15 @@ export const mutations = {
   },
 
   setSpeedRange (state, payload: ValueRange | null) {
-    state.speedRange = payload != null
-      ? Object.freeze(payload)
-      : null
+    state.speedRange = Object.freeze(payload)
   },
 
   setFanRange (state, payload: ValueRange | null) {
-    state.fanRange = payload != null
-      ? Object.freeze(payload)
-      : null
+    state.fanRange = Object.freeze(payload)
+  },
+
+  setTempRange (state, payload: ValueRange | null) {
+    state.tempRange = Object.freeze(payload)
   },
 
   setBounds (state, payload: BBox) {
