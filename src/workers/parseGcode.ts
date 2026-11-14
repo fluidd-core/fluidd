@@ -625,6 +625,13 @@ const parseGcode = async (
             isArcMove = false
           }
 
+          // E-only moves are primes or unretracts
+          const isExtruding = extrusion > 0 && (
+            isArcMove ||
+            (move.x ?? toolhead.x) !== toolhead.x ||
+            (move.y ?? toolhead.y) !== toolhead.y
+          )
+
           toolhead.x = move.x ?? toolhead.x
           toolhead.y = move.y ?? toolhead.y
           toolhead.z = move.z ?? toolhead.z
@@ -658,7 +665,7 @@ const parseGcode = async (
           moveFan[moveCount] = fan
           moveTemp[moveCount] = temp
           moveFlags[moveCount] = (
-            (extrusion > 0 ? MoveFlags.Extruding : 0) |
+            (isExtruding ? MoveFlags.Extruding : 0) |
             (extrusion < 0 ? MoveFlags.Retracting : 0) |
             (isArcMove ? MoveFlags.Arc : 0) |
             (isArcMove && isClockwise ? MoveFlags.Clockwise : 0)
@@ -668,7 +675,7 @@ const parseGcode = async (
             lastArcMoveIndex = moveCount
           }
 
-          if (extrusion > 0) {
+          if (isExtruding) {
             roles.add(role)
 
             speedRange = updateRange(speedRange, feedrate)

@@ -67,7 +67,7 @@ describe('parseGcode', () => {
     expect(moves.length).toBe(4)
     expect(moves.flags[0]).toBe(MoveFlags.Extruding)
     expect(moves.flags[1]).toBe(MoveFlags.Retracting)
-    expect(moves.flags[2]).toBe(MoveFlags.Extruding)
+    expect(moves.flags[2]).toBe(0)
     expect(moves.flags[3]).toBe(MoveFlags.Extruding | MoveFlags.Arc | MoveFlags.Clockwise)
 
     expect(moves.i).toHaveLength(4)
@@ -290,6 +290,19 @@ describe('parseGcode', () => {
 
     expect([...moves.fan]).toEqual([0, 127, 127, 255, 0, 255, 0])
     expect(fanRange).toEqual({ min: 0, max: 255, count: 3 })
+  })
+
+  it('keeps E-only moves out of the extrusions and ranges', async () => {
+    const { moves, speedRange } = await parse([
+      'G92 E0',
+      'G1 F200 E3',
+      'G92 E0',
+      'G1 Z5 E1',
+      'G1 F1800 X10 E2'
+    ])
+
+    expect([...moves.flags]).toEqual([0, 0, MoveFlags.Extruding])
+    expect(speedRange).toEqual({ min: 1800, max: 1800, count: 1 })
   })
 
   it('records the active extruder temperature from M104 and M109', async () => {
