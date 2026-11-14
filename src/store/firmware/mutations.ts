@@ -19,7 +19,7 @@ export const mutations = {
   },
 
   setStatus (state, payload: Aldis.StatusResponse | null) {
-    state.status = payload && Object.freeze(payload)
+    state.status = Object.freeze(payload)
   },
 
   setStatusError (state, payload: string | null) {
@@ -43,7 +43,7 @@ export const mutations = {
       state.runLost = false
     }
 
-    state.run = payload && Object.freeze(payload)
+    state.run = Object.freeze(payload)
   },
 
   setRunLost (state, payload: string) {
