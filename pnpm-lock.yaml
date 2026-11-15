@@ -163,10 +163,10 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  dompurify: ^3.4.17
+  dompurify: ^3.4.18
   echarts: ^6.1.0
   typescript: npm:typescript-native-bridge@6.0.3-bridge.19.tsgo.7.0.2
-  vite: ^8.3.4
+  vite: ^8.3.8
   vue: ^2.7.16
   '@originjs/vite-plugin-content>xlsx': '-'
   csv-parse@<7.0.2: ^7.0.2
@@ -199,8 +199,8 @@ importers:
         specifier: ^3.4.2
         version: 3.4.2
       dompurify:
-        specifier: ^3.4.17
-        version: 3.4.17
+        specifier: ^3.4.18
+        version: 3.4.18
       echarts:
         specifier: ^6.1.0
         version: 6.1.0
@@ -377,7 +377,7 @@ importers:
         specifier: ^30.0.0
         version: 30.0.0(@babel/parser@7.29.13)(supports-color@8.1.1)(vue@2.7.16)
       vite:
-        specifier: ^8.3.4
+        specifier: ^8.3.8
         version: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(sass-embedded@1.108.2)(sass@1.108.2)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-checker:
         specifier: ^0.14.5
@@ -1392,7 +1392,7 @@ packages:
     resolution: {integrity: sha512-pVyvWEbze65/XHUoKvVxswwRtS0yFqM9ZCD16RQTTWHqqNGhiG0yooeYYEOiKqPdg8dm8pPBy+KqF64ol6a9+A==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      vite: ^8.3.4
+      vite: ^8.3.8
       vue: ^2.7.16
 
   '@polka/url@0.5.0':
@@ -1888,7 +1888,7 @@ packages:
     resolution: {integrity: sha512-5umB9/jlWcqVS6fsrFmv5Gdnpu6wAUio/lEOwAmvB7v+lFo/IW2B9FhAD0p19GCULTgMzLCdUmuCDCnAzWgppQ==}
     peerDependencies:
       msw: ^2.4.9 || ^3.0.0
-      vite: ^8.3.4
+      vite: ^8.3.8
     peerDependenciesMeta:
       msw:
         optional: true
@@ -2480,8 +2480,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.17:
-    resolution: {integrity: sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==}
+  dompurify@3.4.18:
+    resolution: {integrity: sha512-ofe3wI/uNm68HInABYFJYqQxRw1EaKAjNdrFVKqjUY+UZurvNd2L/HuQe097s/4RivWiZyP6tT7aoT8atjfhwg==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -4408,6 +4408,7 @@ packages:
 
   tldts-core@7.4.20:
     resolution: {integrity: sha512-C630TWXZCZmLq0F2bW4QqwnaaxCQ/svpAqvJwnC4JvgEM5ohhBnGsEzTLSOXcN+xjz+kEaHS5uoWIw2klnqd0A==}
+    deprecated: Partial release, see https://github.com/remusao/tldts/issues/2735. Use >=7.4.22.
 
   tldts@7.4.19:
     resolution: {integrity: sha512-48dH6aSpQnpbzDUc4vIQZ1VjB8tkK+e8c1yx05/SZK+rkssgjEOlxDd/yU8/a4vGYQ9vRgJr9dwMq9TJ0b3X2Q==}
@@ -4598,7 +4599,7 @@ packages:
       oxlint: '>=1'
       stylelint: '>=16.26.1'
       typescript: '*'
-      vite: ^8.3.4
+      vite: ^8.3.8
       vue-tsc: ~2.2.10 || ^3.0.0
     peerDependenciesMeta:
       '@biomejs/biome':
@@ -4623,7 +4624,7 @@ packages:
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@vite-pwa/assets-generator': ^1.0.0 || ^2.0.0
-      vite: ^8.3.4
+      vite: ^8.3.8
       workbox-build: ^7.4.1
       workbox-window: ^7.4.1
     peerDependenciesMeta:
@@ -4689,7 +4690,7 @@ packages:
       '@vitest/ui': 5.1.0
       happy-dom: '*'
       jsdom: '*'
-      vite: ^8.3.4
+      vite: ^8.3.8
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -7094,7 +7095,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.17:
+  dompurify@3.4.18:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -8222,7 +8223,7 @@ snapshots:
 
   monaco-editor@0.57.0:
     dependencies:
-      dompurify: 3.4.17
+      dompurify: 3.4.18
       marked: 14.0.0
 
   mrmime@2.0.1: {}
