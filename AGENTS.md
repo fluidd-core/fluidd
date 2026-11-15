@@ -169,8 +169,9 @@ src/
 - Parsed in `src/workers/parseGcode.worker.ts` → `parseGcode.ts` — streamed via `fetch` +
   `ReadableStream`, reporting progress by file position
 - Result is a **columnar `MoveStore`** of typed arrays, not `Move` objects (`src/store/gcodePreview/types.ts`):
-  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags`/`role`/`fan` `Uint8Array`, `speed` `Uint16Array`,
-  `filePosition` `Uint32Array`, plus a `length` — every column is indexed by the same move index
+  `x`/`y`/`z`/`i`/`j` `Float32Array`, `tool`/`flags`/`role`/`fan` `Uint8Array`, `speed`/`temp`
+  `Uint16Array`, `filePosition` `Uint32Array`, plus a `length` — every column is indexed by the
+  same move index
 - `role` is an `ExtrusionRole` (PrusaSlicer's 15-role enum, Brim folded into Skirt), sticky from the
   last role comment. `src/workers/gcode-extrusion-roles.ts` merges per-slicer tag lists, taken from
   each slicer's source, into one case-insensitive dictionary — no slicer detection. A spec
@@ -182,15 +183,26 @@ src/
 - `fan` is the sticky part cooling fan as the raw **`M106 S` value (0–255)**, with Klipper's
   `M106` semantics: a missing `S` is 255, `P` is ignored, `M107` is 0; `SET_FAN_SPEED` only drives
   `[fan_generic]`, so it is ignored
-- The result also carries `roles` (sorted distinct roles of extruding moves) plus `speedRange` and
-  `fanRange` (`ValueRange`: min/max over extruding moves, whole file — keeps the legends stable
-  across layers — plus PrusaSlicer's `count`, exact only up to 2 distinct values)
+- `temp` is the nozzle target of the current tool's **heater**, in whole **°C**, starting at 0 (a
+  real 0, not "unknown" — there is no unknown group). Temperatures are stored per heater
+  (`heaterTemps`), and each tool is mapped to one on first use (`toolHeaters`): a temperature
+  command naming tool `n` first — `M104`/`M109` `S` with `T<n>` (default the current tool), or
+  `SET_HEATER_TEMPERATURE HEATER=extruder[N]` — gives it heater `n`; switching to an unmapped tool
+  (`T<n>`, or `M600`, which fakes a tool change) makes it **share the current tool's heater**, as
+  MMU lanes share one extruder. So a temperature set on the shared heater applies to every lane.
+  A missing `TARGET` is 0, like Klipper; other heaters are ignored. There is no seeding from file
+  metadata
+- The result also carries `roles` (sorted distinct roles of extruding moves) plus `speedRange`,
+  `fanRange` and `tempRange` (`ValueRange`: min/max over extruding moves, whole file — keeps the
+  legends stable across layers — plus PrusaSlicer's `count`, exact only up to 2 distinct values)
 - `x`/`y`/`z` are **forward-filled** absolute positions after each move — there are no `undefined`
   axes to fall back through
 - `i`/`j` are arc centre offsets, **truncated after the last `Arc` move** — only read them when
   that move has the `Arc` flag set
 - `MoveFlags` is a bit field: `Extruding`, `Retracting`, `Arc`, `Clockwise` — test with
-  `(flags[i] & MoveFlags.Arc) !== 0`
+  `(flags[i] & MoveFlags.Arc) !== 0`. Like PrusaSlicer, `Extruding` needs E to increase **and**
+  X/Y to change (or an arc): an E-only move (a prime, `G11`) or a Z-only one is not an extrusion,
+  so it stays out of `roles` and the ranges — a slow prime would otherwise drag `speedRange` down
 - The worker **transfers** the `MoveStore` buffers via `postMessage` transferables rather than
   copying them; the parser owns nothing afterwards. `defaultMoveStore` (`gcodePreview/state.ts`) is
   the empty store used on reset
@@ -201,14 +213,15 @@ src/
   `getPaths` getter, which now just delegates). Every emitted `d` **must** start with a moveto — a
   `d` beginning with `L` or `A` renders nothing
 - `LayerPaths.extrusions` is keyed by colour group, chosen by `colorBy`
-  (`uiSettings.gcodePreview.colorMode`): `T<tool>`, `R<role>`, `S<bucket>` or `F<bucket>`, where
+  (`uiSettings.gcodePreview.colorMode`): `T<tool>`, `R<role>`, `S<bucket>`, `F<bucket>` or
+  `C<bucket>` (temperature — `T` is taken by tools), where
   `rangeBucket` rounds to the nearest of the 11 evenly spaced `rangeColors` stops over
-  `speedRange` / `fanRange`, using PrusaSlicer's range palette. The legends list the stop values
-  like PrusaSlicer's (mm/s, and percent for the fan), or just the values when there are 1 or 2
-  distinct ones. Colours come from
+  `speedRange` / `fanRange` / `tempRange`, using PrusaSlicer's range palette. The legends list the
+  stop values like PrusaSlicer's (mm/s, percent for the fan, °C for temperature), or just the
+  values when there are 1 or 2 distinct ones. Colours come from
   `gcodePreview/getExtrusionColors`; only the current layer is coloured, the other layers stay grey
 - There is no colour-mode fallback: a file without role tags or extruding moves draws in one
-  colour (`R0` / `S0` / `F0`) with an empty legend
+  colour (`R0` / `S0` / `F0` / `C0`) with an empty legend
 - Oversized files are truncated by the parser, which sets `truncated` on the result;
   `gcodePreview/actions.ts` surfaces it as an `EventBus` warning
   (`app.general.msg.gcode_preview_truncated`)

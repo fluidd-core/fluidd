@@ -25,7 +25,8 @@ const groupPrefixes = {
   tool: 'T',
   role: 'R',
   speed: 'S',
-  fan: 'F'
+  fan: 'F',
+  temp: 'C'
 } as const
 
 const TRAVELING = -1
@@ -122,10 +123,11 @@ export const buildLayerPaths = (
     includeTools = false,
     colorBy = 'tool',
     speedRange,
-    fanRange
+    fanRange,
+    tempRange
   } = options ?? {}
 
-  const { x, y, tool, role, speed, fan, flags: moveFlags, length } = moves
+  const { x, y, tool, role, speed, fan, temp, flags: moveFlags, length } = moves
 
   const groupPrefix = groupPrefixes[colorBy]
 
@@ -171,6 +173,9 @@ export const buildLayerPaths = (
           break
         case 'fan':
           group = rangeBucket(fan[index], fanRange)
+          break
+        case 'temp':
+          group = rangeBucket(temp[index], tempRange)
           break
         default:
           group = currentTool

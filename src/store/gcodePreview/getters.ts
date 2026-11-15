@@ -41,6 +41,7 @@ const lightRoleColors = groupColors('R', roleColors.map((color, role) => role ==
 
 const speedColors = groupColors('S', rangeColors)
 const fanColors = groupColors('F', rangeColors)
+const tempColors = groupColors('C', rangeColors)
 
 // same stops as PrusaSlicer's range legend: one per distinct value when there are at most 2
 const rangeStops = (range: Readonly<ValueRange> | null, scale: number): readonly ColorStop[] => {
@@ -251,6 +252,10 @@ export const getters = {
     return rangeStops(state.fanRange, 100 / 255)
   },
 
+  getTempStops: (state): readonly ColorStop[] => {
+    return rangeStops(state.tempRange, 1)
+  },
+
   getExtrusionColors: (state, getters, rootState): Record<string, string> => {
     switch (rootState.config.uiSettings.gcodePreview.colorMode) {
       case 'role':
@@ -259,6 +264,8 @@ export const getters = {
         return speedColors
       case 'fan':
         return fanColors
+      case 'temp':
+        return tempColors
       default:
         return getters.getToolColors
     }

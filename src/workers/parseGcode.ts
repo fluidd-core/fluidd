@@ -22,6 +22,12 @@ interface GcodeMove {
 
 const MAX_TOOL = 255
 
+const isValidTool = (value: number) => (
+  Number.isInteger(value) &&
+  value >= 0 &&
+  value <= MAX_TOOL
+)
+
 // guards against a corrupt or hostile file exhausting memory
 const MAX_MOVES = 20_000_000
 const MAX_PARTS = 10_000
@@ -31,6 +37,8 @@ const MAX_POLYGON_POINTS = 10_000
 const MAX_FILE_POSITION = 0xffffffff
 
 const MAX_SPEED = 0xffff
+
+const MAX_TEMP = 0xffff
 
 // counts like PrusaSlicer's ColorRange: exact up to 2 distinct values
 const updateRange = (range: ValueRange | null, value: number): ValueRange => {
@@ -141,7 +149,7 @@ const parseLine = (line: string) => {
     }
 
     const [, macroCommand, macroCommandArgs = ''] = clearedLine
-      .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION)\s+/i)
+      .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION|SET_HEATER_TEMPERATURE)\s+/i)
 
     if (macroCommand) {
       return {
@@ -260,6 +268,7 @@ const parseGcode = async (
   let moveRole = new Uint8Array(moveCapacity)
   let moveSpeed = new Uint16Array(moveCapacity)
   let moveFan = new Uint8Array(moveCapacity)
+  let moveTemp = new Uint16Array(moveCapacity)
   let moveFilePosition = new Uint32Array(moveCapacity)
   let moveCount = 0
   let lastArcMoveIndex = -1
@@ -270,6 +279,7 @@ const parseGcode = async (
   const roles = new Set<ExtrusionRole>()
   let speedRange: ValueRange | null = null
   let fanRange: ValueRange | null = null
+  let tempRange: ValueRange | null = null
 
   let truncated = false
   let newLayerForNextMove = false
@@ -286,6 +296,9 @@ const parseGcode = async (
   let role: ExtrusionRole = ExtrusionRole.None
   let feedrate = 0
   let fan = 0
+  // MMU lanes share a heater
+  const toolHeaters: number[] = [0]
+  const heaterTemps: number[] = []
   let filePosition = 0
   let bounds = createBounds()
   let lastBounds: BBox | null = null
@@ -303,6 +316,27 @@ const parseGcode = async (
     if (f !== undefined && f > 0) {
       feedrate = Math.min(MAX_SPEED, Math.round(f))
     }
+  }
+
+  const setToolTemp = (targetTool: number, value: number) => {
+    if (
+      isValidTool(targetTool) &&
+      value >= 0
+    ) {
+      const heater = toolHeaters[targetTool] ??= targetTool
+
+      heaterTemps[heater] = Math.min(MAX_TEMP, Math.round(value))
+    }
+  }
+
+  const switchTool = (nextTool: number) => {
+    if (!isValidTool(nextTool)) {
+      return
+    }
+
+    toolHeaters[nextTool] ??= toolHeaters[tool]
+    tool = nextTool
+    tools.add(tool)
   }
 
   const handleLine = (line: string) => {
@@ -346,6 +380,11 @@ const parseGcode = async (
           }
           if ('unretract_extra_length' in args) {
             fwretraction.extrudeExtra = +args.unretract_extra_length
+          }
+          break
+        case 'SET_HEATER_TEMPERATURE':
+          if ('heater' in args && /^extruder\d{0,2}$/i.test(args.heater)) {
+            setToolTemp(+args.heater.substring(8), +(args.target ?? 0))
           }
           break
       }
@@ -466,27 +505,23 @@ const parseGcode = async (
         case 'M107':
           fan = 0
           break
+        case 'M104':
+        case 'M109':
+          if (args.s !== undefined) {
+            setToolTemp(args.t ?? tool, args.s)
+          }
+          break
         case 'M207':
           fwretraction.length = args.s ?? fwretraction.length
           fwretraction.z = args.z ?? fwretraction.z
           break
         case 'M600':
           tools.add(0)
-          tool = (tool + 1) % 10
-          tools.add(tool)
+          switchTool((tool + 1) % 10)
           break
         default:
           if (command.startsWith('T')) {
-            const requestedTool = +command.substring(1)
-
-            if (
-              Number.isInteger(requestedTool) &&
-              requestedTool >= 0 &&
-              requestedTool <= MAX_TOOL
-            ) {
-              tool = requestedTool
-              tools.add(tool)
-            }
+            switchTool(+command.substring(1))
           }
           break
       }
@@ -585,8 +620,17 @@ const parseGcode = async (
             isArcMove = false
           }
 
-          toolhead.x = move.x ?? toolhead.x
-          toolhead.y = move.y ?? toolhead.y
+          const nextX = move.x ?? toolhead.x
+          const nextY = move.y ?? toolhead.y
+
+          const isExtruding = extrusion > 0 && (
+            isArcMove ||
+            nextX !== toolhead.x ||
+            nextY !== toolhead.y
+          )
+
+          toolhead.x = nextX
+          toolhead.y = nextY
           toolhead.z = move.z ?? toolhead.z
 
           if (moveCount === moveCapacity) {
@@ -602,8 +646,11 @@ const parseGcode = async (
             moveRole = growUint8Array(moveRole, moveCapacity)
             moveSpeed = growUint16Array(moveSpeed, moveCapacity)
             moveFan = growUint8Array(moveFan, moveCapacity)
+            moveTemp = growUint16Array(moveTemp, moveCapacity)
             moveFilePosition = growUint32Array(moveFilePosition, moveCapacity)
           }
+
+          const temp = heaterTemps[toolHeaters[tool]] ?? 0
 
           moveX[moveCount] = toolhead.x
           moveY[moveCount] = toolhead.y
@@ -615,8 +662,9 @@ const parseGcode = async (
           moveRole[moveCount] = role
           moveSpeed[moveCount] = feedrate
           moveFan[moveCount] = fan
+          moveTemp[moveCount] = temp
           moveFlags[moveCount] = (
-            (extrusion > 0 ? MoveFlags.Extruding : 0) |
+            (isExtruding ? MoveFlags.Extruding : 0) |
             (extrusion < 0 ? MoveFlags.Retracting : 0) |
             (isArcMove ? MoveFlags.Arc : 0) |
             (isArcMove && isClockwise ? MoveFlags.Clockwise : 0)
@@ -626,11 +674,12 @@ const parseGcode = async (
             lastArcMoveIndex = moveCount
           }
 
-          if (extrusion > 0) {
+          if (isExtruding) {
             roles.add(role)
 
             speedRange = updateRange(speedRange, feedrate)
             fanRange = updateRange(fanRange, fan)
+            tempRange = updateRange(tempRange, temp)
           }
 
           moveCount++
@@ -724,6 +773,7 @@ const parseGcode = async (
     role: moveRole.slice(0, moveCount),
     speed: moveSpeed.slice(0, moveCount),
     fan: moveFan.slice(0, moveCount),
+    temp: moveTemp.slice(0, moveCount),
     filePosition: moveFilePosition.slice(0, moveCount),
     length: moveCount
   }
@@ -741,6 +791,7 @@ const parseGcode = async (
       .sort((a, b) => a - b),
     speedRange,
     fanRange,
+    tempRange,
     truncated
   }
 }

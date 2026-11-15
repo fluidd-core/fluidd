@@ -264,6 +264,7 @@ app:
       color_by_fan: Fan speed (%)
       color_by_feature: Feature type
       color_by_speed: Speed (mm/s)
+      color_by_temp: Temperature (°C)
       color_by_tool: Tool
       current_layer_height: Current Layer Height
       exclude_object: Exclude Object

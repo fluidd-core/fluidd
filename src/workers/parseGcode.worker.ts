@@ -17,6 +17,7 @@ export type ParseGcodeWorkerResultMessage = {
   roles: ExtrusionRole[],
   speedRange: ValueRange | null,
   fanRange: ValueRange | null,
+  tempRange: ValueRange | null,
   bounds: BBox | null,
   truncated: boolean
 }
