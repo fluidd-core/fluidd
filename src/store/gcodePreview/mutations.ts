@@ -44,7 +44,7 @@ export const mutations = {
     state.tempRange = Object.freeze(payload)
   },
 
-  setBounds (state, payload: BBox) {
+  setBounds (state, payload: BBox | null) {
     state.bounds = Object.freeze(payload)
   },
 
