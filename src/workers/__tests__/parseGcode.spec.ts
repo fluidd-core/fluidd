@@ -365,6 +365,21 @@ describe('parseGcode', () => {
     expect([...moves.temp]).toEqual([220, 220, 230])
   })
 
+  it('shares the heater of the previous tool with a tool that has none of its own', async () => {
+    const { moves } = await parse([
+      'M104 S220',
+      'G1 X10 E1',
+      'T3',
+      'SET_HEATER_TEMPERATURE HEATER=extruder TARGET=230',
+      'G1 X20 E2',
+      'M104 S240',
+      'T0',
+      'G1 X30 E3'
+    ])
+
+    expect([...moves.temp]).toEqual([220, 230, 240])
+  })
+
   it('keeps the temperature across an M600 colour change', async () => {
     const { moves } = await parse([
       'M104 S200',

@@ -296,8 +296,9 @@ const parseGcode = async (
   let role: ExtrusionRole = ExtrusionRole.None
   let feedrate = 0
   let fan = 0
-  let temp = 0
-  const toolTemps: number[] = []
+  // MMU lanes share a heater
+  const toolHeaters: number[] = [0]
+  const heaterTemps: number[] = []
   let filePosition = 0
   let bounds = createBounds()
   let lastBounds: BBox | null = null
@@ -322,12 +323,20 @@ const parseGcode = async (
       isValidTool(targetTool) &&
       value >= 0
     ) {
-      toolTemps[targetTool] = Math.min(MAX_TEMP, Math.round(value))
+      const heater = toolHeaters[targetTool] ??= targetTool
 
-      if (targetTool === tool) {
-        temp = toolTemps[targetTool]
-      }
+      heaterTemps[heater] = Math.min(MAX_TEMP, Math.round(value))
     }
+  }
+
+  const switchTool = (nextTool: number) => {
+    if (!isValidTool(nextTool)) {
+      return
+    }
+
+    toolHeaters[nextTool] ??= toolHeaters[tool]
+    tool = nextTool
+    tools.add(tool)
   }
 
   const handleLine = (line: string) => {
@@ -508,19 +517,11 @@ const parseGcode = async (
           break
         case 'M600':
           tools.add(0)
-          tool = (tool + 1) % 10
-          tools.add(tool)
+          switchTool((tool + 1) % 10)
           break
         default:
           if (command.startsWith('T')) {
-            const requestedTool = +command.substring(1)
-
-            if (isValidTool(requestedTool)) {
-              tool = requestedTool
-              // MMU lanes share one extruder
-              temp = toolTemps[tool] ?? temp
-              tools.add(tool)
-            }
+            switchTool(+command.substring(1))
           }
           break
       }
@@ -619,15 +620,17 @@ const parseGcode = async (
             isArcMove = false
           }
 
-          // E-only moves are primes or unretracts
+          const nextX = move.x ?? toolhead.x
+          const nextY = move.y ?? toolhead.y
+
           const isExtruding = extrusion > 0 && (
             isArcMove ||
-            (move.x ?? toolhead.x) !== toolhead.x ||
-            (move.y ?? toolhead.y) !== toolhead.y
+            nextX !== toolhead.x ||
+            nextY !== toolhead.y
           )
 
-          toolhead.x = move.x ?? toolhead.x
-          toolhead.y = move.y ?? toolhead.y
+          toolhead.x = nextX
+          toolhead.y = nextY
           toolhead.z = move.z ?? toolhead.z
 
           if (moveCount === moveCapacity) {
@@ -646,6 +649,8 @@ const parseGcode = async (
             moveTemp = growUint16Array(moveTemp, moveCapacity)
             moveFilePosition = growUint32Array(moveFilePosition, moveCapacity)
           }
+
+          const temp = heaterTemps[toolHeaters[tool]] ?? 0
 
           moveX[moveCount] = toolhead.x
           moveY[moveCount] = toolhead.y

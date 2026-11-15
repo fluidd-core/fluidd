@@ -183,12 +183,15 @@ src/
 - `fan` is the sticky part cooling fan as the raw **`M106 S` value (0–255)**, with Klipper's
   `M106` semantics: a missing `S` is 255, `P` is ignored, `M107` is 0; `SET_FAN_SPEED` only drives
   `[fan_generic]`, so it is ignored
-- `temp` is the current tool's sticky nozzle target in whole **°C**, starting at 0 (a real 0, not
-  "unknown" — there is no unknown group). It is set per tool by `M104`/`M109` `S` (optional `T`,
-  default the current tool) and `SET_HEATER_TEMPERATURE HEATER=extruder[N]` (a missing `TARGET`
-  is 0, like Klipper; other heaters are ignored). `T<n>` switches to tool `n`'s own temperature,
-  or **keeps the current one** when `n` has none, as MMU lanes share one extruder; `M600` (which
-  fakes a tool change) never touches it. There is no seeding from file metadata
+- `temp` is the nozzle target of the current tool's **heater**, in whole **°C**, starting at 0 (a
+  real 0, not "unknown" — there is no unknown group). Temperatures are stored per heater
+  (`heaterTemps`), and each tool is mapped to one on first use (`toolHeaters`): a temperature
+  command naming tool `n` first — `M104`/`M109` `S` with `T<n>` (default the current tool), or
+  `SET_HEATER_TEMPERATURE HEATER=extruder[N]` — gives it heater `n`; switching to an unmapped tool
+  (`T<n>`, or `M600`, which fakes a tool change) makes it **share the current tool's heater**, as
+  MMU lanes share one extruder. So a temperature set on the shared heater applies to every lane.
+  A missing `TARGET` is 0, like Klipper; other heaters are ignored. There is no seeding from file
+  metadata
 - The result also carries `roles` (sorted distinct roles of extruding moves) plus `speedRange`,
   `fanRange` and `tempRange` (`ValueRange`: min/max over extruding moves, whole file — keeps the
   legends stable across layers — plus PrusaSlicer's `count`, exact only up to 2 distinct values)
