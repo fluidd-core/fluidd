@@ -23,7 +23,7 @@ Read before adding or changing a Moonraker method or notification, `src/typings/
 
 - `RequestOptions.suppressError` (`boolean | (error) => boolean`) skips the global error toast;
   the promise still rejects, so callers still `catch`. `code >= 500` is never suppressible (503
-  drives klippy recovery)
+  drives klippy recovery). A predicate that throws is logged and treated as not suppressing
 - Narrow a rejection with `isSocketError` (`src/util/is-socket-error.ts`, which must stay
   import-free). Moonraker rewrites 404 → `-32601` and 401 → `-32602`: test with
   `isMoonrakerNotFoundError` / `isMoonrakerUnauthorizedError`, never the HTTP code
@@ -34,9 +34,11 @@ Read before adding or changing a Moonraker method or notification, `src/typings/
   Moonraker sends none), merged like `Methods`. `socketClient.ts` dispatches
   `socket/<camelCase(method)>` with the **first** param only (`notify_status_update` is cached and
   flushed every second). `socket/` handlers type it as `Moonraker.NotificationPayload<'notify_…'>`;
-  the module actions they forward to name the concrete type — both spellings are intentional
+  the module actions they forward to name the concrete type — both spellings are intentional.
+  Helpers: `Moonraker.Notification`, `NotificationPayload<N>`, `NotificationAction<N>`
 - `CheckedNotificationHandlers` (`src/store/socket/actions.ts`) fails type-check when an entry has
-  no `socket/` action. Notifications outside the map are dropped as unknown actions
+  no `socket/` action; `CheckedNotifications` (`socketClient.ts`) checks entry shape.
+  Notifications outside the map are dropped as unknown actions
 - Notification-only payload types end in `Event`, named after the notification minus its
   namespace (`notify_job_queue_changed` → `JobQueue.ChangedEvent`). They are standalone
   interfaces — never `extends`/alias/`Pick` a `Response`, even when the shape matches. A type

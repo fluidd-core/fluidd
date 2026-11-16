@@ -20,4 +20,4 @@ Read before touching `src/store/history/`, `JobHistory`, or `src/util/csv.ts`.
 - `toCsv` (`src/util/csv.ts`, import-free) owns cell formatting: RFC 4180, CRLF, `Date` → local
   `YYYY-MM-DD HH:mm:ss` (Excel won't parse ISO with `T`/`Z`), arrays joined with `; `, and a
   leading `'` on formula-like **strings** only (numbers exempt so negatives sum). Callers prepend
-  a `﻿` BOM
+  a `\uFEFF` BOM

@@ -34,7 +34,8 @@ Read before touching anything under `docs/`.
   skip link validation. Images are site-absolute: `/assets/images/…` (in
   `docs/docs/assets/images/`)
 - Code blocks always have a language: `ini` (Klipper/Moonraker config), `bash`, `json`, else `text`
-- Nested blocks in lists use 4-space indentation, no tabs
+- Every block nested in a list (sub-list, paragraph, code block, blockquote) is indented 4 spaces
+  per nesting level, no tabs
 - Tables use aligned pipe style
 - `{.md-button}` for standalone action links; `++key++` instead of `<kbd>`
 - Terminology: G-code, Wi-Fi, GitHub, Node.js, SD card; em dash (—) for parenthetical dashes

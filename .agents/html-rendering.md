@@ -30,10 +30,11 @@ Read before using `v-safe-html`, rendering user/macro/Moonraker text, or touchin
 - `v-safe-html` sanitizes with `sanitizeHtml` (`src/util/sanitize-html.ts`, which owns the
   DOMPurify config and hooks) and inserts the fragment with `replaceChildren`, **never
   `innerHTML`** — no serialize/re-parse for mutation XSS
-- Link hook: an `<a>` (HTML or SVG) whose `href` resolves to an external `http(s)` host gets
-  `target="_blank"` — decided with `new URL` against a dummy base, not a regex, so `\\x.com` and
-  `https:x.com` are caught. An author's `_blank` is kept. Every `_blank` gets `noopener noreferrer`.
-  No-`href`, relative, hash, `mailto:` and `tel:` links stay in the same tab
+- Link hook: an `<a>` (HTML or SVG) whose `href` (or `xlink:href`) resolves to an external
+  `http(s)` host gets `target="_blank"` — decided with `new URL` against a dummy base, not a
+  regex, so `\\x.com` and `https:x.com` are caught. An author's `_blank` is kept. Every `_blank`
+  gets `noopener noreferrer`. No-`href`, relative, hash, `mailto:` and `tel:` links stay in the
+  same tab
 - Value is a string or `{ html, search? }`; `search` is highlighted by `markTextNodes` (raw term,
   case-insensitive, `<mark>` in text nodes only, skipping `<style>`). The directive compares
   `html` and `search` field by field, since an object value is new on every render

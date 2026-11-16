@@ -16,8 +16,8 @@ Read before touching `src/plugins/socketClient.ts`, `src/store/socket/`, `src/st
   `server.info` ping (unauthenticated sockets get no notifications), 10s more → replace the socket.
   The stages are chained, not parallel, so after sleep the ping still gets its 10s. The timer is
   armed on `onopen`, and also bounds a socket stuck in `CONNECTING`
-- `socket.stalled` is true while the ping is outstanding; `SocketStalledSnackbar` shows it over the
-  main app only
+- `socket.stalled` is true while the ping is outstanding, and cleared by `clearSilenceTimer` (any
+  frame, `handleClose`, `close`). `SocketStalledSnackbar` shows it over the main app only
 - Every socket handler ignores events from a socket that is no longer `this.connection`
 
 ## State machine & auth
