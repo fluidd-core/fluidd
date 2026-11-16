@@ -24,6 +24,7 @@ export const createChartBuffer = (
 
   const buffer: ChartBuffer = {
     time: allocate(capacity),
+    // A Map, not an object: a sensor named `constructor` would pass `in`.
     columns: new Map(),
     offset: 0,
     count: 0,
@@ -187,6 +188,8 @@ export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
 
   const { time, offset, count, columns } = buffer
 
+  // Plain object, never `Object.create(null)`: ECharts' `setOption` clones the
+  // option through zrender's `clone`, which calls `source.hasOwnProperty`.
   const source: ChartDataSource = {
     date: time.subarray(offset, offset + count)
   }

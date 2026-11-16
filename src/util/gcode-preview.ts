@@ -110,6 +110,9 @@ const moveToSVGPath = (moves: MoveStore, index: number, fromX: number, fromY: nu
   return `L${formatCoordinate(toX)},${formatCoordinate(toY)}`
 }
 
+// `startMove` is the layer's anchor: the move whose endpoint is the layer start.
+// It seeds the toolhead and is drawn as a zero-length segment. Every emitted
+// `d` must start with a moveto - one starting with `L` or `A` renders nothing.
 export const buildLayerPaths = (
   moves: MoveStore,
   startMove: number,

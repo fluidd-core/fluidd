@@ -36,6 +36,7 @@ const MAX_POLYGON_POINTS = 10_000
 // file positions are stored in a Uint32Array
 const MAX_FILE_POSITION = 0xffffffff
 
+// Clamp before writing: a Uint16Array write wraps rather than saturates.
 const MAX_SPEED = 0xffff
 
 const MAX_TEMP = 0xffff
