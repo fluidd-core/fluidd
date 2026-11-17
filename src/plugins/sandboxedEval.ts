@@ -1,8 +1,9 @@
-import type { SandboxedEvalWorkerResponseMessage, SandboxedEvalWorkerRequestMessage } from '@/workers/sandboxedEval.worker'
-
-import SandboxedEvalWorker from '@/workers/sandboxedEval.worker?ts?worker'
-
-const workers: Record<string, Worker> = {}
+import {
+  buildSandboxedEvalFrameSrcdoc,
+  type SandboxedEvalFrameMessage,
+  type SandboxedEvalWorkerRequestMessage,
+  type SandboxedEvalWorkerResponseMessage
+} from '@/workers/sandboxedEval'
 
 export interface SandboxedEvalOptions {
   feature?: string;
@@ -10,85 +11,171 @@ export interface SandboxedEvalOptions {
   context?: unknown;
 }
 
-const sandboxedEval = async (code: string, options: SandboxedEvalOptions = {}): Promise<unknown> => {
-  const { feature, timeout = 800, context } = options
+type PendingRequest = {
+  resolve: (value: unknown) => void,
+  reject: (reason: unknown) => void
+}
 
-  const id = Date.now()
-  const worker = getWorker(feature)
+let frame: Promise<Window> | undefined
+let nextId = 1
+const ports = new Map<string, MessagePort>()
+const pendingRequests = new Map<number, PendingRequest>()
 
-  const signal = AbortSignal.timeout(timeout)
+const isWorkerResponseMessage = (data: unknown): data is SandboxedEvalWorkerResponseMessage => (
+  data != null &&
+  typeof data === 'object' &&
+  'id' in data &&
+  typeof data.id === 'number' &&
+  'action' in data &&
+  (
+    data.action === 'result' ||
+    data.action === 'error'
+  )
+)
 
-  const workerPromise = new Promise<unknown>((resolve, reject) => {
-    const cleanup = () => {
-      worker.removeEventListener('message', messageHandler)
-      signal.removeEventListener('abort', abortHandler)
-    }
+// a frame the page's own CSP blocks never announces it is ready
+const FRAME_LOAD_TIMEOUT = 5000
 
-    const abortHandler = () => {
-      cleanup()
-      reject(signal.reason ?? new Error('Timeout'))
-    }
+const getFrame = () => {
+  frame ??= new Promise<Window>((resolve, reject) => {
+    const iframe = document.createElement('iframe')
 
-    const messageHandler = (event: MessageEvent<SandboxedEvalWorkerResponseMessage>) => {
-      const message = event.data
+    // without allow-same-origin, the frame gets an opaque origin
+    iframe.setAttribute('sandbox', 'allow-scripts')
+    iframe.setAttribute('aria-hidden', 'true')
+    iframe.tabIndex = -1
+    iframe.style.display = 'none'
+    iframe.srcdoc = buildSandboxedEvalFrameSrcdoc()
 
-      if (message.id !== id) {
-        return
+    const onMessage = (event: MessageEvent<unknown>) => {
+      if (
+        iframe.contentWindow &&
+        event.source === iframe.contentWindow &&
+        event.data === 'ready'
+      ) {
+        window.removeEventListener('message', onMessage)
+        clearTimeout(timer)
+        resolve(iframe.contentWindow)
       }
-
-      cleanup()
-
-      switch (message.action) {
-        case 'result': {
-          resolve(message.result)
-
-          break
-        }
-        case 'error': {
-          reject(message.error)
-
-          break
-        }
-      }
     }
 
-    worker.addEventListener('message', messageHandler)
+    // the failure is kept, so every later call fails at once
+    const timer = window.setTimeout(() => {
+      window.removeEventListener('message', onMessage)
+      iframe.remove()
+      reject(new Error('Sandboxed eval frame failed to load'))
+    }, FRAME_LOAD_TIMEOUT)
 
-    signal.addEventListener('abort', abortHandler, { once: true })
+    window.addEventListener('message', onMessage)
+    document.body.appendChild(iframe)
   })
 
-  const message: SandboxedEvalWorkerRequestMessage = {
-    code,
-    context,
-    id
+  return frame
+}
+
+// a frame failure is reported by sandboxedEval
+const postToFrame = (message: SandboxedEvalFrameMessage, transfer: Transferable[] = []) => {
+  getFrame().then(
+    // an opaque origin cannot be targeted by name
+    contentWindow => contentWindow.postMessage(message, '*', transfer),
+    () => undefined
+  )
+}
+
+const onWorkerMessage = (event: MessageEvent<unknown>) => {
+  const message = event.data
+
+  if (!isWorkerResponseMessage(message)) {
+    return
   }
 
-  worker.postMessage(message)
+  const request = pendingRequests.get(message.id)
 
-  try {
-    return await workerPromise
-  } finally {
-    if (feature && signal.aborted) {
-      worker.terminate()
-      delete workers[feature]
-    } else if (!feature) {
-      worker.terminate()
-    }
+  pendingRequests.delete(message.id)
+
+  if (message.action === 'result') {
+    request?.resolve(message.result)
+  } else {
+    request?.reject(message.error)
   }
 }
 
-const getWorker = (feature?: string) => {
-  if (feature) {
-    if (workers[feature]) {
-      return workers[feature]
-    }
+// messages posted to the port queue until the frame hands it to the worker
+const getPort = (worker: string) => {
+  let port = ports.get(worker)
 
-    const worker = workers[feature] = new SandboxedEvalWorker()
+  if (!port) {
+    const channel = new MessageChannel()
 
-    return worker
+    port = channel.port1
+    port.onmessage = onWorkerMessage
+    ports.set(worker, port)
+
+    postToFrame(
+      {
+        action: 'create',
+        worker
+      },
+      [
+        channel.port2
+      ]
+    )
   }
 
-  return new SandboxedEvalWorker()
+  return port
+}
+
+const terminate = (worker: string) => {
+  ports.get(worker)?.close()
+  ports.delete(worker)
+
+  postToFrame({
+    action: 'terminate',
+    worker
+  })
+}
+
+const sandboxedEval = async (code: string, options: SandboxedEvalOptions = {}): Promise<unknown> => {
+  const { feature, timeout = 800, context } = options
+
+  const id = nextId++
+  const worker = feature
+    ? `feature:${feature}`
+    : `request:${id}`
+
+  const signal = AbortSignal.timeout(timeout)
+
+  const result = new Promise<unknown>((resolve, reject) => {
+    pendingRequests.set(id, { resolve, reject })
+
+    const fail = (reason: unknown) => {
+      pendingRequests.delete(id)
+      reject(reason)
+    }
+
+    signal.addEventListener('abort', () => fail(signal.reason), { once: true })
+    getFrame().catch(fail)
+
+    const message: SandboxedEvalWorkerRequestMessage = { code, context, id }
+
+    try {
+      getPort(worker).postMessage(message)
+    } catch (error) {
+      // the context could not be cloned
+      fail(error)
+    }
+  })
+
+  try {
+    return await result
+  } finally {
+    if (
+      !feature ||
+      signal.aborted
+    ) {
+      terminate(worker)
+    }
+  }
 }
 
 export default sandboxedEval

@@ -15,6 +15,7 @@ rules there are not repeated here.
 | [`.agents/gcode-preview.md`](.agents/gcode-preview.md)   | `parseGcode*`, `gcode-extrusion-roles.ts`, `src/store/gcodePreview/`, `util/gcode-preview.ts`           |
 | [`.agents/monaco.md`](.agents/monaco.md)                 | `src/monaco/`, `setupMonaco.ts`, Monaco workers                                                         |
 | [`.agents/html-rendering.md`](.agents/html-rendering.md) | `v-safe-html`, sanitizing, `html-helpers.ts`, `ConsoleItem`, `AppNamed*` controls                       |
+| [`.agents/sandboxed-eval.md`](.agents/sandboxed-eval.md) | `sandboxedEval`, diagnostics collectors, running user JavaScript                                        |
 | [`.agents/history.md`](.agents/history.md)               | `src/store/history/`, `JobHistory`, CSV export                                                          |
 | [`.agents/i18n.md`](.agents/i18n.md)                     | `src/plugins/i18n.ts`, Vuetify locales, `SupportedLocales`                                              |
 | [`.agents/testing.md`](.agents/testing.md)               | Specs needing jsdom, `location`, `fetch` stubs; `vitest.config.ts`, `tests/unit/setup.ts`               |

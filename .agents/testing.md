@@ -4,8 +4,8 @@ Read before adding a spec that needs a DOM, `location`, `fetch`, or typed-array 
 
 - **`environment: 'node'` is the default** (`pool: 'vmThreads'`). A spec needing a DOM opts in
   with a `@vitest-environment jsdom` docblock — only Monarch tokenizer specs and the DOMPurify /
-  `markTextNodes` / `http-endpoint-diagnostics` specs need it (without a DOM, DOMPurify sanitizes
-  nothing). `environmentMatchGlobs` no longer exists in Vitest
+  `markTextNodes` / `http-endpoint-diagnostics` / `sandboxedEval` plugin specs need it (without a
+  DOM, DOMPurify sanitizes nothing). `environmentMatchGlobs` no longer exists in Vitest
 - **jsdom's `location` cannot be redefined under `vmThreads`** (`defineProperty`, `stubGlobal`,
   `spyOn` all throw). Set the URL per file with `@vitest-environment-options { "url": "…" }` — so a
   different URL means a separate spec file. The default is `http://localhost:3000/`

@@ -49,8 +49,9 @@ Each chart can be configured with:
 
 ### Metrics Collector
 
-Each plotted metric runs a collector, based on user-defined JavaScript code
-executed in a sandboxed worker for safety.
+Each plotted metric runs a collector, based on user-defined JavaScript code.
+Collectors run in an isolated worker that only sees the printer state: it
+cannot make network requests or read anything else Fluidd stores.
 Metrics are collected once a second or every 250ms when a stepper motor is active.
 
 !!! warning "Performance"
