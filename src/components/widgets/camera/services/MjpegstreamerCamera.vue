@@ -19,6 +19,8 @@ import type { MjpegWorkerResponseMessage, MjpegWorkerRequestMessage } from '@/wo
 
 import MjpegWorker from '@/workers/mjpegStream.worker?ts?worker'
 
+const workerConnectionTimeout = 10000
+
 @Component({})
 export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
   @Ref('streamingElement')
@@ -30,14 +32,25 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
   worker: Worker | null = null
   imageObjectUrl: string | null = null
+  workerConnectionTimeoutId: number | null = null
+  nativePlayback = false
+  streamUrl = ''
 
   handleImageLoad () {
+    if (!this.streamUrl) {
+      return
+    }
+
     this.updateStatus('connected')
 
     this.revokeImageObjectURL()
   }
 
   handleImageError () {
+    if (!this.streamUrl) {
+      return
+    }
+
     this.updateStatus('error')
 
     this.revokeImageObjectURL()
@@ -53,7 +66,50 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
     }
   }
 
+  clearWorkerConnectionTimeout () {
+    if (this.workerConnectionTimeoutId !== null) {
+      clearTimeout(this.workerConnectionTimeoutId)
+      this.workerConnectionTimeoutId = null
+    }
+  }
+
+  stopWorker () {
+    this.clearWorkerConnectionTimeout()
+
+    const worker = this.worker
+    this.worker = null
+
+    if (worker) {
+      worker.onmessage = null
+      worker.onerror = null
+      worker.onmessageerror = null
+      worker.terminate()
+    }
+  }
+
+  startNativePlayback () {
+    if (!this.streamUrl) {
+      return
+    }
+
+    this.stopWorker()
+    this.revokeImageObjectURL()
+    this.nativePlayback = true
+    this.updateFramesPerSecond(-1)
+    this.updateRawCameraUrl(this.streamUrl)
+    this.updateStatus('connecting')
+    this.cameraImage.src = this.streamUrl
+  }
+
+  fallbackToNativePlayback (error?: unknown) {
+    consola.warn(`[MjpegstreamerCamera] using native playback for "${this.camera.name}"`, error)
+
+    this.startNativePlayback()
+  }
+
   startPlayback () {
+    this.stopPlayback()
+
     try {
       this.updateStatus('connecting')
 
@@ -61,13 +117,26 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
       url.searchParams.set('cacheBust', Date.now().toString())
 
+      this.streamUrl = url.toString()
+
+      if (this.nativePlayback) {
+        this.startNativePlayback()
+        return
+      }
+
       const worker = this.worker = markRaw(new MjpegWorker())
 
       worker.onmessage = (event: MessageEvent<MjpegWorkerResponseMessage>) => {
+        if (this.worker !== worker) {
+          return
+        }
+
         const message = event.data
 
         switch (message.action) {
           case 'frame': {
+            this.clearWorkerConnectionTimeout()
+
             const endTime = performance.now()
             const currentTime = endTime - this.startTime
 
@@ -89,18 +158,39 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
           }
 
           case 'done':
-            this.stopPlayback()
+            if (this.workerConnectionTimeoutId !== null) {
+              this.fallbackToNativePlayback(new Error('MJPEG stream ended without a frame'))
+            } else {
+              this.stopPlayback()
+            }
 
             break
 
           case 'error':
-            this.updateStatus('error')
-
-            this.stopPlayback()
+            this.fallbackToNativePlayback(message.error)
 
             break
         }
       }
+
+      worker.onerror = (event) => {
+        if (this.worker === worker) {
+          event.preventDefault()
+          this.fallbackToNativePlayback(event.message)
+        }
+      }
+
+      worker.onmessageerror = () => {
+        if (this.worker === worker) {
+          this.fallbackToNativePlayback(new Error('Unable to receive MJPEG frames'))
+        }
+      }
+
+      this.workerConnectionTimeoutId = window.setTimeout(() => {
+        if (this.worker === worker) {
+          this.fallbackToNativePlayback(new Error('No MJPEG frames received'))
+        }
+      }, workerConnectionTimeout)
 
       const message: MjpegWorkerRequestMessage = {
         action: 'start',
@@ -112,18 +202,22 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
       worker.postMessage(message)
     } catch (e) {
-      consola.error(`[MjpegstreamerCamera] failed to start playback "${this.camera.name}"`, e)
+      if (this.streamUrl) {
+        this.fallbackToNativePlayback(e)
+      } else {
+        consola.error(`[MjpegstreamerCamera] failed to start playback "${this.camera.name}"`, e)
 
-      this.updateStatus('error')
+        this.updateStatus('error')
+      }
     }
   }
 
   stopPlayback () {
-    this.worker?.terminate()
-    this.worker = null
+    this.stopWorker()
     this.revokeImageObjectURL()
+    this.streamUrl = ''
     this.updateStatus('disconnected')
-    this.cameraImage.src = ''
+    this.cameraImage.removeAttribute('src')
   }
 }
 </script>
