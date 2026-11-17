@@ -43,6 +43,15 @@ colored:
   feedrate the G-code commands, not the speed reached after acceleration
 - **Fan speed (%)** — the same gradient across the file's range of part
   cooling fan speeds, set by `M106`/`M107`
+- **Temperature (°C)** — the same gradient across the file's range of nozzle
+  temperatures, set by `M104`/`M109` and `SET_HEATER_TEMPERATURE`. Tools that
+  share a nozzle, such as MMU lanes, share its temperature, and moves before
+  the first temperature command count as 0 °C — so a file that leaves heating
+  to a start macro such as `PRINT_START` starts its range at 0
+
+As in PrusaSlicer, the gradient modes only consider moves that travel while
+extruding, so priming and unretract moves that only push filament don't
+stretch the range.
 
 Feature coloring recognizes the comments written by PrusaSlicer, SuperSlicer,
 OrcaSlicer, Bambu Studio, Cura, ideaMaker, Simplify3D, KISSlicer, and

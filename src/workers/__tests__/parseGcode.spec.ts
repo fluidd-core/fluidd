@@ -35,7 +35,7 @@ describe('parseGcode', () => {
 
     expect(moves.length).toBe(4)
 
-    for (const column of [moves.x, moves.y, moves.z, moves.tool, moves.flags, moves.role, moves.speed, moves.fan, moves.filePosition]) {
+    for (const column of [moves.x, moves.y, moves.z, moves.tool, moves.flags, moves.role, moves.speed, moves.fan, moves.temp, moves.filePosition]) {
       expect(column).toHaveLength(moves.length)
     }
 
@@ -67,7 +67,7 @@ describe('parseGcode', () => {
     expect(moves.length).toBe(4)
     expect(moves.flags[0]).toBe(MoveFlags.Extruding)
     expect(moves.flags[1]).toBe(MoveFlags.Retracting)
-    expect(moves.flags[2]).toBe(MoveFlags.Extruding)
+    expect(moves.flags[2]).toBe(0)
     expect(moves.flags[3]).toBe(MoveFlags.Extruding | MoveFlags.Arc | MoveFlags.Clockwise)
 
     expect(moves.i).toHaveLength(4)
@@ -175,6 +175,7 @@ describe('parseGcode', () => {
     expect(result.roles).toHaveLength(0)
     expect(result.speedRange).toBeNull()
     expect(result.fanRange).toBeNull()
+    expect(result.tempRange).toBeNull()
     expect(result.bounds).toBeNull()
     expect(result.truncated).toBe(false)
   })
@@ -289,5 +290,105 @@ describe('parseGcode', () => {
 
     expect([...moves.fan]).toEqual([0, 127, 127, 255, 0, 255, 0])
     expect(fanRange).toEqual({ min: 0, max: 255, count: 3 })
+  })
+
+  it('keeps E-only moves out of the extrusions and ranges', async () => {
+    const { moves, speedRange } = await parse([
+      'G92 E0',
+      'G1 F200 E3',
+      'G92 E0',
+      'G1 Z5 E1',
+      'G1 F1800 X10 E2'
+    ])
+
+    expect([...moves.flags]).toEqual([0, 0, MoveFlags.Extruding])
+    expect(speedRange).toEqual({ min: 1800, max: 1800, count: 1 })
+  })
+
+  it('records the active extruder temperature from M104 and M109', async () => {
+    const { moves, tempRange } = await parse([
+      'G1 X10 E1',
+      'M104 S200',
+      'G1 X20 E2',
+      'M109 S215.4',
+      'G1 X30 E3',
+      'M104 T1 S180',
+      'G1 X40 E4',
+      'M104 S-1',
+      'G1 X50 E5'
+    ])
+
+    expect([...moves.temp]).toEqual([0, 200, 215, 215, 215])
+    expect(tempRange).toEqual({ min: 0, max: 215, count: 3 })
+  })
+
+  it('records SET_HEATER_TEMPERATURE for extruders only', async () => {
+    const { moves } = await parse([
+      'SET_HEATER_TEMPERATURE HEATER=extruder TARGET=210',
+      'G1 X10 E1',
+      'SET_HEATER_TEMPERATURE HEATER=heater_bed TARGET=60',
+      'SET_HEATER_TEMPERATURE HEATER=extruder1 TARGET=230',
+      'G1 X20 E2',
+      'T1',
+      'G1 X30 E3',
+      'SET_HEATER_TEMPERATURE HEATER=extruder1',
+      'G1 X40 E4'
+    ])
+
+    expect([...moves.temp]).toEqual([210, 210, 230, 0])
+  })
+
+  it('tracks temperatures per extruder across tool changes', async () => {
+    const { moves } = await parse([
+      'M104 S200',
+      'M104 T1 S240',
+      'G1 X10 E1',
+      'T1',
+      'G1 X20 E2',
+      'T0',
+      'G1 X30 E3'
+    ])
+
+    expect([...moves.temp]).toEqual([200, 240, 200])
+  })
+
+  it('keeps the temperature on a tool change without one of its own, as MMU lanes share an extruder', async () => {
+    const { moves } = await parse([
+      'M104 S220',
+      'G1 X10 E1',
+      'T3',
+      'G1 X20 E2',
+      'M104 S230',
+      'G1 X30 E3'
+    ])
+
+    expect([...moves.temp]).toEqual([220, 220, 230])
+  })
+
+  it('shares the heater of the previous tool with a tool that has none of its own', async () => {
+    const { moves } = await parse([
+      'M104 S220',
+      'G1 X10 E1',
+      'T3',
+      'SET_HEATER_TEMPERATURE HEATER=extruder TARGET=230',
+      'G1 X20 E2',
+      'M104 S240',
+      'T0',
+      'G1 X30 E3'
+    ])
+
+    expect([...moves.temp]).toEqual([220, 230, 240])
+  })
+
+  it('keeps the temperature across an M600 colour change', async () => {
+    const { moves } = await parse([
+      'M104 S200',
+      'G1 X10 E1',
+      'M600',
+      'G1 X20 E2'
+    ])
+
+    expect([...moves.tool]).toEqual([0, 1])
+    expect([...moves.temp]).toEqual([200, 200])
   })
 })

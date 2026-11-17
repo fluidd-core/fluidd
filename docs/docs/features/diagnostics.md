@@ -49,8 +49,9 @@ Each chart can be configured with:
 
 ### Metrics Collector
 
-Each plotted metric runs a collector, based on user-defined JavaScript code
-executed in a sandboxed worker for safety.
+Each plotted metric runs a collector, based on user-defined JavaScript code.
+Collectors run in an isolated worker that only sees the printer state: it
+cannot make network requests or read anything else Fluidd stores.
 Metrics are collected once a second or every 250ms when a stepper motor is active.
 
 !!! warning "Performance"
@@ -73,19 +74,19 @@ Here are a few more examples to get you started:
 **Temperature delta** — track how far the bed temperature is from its target:
 
 ```javascript
-return state.heater_bed.temperature - state.heater_bed.target
+printer.heater_bed.temperature - printer.heater_bed.target
 ```
 
 **Fan speed** — plot the part cooling fan speed as a percentage:
 
 ```javascript
-return state.fan.speed * 100
+printer.fan.speed * 100
 ```
 
 **Extruder power** — monitor how hard the extruder heater is working:
 
 ```javascript
-return state.extruder.power * 100
+printer.extruder.power * 100
 ```
 
 ### Metrics Explorer

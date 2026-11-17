@@ -25,7 +25,8 @@ const groupPrefixes = {
   tool: 'T',
   role: 'R',
   speed: 'S',
-  fan: 'F'
+  fan: 'F',
+  temp: 'C'
 } as const
 
 const TRAVELING = -1
@@ -109,6 +110,9 @@ const moveToSVGPath = (moves: MoveStore, index: number, fromX: number, fromY: nu
   return `L${formatCoordinate(toX)},${formatCoordinate(toY)}`
 }
 
+// `startMove` is the layer's anchor: the move whose endpoint is the layer start.
+// It seeds the toolhead and is drawn as a zero-length segment. Every emitted
+// `d` must start with a moveto - one starting with `L` or `A` renders nothing.
 export const buildLayerPaths = (
   moves: MoveStore,
   startMove: number,
@@ -122,10 +126,11 @@ export const buildLayerPaths = (
     includeTools = false,
     colorBy = 'tool',
     speedRange,
-    fanRange
+    fanRange,
+    tempRange
   } = options ?? {}
 
-  const { x, y, tool, role, speed, fan, flags: moveFlags, length } = moves
+  const { x, y, tool, role, speed, fan, temp, flags: moveFlags, length } = moves
 
   const groupPrefix = groupPrefixes[colorBy]
 
@@ -171,6 +176,9 @@ export const buildLayerPaths = (
           break
         case 'fan':
           group = rangeBucket(fan[index], fanRange)
+          break
+        case 'temp':
+          group = rangeBucket(temp[index], tempRange)
           break
         default:
           group = currentTool

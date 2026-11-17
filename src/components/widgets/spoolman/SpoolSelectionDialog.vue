@@ -700,7 +700,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         }
 
         let requiredLength = this.currentFile?.filament_total
-        if (requiredLength && ['printing', 'paused'].includes(this.printerState)) {
+        if (requiredLength && (this.printerPrinting || this.printerPaused)) {
           // if we're currently running a print job, subtract the already printed amount from the required length
           requiredLength -= this.$typedState.printer.printer.print_stats?.filament_used ?? 0
           requiredLength = Math.max(requiredLength, 0)

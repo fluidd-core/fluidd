@@ -88,6 +88,7 @@ interface TestMove {
   role?: number
   speed?: number
   fan?: number
+  temp?: number
 }
 
 const createMoveStore = (moves: readonly TestMove[]): MoveStore => ({
@@ -101,6 +102,7 @@ const createMoveStore = (moves: readonly TestMove[]): MoveStore => ({
   role: Uint8Array.from(moves, move => move.role ?? 0),
   speed: Uint16Array.from(moves, move => move.speed ?? 0),
   fan: Uint8Array.from(moves, move => move.fan ?? 0),
+  temp: Uint16Array.from(moves, move => move.temp ?? 0),
   filePosition: Uint32Array.from(moves, (_, index) => index * 10),
   length: moves.length
 })
@@ -276,6 +278,21 @@ describe('buildLayerPaths', () => {
     expect(paths.extrusions).toEqual({
       F0: 'M0,0L10,0M20,0L30,0',
       F10: 'M10,0L20,0'
+    })
+  })
+
+  it('groups extrusions by temperature bucket', () => {
+    const paths = buildLayerPaths(createMoveStore([
+      { x: 0, y: 0 },
+      { x: 10, y: 0, temp: 0, flags: MoveFlags.Extruding },
+      { x: 20, y: 0, temp: 200, flags: MoveFlags.Extruding },
+      { x: 30, y: 0, temp: 250, flags: MoveFlags.Extruding }
+    ]), 0, 3, { colorBy: 'temp', tempRange: { min: 0, max: 250 } })
+
+    expect(paths.extrusions).toEqual({
+      C0: 'M0,0L10,0',
+      C8: 'M10,0L20,0',
+      C10: 'M20,0L30,0'
     })
   })
 })

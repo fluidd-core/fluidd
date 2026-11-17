@@ -346,6 +346,14 @@
             :color="stop.color"
           />
         </template>
+        <template v-else-if="colorMode === 'temp'">
+          <gcode-preview-tool
+            v-for="stop in tempStops"
+            :key="`temp:${stop.color}`"
+            :label="Math.round(stop.value)"
+            :color="stop.color"
+          />
+        </template>
         <template v-else-if="tools.length > 0">
           <gcode-preview-tool
             v-for="(color, tool) in toolColors"
@@ -593,6 +601,11 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
         text: this.$t('app.gcode.label.color_by_fan').toString(),
         value: 'fan',
         icon: '$fan'
+      },
+      {
+        text: this.$t('app.gcode.label.color_by_temp').toString(),
+        value: 'temp',
+        icon: '$thermometer'
       }
     ]
   }
@@ -615,6 +628,10 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
   get fanStops (): readonly ColorStop[] {
     return this.$typedGetters['gcodePreview/getFanStops']
+  }
+
+  get tempStops (): readonly ColorStop[] {
+    return this.$typedGetters['gcodePreview/getTempStops']
   }
 
   speedLabel (stop: ColorStop): string {
@@ -736,6 +753,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       colorBy: this.colorMode,
       speedRange: this.$typedState.gcodePreview.speedRange,
       fanRange: this.$typedState.gcodePreview.fanRange,
+      tempRange: this.$typedState.gcodePreview.tempRange,
       includeExtrusions: this.showExtrusions,
       includeMoves: this.showMoves,
       includeRetractions: this.showRetractions,

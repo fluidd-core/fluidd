@@ -8,6 +8,7 @@ export interface GcodePreviewState {
   roles: readonly ExtrusionRole[];
   speedRange: Readonly<ValueRange> | null;
   fanRange: Readonly<ValueRange> | null;
+  tempRange: Readonly<ValueRange> | null;
   bounds: Readonly<BBox> | null;
   file: AppFile | AppFileWithMeta | null;
   parserProgress: number;
@@ -41,7 +42,7 @@ export const ExtrusionRole = {
 
 export type ExtrusionRole = typeof ExtrusionRole[keyof typeof ExtrusionRole]
 
-export type ColorMode = 'tool' | 'role' | 'speed' | 'fan'
+export type ColorMode = 'tool' | 'role' | 'speed' | 'fan' | 'temp'
 
 /**
  * Columnar store of parsed moves, transferred from the parser worker.
@@ -51,7 +52,8 @@ export type ColorMode = 'tool' | 'role' | 'speed' | 'fan'
  * `i`/`j` are arc centre offsets, still indexed by move but truncated after the
  * last `Arc` move, so only read them when that move has the `Arc` flag set.
  *
- * `speed` is in mm/min, `fan` is the part cooling fan as `M106 S` (0-255).
+ * `speed` is in mm/min, `fan` is the part cooling fan as `M106 S` (0-255),
+ * `temp` is in °C.
  */
 export interface MoveStore {
   readonly x: Float32Array<ArrayBuffer>;
@@ -64,6 +66,7 @@ export interface MoveStore {
   readonly role: Uint8Array<ArrayBuffer>;
   readonly speed: Uint16Array<ArrayBuffer>;
   readonly fan: Uint8Array<ArrayBuffer>;
+  readonly temp: Uint16Array<ArrayBuffer>;
   readonly filePosition: Uint32Array<ArrayBuffer>;
   readonly length: number;
 }
@@ -87,6 +90,7 @@ export interface BuildLayerPathsOptions {
   colorBy?: ColorMode;
   speedRange?: Readonly<MinMax> | null;
   fanRange?: Readonly<MinMax> | null;
+  tempRange?: Readonly<MinMax> | null;
 }
 
 export interface Point {
