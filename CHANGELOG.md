@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.38.1](https://github.com/fluidd-core/fluidd/compare/v1.38.0...v1.38.1) (2026-11-17)
+
+### Features
+
+* **GcodePreview:** color by temperature ([#2030](https://github.com/fluidd-core/fluidd/issues/2030)) ([85e2c2c](https://github.com/fluidd-core/fluidd/commit/85e2c2cea353b519f467f7824c5baff160ae49ff))
+
+### Bug Fixes
+
+* allow Klipper restart when not ready ([#2033](https://github.com/fluidd-core/fluidd/issues/2033)) ([14802c1](https://github.com/fluidd-core/fluidd/commit/14802c19ee32672ff3ad3258fae8a38c8f91a73f))
+* isolate sandboxed eval in an opaque frame ([1cd347d](https://github.com/fluidd-core/fluidd/commit/1cd347d57219b5550466f4eccd7e1c2273aee6d6))
+
 ## [1.38.0](https://github.com/fluidd-core/fluidd/compare/v1.37.7...v1.38.0) (2026-11-12)
 
 ### Features
