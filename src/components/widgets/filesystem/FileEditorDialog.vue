@@ -329,8 +329,8 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
         ? { restart: options }
         : options
 
-      if (this.configMap?.serviceSupported && restart) {
-        this.$emit('save', this.updatedContent, this.configMap.service)
+      if (restart && this.canSaveAndRestart) {
+        this.$emit('save', this.updatedContent, this.configMap?.service)
         this.open = false
       } else {
         this.$emit(saveAs ? 'save-as' : 'save', this.updatedContent)
