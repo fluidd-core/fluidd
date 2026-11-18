@@ -53,6 +53,8 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
+  editorDisposables: Monaco.IDisposable[] = []
+
   @Watch('filename')
   onFilenameChange () {
     if (this.saveViewState()) {
@@ -117,44 +119,71 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     }))
 
     if (!this.readonly) {
-      this.editor.addAction({
+      this.editorDisposables.push(this.editor.addAction({
         id: 'action-save-file',
         label: this.$tc('app.general.btn.save'),
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
         run: () => {
           this.$emit('save')
         }
-      })
+      }))
 
-      this.editor.addAction({
+      this.editorDisposables.push(this.editor.addAction({
         id: 'action-save-file-as',
         label: this.$tc('app.general.btn.save_as'),
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
         run: () => {
           this.$emit('save-as')
         }
-      })
+      }))
+
+      const lineCommentActions = [
+        { id: 'editor.action.addCommentLine', key: monaco.KeyCode.KeyC, order: 1.4 },
+        { id: 'editor.action.removeCommentLine', key: monaco.KeyCode.KeyU, order: 1.5 }
+      ]
+
+      for (const { id, key, order } of lineCommentActions) {
+        const action = this.editor.getAction(id)
+
+        if (action) {
+          // Monaco has no public API to add a built-in action to the context menu
+          this.editorDisposables.push(this.editor.addAction({
+            id: `action-context-menu-${id}`,
+            label: action.label,
+            keybindings: [
+              monaco.KeyMod.chord(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK,
+                monaco.KeyMod.CtrlCmd | key
+              )
+            ],
+            keybindingContext: 'editorTextFocus',
+            contextMenuGroupId: '1_modification',
+            contextMenuOrder: order,
+            run: () => action.run()
+          }))
+        }
+      }
     }
 
     if (this.canSaveAndRestart) {
-      this.editor.addAction({
+      this.editorDisposables.push(this.editor.addAction({
         id: 'action-save-file-restart',
         label: this.$tc('app.general.btn.save_restart'),
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyS],
         run: () => {
           this.$emit('save-and-restart')
         }
-      })
+      }))
     }
 
-    this.editor.addAction({
+    this.editorDisposables.push(this.editor.addAction({
       id: 'action-emergency-stop',
       label: this.$tc('app.general.tooltip.estop'),
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyE],
       run: () => {
         this.$emit('emergency-stop')
       }
-    })
+    }))
 
     // Define the model. The filename will map to the supported languages.
     const model = markRaw(monaco.editor.createModel(
@@ -162,6 +191,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       undefined,
       monaco.Uri.file(this.pathFilename)
     ))
+    this.editorDisposables.push(model)
     this.editor.setModel(model)
 
     const restoreViewStateStorage = this.restoreViewStateStorage
@@ -223,9 +253,9 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   destroyed () {
     this.saveViewState()
 
-    monaco?.editor.getModels().forEach(model => model.dispose())
-
     this.editor?.dispose()
+
+    this.editorDisposables.forEach(disposable => disposable.dispose())
   }
 }
 </script>
