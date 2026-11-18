@@ -564,6 +564,7 @@ app:
       color_by_feature: Typ funkcji
       color_by_speed: Prędkość (mm/s)
       color_by_tool: Narzędzie
+      color_by_temp: Temperatura (°C)
     btn:
       load_current_file: Wczytaj aktualny plik
     msg:
