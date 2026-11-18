@@ -53,13 +53,20 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
-  editorDisposables: Monaco.IDisposable[] = []
+  editorDisposables = markRaw<Monaco.IDisposable[]>([])
+
+  canSaveAndRestartKey: Monaco.editor.IContextKey<boolean> | null = null
 
   @Watch('filename')
   onFilenameChange () {
     if (this.saveViewState()) {
       this.viewStateHash = 'monaco.' + md5(this.apiFileUrl)
     }
+  }
+
+  @Watch('canSaveAndRestart')
+  onCanSaveAndRestartChange (value: boolean) {
+    this.canSaveAndRestartKey?.set(value)
   }
 
   get pathFilename (): string {
@@ -165,16 +172,19 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       }
     }
 
-    if (this.canSaveAndRestart) {
-      this.editorDisposables.push(this.editor.addAction({
-        id: 'action-save-file-restart',
-        label: this.$tc('app.general.btn.save_restart'),
-        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyS],
-        run: () => {
-          this.$emit('save-and-restart')
-        }
-      }))
-    }
+    this.canSaveAndRestartKey = markRaw(
+      this.editor.createContextKey('fluiddCanSaveAndRestart', !!this.canSaveAndRestart)
+    )
+
+    this.editorDisposables.push(this.editor.addAction({
+      id: 'action-save-file-restart',
+      label: this.$tc('app.general.btn.save_restart'),
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyS],
+      precondition: 'fluiddCanSaveAndRestart',
+      run: () => {
+        this.$emit('save-and-restart')
+      }
+    }))
 
     this.editorDisposables.push(this.editor.addAction({
       id: 'action-emergency-stop',

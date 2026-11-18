@@ -91,7 +91,7 @@ abstract class MonacoProviderBase<T> {
   }
 
   protected _createCacheKey (model: monaco.editor.ITextModel): string {
-    return `${model.id}@${model.getVersionId()}`
+    return `${model.id}@${model.getVersionId()}@${model.getLanguageId()}`
   }
 }
 
