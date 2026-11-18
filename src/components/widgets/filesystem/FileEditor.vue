@@ -153,9 +153,10 @@ export default class FileEditor extends Mixins(BrowserMixin) {
         const action = this.editor.getAction(id)
 
         if (action) {
-          // Monaco has no public API to add a built-in action to the context menu
+          // Monaco has no public API to add a built-in action to the context menu.
+          // Reusing its id replaces it, avoiding a duplicate Command Palette entry.
           this.editorDisposables.push(this.editor.addAction({
-            id: `action-context-menu-${id}`,
+            id,
             label: action.label,
             keybindings: [
               monaco.KeyMod.chord(
