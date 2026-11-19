@@ -171,15 +171,29 @@
           </app-btn>
 
           <app-btn
-            v-if="printerSupportsQgl"
+            v-if="printerSupportsQuadGantryLevel"
             :loading="hasWait($waits.onQGL)"
-            :disabled="printerBusy"
+            :disabled="printerBusy || !allHomed"
+            :color="quadGantryLevelApplied ? undefined : 'primary'"
             block
             class="mb-2"
             small
             @click="sendGcode('QUAD_GANTRY_LEVEL', $waits.onQGL)"
           >
-            {{ $t('app.general.btn.quad_gantry_level') }}
+            QUAD_GANTRY_LEVEL
+          </app-btn>
+
+          <app-btn
+            v-else-if="printerSupportsZTiltAdjust"
+            :loading="hasWait($waits.onZTilt)"
+            :disabled="printerBusy || !allHomed"
+            :color="zTiltApplied ? undefined : 'primary'"
+            block
+            class="mb-2"
+            small
+            @click="sendGcode('Z_TILT_ADJUST', $waits.onZTilt)"
+          >
+            Z_TILT_ADJUST
           </app-btn>
         </v-col>
       </v-row>
@@ -350,13 +364,6 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   // If we have a mesh loaded.
   get meshLoaded (): boolean {
     return !!this.currentMesh?.profile_name
-  }
-
-  // If the printer supports QGL
-  get printerSupportsQgl (): boolean {
-    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
-
-    return 'quad_gantry_level' in printerSettings
   }
 
   calibrate () {

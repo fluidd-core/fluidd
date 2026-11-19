@@ -43,7 +43,6 @@ app:
       presets: 預設值
       preview_gcode: 預覽 G-code
       print: 列印
-      quad_gantry_level: 龍門架調平
       reboot: 重新啟動
       recover: 恢復
       refresh: 重新整理

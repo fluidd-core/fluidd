@@ -191,7 +191,6 @@ app:
       preheat: Préchauffer
       presets: Préréglage
       preview_gcode: Prévisualiser le G-code
-      quad_gantry_level: QGL
       reboot: Redémarrer
       refresh: Rafraîchir
       remove: Supprimer

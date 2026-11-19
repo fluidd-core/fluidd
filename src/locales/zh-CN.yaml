@@ -173,7 +173,6 @@ app:
       presets: 预设
       preview_gcode: 预览 Gcode
       print: 打印
-      quad_gantry_level: 龙门架调平
       reboot: 重启
       recover: 恢复
       refresh: 刷新

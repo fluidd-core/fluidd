@@ -190,7 +190,6 @@ app:
       presets: Шаблон
       preview_gcode: Переглянути GCode
       print: Надрукувати
-      quad_gantry_level: QGL
       reboot: Перезавантаження
       recover: Відновити
       refresh: Обновити

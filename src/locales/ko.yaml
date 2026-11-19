@@ -153,7 +153,6 @@ app:
       preheat: 예열
       presets: 프리셋
       preview_gcode: Gcode 미리보기
-      quad_gantry_level: 쿼드겐트리 레벨링
       reboot: 재부팅
       refresh: 새로고침
       remove: 제거

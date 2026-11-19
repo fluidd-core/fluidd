@@ -522,7 +522,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { BedSize, KlippyApp } from '@/store/printer/types'
+import type { BedSize } from '@/store/printer/types'
 
 type Axis = 'X' | 'Y' | 'Z'
 
@@ -548,33 +548,8 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$filters.isColorDark(this.$typedState.config.uiSettings.theme.color)
   }
 
-  get klippyApp (): KlippyApp {
-    return this.$typedGetters['printer/getKlippyApp']
-  }
-
   get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
-  }
-
-  get printerSupportsQuadGantryLevel (): boolean {
-    return 'quad_gantry_level' in this.printerSettings
-  }
-
-  get printerSupportsZTiltAdjust (): boolean {
-    return (
-      'z_tilt' in this.printerSettings ||
-      (
-        this.klippyApp.isKalico &&
-        'z_tilt_ng' in this.printerSettings
-      )
-    )
-  }
-
-  get printerSupportsLeveling (): boolean {
-    return (
-      this.printerSupportsQuadGantryLevel ||
-      this.printerSupportsZTiltAdjust
-    )
   }
 
   get xStepClasses () {
@@ -692,15 +667,12 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   get levelingClasses () {
     const [primary, disabled] = this.printerSupportsQuadGantryLevel
       ? [
-          !this.$typedState.printer.printer.quad_gantry_level?.applied,
+          !this.quadGantryLevelApplied,
           this.hasWait(this.$waits.onQGL)
         ]
       : this.printerSupportsZTiltAdjust
         ? [
-            !(
-              this.$typedState.printer.printer.z_tilt?.applied ||
-              this.$typedState.printer.printer.z_tilt_ng?.applied
-            ),
+            !this.zTiltApplied,
             this.hasWait(this.$waits.onZTilt)
           ]
         : []

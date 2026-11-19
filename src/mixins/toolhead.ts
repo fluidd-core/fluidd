@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import type { Extruder } from '@/store/printer/types'
+import type { Extruder, KlippyApp } from '@/store/printer/types'
 
 @Component
 export default class ToolheadMixin extends Vue {
@@ -86,6 +86,53 @@ export default class ToolheadMixin extends Vue {
     const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.stepper_z1 != null
+  }
+
+  get printerSupportsQuadGantryLevel (): boolean {
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
+
+    return 'quad_gantry_level' in printerSettings
+  }
+
+  get printerSupportsZTiltAdjust (): boolean {
+    const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
+
+    if ('z_tilt' in printerSettings) {
+      return true
+    }
+
+    const klippyApp: KlippyApp = this.$typedGetters['printer/getKlippyApp']
+
+    return (
+      klippyApp.isKalico &&
+      'z_tilt_ng' in printerSettings
+    )
+  }
+
+  get printerSupportsLeveling (): boolean {
+    return (
+      this.printerSupportsQuadGantryLevel ||
+      this.printerSupportsZTiltAdjust
+    )
+  }
+
+  get quadGantryLevelApplied (): boolean {
+    return this.$typedState.printer.printer.quad_gantry_level?.applied === true
+  }
+
+  get zTiltApplied (): boolean {
+    const printer = this.$typedState.printer.printer
+
+    if (printer.z_tilt?.applied === true) {
+      return true
+    }
+
+    const klippyApp: KlippyApp = this.$typedGetters['printer/getKlippyApp']
+
+    return (
+      klippyApp.isKalico &&
+      printer.z_tilt_ng?.applied === true
+    )
   }
 
   get isManualProbeActive (): boolean {

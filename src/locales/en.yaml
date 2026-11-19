@@ -348,7 +348,6 @@ app:
       presets: Presets
       preview_gcode: Preview Gcode
       print: Print
-      quad_gantry_level: QGL
       reboot: Reboot
       recover: Recover
       refresh: Refresh

@@ -187,7 +187,6 @@ app:
       presets: Voreinstellungen
       preview_gcode: Gcode-Vorschau
       print: Drucken
-      quad_gantry_level: QGL
       reboot: Neustarten
       recover: Retten
       refresh: Aktualisieren

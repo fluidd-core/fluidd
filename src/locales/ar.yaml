@@ -127,7 +127,6 @@ app:
       preheat: تسخين
       presets: الإعدادات المسبقة
       preview_gcode: Gcode معاينة
-      quad_gantry_level: QGL
       reboot: اعادة التشغيل
       refresh: تحديث
       remove: ازالة

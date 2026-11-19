@@ -196,7 +196,6 @@ app:
       presets: Ön ayarlar
       preview_gcode: Gcode Önizle
       print: Yazdır
-      quad_gantry_level: Dört direk düzleme
       reboot: Yeniden başlat
       recover: Kurtar
       refresh: Yenile

@@ -194,7 +194,6 @@ app:
       presets: Предустановки
       preview_gcode: Предпросмотр G-кода
       print: Напечатать
-      quad_gantry_level: 4-точечное ВП (QGL)
       reboot: Перезагрузить
       recover: Восстановить
       refresh: Обновить

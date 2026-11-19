@@ -145,6 +145,8 @@ declare namespace Klipper {
 
       z_calibration: KalicoZCalibrationState;
 
+      z_tilt_ng: ZTiltState;
+
       // These keys are for external modules
 
       beacon: BeaconState;

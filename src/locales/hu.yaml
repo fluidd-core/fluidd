@@ -192,7 +192,6 @@ app:
       presets: Előbeállítások
       preview_gcode: G-Kód előnézet
       print: Nyomtatás
-      quad_gantry_level: QGL
       reboot: Újraindítás
       recover: Visszaállítás
       refresh: Frissítés

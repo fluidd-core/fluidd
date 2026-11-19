@@ -194,7 +194,6 @@ app:
       presets: プリセット
       preview_gcode: Gコードをプレビュー
       print: 印刷する
-      quad_gantry_level: 4方のガントリレベル
       reboot: 再起動
       recover: 回復する
       refresh: リフレッシュ

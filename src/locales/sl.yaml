@@ -226,7 +226,6 @@ app:
       presets: Prednastavitve
       preview_gcode: Predogled g-kode
       print: Tiskaj
-      quad_gantry_level: QGL
       reboot: Ponoven zagon
       recover: Obnovi
       refresh: Osveži

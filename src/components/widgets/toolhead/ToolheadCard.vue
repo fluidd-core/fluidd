@@ -179,7 +179,6 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
 import type { Macro } from '@/store/macros/types'
-import type { KlippyApp } from '@/store/printer/types'
 
 type Tool = {
   name: string,
@@ -198,10 +197,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean })
   readonly narrow?: boolean
 
-  get klippyApp (): KlippyApp {
-    return this.$typedGetters['printer/getKlippyApp']
-  }
-
   get liveExtruderVelocity (): number {
     return this.$typedState.printer.printer.motion_report?.live_extruder_velocity ?? 0
   }
@@ -212,20 +207,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSettings (): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
-  }
-
-  get printerSupportsQuadGantryLevel (): boolean {
-    return this.printerSettings.quad_gantry_level != null
-  }
-
-  get printerSupportsZTiltAdjust (): boolean {
-    return (
-      this.printerSettings.z_tilt != null ||
-      (
-        this.klippyApp.isKalico &&
-        this.printerSettings.z_tilt_ng != null
-      )
-    )
   }
 
   get printerSupportsBedScrewsAdjust (): boolean {

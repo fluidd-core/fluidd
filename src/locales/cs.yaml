@@ -126,7 +126,6 @@ app:
       preheat: Předehřát
       presets: Předvolby
       preview_gcode: Zobrazit Gcode
-      quad_gantry_level: QGL
       reboot: Reboot
       refresh: Obnovit
       remove: Odstranit

@@ -155,7 +155,6 @@ app:
       pause: Pausa
       preheat: Pré aquecer
       presets: Presets
-      quad_gantry_level: QGL
       reboot: Reiniciar
       remove: Remover
       remove_all: Remover todos

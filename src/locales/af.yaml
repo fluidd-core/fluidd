@@ -169,7 +169,6 @@ app:
       presets: Voorafinstellings
       preview_gcode: Gcode-Voorskou
       print: Druk
-      quad_gantry_level: QGL
       reboot: Herbegin
       recover: Herwin
       refresh: Vervris

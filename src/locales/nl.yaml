@@ -175,7 +175,6 @@ app:
       preheat: Voorverwarmen
       presets: Voorinstellingen
       preview_gcode: Voorbeeld van Gcode
-      quad_gantry_level: QGL
       reboot: Herstart
       refresh: Ververs
       remove: Verwijderen
