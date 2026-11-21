@@ -1,5 +1,8 @@
 ---
 title: Thermals
+description: >-
+  Monitor heaters, fans and sensors in Fluidd with real-time thermal charts,
+  chart smoothing, sensor colors and temperature presets.
 icon: lucide/thermometer
 ---
 

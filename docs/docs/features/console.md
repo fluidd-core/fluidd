@@ -1,5 +1,8 @@
 ---
 title: Console
+description: >-
+  Send G-code commands to Klipper and view responses in real time from Fluidd's
+  console, with search, command history and output filters.
 icon: lucide/terminal
 ---
 

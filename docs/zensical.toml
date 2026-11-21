@@ -162,6 +162,10 @@ assets_include = [
   "unpkg.com/glightbox@*",
 ]
 
+# Fallback <meta name="description"> from a page's first paragraph, for pages
+# missing a `description` in their frontmatter.
+[project.plugins.meta-descriptions]
+
 [project.plugins.minify]
 minify_html = true
 minify_js = true
@@ -173,7 +177,7 @@ minify_css = true
 "installation/kiauh.md" = "getting-started.md#kiauh"
 "installation/docker.md" = "getting-started.md#docker"
 "installation/manual.md" = "getting-started.md#manual-installation"
-"installation/fluiddpi.md" = "getting-started.md#fluiddpi"
+"installation/fluiddpi.md" = "getting-started.md"
 
 # Configuration
 "configuration/initial_setup.md" = "configuration.md#initial-setup"

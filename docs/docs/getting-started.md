@@ -1,5 +1,8 @@
 ---
 title: Getting Started
+description: >-
+  Install Fluidd alongside Klipper and Moonraker using KIAUH, Docker, a manual
+  setup, or the hosted fluidd.xyz.
 icon: lucide/rocket
 ---
 
@@ -110,43 +113,3 @@ network — no data leaves your network unless you configure it to.
 To connect, add `*://app.fluidd.xyz` to the `cors_domains` section of your
 `moonraker.conf`. See the
 [Moonraker example configuration](configuration.md#example-configuration).
-
-## FluiddPI
-
-!!! warning "FluiddPI is not recommended"
-    FluiddPI is not under active maintenance and we've had reports from users
-    finding issues while using it. We recommend using [KIAUH](#kiauh) to
-    install Fluidd instead.
-
-FluiddPI is a Raspberry Pi OS Lite image pre-configured with Klipper,
-Moonraker, and Fluidd.
-
-[View on GitHub](https://github.com/fluidd-core/FluiddPi){.md-button}
-
-### Download
-
-Download the latest release of
-[FluiddPI](https://github.com/fluidd-core/FluiddPi/releases/latest).
-
-### Flash
-
-1. Use a quality SD card from a reputable brand (Sandisk, Samsung, Kingston).
-2. The flashing process will **wipe your SD card**.
-
-For Windows: [Balena Etcher](https://www.balena.io/etcher/).
-For Linux/macOS: [Raspberry Pi Imager](https://www.raspberrypi.org/software/).
-
-### Configure
-
-1. Edit `fluiddpi-wpa-supplicant.txt` on the root of the flashed card to
-   configure Wi-Fi. Do not use WordPad (Windows) or TextEdit (macOS) — use
-   Notepad++, VSCode, or similar.
-   - If you have connectivity issues, try a wired ethernet connection.
-2. Boot the Pi from the card.
-3. SSH into the Pi at `fluiddpi.local` (or its IP address if Bonjour is
-   unavailable).
-   - Default credentials: `pi` / `raspberry`
-4. Run `sudo raspi-config` to change your password, timezone, locale, and
-   optionally the hostname.
-5. Access Fluidd at `http://fluiddpi.local` (or `http://yourhostname.local`
-   if you changed the hostname).

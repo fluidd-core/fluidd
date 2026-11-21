@@ -1,5 +1,8 @@
 ---
 title: System & Notifications
+description: >-
+  Manage your printer host, services, Moonraker database, peripherals and power
+  devices in Fluidd, and stay on top of notifications.
 icon: lucide/bell
 ---
 

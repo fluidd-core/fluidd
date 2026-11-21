@@ -1,5 +1,8 @@
 ---
 title: Development
+description: >-
+  Contribute to Fluidd: architecture overview, Dev Container setup, running the
+  app and docs locally, unit tests, and translation tooling.
 icon: lucide/wrench
 ---
 

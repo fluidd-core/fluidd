@@ -1,5 +1,8 @@
 ---
 title: Multiple Printers
+description: >-
+  Connect to and switch between multiple Klipper printers from a single Fluidd
+  browser tab, each with its own Moonraker instance.
 icon: lucide/network
 ---
 

@@ -1,5 +1,8 @@
 ---
 title: Printing
+description: >-
+  Preview, monitor and manage prints in Fluidd: G-code viewer, exclude object,
+  thumbnails, bed mesh, print history and firmware retraction.
 icon: lucide/printer
 ---
 

@@ -1,5 +1,8 @@
 ---
 title: Third-Party Integrations
+description: >-
+  Fluidd's built-in support for third-party projects: Happy Hare, AFC, Beacon,
+  Cartographer, Kalico, Spoolman, Crowsnest, Obico and more.
 icon: lucide/puzzle
 ---
 

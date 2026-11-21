@@ -1,5 +1,8 @@
 ---
 title: Diagnostics
+description: >-
+  Plot printer metrics on Fluidd's customizable diagnostics dashboard, with
+  configurable charts, JavaScript metrics collectors and an explorer.
 icon: lucide/gauge
 ---
 
