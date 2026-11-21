@@ -1,5 +1,8 @@
 ---
 title: Multi-Material
+description: >-
+  Use Fluidd with multiple extruders and extruder steppers, and track filament
+  spools with the Spoolman integration.
 icon: lucide/layers
 ---
 

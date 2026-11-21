@@ -1,5 +1,8 @@
 ---
 title: File Manager
+description: >-
+  Browse, upload, edit and manage G-code, configuration and log files on your
+  printer from Fluidd's file manager.
 icon: lucide/folder
 ---
 

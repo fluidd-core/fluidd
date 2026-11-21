@@ -1,5 +1,8 @@
 ---
 title: File Editor
+description: >-
+  Edit Klipper and Moonraker config files, G-code and logs in your browser with
+  Fluidd's built-in Monaco editor and syntax highlighting.
 icon: lucide/file-text
 ---
 

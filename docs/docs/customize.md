@@ -1,5 +1,8 @@
 ---
 title: Customize
+description: >-
+  Customize Fluidd's dashboard layout, choose a theme preset or custom colors,
+  add backgrounds and styling, and hide components you don't need.
 icon: lucide/palette
 ---
 

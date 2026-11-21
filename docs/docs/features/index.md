@@ -1,5 +1,8 @@
 ---
 title: Features
+description: >-
+  An overview of Fluidd's features for monitoring, controlling and managing your
+  Klipper 3D printer, with links to each feature's page.
 icon: lucide/sparkles
 ---
 

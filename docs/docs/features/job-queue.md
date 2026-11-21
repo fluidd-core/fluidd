@@ -1,5 +1,8 @@
 ---
 title: Job Queue
+description: >-
+  Queue multiple G-code files in Fluidd and print them in order, with
+  Moonraker's job queue and optional automatic transitions.
 icon: lucide/list-ordered
 ---
 

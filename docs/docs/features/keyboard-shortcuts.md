@@ -1,5 +1,8 @@
 ---
 title: Keyboard Shortcuts
+description: >-
+  Keyboard shortcuts for navigating between pages and controlling your printer
+  in Fluidd, and how to enable them.
 icon: lucide/keyboard
 ---
 

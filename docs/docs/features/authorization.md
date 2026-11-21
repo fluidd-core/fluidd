@@ -1,5 +1,8 @@
 ---
 title: Authorization
+description: >-
+  Secure Fluidd with Moonraker authorization: API keys, user accounts, forced
+  logins and trusted clients, password recovery and LDAP.
 icon: lucide/shield-check
 ---
 

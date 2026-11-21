@@ -29,7 +29,10 @@ Read before touching anything under `docs/`.
 
 - Before committing, both must be clean: `markdownlint --config docs/.markdownlint.json docs/docs/`
   and `codespell docs/docs/`
-- Frontmatter: `title` (required), `icon` (top-level pages only, Lucide)
+- Frontmatter: `title` (required), `description` (required — folded `>-` scalar, ~110–155 chars;
+  used for `<meta name="description">` and social cards, which cut longer text), `icon`
+  (top-level pages only, Lucide). The `meta-descriptions` plugin only fills in pages missing one
+  from their first paragraph — don't rely on it; its `trim` option cuts mid-sentence, keep it off
 - Internal links are **relative `.md` paths** (`printing.md#thumbnails`) — site-absolute links
   skip link validation. Images are site-absolute: `/assets/images/…` (in
   `docs/docs/assets/images/`)

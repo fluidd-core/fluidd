@@ -1,5 +1,8 @@
 ---
 title: FAQ
+description: >-
+  Answers to common questions about Fluidd, Klipper and Moonraker — connection
+  problems, updates, cameras, printing, system and customization.
 icon: lucide/circle-help
 ---
 

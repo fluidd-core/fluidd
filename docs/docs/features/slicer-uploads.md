@@ -1,5 +1,8 @@
 ---
 title: Slicer Uploads
+description: >-
+  Upload G-code straight to your printer from OrcaSlicer, PrusaSlicer,
+  SuperSlicer or Cura through Moonraker's OctoPrint compatibility.
 icon: lucide/upload
 ---
 

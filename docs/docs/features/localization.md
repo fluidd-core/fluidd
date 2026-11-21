@@ -1,5 +1,8 @@
 ---
 title: Localization
+description: >-
+  Change Fluidd's language or let it follow your browser, and help translate
+  Fluidd through Weblate.
 icon: lucide/languages
 ---
 

@@ -1,5 +1,8 @@
 ---
 title: Timelapse
+description: >-
+  Record and manage print timelapses in Fluidd with the Moonraker timelapse
+  component, using layer macro or hyperlapse modes.
 icon: lucide/clapperboard
 ---
 

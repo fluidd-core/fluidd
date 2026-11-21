@@ -1,5 +1,8 @@
 ---
 title: Configuration
+description: >-
+  Configure Klipper and Moonraker for Fluidd with fluidd-config or manually,
+  including CORS, trusted clients, multiple printers and common fixes.
 icon: lucide/settings
 ---
 

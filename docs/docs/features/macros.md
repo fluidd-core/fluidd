@@ -1,5 +1,8 @@
 ---
 title: Macros
+description: >-
+  Organize Klipper G-code macros in Fluidd with categories and colors, add
+  Toolhead card buttons, and use interactive macro prompts.
 icon: lucide/square-code
 ---
 

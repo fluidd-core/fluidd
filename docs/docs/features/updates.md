@@ -1,5 +1,8 @@
 ---
 title: Updates
+description: >-
+  Update Klipper, Moonraker, Fluidd and your host system from Fluidd's update
+  manager, or manually and with KIAUH, and recover from failed updates.
 icon: lucide/refresh-cw
 ---
 

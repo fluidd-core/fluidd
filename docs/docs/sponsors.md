@@ -1,5 +1,8 @@
 ---
 title: Sponsors
+description: >-
+  Fluidd is a free, open-source project maintained by volunteers. Meet our
+  sponsors and find out how to support the project.
 icon: lucide/heart
 ---
 

@@ -1,5 +1,8 @@
 ---
 title: Cameras
+description: >-
+  Set up camera streams in Fluidd — MJPEG, HLS, WebRTC (camera-streamer, go2rtc,
+  MediaMTX), IP cameras and HTTP pages — and pick the right type.
 icon: lucide/camera
 ---
 
