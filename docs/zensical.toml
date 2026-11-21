@@ -162,8 +162,8 @@ assets_include = [
   "unpkg.com/glightbox@*",
 ]
 
-# Per-page <meta name="description"> from each page's first paragraph — pages
-# have no `description` frontmatter, so they'd all share site_description.
+# Fallback <meta name="description"> from a page's first paragraph, for pages
+# missing a `description` in their frontmatter.
 [project.plugins.meta-descriptions]
 
 [project.plugins.minify]
