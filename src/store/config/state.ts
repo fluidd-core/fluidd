@@ -32,6 +32,7 @@ export const createState = (): ConfigState => {
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10,
         toolheadControlStyle: 'cross',
+        toolheadDropToolGcode: 'TOOL_DROPOFF',
         toolheadMoveDistances: [0.1, 1, 10, 25, 50, 100],
         toolheadXYMoveDistances: [1, 10, 50],
         toolheadZMoveDistances: [0.1, 1, 10],
