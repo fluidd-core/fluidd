@@ -54,6 +54,8 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
+    let streamUrl: string | undefined
+
     try {
       this.updateStatus('connecting')
 
@@ -61,13 +63,45 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
       url.searchParams.set('cacheBust', Date.now().toString())
 
+      const currentStreamUrl = streamUrl = url.toString()
+
+      this.updateRawCameraUrl(currentStreamUrl)
+
       const worker = this.worker = markRaw(new MjpegWorker())
 
+      let hasReceivedFrame = false
+
+      const handleWorkerFailure = () => {
+        if (hasReceivedFrame) {
+          this.updateStatus('error')
+
+          this.stopPlayback()
+        } else {
+          this.startNativePlayback(currentStreamUrl)
+        }
+      }
+
+      worker.onerror = (event: ErrorEvent) => {
+        if (worker !== this.worker) {
+          return
+        }
+
+        consola.error(`[MjpegstreamerCamera] worker failed "${this.camera.name}"`, event.message)
+
+        handleWorkerFailure()
+      }
+
       worker.onmessage = (event: MessageEvent<MjpegWorkerResponseMessage>) => {
+        if (worker !== this.worker) {
+          return
+        }
+
         const message = event.data
 
         switch (message.action) {
           case 'frame': {
+            hasReceivedFrame = true
+
             const endTime = performance.now()
             const currentTime = endTime - this.startTime
 
@@ -94,9 +128,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
             break
 
           case 'error':
-            this.updateStatus('error')
-
-            this.stopPlayback()
+            handleWorkerFailure()
 
             break
         }
@@ -104,7 +136,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
       const message: MjpegWorkerRequestMessage = {
         action: 'start',
-        url: url.toString()
+        url: currentStreamUrl
       }
 
       this.time = 0
@@ -114,8 +146,24 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
     } catch (e) {
       consola.error(`[MjpegstreamerCamera] failed to start playback "${this.camera.name}"`, e)
 
-      this.updateStatus('error')
+      if (streamUrl != null) {
+        this.startNativePlayback(streamUrl)
+      } else {
+        this.updateStatus('error')
+      }
     }
+  }
+
+  // WebKit cancels multipart/x-mixed-replace loads unless they come from an image,
+  // so fetching the stream fails there, while the image element can still play it
+  startNativePlayback (url: string) {
+    consola.debug(`[MjpegstreamerCamera] using native playback for "${this.camera.name}"`)
+
+    this.worker?.terminate()
+    this.worker = null
+    this.updateStatus('connecting')
+    this.updateFramesPerSecond(-1)
+    this.cameraImage.src = url
   }
 
   stopPlayback () {
