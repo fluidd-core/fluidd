@@ -998,7 +998,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       isFile: true,
       value: this.fileEditorDialogState.filename,
       handler: (filename: string) => {
-        this.handleSaveFileChanges(contents, serviceToRestart, filename ?? undefined)
+        this.handleSaveFileChanges(contents, serviceToRestart, filename)
       }
     }
   }
