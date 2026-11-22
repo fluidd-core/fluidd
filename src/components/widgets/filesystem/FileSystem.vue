@@ -997,18 +997,14 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       label: this.$t('app.file_system.label.file_name'),
       isFile: true,
       value: this.fileEditorDialogState.filename,
-      handler: (name: string) => {
-        if (name != null) {
-          this.fileEditorDialogState.filename = name
-        }
-
-        this.handleSaveFileChanges(contents, serviceToRestart)
+      handler: (filename: string) => {
+        this.handleSaveFileChanges(contents, serviceToRestart, filename ?? undefined)
       }
     }
   }
 
-  async handleSaveFileChanges (contents: string, serviceToRestart?: string) {
-    const file = new File([contents], this.fileEditorDialogState.filename)
+  async handleSaveFileChanges (contents: string, serviceToRestart?: string, filename: string = this.fileEditorDialogState.filename) {
+    const file = new File([contents], filename)
 
     if (this.fileEditorDialogState.open) {
       this.fileEditorDialogState.loading = true
@@ -1022,6 +1018,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       return
     }
 
+    this.fileEditorDialogState.filename = filename
     this.fileEditorDialogState.contents = contents
 
     if (serviceToRestart) {

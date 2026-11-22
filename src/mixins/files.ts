@@ -197,6 +197,8 @@ export default class FilesMixin extends Vue {
    * @param root The root we're downloading from.
    * @param andPrint If we should attempt to print this file or not.
    * @param options Axios request options
+   * @returns The response, or `undefined` if the upload failed or was cancelled.
+   * Failures are logged and reported to the user here.
    */
   async uploadFile (file: File, path: string, root: string, andPrint: boolean, uid?: string, options?: AxiosRequestConfig) {
     const filepath = path
@@ -241,9 +243,9 @@ export default class FilesMixin extends Vue {
       return response
     } catch (error: unknown) {
       if (!axios.isCancel(error)) {
-        consola.error('[FileUpload] file', error)
+        consola.error(`[FileUpload] ${filepath}`, error)
 
-        EventBus.$emit(this.$t('app.file_system.msg.upload_failed', { filename: filepath }).toString(), { type: 'error' })
+        EventBus.$emit(this.$t('app.file_system.msg.upload_failed', { filepath }).toString(), { type: 'error' })
       }
     } finally {
       this.$typedDispatch('files/removeFileUpload', uid)
@@ -328,19 +330,6 @@ export default class FilesMixin extends Vue {
 
     const token = this.isTrustedUser ? null : await SocketActions.accessOneshotToken()
 
-    return axios.postForm<{
-      result: {
-        item: {
-          modified?: number,
-          size?: number,
-          permissions?: string,
-          path: string,
-          root: string
-        }
-        print_started?: boolean,
-        print_queued?: boolean,
-        action: 'create_file'
-      }
-    }>(`${this.apiUrl}/server/files/upload${token ? `?token=${token}` : ''}`, formData, options)
+    return axios.postForm<Moonraker.Files.UploadResponse>(`${this.apiUrl}/server/files/upload${token ? `?token=${token}` : ''}`, formData, options)
   }
 }
