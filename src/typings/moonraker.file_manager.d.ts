@@ -17,6 +17,12 @@ declare namespace Moonraker.Files {
     };
   }
 
+  export interface UploadResponse extends ChangeResponse {
+    action: 'create_file';
+    print_started?: boolean;
+    print_queued?: boolean;
+  }
+
   export interface ZipResponse {
     action: 'zip_files';
     destination: ChangeItem;

@@ -231,6 +231,7 @@ app:
     msg:
       not_found: No files found
       processing: Processing
+      upload_failed: Unable to upload {filepath}
     overlay:
       drag_files_folders_upload: <strong>Drag</strong> files and folders here to
         upload

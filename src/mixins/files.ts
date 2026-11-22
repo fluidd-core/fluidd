@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { AppUser } from '@/store/auth/types'
 import downloadUrl from '@/util/download-url'
 import { SocketActions } from '@/api/socketActions'
+import { EventBus } from '@/eventBus'
 
 type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestConfig<D> & (
   T extends string
@@ -196,6 +197,8 @@ export default class FilesMixin extends Vue {
    * @param root The root we're downloading from.
    * @param andPrint If we should attempt to print this file or not.
    * @param options Axios request options
+   * @returns The response, or `undefined` if the upload failed or was cancelled.
+   * Failures are logged and reported to the user here.
    */
   async uploadFile (file: File, path: string, root: string, andPrint: boolean, uid?: string, options?: AxiosRequestConfig) {
     const filepath = path
@@ -238,6 +241,12 @@ export default class FilesMixin extends Vue {
       abortController.abort()
 
       return response
+    } catch (error: unknown) {
+      if (!axios.isCancel(error)) {
+        consola.error(`[FileUpload] ${filepath}`, error)
+
+        EventBus.$emit(this.$t('app.file_system.msg.upload_failed', { filepath }).toString(), { type: 'error' })
+      }
     } finally {
       this.$typedDispatch('files/removeFileUpload', uid)
     }
@@ -296,11 +305,7 @@ export default class FilesMixin extends Vue {
       const fileState = currentUploads.find(u => u.uid === fileUpload.uid)
 
       if (fileState && !fileState?.cancelled) {
-        try {
-          await this.uploadFile(fileUpload.fileObject, fileUpload.fullPath, root, andPrint, fileUpload.uid)
-        } catch (error: unknown) {
-          consola.error('[FileUpload] file', error)
-        }
+        await this.uploadFile(fileUpload.fileObject, fileUpload.fullPath, root, andPrint, fileUpload.uid)
       } else {
         this.$typedDispatch('files/removeFileUpload', fileUpload.uid)
       }
@@ -325,19 +330,6 @@ export default class FilesMixin extends Vue {
 
     const token = this.isTrustedUser ? null : await SocketActions.accessOneshotToken()
 
-    return axios.postForm<{
-      result: {
-        item: {
-          modified?: number,
-          size?: number,
-          permissions?: string,
-          path: string,
-          root: string
-        }
-        print_started?: boolean,
-        print_queued?: boolean,
-        action: 'create_file'
-      }
-    }>(`${this.apiUrl}/server/files/upload${token ? `?token=${token}` : ''}`, formData, options)
+    return axios.postForm<Moonraker.Files.UploadResponse>(`${this.apiUrl}/server/files/upload${token ? `?token=${token}` : ''}`, formData, options)
   }
 }

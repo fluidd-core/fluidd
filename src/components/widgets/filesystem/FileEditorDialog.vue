@@ -289,6 +289,13 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     this.editorReady = false
   }
 
+  @Watch('contents')
+  onContentsChanged (value: string) {
+    if (this.open) {
+      this.lastSavedContent = value
+    }
+  }
+
   beforeDestroy () {
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
   }
@@ -331,12 +338,9 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
 
       if (restart && this.canSaveAndRestart) {
         this.$emit('save', this.updatedContent, this.configMap?.service)
-        this.open = false
       } else {
         this.$emit(saveAs ? 'save-as' : 'save', this.updatedContent)
       }
-
-      this.lastSavedContent = this.updatedContent
     }
   }
 
