@@ -1014,9 +1014,19 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.fileEditorDialogState.loading = true
     }
 
-    await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
+    const response = await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
 
     this.fileEditorDialogState.loading = false
+
+    if (!response) {
+      return
+    }
+
+    this.fileEditorDialogState.contents = contents
+
+    if (serviceToRestart) {
+      this.fileEditorDialogState.open = false
+    }
 
     switch (serviceToRestart) {
       case 'moonraker':

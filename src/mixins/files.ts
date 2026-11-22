@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { AppUser } from '@/store/auth/types'
 import downloadUrl from '@/util/download-url'
 import { SocketActions } from '@/api/socketActions'
+import { EventBus } from '@/eventBus'
 
 type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestConfig<D> & (
   T extends string
@@ -238,6 +239,12 @@ export default class FilesMixin extends Vue {
       abortController.abort()
 
       return response
+    } catch (error: unknown) {
+      if (!axios.isCancel(error)) {
+        consola.error('[FileUpload] file', error)
+
+        EventBus.$emit(this.$t('app.file_system.msg.upload_failed', { filename: filepath }).toString(), { type: 'error' })
+      }
     } finally {
       this.$typedDispatch('files/removeFileUpload', uid)
     }
@@ -296,11 +303,7 @@ export default class FilesMixin extends Vue {
       const fileState = currentUploads.find(u => u.uid === fileUpload.uid)
 
       if (fileState && !fileState?.cancelled) {
-        try {
-          await this.uploadFile(fileUpload.fileObject, fileUpload.fullPath, root, andPrint, fileUpload.uid)
-        } catch (error: unknown) {
-          consola.error('[FileUpload] file', error)
-        }
+        await this.uploadFile(fileUpload.fileObject, fileUpload.fullPath, root, andPrint, fileUpload.uid)
       } else {
         this.$typedDispatch('files/removeFileUpload', fileUpload.uid)
       }
