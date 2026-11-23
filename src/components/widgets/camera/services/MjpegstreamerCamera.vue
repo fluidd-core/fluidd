@@ -6,7 +6,7 @@
     :crossorigin="crossorigin"
     @load="handleImageLoad"
     @error="handleImageError"
-  >
+  />
 </template>
 
 <script lang="ts">
@@ -15,7 +15,10 @@ import { markRaw } from 'vue'
 import CameraMixin from '@/mixins/camera'
 import { consola } from 'consola'
 
-import type { MjpegWorkerResponseMessage, MjpegWorkerRequestMessage } from '@/workers/mjpegStream.worker'
+import type {
+  MjpegWorkerResponseMessage,
+  MjpegWorkerRequestMessage
+} from '@/workers/mjpegStream.worker'
 
 import MjpegWorker from '@/workers/mjpegStream.worker?ts?worker'
 
@@ -31,19 +34,19 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
   worker: Worker | null = null
   imageObjectUrl: string | null = null
 
-  handleImageLoad () {
+  handleImageLoad() {
     this.updateStatus('connected')
 
     this.revokeImageObjectURL()
   }
 
-  handleImageError () {
+  handleImageError() {
     this.updateStatus('error')
 
     this.revokeImageObjectURL()
   }
 
-  revokeImageObjectURL () {
+  revokeImageObjectURL() {
     const imageObjectUrl = this.imageObjectUrl
 
     if (imageObjectUrl != null) {
@@ -53,7 +56,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
     }
   }
 
-  startPlayback () {
+  startPlayback() {
     try {
       this.updateStatus('connecting')
 
@@ -61,7 +64,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
 
       url.searchParams.set('cacheBust', Date.now().toString())
 
-      const worker = this.worker = markRaw(new MjpegWorker())
+      const worker = (this.worker = markRaw(new MjpegWorker()))
 
       worker.onmessage = (event: MessageEvent<MjpegWorkerResponseMessage>) => {
         const message = event.data
@@ -71,7 +74,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
             const endTime = performance.now()
             const currentTime = endTime - this.startTime
 
-            this.time = (this.time * this.timeSmoothing) + (currentTime * (1.0 - this.timeSmoothing))
+            this.time = this.time * this.timeSmoothing + currentTime * (1.0 - this.timeSmoothing)
 
             this.startTime = endTime
 
@@ -118,7 +121,7 @@ export default class MjpegstreamerCamera extends Mixins(CameraMixin) {
     }
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.worker?.terminate()
     this.worker = null
     this.revokeImageObjectURL()

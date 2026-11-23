@@ -1,67 +1,73 @@
 import type { HttpDiagnosticResult } from '@/util/http-endpoint-diagnostics'
 
 export interface SpoolmanState {
-  info: Readonly<Moonraker.Spoolman.Info> | null;
-  spools: readonly Moonraker.Spoolman.Spool[];
-  activeSpool: number | null;
-  currency: string | null;
-  connected: boolean;
-  dialog: SpoolSelectionDialogState;
-  socket: WebSocket | null;
-  socketDiagnostic: HttpDiagnosticResult['kind'] | null;
+  info: Readonly<Moonraker.Spoolman.Info> | null
+  spools: readonly Moonraker.Spoolman.Spool[]
+  activeSpool: number | null
+  currency: string | null
+  connected: boolean
+  dialog: SpoolSelectionDialogState
+  socket: WebSocket | null
+  socketDiagnostic: HttpDiagnosticResult['kind'] | null
 }
 
-export interface Spool extends Omit<Moonraker.Spoolman.Spool, 'registered' | 'filament' | 'first_used' | 'last_used'> {
-  registered: Date;
-  filament: Filament;
-  filament_name: string;
+export interface Spool extends Omit<
+  Moonraker.Spoolman.Spool,
+  'registered' | 'filament' | 'first_used' | 'last_used'
+> {
+  registered: Date
+  filament: Filament
+  filament_name: string
 
-  first_used?: Date;
-  last_used?: Date;
-  initial_length?: number;
-  progress?: number;
+  first_used?: Date
+  last_used?: Date
+  initial_length?: number
+  progress?: number
 }
 
-export interface Filament extends Omit<Moonraker.Spoolman.Filament, 'registered' | 'vendor' | 'multi_color_hexes'> {
-  registered: Date;
+export interface Filament extends Omit<
+  Moonraker.Spoolman.Filament,
+  'registered' | 'vendor' | 'multi_color_hexes'
+> {
+  registered: Date
 
-  vendor?: Vendor;
-  multi_color_hexes?: string[];
-  colors?: string[];
+  vendor?: Vendor
+  multi_color_hexes?: string[]
+  colors?: string[]
 }
 
 export interface Vendor extends Omit<Moonraker.Spoolman.Vendor, 'registered'> {
-  registered: Date;
+  registered: Date
 }
 
 export interface SpoolSelectionDialogState {
-  show: boolean;
-  filename?: string;
-  targetMacro?: string;
-  spoolSelectionOnly?: boolean;
-  selectedSpoolId?: number;
-  allowManualEntry?: boolean;
-  switchToManualEntry?: boolean;
+  show: boolean
+  filename?: string
+  targetMacro?: string
+  spoolSelectionOnly?: boolean
+  selectedSpoolId?: number
+  allowManualEntry?: boolean
+  switchToManualEntry?: boolean
 }
 
 export interface WebsocketBasePayload {
-  type: 'added' | 'updated' | 'deleted';
-  resource: string;
-  date: string;
-  payload: Record<string, any>;
+  type: 'added' | 'updated' | 'deleted'
+  resource: string
+  date: string
+  payload: Record<string, any>
 }
 
 export interface WebsocketSpoolPayload extends WebsocketBasePayload {
-  resource: 'spool';
-  payload: Moonraker.Spoolman.Spool;
+  resource: 'spool'
+  payload: Moonraker.Spoolman.Spool
 }
 
 export interface WebsocketFilamentPayload extends WebsocketBasePayload {
-  resource: 'filament';
-  payload: Moonraker.Spoolman.Filament;
+  resource: 'filament'
+  payload: Moonraker.Spoolman.Filament
 }
 
 export interface WebsocketVendorPayload extends WebsocketBasePayload {
-  resource: 'vendor';
-  payload: Moonraker.Spoolman.Vendor;
+  resource: 'vendor'
+  payload: Moonraker.Spoolman.Vendor
 }

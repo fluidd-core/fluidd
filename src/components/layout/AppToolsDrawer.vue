@@ -35,7 +35,7 @@ export default class AppToolsDrawer extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
   open?: boolean
 
-  get instanceName (): string {
+  get instanceName(): string {
     return this.$typedState.config.uiSettings.general.instanceName
   }
 }

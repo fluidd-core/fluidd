@@ -26,16 +26,16 @@ export default class AppAutoScrollContainer extends Vue {
   resizeObserver: ResizeObserver | null = null
 
   @Watch('reversed')
-  onReversed () {
+  onReversed() {
     this.scrollToLatest(true)
   }
 
   @Watch('autoScrollPaused')
-  onAutoScrollPaused (value: boolean) {
+  onAutoScrollPaused(value: boolean) {
     this.$emit('update:auto-scroll-paused', value)
   }
 
-  mounted () {
+  mounted() {
     this.scrollToLatest()
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = markRaw(new ResizeObserver(() => this.updateAutoScrollPaused()))
@@ -43,50 +43,39 @@ export default class AppAutoScrollContainer extends Vue {
     }
   }
 
-  updated () {
+  updated() {
     this.scrollToLatest()
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.resizeObserver?.disconnect()
     this.resizeObserver = null
   }
 
-  private updateAutoScrollPaused () {
-    this.autoScrollPaused = (
-      this.reversed
-        ? this.getScrollTop()
-        : this.getScrollBottom()
-    ) > 1
+  private updateAutoScrollPaused() {
+    this.autoScrollPaused = (this.reversed ? this.getScrollTop() : this.getScrollBottom()) > 1
   }
 
-  scrollToLatest (force?: boolean) {
-    if (
-      !force &&
-      this.autoScrollPaused
-    ) {
+  scrollToLatest(force?: boolean) {
+    if (!force && this.autoScrollPaused) {
       return
     }
 
     this.$nextTick(() => {
-      this.setScrollTop(
-        this.reversed
-          ? 0
-          : this.box.scrollHeight
-      )
+      this.setScrollTop(this.reversed ? 0 : this.box.scrollHeight)
       this.autoScrollPaused = false
     })
   }
 
-  private getScrollTop () {
+  private getScrollTop() {
     return this.box.scrollTop
   }
 
-  private setScrollTop (value: number) {
+  private setScrollTop(value: number) {
     this.box.scrollTop = value
   }
 
-  private getScrollBottom () {
+  private getScrollBottom() {
     const { scrollTop, scrollHeight, clientHeight } = this.box
 
     return scrollHeight - clientHeight - scrollTop
@@ -94,8 +83,8 @@ export default class AppAutoScrollContainer extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-  .app-auto-scroll-container {
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+.app-auto-scroll-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 </style>

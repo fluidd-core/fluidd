@@ -49,9 +49,7 @@
                   small
                   @click.stop="removeMetric(i, j)"
                 >
-                  <v-icon dense>
-                    $delete
-                  </v-icon>
+                  <v-icon dense> $delete </v-icon>
                 </app-btn>
               </v-col>
             </v-expansion-panel-header>
@@ -64,9 +62,7 @@
                   dense
                   single-line
                   hide-details="auto"
-                  :rules="[
-                    $rules.required
-                  ]"
+                  :rules="[$rules.required]"
                 />
               </app-setting>
 
@@ -144,9 +140,7 @@
             small
             @click="addMetric(i)"
           >
-            <v-icon small>
-              $plus
-            </v-icon>
+            <v-icon small> $plus </v-icon>
             {{ $t('app.setting.btn.add_metric') }}
           </app-btn>
         </v-row>
@@ -179,13 +173,13 @@ export default class MetricsConfigStep extends Vue {
     { text: this.$t('app.setting.label.dashed'), value: 'dashed' }
   ]
 
-  addMetric (axis: number) {
+  addMetric(axis: number) {
     const defaultMetric = createDiagnosticsCardState().axes[0].metrics[0]
 
     this.config.axes[axis].metrics.push(defaultMetric)
   }
 
-  removeMetric (axis: number, metric: number) {
+  removeMetric(axis: number, metric: number) {
     this.config.axes[axis].metrics.splice(metric, 1)
   }
 }

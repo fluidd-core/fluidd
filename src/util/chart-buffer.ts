@@ -6,12 +6,10 @@ const emptyChartSource: ChartDataSource = Object.freeze({ date: [] })
 const MIN_SLACK = 64
 
 // Retention seconds is only a first guess - `compact` grows past 1Hz.
-const capacityFor = (samples: number): number =>
-  samples + Math.max(MIN_SLACK, samples >> 3)
+const capacityFor = (samples: number): number => samples + Math.max(MIN_SLACK, samples >> 3)
 
 // Vue's deep watcher walks `Object.keys` over every element - `markRaw` skips it.
-const allocate = (capacity: number): Float64Array =>
-  markRaw(new Float64Array(capacity))
+const allocate = (capacity: number): Float64Array => markRaw(new Float64Array(capacity))
 
 const createColumn = (capacity: number, from = 0): Float64Array =>
   allocate(capacity).fill(Number.NaN, from)
@@ -52,12 +50,7 @@ export const chartBufferColumn = (buffer: ChartBuffer, key: string): Float64Arra
   return column
 }
 
-const reallocate = (
-  buffer: ChartBuffer,
-  capacity: number,
-  start: number,
-  count: number
-): void => {
+const reallocate = (buffer: ChartBuffer, capacity: number, start: number, count: number): void => {
   const time = allocate(capacity)
 
   time.set(buffer.time.subarray(start, start + count))
@@ -97,7 +90,7 @@ const compact = (buffer: ChartBuffer): void => {
 
 // Binary search assumes `time` is monotonically non-decreasing.
 const dropExpired = (buffer: ChartBuffer, now: number): void => {
-  const cutoff = now - (buffer.retention * 1000)
+  const cutoff = now - buffer.retention * 1000
   const { time, offset, count } = buffer
 
   if (count === 0 || time[offset] > cutoff) return
@@ -179,10 +172,7 @@ export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
 
   const cached = sourceCache.get(buffer)
 
-  if (
-    cached &&
-    cached.revision === buffer.revision
-  ) {
+  if (cached && cached.revision === buffer.revision) {
     return cached.source
   }
 
@@ -203,7 +193,10 @@ export const chartBufferSource = (buffer?: ChartBuffer): ChartDataSource => {
   return source
 }
 
-export const chartBufferLastValue = (buffer: ChartBuffer | undefined, column: string): number | undefined => {
+export const chartBufferLastValue = (
+  buffer: ChartBuffer | undefined,
+  column: string
+): number | undefined => {
   if (!buffer?.count) {
     return undefined
   }
@@ -225,10 +218,7 @@ const RATE_OF_CHANGE_WINDOW = 5
 export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): number => {
   const values = buffer.columns.get(column)
 
-  if (
-    !values ||
-    buffer.count === 0
-  ) {
+  if (!values || buffer.count === 0) {
     return 0
   }
 
@@ -245,16 +235,11 @@ export const chartBufferRateOfChange = (buffer: ChartBuffer, column: string): nu
     first--
   }
 
-  if (
-    first === last ||
-    buffer.time[last] === buffer.time[first]
-  ) {
+  if (first === last || buffer.time[last] === buffer.time[first]) {
     return 0
   }
 
-  const rate = (values[last] - values[first]) / (buffer.time[last] - buffer.time[first]) * 1000
+  const rate = ((values[last] - values[first]) / (buffer.time[last] - buffer.time[first])) * 1000
 
-  return Math.abs(rate) < 0.05
-    ? 0
-    : rate
+  return Math.abs(rate) < 0.05 ? 0 : rate
 }

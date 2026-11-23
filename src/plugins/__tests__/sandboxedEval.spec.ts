@@ -25,7 +25,13 @@ const loadPlugin = async () => {
       const [message, , transfer] = args
       const port = Array.isArray(transfer) ? transfer[0] : undefined
 
-      if (message && typeof message === 'object' && 'action' in message && message.action === 'create' && port instanceof MessagePort) {
+      if (
+        message &&
+        typeof message === 'object' &&
+        'action' in message &&
+        message.action === 'create' &&
+        port instanceof MessagePort
+      ) {
         const scope: WorkerScope = { onmessage: null }
         const workerPort: WorkerPort = {
           onmessage: null,
@@ -74,7 +80,11 @@ describe('sandboxedEval', () => {
 
     await expect(result).rejects.toThrow()
     await vi.waitFor(() => {
-      expect(postMessage).toHaveBeenLastCalledWith({ action: 'terminate', worker: 'request:1' }, '*', [])
+      expect(postMessage).toHaveBeenLastCalledWith(
+        { action: 'terminate', worker: 'request:1' },
+        '*',
+        []
+      )
     })
   })
 

@@ -1,1 +1,1 @@
-declare module 'qrcode.vue';
+declare module 'qrcode.vue'

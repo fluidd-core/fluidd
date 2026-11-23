@@ -4,14 +4,16 @@ import { Component } from 'vue-property-decorator'
 
 @Component
 export default class ServicesMixin extends Vue {
-  get moonrakerServiceName (): string {
-    const moonrakerServiceName: string | undefined = this.$typedState.server.system_info?.instance_ids?.moonraker
+  get moonrakerServiceName(): string {
+    const moonrakerServiceName: string | undefined =
+      this.$typedState.server.system_info?.instance_ids?.moonraker
 
     return moonrakerServiceName || 'moonraker'
   }
 
-  get klipperServiceName (): string {
-    const klipperServiceName: string | undefined = this.$typedState.server.system_info?.instance_ids?.klipper
+  get klipperServiceName(): string {
+    const klipperServiceName: string | undefined =
+      this.$typedState.server.system_info?.instance_ids?.klipper
 
     return klipperServiceName || 'klipper'
   }
@@ -19,42 +21,42 @@ export default class ServicesMixin extends Vue {
   /**
    * Resets the UI when restarting/resetting Klipper
    */
-  async _klipperReset () {
+  async _klipperReset() {
     await this.$typedDispatch('resetKlippy')
   }
 
   /**
    * Reboot the klipper host.
    */
-  hostReboot () {
+  hostReboot() {
     SocketActions.machineReboot()
   }
 
   /**
    * Shutdown the klipper host.
    */
-  hostShutdown () {
+  hostShutdown() {
     SocketActions.machineShutdown()
   }
 
   /**
    * Restart the klipper service itself.
    */
-  async serviceRestartKlipper () {
+  async serviceRestartKlipper() {
     this.serviceRestartByName(this.klipperServiceName)
   }
 
   /**
    * Restart the moonraker service itself.
    */
-  serviceRestartMoonraker () {
+  serviceRestartMoonraker() {
     this.serviceRestartByName(this.moonrakerServiceName)
   }
 
   /**
    * Restart a service by name.
    */
-  async serviceRestartByName (name: string) {
+  async serviceRestartByName(name: string) {
     if (name === this.moonrakerServiceName) {
       SocketActions.serverRestart()
     } else {
@@ -69,14 +71,14 @@ export default class ServicesMixin extends Vue {
   /**
    * Start a service by name.
    */
-  async serviceStartByName (name: string) {
+  async serviceStartByName(name: string) {
     SocketActions.machineServicesStart(name)
   }
 
   /**
    * Stop a service by name.
    */
-  async serviceStopByName (name: string) {
+  async serviceStopByName(name: string) {
     if (name === this.moonrakerServiceName) {
       throw new Error('Stopping the moonraker service is not supported')
     } else {
@@ -91,7 +93,7 @@ export default class ServicesMixin extends Vue {
   /**
    * Restart klippy / std restart.
    */
-  async restartKlippy () {
+  async restartKlippy() {
     await this._klipperReset()
     SocketActions.printerRestart()
   }
@@ -99,7 +101,7 @@ export default class ServicesMixin extends Vue {
   /**
    * Restart klippy and the mcu's.
    */
-  async firmwareRestartKlippy () {
+  async firmwareRestartKlippy() {
     await this._klipperReset()
     SocketActions.printerFirmwareRestart()
   }

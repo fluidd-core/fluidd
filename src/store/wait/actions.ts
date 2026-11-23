@@ -6,21 +6,21 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Add's a wait to the list of waits.
    */
-  async addWait ({ commit }, wait: string) {
+  async addWait({ commit }, wait: string) {
     commit('setAddWait', wait)
   },
 
   /**
    * Removes a wait from the list of waits.
    */
-  async removeWait ({ commit }, wait: string) {
+  async removeWait({ commit }, wait: string) {
     commit('setRemoveWait', wait)
   }
 } satisfies ActionTree<WaitState, RootState>

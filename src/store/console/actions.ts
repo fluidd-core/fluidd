@@ -1,6 +1,13 @@
 import type { ActionTree } from 'vuex'
 import { Globals } from '@/globals'
-import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogButton, PromptDialogItemButton, PromptDialogItemText } from './types'
+import type {
+  ConsoleEntry,
+  ConsoleFilter,
+  ConsoleState,
+  PromptDialogButton,
+  PromptDialogItemButton,
+  PromptDialogItemText
+} from './types'
 import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { takeRightWhile } from 'lodash-es'
@@ -14,38 +21,39 @@ const parsePromptButtonColor = (color?: string) => {
 
   const tinyColor = new TinyColor(color)
 
-  return tinyColor.isValid
-    ? tinyColor.toHexString()
-    : color
+  return tinyColor.isValid ? tinyColor.toHexString() : color
 }
 
 export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Inits known command history
    */
-  async initConsole ({ commit }, payload: Partial<ConsoleState>) {
+  async initConsole({ commit }, payload: Partial<ConsoleState>) {
     commit('setInitConsole', payload)
   },
 
   /**
    * Add a command history item, and update server store.
    */
-  async onUpdateCommandHistory ({ state, commit }, payload: string[]) {
+  async onUpdateCommandHistory({ state, commit }, payload: string[]) {
     commit('setUpdateCommandHistory', payload)
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.commandHistory', state.commandHistory)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.commandHistory',
+      state.commandHistory
+    )
   },
 
   /**
    * The result of a specific gcode request.
    */
-  async onGcodeScript ({ dispatch }, payload: { result?: string }) {
+  async onGcodeScript({ dispatch }, payload: { result?: string }) {
     // If the response is not ok, pass it to the console.
     if (payload && payload.result && payload.result !== 'ok') {
       dispatch('onAddConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + payload.result })
@@ -55,9 +63,9 @@ export const actions = {
   /**
    * Add a console entry
    */
-  async onAddConsoleEntry ({ commit, dispatch }, payload: Omit<ConsoleEntry, 'id'>) {
+  async onAddConsoleEntry({ commit, dispatch }, payload: Omit<ConsoleEntry, 'id'>) {
     if (!payload.time || payload.time <= 0) {
-      payload.time = Date.now() / 1000 | 0
+      payload.time = (Date.now() / 1000) | 0
     }
 
     if (!payload.type) {
@@ -76,48 +84,46 @@ export const actions = {
   /**
    * On a fresh load of the UI, we load prior gcode / console history
    */
-  async onGcodeStore ({ commit, dispatch }, payload: Moonraker.DataStore.GcodeStoreResponse) {
+  async onGcodeStore({ commit, dispatch }, payload: Moonraker.DataStore.GcodeStoreResponse) {
     if (payload && payload.gcode_store) {
-      const entries = payload.gcode_store
-        .map((entry, index): ConsoleEntry => {
-          const message = Globals.CONSOLE_RECEIVE_PREFIX + entry.message
+      const entries = payload.gcode_store.map((entry, index): ConsoleEntry => {
+        const message = Globals.CONSOLE_RECEIVE_PREFIX + entry.message
 
-          const type = (
-            entry.type === 'response' &&
-            entry.message.startsWith('// action:')
-          )
+        const type =
+          entry.type === 'response' && entry.message.startsWith('// action:')
             ? 'action'
             : entry.type
 
-          return {
-            ...entry,
-            id: index,
-            message,
-            type
-          }
-        })
+        return {
+          ...entry,
+          id: index,
+          message,
+          type
+        }
+      })
 
       commit('setAllEntries', entries)
 
-      const dialogEntries = entries
-        .filter(entry => (
-          entry.type === 'action' &&
-          entry.message.startsWith('// action:prompt_')
-        ))
+      const dialogEntries = entries.filter(
+        entry => entry.type === 'action' && entry.message.startsWith('// action:prompt_')
+      )
 
-      const dialogEntriesAfterEnd = takeRightWhile(dialogEntries, entry => entry.message !== '// action:prompt_end')
-      const dialogEntriesAfterBegin = takeRightWhile(dialogEntriesAfterEnd, entry => entry.message !== '// action:prompt_begin')
+      const dialogEntriesAfterEnd = takeRightWhile(
+        dialogEntries,
+        entry => entry.message !== '// action:prompt_end'
+      )
+      const dialogEntriesAfterBegin = takeRightWhile(
+        dialogEntriesAfterEnd,
+        entry => entry.message !== '// action:prompt_begin'
+      )
 
-      dialogEntriesAfterBegin
-        .forEach(entry => dispatch('onUpdatePromptDialog', entry))
+      dialogEntriesAfterBegin.forEach(entry => dispatch('onUpdatePromptDialog', entry))
     }
   },
 
-  async onUpdatePromptDialog ({ commit }, payload: ConsoleEntry) {
-    const parsedMessage = (
-      payload.type === 'action' &&
-      /^\/\/ action:prompt_([^ ]+)(?: (.+))?/.exec(payload.message)
-    )
+  async onUpdatePromptDialog({ commit }, payload: ConsoleEntry) {
+    const parsedMessage =
+      payload.type === 'action' && /^\/\/ action:prompt_([^ ]+)(?: (.+))?/.exec(payload.message)
 
     if (parsedMessage) {
       const [, type, param] = parsedMessage
@@ -188,36 +194,48 @@ export const actions = {
    * Klipper provides us with a list of available gcode commands
    * based on the current configuration.
    */
-  async onGcodeHelp ({ commit }, payload: Moonraker.KlippyApis.GcodeHelpResponse) {
+  async onGcodeHelp({ commit }, payload: Moonraker.KlippyApis.GcodeHelpResponse) {
     commit('setGcodeHelp', payload)
   },
 
   /**
    * Updates auto scroll value
    */
-  async onUpdateAutoScroll ({ commit }, payload: boolean) {
+  async onUpdateAutoScroll({ commit }, payload: boolean) {
     commit('setAutoScroll', payload)
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.autoScroll', payload)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.autoScroll',
+      payload
+    )
   },
 
   /**
    * Remove a filter
    */
-  async onRemoveFilter ({ commit, state }, filter: ConsoleFilter) {
+  async onRemoveFilter({ commit, state }, filter: ConsoleFilter) {
     commit('setRemoveFilter', filter)
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters',
+      state.consoleFilters
+    )
   },
 
   /**
-    * Add/Edit a filter
-    */
-  async onSaveFilter ({ commit, state }, filter: ConsoleFilter) {
+   * Add/Edit a filter
+   */
+  async onSaveFilter({ commit, state }, filter: ConsoleFilter) {
     commit('setFilter', filter)
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters',
+      state.consoleFilters
+    )
   },
 
-  async onClear ({ commit, state }) {
+  async onClear({ commit, state }) {
     commit('setLastCleared')
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.lastCleared', state.lastCleared)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.lastCleared',
+      state.lastCleared
+    )
   }
 } satisfies ActionTree<ConsoleState, RootState>

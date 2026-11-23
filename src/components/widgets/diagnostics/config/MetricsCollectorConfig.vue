@@ -17,9 +17,7 @@
           :title="$t('app.general.tooltip.browse_metrics')"
           @click="browserOpen = true"
         >
-          <v-icon>
-            $magnify
-          </v-icon>
+          <v-icon> $magnify </v-icon>
         </app-btn>
 
         <app-btn
@@ -29,9 +27,7 @@
           :title="$t('app.general.tooltip.run_collector')"
           @click="runCollector"
         >
-          <v-icon>
-            $play
-          </v-icon>
+          <v-icon> $play </v-icon>
         </app-btn>
       </template>
     </v-textarea>
@@ -57,9 +53,7 @@
       no-actions
     >
       <v-card-text>
-        <state-explorer
-          @input="handleExplorerClick"
-        />
+        <state-explorer @input="handleExplorerClick" />
       </v-card-text>
     </app-dialog>
   </v-card>
@@ -90,40 +84,38 @@ export default class MetricsCollectorConfig extends Vue {
   result = '-'
   browserOpen = false
 
-  async runCollector () {
+  async runCollector() {
     try {
-      const data = await sandboxedEval(`
+      const data = await sandboxedEval(
+        `
         const { printer, collector } = context
         return eval(collector)
-      `, {
-        context: {
-          printer: this.$typedState.printer.printer,
-          collector: this.metric.collector
+      `,
+        {
+          context: {
+            printer: this.$typedState.printer.printer,
+            collector: this.metric.collector
+          }
         }
-      })
-
-      this.result = String(
-        typeof data === 'number'
-          ? Math.round(data * 1000) / 1000
-          : data
       )
+
+      this.result = String(typeof data === 'number' ? Math.round(data * 1000) / 1000 : data)
     } catch (e) {
       this.result = String(e || 'Unknown Error')
     }
   }
 
-  handleExplorerClick (path: string) {
+  handleExplorerClick(path: string) {
     this.browserOpen = false
     const element = this.textArea.$refs.input
     if (element) {
       const selectionStart = element.selectionStart
       const selectionEnd = element.selectionEnd
 
-      this.metric.collector = (
+      this.metric.collector =
         this.metric.collector.substring(0, selectionStart) +
         path +
         this.metric.collector.substring(selectionEnd)
-      )
     }
   }
 }

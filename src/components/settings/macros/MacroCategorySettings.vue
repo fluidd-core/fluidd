@@ -7,9 +7,7 @@
         class="mr-4"
         @click="handleBack"
       >
-        <v-icon dense>
-          $left
-        </v-icon>
+        <v-icon dense> $left </v-icon>
       </app-btn>
 
       {{ category.name }} {{ $t('app.setting.title.macros') }}
@@ -136,80 +134,84 @@ export default class MacroCategorySettings extends Vue {
     macro: null
   }
 
-  get draggableOptions (): Sortable.Options {
+  get draggableOptions(): Sortable.Options {
     return {
       group: `macro-settings-${this.category.name}`
     }
   }
 
-  get macrosForCategory (): Macro[] {
+  get macrosForCategory(): Macro[] {
     const id = this.categoryId
 
     return this.$typedGetters['macros/getMacrosByCategory'](id)
   }
 
-  get macros () {
+  get macros() {
     if (!this.search) {
       return this.macrosForCategory
     }
 
     const search = this.search.toLowerCase()
 
-    return this.macrosForCategory
-      .filter(macro => macro.name.toLowerCase().includes(search))
+    return this.macrosForCategory.filter(macro => macro.name.toLowerCase().includes(search))
   }
 
-  set macros (macros: Macro[]) {
+  set macros(macros: Macro[]) {
     this.$typedDispatch('macros/saveAllOrder', macros)
   }
 
-  get categories (): MacroCategory[] {
+  get categories(): MacroCategory[] {
     return this.$typedGetters['macros/getCategories']
   }
 
-  get category () {
-    const category = this.categoryId !== '0' && this.categories.find(category => category.id === this.categoryId)
+  get category() {
+    const category =
+      this.categoryId !== '0' && this.categories.find(category => category.id === this.categoryId)
 
-    return category || {
-      id: '0', name: this.$tc('app.general.label.uncategorized')
-    }
+    return (
+      category || {
+        id: '0',
+        name: this.$tc('app.general.label.uncategorized')
+      }
+    )
   }
 
-  beforeRouteEnter (to: Route, from: Route, next: NavigationGuardNext) {
+  beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext) {
     next(routeGuard(to))
   }
 
-  beforeRouteUpdate (to: Route, from: Route, next: NavigationGuardNext) {
+  beforeRouteUpdate(to: Route, from: Route, next: NavigationGuardNext) {
     next(routeGuard(to))
   }
 
-  created () {
+  created() {
     this.search = ''
     this.categoryId = this.$route.params.categoryId
   }
 
-  handleBack () {
+  handleBack() {
     this.$router.go(-1)
   }
 
-  handleSettingsDialog (macro: Macro) {
+  handleSettingsDialog(macro: Macro) {
     this.dialogState = {
       open: true,
       macro: { ...macro }
     }
   }
 
-  handleAllOn () {
+  handleAllOn() {
     this.$typedDispatch('macros/saveAllOn', this.macros)
   }
 
-  handleAllOff () {
+  handleAllOff() {
     this.$typedDispatch('macros/saveAllOff', this.macros)
   }
 
-  handleMacroVisible (macro: Macro, value: boolean) {
+  handleMacroVisible(macro: Macro, value: boolean) {
     const newMacro = {
-      ...macro, visible: value
+      ...macro,
+      visible: value
     }
     this.$typedDispatch('macros/saveMacro', newMacro)
   }

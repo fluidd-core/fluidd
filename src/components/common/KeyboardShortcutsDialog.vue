@@ -96,7 +96,10 @@
           <tbody>
             <tr>
               <th>{{ $t('app.keyboard_shortcuts.label.emergency_stop') }}</th>
-              <td><kbd v-if="isAppleDevice">&#8984;</kbd><kbd v-else>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>e</kbd></td>
+              <td
+                ><kbd v-if="isAppleDevice">&#8984;</kbd><kbd v-else>Ctrl</kbd> + <kbd>Shift</kbd> +
+                <kbd>e</kbd></td
+              >
             </tr>
             <tr>
               <th>{{ $t('app.keyboard_shortcuts.label.open_keyboard_shortcut_help') }}</th>
@@ -119,55 +122,52 @@ import { Component, Mixins } from 'vue-property-decorator'
 export default class KeyboardShortcutsDialog extends Mixins(BrowserMixin) {
   open = false
 
-  get keyboardShortcuts () {
+  get keyboardShortcuts() {
     return Globals.KEYBOARD_SHORTCUTS
   }
 
-  get enableKeyboardShortcuts (): boolean {
+  get enableKeyboardShortcuts(): boolean {
     return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
-  get supportsHistory (): boolean {
+  get supportsHistory(): boolean {
     return this.$typedGetters['server/componentSupport']('history')
   }
 
-  get supportsTimelapse (): boolean {
+  get supportsTimelapse(): boolean {
     return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
-  get enableDiagnostics (): boolean {
+  get enableDiagnostics(): boolean {
     return this.$typedState.config.uiSettings.general.enableDiagnostics
   }
 
-  handleKeyDown (event: KeyboardEvent) {
+  handleKeyDown(event: KeyboardEvent) {
     if (!this.enableKeyboardShortcuts) {
       return
     }
 
     const shortcut = keyboardEventToKeyboardShortcut(event)
 
-    if (
-      ['?', 'Shift+?'].includes(shortcut) &&
-      !eventTargetIsContentEditable(event)
-    ) {
+    if (['?', 'Shift+?'].includes(shortcut) && !eventTargetIsContentEditable(event)) {
       event.preventDefault()
 
       this.open = true
     }
   }
 
-  created () {
+  created() {
     window.addEventListener('keydown', this.handleKeyDown, false)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('keydown', this.handleKeyDown)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  td:nth-child(2) {
-    text-align: right;
-  }
+td:nth-child(2) {
+  text-align: right;
+}
 </style>

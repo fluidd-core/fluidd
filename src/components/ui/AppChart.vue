@@ -7,7 +7,7 @@
   >
     <e-chart
       ref="chart"
-      style="overflow: initial;"
+      style="overflow: initial"
       manual-update
       :init-options="initOptions"
       autoresize
@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import type { DatasetComponentOption, ECharts, EChartsInitOpts, EChartsOption } from 'echarts'
 import type { ChartDataSource } from '@/store/charts/types'
@@ -42,7 +42,7 @@ export default class AppChart extends Vue {
   readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
   // Apply the full options + current data (on chart ready and on option changes).
-  applyOption () {
+  applyOption() {
     if (!this.chart) return
 
     const options: EChartsOption = {
@@ -64,34 +64,36 @@ export default class AppChart extends Vue {
   }
 
   @Watch('options')
-  onOptions () {
+  onOptions() {
     this.applyOption()
   }
 
   // Push only a dataset update, never a full options re-apply.
   @Watch('data')
-  onData (data: ChartDataSource) {
+  onData(data: ChartDataSource) {
     if (this.chart != null) {
       // Merging recurses into typed arrays index by index, leaving stale rows.
-      this.chart.setOption({
-        dataset: {
-          dimensions: this.dimensions,
-          source: data
-        }
-      }, { replaceMerge: 'dataset' })
+      this.chart.setOption(
+        {
+          dataset: {
+            dimensions: this.dimensions,
+            source: data
+          }
+        },
+        { replaceMerge: 'dataset' }
+      )
     }
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     if (typeof window === 'undefined') return
     this.chart?.dispose()
   }
 }
-
 </script>
 
-<style lang='scss' scoped>
-  .app-chart {
-    width: 100%;
-  }
+<style lang="scss" scoped>
+.app-chart {
+  width: 100%;
+}
 </style>

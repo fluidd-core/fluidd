@@ -1,10 +1,11 @@
 import dateTimeFormatters from '../date-time-formatters'
 import { timeTravel } from '@/../tests/unit/utils'
 
-const buildTestDateTimeFormatters = (dateFormatName: string = '', timeFormatName: string = '') => dateTimeFormatters(
-  () => dateFormatName,
-  () => timeFormatName
-)
+const buildTestDateTimeFormatters = (dateFormatName: string = '', timeFormatName: string = '') =>
+  dateTimeFormatters(
+    () => dateFormatName,
+    () => timeFormatName
+  )
 
 describe('formatCounterSeconds', () => {
   const dtf = buildTestDateTimeFormatters()
@@ -79,11 +80,11 @@ describe('formatDateTime', () => {
     timeTravel('2022-11-19 14:32', () => {
       const dtf = buildTestDateTimeFormatters()
 
-      const fiveMins = Date.now() + (5 * 60 * 1000)
+      const fiveMins = Date.now() + 5 * 60 * 1000
 
       expect(dtf.formatRelativeTimeToNow(fiveMins)).toBe('in 5 minutes')
 
-      const oneDay = Date.now() + (24 * 60 * 60 * 1000)
+      const oneDay = Date.now() + 24 * 60 * 60 * 1000
 
       expect(dtf.formatRelativeTimeToNow(oneDay)).toBe('tomorrow')
     })
@@ -93,11 +94,11 @@ describe('formatDateTime', () => {
     timeTravel('2022-11-19 14:32', () => {
       const dtf = buildTestDateTimeFormatters()
 
-      const fiveMins = Date.now() - (5 * 60 * 1000)
+      const fiveMins = Date.now() - 5 * 60 * 1000
 
       expect(dtf.formatRelativeTimeToNow(fiveMins)).toBe('5 minutes ago')
 
-      const oneDay = Date.now() - (24 * 60 * 60 * 1000)
+      const oneDay = Date.now() - 24 * 60 * 60 * 1000
 
       expect(dtf.formatRelativeTimeToNow(oneDay)).toBe('yesterday')
 
@@ -115,15 +116,15 @@ describe('formatDateTime', () => {
 
       expect(dtf.formatAbsoluteDateTime(now)).toBe('14:32')
 
-      const fiveMins = Date.now() + (5 * 60 * 1000)
+      const fiveMins = Date.now() + 5 * 60 * 1000
 
       expect(dtf.formatAbsoluteDateTime(fiveMins)).toBe('14:37')
 
-      const tenHours = Date.now() + (10 * 60 * 60 * 1000)
+      const tenHours = Date.now() + 10 * 60 * 60 * 1000
 
       expect(dtf.formatAbsoluteDateTime(tenHours)).toBe('11-20 00:32')
 
-      const oneYear = Date.now() + (365 * 24 * 60 * 60 * 1000)
+      const oneYear = Date.now() + 365 * 24 * 60 * 60 * 1000
 
       expect(dtf.formatAbsoluteDateTime(oneYear)).toBe('2023-11-19 14:32')
     })

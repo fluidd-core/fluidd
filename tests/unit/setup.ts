@@ -15,9 +15,9 @@ vi.mock('vue', async () => {
 // loads monaco-editor gets them without per-spec setup.
 const cssGlobal = (globalThis as { CSS?: { escape?: (v: string) => string } }).CSS
 if (!cssGlobal) {
-  ;(globalThis as { CSS: { escape: (v: string) => string } }).CSS = { escape: (v) => v }
+  ;(globalThis as { CSS: { escape: (v: string) => string } }).CSS = { escape: v => v }
 } else if (!cssGlobal.escape) {
-  cssGlobal.escape = (v) => v
+  cssGlobal.escape = v => v
 }
 
 if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {

@@ -14,11 +14,9 @@
             icon
             text
             v-bind="attrs"
-            v-on="{... menu, ...tooltip}"
+            v-on="{ ...menu, ...tooltip }"
           >
-            <v-icon>
-              $filter
-            </v-icon>
+            <v-icon> $filter </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.general.btn.filter') }}</span>
@@ -68,11 +66,11 @@ export default class ConsoleFilterMenu extends Vue {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  get hideTempWaits (): boolean {
+  get hideTempWaits(): boolean {
     return this.$typedState.config.uiSettings.general.hideTempWaits
   }
 
-  set hideTempWaits (value: boolean) {
+  set hideTempWaits(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.hideTempWaits',
       value,
@@ -80,11 +78,11 @@ export default class ConsoleFilterMenu extends Vue {
     })
   }
 
-  get filters (): ConsoleFilter[] {
+  get filters(): ConsoleFilter[] {
     return this.$typedState.console.consoleFilters
   }
 
-  handleToggleFilter (filter: ConsoleFilter) {
+  handleToggleFilter(filter: ConsoleFilter) {
     this.$typedDispatch('console/onSaveFilter', {
       ...filter,
       enabled: !filter.enabled

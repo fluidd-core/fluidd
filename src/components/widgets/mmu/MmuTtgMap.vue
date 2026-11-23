@@ -185,7 +185,7 @@ import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
 
 @Component({
-  components: {},
+  components: {}
 })
 export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
   @Prop({ required: false, default: 10 })
@@ -221,27 +221,27 @@ export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
   @Prop({ required: false, default: -1 })
   readonly selectedGate!: number
 
-  get toolX (): number {
+  get toolX(): number {
     return this.startX + 14
   }
 
-  get gateX (): number {
+  get gateX(): number {
     return this.startX + 2 * this.leader + this.mapSpace + 40
   }
 
-  get groupX (): number {
+  get groupX(): number {
     return this.startX + 2 * this.leader + this.mapSpace + 65
   }
 
-  get width (): number {
+  get width(): number {
     return this.groupX + this.getEndlessSpoolGroups().length * this.groupSpacing // Single gate groups aren't displayed
   }
 
-  get height (): number {
+  get height(): number {
     return this.startY + this.map.length * this.verticalSpacing + 6
   }
 
-  get currentGroup (): number {
+  get currentGroup(): number {
     if (this.selectedGate >= 0) {
       return this.groups[this.selectedGate]
     } else {
@@ -249,7 +249,7 @@ export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
     }
   }
 
-  generateMappingPathD (tool: number): string {
+  generateMappingPathD(tool: number): string {
     const xOffset = 28
     const x1 = this.startX + xOffset
     const y1 = this.startY + tool * this.verticalSpacing + 4 // yOffset of 4 to align line with text
@@ -260,14 +260,14 @@ export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
     const gSpace = 2 // Horizontal "break" spacing gate side
 
     return (
-            `M ${x1} ${y1} L ${tX} ${y1} ` + // Draw leader line
-            `L ${tX + gate * tSpace} ${y1} ` + // Horizontal to gateX column
-            `L ${gX - (this.map.length - gate) * gSpace} ${this.startY + gate * this.verticalSpacing + 4} ` + // To gate column
-            `L ${gX + this.leader} ${this.startY + gate * this.verticalSpacing + 4}`
+      `M ${x1} ${y1} L ${tX} ${y1} ` + // Draw leader line
+      `L ${tX + gate * tSpace} ${y1} ` + // Horizontal to gateX column
+      `L ${gX - (this.map.length - gate) * gSpace} ${this.startY + gate * this.verticalSpacing + 4} ` + // To gate column
+      `L ${gX + this.leader} ${this.startY + gate * this.verticalSpacing + 4}`
     ) // Add trailer
   }
 
-  generateEndlessSpoolPathD (group: number, index: number): string {
+  generateEndlessSpoolPathD(group: number, index: number): string {
     const tick = 5 // Dash size
     const x1 = this.gateX + 24 + index * this.groupSpacing // X distance from TTG map
     const y1 = this.startY + 4 // Align line with text
@@ -276,7 +276,7 @@ export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
     let y0: number | null = null
     const gatesInGroup = this.findAllGatesInGroup(group)
     if (gatesInGroup.length > 1) {
-      gatesInGroup.forEach((gate) => {
+      gatesInGroup.forEach(gate => {
         const y = y1 + gate * this.verticalSpacing
         dStr += `M ${x1 + tick} ${y} L ${x1} ${y} `
         if (y0 !== null) {
@@ -289,9 +289,9 @@ export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
   }
 
   // Find groups with more than one gate
-  private getEndlessSpoolGroups (): number[] {
+  private getEndlessSpoolGroups(): number[] {
     const countMap: { [key: number]: number } = {}
-    this.groups.forEach((num) => {
+    this.groups.forEach(num => {
       if (countMap[num]) {
         countMap[num]++
       } else {
@@ -299,13 +299,13 @@ export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
       }
     })
     const duplicates = Object.keys(countMap)
-      .filter((key) => countMap[+key] > 1)
+      .filter(key => countMap[+key] > 1)
       .map(Number)
       .sort((a, b) => a - b)
     return duplicates
   }
 
-  private findAllGatesInGroup (group: number): number[] {
+  private findAllGatesInGroup(group: number): number[] {
     const gatesInGroup: number[] = []
     this.groups.forEach((g, index) => {
       if (g === group) {
@@ -320,21 +320,21 @@ export default class MmuTtgMap extends Mixins(StateMixin, MmuMixin) {
 <style scoped>
 /* Bug in <path> requires separation of styles - fill attribute doesn't override! */
 .stroke-regular-color {
-    stroke: var(--v-secondary-lighten2, #808080);
+  stroke: var(--v-secondary-lighten2, #808080);
 }
 .stroke-selected-color {
-    stroke: var(--v-primary-lighten1, #2ca9bc);
+  stroke: var(--v-primary-lighten1, #2ca9bc);
 }
 .stroke-background-color {
-    stroke: var(--background-color);
+  stroke: var(--background-color);
 }
 .fill-regular-color {
-    fill: var(--v-secondary-lighten2, #808080);
+  fill: var(--v-secondary-lighten2, #808080);
 }
 .fill-selected-color {
-    fill: var(--v-primary-lighten1, #2ca9bc);
+  fill: var(--v-primary-lighten1, #2ca9bc);
 }
 .fill-background-color {
-    fill: var(--background-color);
+  fill: var(--background-color);
 }
 </style>

@@ -19,9 +19,7 @@
           <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-icon>
-          <v-icon color="error">
-            $powerCycle
-          </v-icon>
+          <v-icon color="error"> $powerCycle </v-icon>
         </v-list-item-icon>
       </v-list-item>
 
@@ -33,9 +31,7 @@
           <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-icon>
-          <v-icon color="error">
-            $power
-          </v-icon>
+          <v-icon color="error"> $power </v-icon>
         </v-list-item-icon>
       </v-list-item>
     </v-list-group>
@@ -54,7 +50,11 @@
       <v-list-item
         v-for="device in powerDevices"
         :key="device.device"
-        :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
+        :disabled="
+          device.status === 'error' ||
+          device.status === 'init' ||
+          (printerPrinting && device.locked_while_printing)
+        "
         :loading="hasWait(`${$waits.onDevicePowerToggle}/${device.device}`)"
         @click="togglePowerDevice(device)"
       >
@@ -77,9 +77,7 @@
         </v-list-item-content>
       </template>
       <template v-for="service in services">
-        <v-list-item
-          :key="service.name"
-        >
+        <v-list-item :key="service.name">
           <v-list-item-content>
             <v-list-item-title>
               <v-tooltip
@@ -91,9 +89,12 @@
                     v-bind="attrs"
                     class="text-wrap"
                     v-on="on"
-                  >{{ $filters.prettyCase(service.name) }}</span>
+                    >{{ $filters.prettyCase(service.name) }}</span
+                  >
                 </template>
-                <span>{{ $filters.prettyCase(`${service.active_state} (${service.sub_state})`) }}</span>
+                <span>{{
+                  $filters.prettyCase(`${service.active_state} (${service.sub_state})`)
+                }}</span>
               </v-tooltip>
             </v-list-item-title>
           </v-list-item-content>
@@ -110,9 +111,7 @@
               icon
               @click="checkDialog(serviceRestart, service, 'restart')"
             >
-              <v-icon color="warning">
-                $restart
-              </v-icon>
+              <v-icon color="warning"> $restart </v-icon>
             </app-btn>
             <app-btn
               icon
@@ -120,9 +119,7 @@
               :style="service.name === moonrakerServiceName ? 'visibility: hidden;' : ''"
               @click="checkDialog(serviceStop, service, 'stop')"
             >
-              <v-icon color="error">
-                $stop
-              </v-icon>
+              <v-icon color="error"> $stop </v-icon>
             </app-btn>
           </v-list-item-action>
         </v-list-item>
@@ -142,49 +139,49 @@ import type { ServiceInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
-  get serverInfo (): Moonraker.Server.InfoResponse {
+  get serverInfo(): Moonraker.Server.InfoResponse {
     return this.$typedState.server.info
   }
 
-  get hosted (): boolean {
+  get hosted(): boolean {
     return this.$typedState.config.hostConfig.hosted
   }
 
-  get powerDevices (): Moonraker.Power.Device[] {
+  get powerDevices(): Moonraker.Power.Device[] {
     return this.$typedGetters['power/getDevices']
   }
 
-  get devicePowerComponentEnabled (): boolean {
+  get devicePowerComponentEnabled(): boolean {
     return this.$typedGetters['server/componentSupport']('power')
   }
 
-  get services (): ServiceInfo[] {
+  get services(): ServiceInfo[] {
     const services: ServiceInfo[] = this.$typedGetters['server/getServices']
 
     return services
   }
 
-  get systemInfo (): Moonraker.Machine.SystemInfo | null {
+  get systemInfo(): Moonraker.Machine.SystemInfo | null {
     return this.$typedState.server.system_info
   }
 
-  get canControlHost (): boolean {
+  get canControlHost(): boolean {
     return this.systemInfo?.virtualization?.virt_type !== 'container'
   }
 
-  async checkDialog (executableFunction: (service: ServiceInfo) => Promise<unknown>, service: ServiceInfo, action: string) {
-    const result = (
-      !(
-        this.printerPrinting ||
-        ['restart', 'stop'].includes(action)
-      ) ||
-      await this.$confirm(
-        this.$t(
-          `app.general.simple_form.msg.confirm_service_${action}`,
-          { name: service.name })?.toString(),
+  async checkDialog(
+    executableFunction: (service: ServiceInfo) => Promise<unknown>,
+    service: ServiceInfo,
+    action: string
+  ) {
+    const result =
+      !(this.printerPrinting || ['restart', 'stop'].includes(action)) ||
+      (await this.$confirm(
+        this.$t(`app.general.simple_form.msg.confirm_service_${action}`, {
+          name: service.name
+        })?.toString(),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-      )
-    )
+      ))
 
     if (result) {
       this.$emit('click')
@@ -192,19 +189,19 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  async serviceRestart (service: ServiceInfo) {
+  async serviceRestart(service: ServiceInfo) {
     await this.serviceRestartByName(service.name)
   }
 
-  async serviceStart (service: ServiceInfo) {
+  async serviceStart(service: ServiceInfo) {
     await this.serviceStartByName(service.name)
   }
 
-  async serviceStop (service: ServiceInfo) {
+  async serviceStop(service: ServiceInfo) {
     await this.serviceStopByName(service.name)
   }
 
-  async handleHostReboot () {
+  async handleHostReboot() {
     const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_reboot_host'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
@@ -216,7 +213,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  async handleHostShutdown () {
+  async handleHostShutdown() {
     const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
@@ -228,24 +225,25 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  async togglePowerDevice (device: Moonraker.Power.Device) {
-    const confirmOnPowerDeviceChange: boolean = this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
+  async togglePowerDevice(device: Moonraker.Power.Device) {
+    const confirmOnPowerDeviceChange: boolean =
+      this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
 
-    const result = (
+    const result =
       !confirmOnPowerDeviceChange ||
-      await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-      )
-    )
+      (await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'), {
+        title: this.$tc('app.general.label.confirm'),
+        color: 'card-heading',
+        icon: '$error'
+      }))
 
     if (result) {
-      const state = (device.status === 'on') ? 'off' : 'on'
+      const state = device.status === 'on' ? 'off' : 'on'
       SocketActions.machineDevicePowerSetDevice(device.device, state)
     }
   }
 
-  getPowerIcon (device: Moonraker.Power.Device) {
+  getPowerIcon(device: Moonraker.Power.Device) {
     switch (device.status) {
       case 'error': {
         return '$error'
@@ -262,7 +260,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  getPowerButtonText (device: Moonraker.Power.Device): string {
+  getPowerButtonText(device: Moonraker.Power.Device): string {
     switch (device.status) {
       case 'error': {
         return `${device.device} [error]`
@@ -276,10 +274,10 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-list-item__action--stack ) {
-    margin: 2px 0;
-    margin-right: -6px;
-    flex-direction: row;
-    align-items: center;
-  }
+:deep(.v-list-item__action--stack) {
+  margin: 2px 0;
+  margin-right: -6px;
+  flex-direction: row;
+  align-items: center;
+}
 </style>

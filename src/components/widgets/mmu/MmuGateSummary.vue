@@ -43,58 +43,62 @@ export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
   @Prop({ required: false, default: true })
   readonly showGate!: boolean
 
-  get details (): MmuGateDetails {
+  get details(): MmuGateDetails {
     return this.gateDetails(this.gateIndex)
   }
 
-  get lines (): string {
+  get lines(): string {
     if (this.showDetails) return 'three'
     return 'two'
   }
 
-  get title (): string {
-    return [this.showGate ? this.gateText(this.gate) : null, this.vendorText].filter((v) => v !== null).join(' | ')
-  }
-
-  get name (): string {
-    return this.details.filamentName
-  }
-
-  get subtitle (): string {
-    return [this.details.material, this.temperatureText, this.speedOverrideText]
-      .filter((v) => v !== null)
+  get title(): string {
+    return [this.showGate ? this.gateText(this.gate) : null, this.vendorText]
+      .filter(v => v !== null)
       .join(' | ')
   }
 
-  get extra (): string {
-    const text = [this.spoolIdText, this.weightText, this.lengthText].filter((v) => v !== null).join(' | ')
+  get name(): string {
+    return this.details.filamentName
+  }
+
+  get subtitle(): string {
+    return [this.details.material, this.temperatureText, this.speedOverrideText]
+      .filter(v => v !== null)
+      .join(' | ')
+  }
+
+  get extra(): string {
+    const text = [this.spoolIdText, this.weightText, this.lengthText]
+      .filter(v => v !== null)
+      .join(' | ')
     if (!text) return 'No spool ID'
     return text
   }
 
-  get speedOverrideText (): string | null {
+  get speedOverrideText(): string | null {
     if (this.details.speedOverride === 100) return null
     return 'Speed: ' + this.details.speedOverride + '%'
   }
 
-  get temperatureText (): string | null {
+  get temperatureText(): string | null {
     if (this.details.temperature <= 0) return null
     return this.details.temperature + '\u00B0' + 'C'
   }
 
-  get spoolIdText (): string | null {
+  get spoolIdText(): string | null {
     if (!this.details.spoolId || this.details.spoolId <= 0) return null
     return 'Spool ID: #' + this.details.spoolId
   }
 
   // Only available with Spoolman...
 
-  get vendorText () {
+  get vendorText() {
     const spoolmanSpool = this.spoolmanSpool(this.details.spoolId)
     return spoolmanSpool?.filament?.vendor?.name ?? 'Unknown'
   }
 
-  get weightText () {
+  get weightText() {
     const spoolmanSpool = this.spoolmanSpool(this.details.spoolId)
     const remaining = spoolmanSpool?.remaining_weight ?? null
     // Technically this is what spoolman implements but not available in Fluidd:
@@ -112,34 +116,34 @@ export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
     return `${Math.round(remaining)} / ${Math.round(total)}g`
   }
 
-  get lengthText () {
+  get lengthText() {
     const spoolmanSpool = this.spoolmanSpool(this.details.spoolId)
     const remaining = spoolmanSpool?.remaining_length ?? null
     if (remaining === null) return null
     return `${Math.round(remaining / 1000)}m`
   }
 
-  get contentClass () {
+  get contentClass() {
     if (this.compact) return ['my-0', 'smaller-font']
     return 'my-0'
   }
 
-  get toplineClass () {
+  get toplineClass() {
     if (this.compact) return ['text-overline', 'mb-1', 'reduced-line-height', 'small-overline-font']
     return ['text-overline', 'reduced-line-height', 'mb-2']
   }
 
-  get titleClass () {
+  get titleClass() {
     if (this.compact) return ['text-h7', 'mb-1']
     return ['text-h6', 'mb-1']
   }
 
-  get subtitleClass () {
+  get subtitleClass() {
     if (this.compact) return ['subtitle-container', ' smaller-font']
     return ['subtitle-container']
   }
 
-  get detailsClass () {
+  get detailsClass() {
     if (this.compact) return ['subtitle-container', ' smaller-font']
     return ['subtitle-container', 'smaller-font']
   }
@@ -148,25 +152,25 @@ export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .reduced-line-height {
-    line-height: 1em;
+  line-height: 1em;
 }
 
 .subtitle-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .smaller-font {
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
 
 .small-overline-font {
-    line-height: 0.7em;
-    font-size: 0.7em !important;
+  line-height: 0.7em;
+  font-size: 0.7em !important;
 }
 
 .disabled-panel {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 </style>

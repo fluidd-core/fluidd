@@ -81,43 +81,43 @@ import { linkExternalUrls } from '@/util/html-helpers'
   components: {}
 })
 export default class AppWarnings extends Mixins(StateMixin) {
-  get docsUrl () {
+  get docsUrl() {
     return Globals.DOCS_REQUIRED_CONFIGURATION
   }
 
-  get moonrakerDocsUrl () {
+  get moonrakerDocsUrl() {
     return Globals.DOCS_MOONRAKER_COMPONENTS
   }
 
-  get printerWarningsTxt () {
+  get printerWarningsTxt() {
     return this.$t('app.general.error.app_setup_link', {
       url: this.docsUrl
     })
   }
 
-  get moonrakerFailedComponentsTxt () {
+  get moonrakerFailedComponentsTxt() {
     return this.$t('app.general.error.components_config', {
       url: this.moonrakerDocsUrl
     })
   }
 
-  get appName () {
+  get appName() {
     return Globals.APP_NAME
   }
 
-  get printerWarnings (): string[] {
+  get printerWarnings(): string[] {
     return this.$typedGetters['printer/getPrinterWarnings']
   }
 
-  get klipperWarnings (): Klipper.ConfigFileWarningState[] {
+  get klipperWarnings(): Klipper.ConfigFileWarningState[] {
     return this.$typedGetters['printer/getKlipperWarnings']
   }
 
-  get moonrakerFailedComponents (): string[] {
+  get moonrakerFailedComponents(): string[] {
     return this.$typedGetters['printer/getMoonrakerFailedComponents']
   }
 
-  get moonrakerWarnings (): string[] {
+  get moonrakerWarnings(): string[] {
     return this.$typedGetters['printer/getMoonrakerWarnings']
   }
 

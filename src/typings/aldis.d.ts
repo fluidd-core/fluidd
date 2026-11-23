@@ -2,11 +2,11 @@ declare namespace Aldis {
   export type KlippyState = 'ready' | 'startup' | 'error' | 'shutdown' | 'disconnected'
 
   export interface Host {
-    klippy_state: KlippyState;
-    klippy_message: string;
-    software_version?: string;
-    klipper_path?: string;
-    checkout_version?: string;
+    klippy_state: KlippyState
+    klippy_message: string
+    software_version?: string
+    klipper_path?: string
+    checkout_version?: string
   }
 
   export type BlockerReason =
@@ -18,8 +18,8 @@ declare namespace Aldis {
     | 'printing'
 
   export interface Blocker {
-    reason: BlockerReason | string;
-    message: string;
+    reason: BlockerReason | string
+    message: string
   }
 
   export type Transport =
@@ -37,12 +37,12 @@ declare namespace Aldis {
     | 'not_responding'
 
   export interface Mcu {
-    name: string;
-    transport: Transport | null;
-    running_version: string | null;
-    state: McuState | string;
-    message: string;
-    actions: string[];
+    name: string
+    transport: Transport | null
+    running_version: string | null
+    state: McuState | string
+    message: string
+    actions: string[]
   }
 
   export type Phase =
@@ -57,48 +57,46 @@ declare namespace Aldis {
     | 'done'
 
   export interface McuResult {
-    name: string;
-    outcome: 'updated' | 'failed' | 'not_attempted';
-    message: string;
+    name: string
+    outcome: 'updated' | 'failed' | 'not_attempted'
+    message: string
   }
 
   export interface RunResult {
-    outcome: 'success' | 'failed';
-    klippy_state: KlippyState;
-    klipper_left_stopped: boolean;
-    mcus: McuResult[];
+    outcome: 'success' | 'failed'
+    klippy_state: KlippyState
+    klipper_left_stopped: boolean
+    mcus: McuResult[]
   }
 
   export interface UpdateResponse {
-    run_id: string;
-    mcu: string | null;
-    phase: Phase | string;
-    message: string;
-    complete: boolean;
-    result?: RunResult | null;
+    run_id: string
+    mcu: string | null
+    phase: Phase | string
+    message: string
+    complete: boolean
+    result?: RunResult | null
   }
 
   export interface Run {
-    run_id: string;
-    state: 'running' | 'finished';
-    messages: UpdateResponse[];
-    result: RunResult | null;
+    run_id: string
+    state: 'running' | 'finished'
+    messages: UpdateResponse[]
+    result: RunResult | null
   }
 
   export interface StatusResponse {
-    api_version: number;
-    host: Host;
-    blocker: Blocker | null;
-    mcus: Mcu[];
-    run: Run | null;
+    api_version: number
+    host: Host
+    blocker: Blocker | null
+    mcus: Mcu[]
+    run: Run | null
   }
 
-  export type UpdateArguments =
-    | { mcus: string[] }
-    | { all: true }
+  export type UpdateArguments = { mcus: string[] } | { all: true }
 
   export interface UpdateResult {
-    run_id: string;
+    run_id: string
   }
 
   export type ErrorReason =
@@ -112,11 +110,11 @@ declare namespace Aldis {
     | 'unknown_method'
 
   export interface AgentError {
-    code: number;
-    message: string;
+    code: number
+    message: string
     data?: {
-      reason?: ErrorReason | string;
-      [key: string]: unknown;
-    };
+      reason?: ErrorReason | string
+      [key: string]: unknown
+    }
   }
 }

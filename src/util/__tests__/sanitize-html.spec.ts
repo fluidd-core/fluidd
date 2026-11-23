@@ -13,13 +13,17 @@ const serialize = (fragment: DocumentFragment) => {
 
 describe('sanitizeHtml', () => {
   it('removes scripts and event handlers', () => {
-    expect(serialize(sanitizeHtml('<img src="a.png" onerror="x()"><script>x()</script>')))
-      .toBe('<img src="a.png">')
+    expect(serialize(sanitizeHtml('<img src="a.png" onerror="x()"><script>x()</script>'))).toBe(
+      '<img src="a.png">'
+    )
   })
 
   it('keeps target="_blank" and rel on links', () => {
-    expect(serialize(sanitizeHtml('<a href="https://x.com" target="_blank" rel="noopener noreferrer">x</a>')))
-      .toBe('<a href="https://x.com" target="_blank" rel="noopener noreferrer">x</a>')
+    expect(
+      serialize(
+        sanitizeHtml('<a href="https://x.com" target="_blank" rel="noopener noreferrer">x</a>')
+      )
+    ).toBe('<a href="https://x.com" target="_blank" rel="noopener noreferrer">x</a>')
   })
 
   it.each([
@@ -27,19 +31,19 @@ describe('sanitizeHtml', () => {
     ['with other rel tokens', ' rel="nofollow"', 'nofollow noopener noreferrer'],
     ['with part of rel', ' rel="NoOpener"', 'noopener noreferrer']
   ])('adds noopener and noreferrer to target="_blank" links %s', (_, rel, expected) => {
-    expect(serialize(sanitizeHtml(`<a href="https://x.com" target="_blank"${rel}>x</a>`)))
-      .toBe(`<a href="https://x.com" target="_blank" rel="${expected}">x</a>`)
+    expect(serialize(sanitizeHtml(`<a href="https://x.com" target="_blank"${rel}>x</a>`))).toBe(
+      `<a href="https://x.com" target="_blank" rel="${expected}">x</a>`
+    )
   })
 
-  it.each([
-    'https://x.com',
-    'http://x.com',
-    'HTTPS://x.com',
-    '//x.com'
-  ])('opens %s in a new tab', (href) => {
-    expect(serialize(sanitizeHtml(`<a href="${href}">x</a>`)))
-      .toBe(`<a href="${href}" target="_blank" rel="noopener noreferrer">x</a>`)
-  })
+  it.each(['https://x.com', 'http://x.com', 'HTTPS://x.com', '//x.com'])(
+    'opens %s in a new tab',
+    href => {
+      expect(serialize(sanitizeHtml(`<a href="${href}">x</a>`))).toBe(
+        `<a href="${href}" target="_blank" rel="noopener noreferrer">x</a>`
+      )
+    }
+  )
 
   it.each([
     ['backslashes', '\\\\x.com'],
@@ -50,33 +54,41 @@ describe('sanitizeHtml', () => {
     ['a tab between the slashes', '/\t/x.com'],
     ['a tab in the scheme', 'ht\ttps://x.com']
   ])('opens a link with %s in a new tab', (_, href) => {
-    expect(serialize(sanitizeHtml(`<a href="${href}">x</a>`)))
-      .toBe(`<a href="${href}" target="_blank" rel="noopener noreferrer">x</a>`)
+    expect(serialize(sanitizeHtml(`<a href="${href}">x</a>`))).toBe(
+      `<a href="${href}" target="_blank" rel="noopener noreferrer">x</a>`
+    )
   })
 
   it('opens an absolute SVG link in a new tab', () => {
-    expect(serialize(sanitizeHtml('<svg><a href="https://x.com"><text>x</text></a></svg>')))
-      .toBe('<svg><a href="https://x.com" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>')
+    expect(serialize(sanitizeHtml('<svg><a href="https://x.com"><text>x</text></a></svg>'))).toBe(
+      '<svg><a href="https://x.com" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>'
+    )
   })
 
   it('opens an absolute SVG xlink:href link in a new tab', () => {
-    expect(serialize(sanitizeHtml('<svg><a xlink:href="https://x.com"><text>x</text></a></svg>')))
-      .toBe('<svg><a xlink:href="https://x.com" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>')
+    expect(
+      serialize(sanitizeHtml('<svg><a xlink:href="https://x.com"><text>x</text></a></svg>'))
+    ).toBe(
+      '<svg><a xlink:href="https://x.com" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>'
+    )
   })
 
   it('keeps an explicit target="_blank" on relative SVG links', () => {
-    expect(serialize(sanitizeHtml('<svg><a href="/a" target="_blank"><text>x</text></a></svg>')))
-      .toBe('<svg><a href="/a" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>')
+    expect(
+      serialize(sanitizeHtml('<svg><a href="/a" target="_blank"><text>x</text></a></svg>'))
+    ).toBe('<svg><a href="/a" target="_blank" rel="noopener noreferrer"><text>x</text></a></svg>')
   })
 
   it('trims the href before checking it', () => {
-    expect(serialize(sanitizeHtml('<a href=" https://x.com">x</a>')))
-      .toBe('<a href="https://x.com" target="_blank" rel="noopener noreferrer">x</a>')
+    expect(serialize(sanitizeHtml('<a href=" https://x.com">x</a>'))).toBe(
+      '<a href="https://x.com" target="_blank" rel="noopener noreferrer">x</a>'
+    )
   })
 
   it('replaces any other target on absolute links', () => {
-    expect(serialize(sanitizeHtml('<a href="https://x.com" target="_self" rel="nofollow">x</a>')))
-      .toBe('<a href="https://x.com" rel="nofollow noopener noreferrer" target="_blank">x</a>')
+    expect(
+      serialize(sanitizeHtml('<a href="https://x.com" target="_self" rel="nofollow">x</a>'))
+    ).toBe('<a href="https://x.com" rel="nofollow noopener noreferrer" target="_blank">x</a>')
   })
 
   it.each([
@@ -91,18 +103,19 @@ describe('sanitizeHtml', () => {
   })
 
   it('leaves rel alone on links that stay in the same tab', () => {
-    expect(serialize(sanitizeHtml('<a href="/a" rel="nofollow">x</a>')))
-      .toBe('<a href="/a" rel="nofollow">x</a>')
+    expect(serialize(sanitizeHtml('<a href="/a" rel="nofollow">x</a>'))).toBe(
+      '<a href="/a" rel="nofollow">x</a>'
+    )
   })
 
   it('drops any other target on relative links', () => {
-    expect(serialize(sanitizeHtml('<a href="/a" target="other">x</a>')))
-      .toBe('<a href="/a">x</a>')
+    expect(serialize(sanitizeHtml('<a href="/a" target="other">x</a>'))).toBe('<a href="/a">x</a>')
   })
 
   it('keeps an explicit target="_blank" on relative links', () => {
-    expect(serialize(sanitizeHtml('<a href="/a" target="_blank">x</a>')))
-      .toBe('<a href="/a" target="_blank" rel="noopener noreferrer">x</a>')
+    expect(serialize(sanitizeHtml('<a href="/a" target="_blank">x</a>'))).toBe(
+      '<a href="/a" target="_blank" rel="noopener noreferrer">x</a>'
+    )
   })
 })
 
@@ -121,7 +134,7 @@ describe('hasRenderableHtml', () => {
     '<!-- comment -->',
     'a < b',
     'value <min'
-  ])('is false for %s', (text) => {
+  ])('is false for %s', text => {
     expect(hasRenderableHtml(text)).toBe(false)
   })
 
@@ -133,7 +146,7 @@ describe('hasRenderableHtml', () => {
     '<B>a</B>',
     '<b>Z</b> [P<factor>]',
     'a<b and c>d'
-  ])('is true for %s', (text) => {
+  ])('is true for %s', text => {
     expect(hasRenderableHtml(text)).toBe(true)
   })
 })

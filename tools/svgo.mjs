@@ -4,12 +4,8 @@ import { optimize as svgoOptimize } from 'svgo'
 import svgoConfig from '../svgo.config.mjs'
 
 const filesWithSvgs = {
-  'src/globals.ts': [
-    /(const mdi\S+ = ')([^']*)'/g
-  ],
-  'src/plugins/afcIcons.ts': [
-    /(const afc\S+ =\s+')([^']*)'/g
-  ]
+  'src/globals.ts': [/(const mdi\S+ = ')([^']*)'/g],
+  'src/plugins/afcIcons.ts': [/(const afc\S+ =\s+')([^']*)'/g]
 }
 
 const writeFileIfContentChanged = async (path, before, after) => {
@@ -20,12 +16,12 @@ const writeFileIfContentChanged = async (path, before, after) => {
   console.log(`Optimized SVG paths in ${path}
   Before:  ${before.length} bytes
   After:   ${after.length} bytes
-  Saved:   ${before.length - after.length} bytes, ${(after.length / before.length * 100).toFixed(2)}%`)
+  Saved:   ${before.length - after.length} bytes, ${((after.length / before.length) * 100).toFixed(2)}%`)
 
   await writeFile(path, after, { encoding: 'utf8' })
 }
 
-const optimizeSvgPath = (inputSvgPath) => {
+const optimizeSvgPath = inputSvgPath => {
   const { data } = svgoOptimize(`<path d="${inputSvgPath}"/>`, svgoConfig)
 
   const startIndex = data.indexOf('d="') + 3
@@ -36,7 +32,7 @@ const optimizeSvgPath = (inputSvgPath) => {
   return outputSvgPath
 }
 
-const optimizeSvgFile = async (file) => {
+const optimizeSvgFile = async file => {
   const contentBefore = await readFile(file, { encoding: 'utf8' })
 
   const { data: contentAfter } = svgoOptimize(contentBefore, svgoConfig)
@@ -44,19 +40,22 @@ const optimizeSvgFile = async (file) => {
   await writeFileIfContentChanged(file, contentBefore, contentAfter)
 }
 
-const optimizeVueFile = async (file) => {
+const optimizeVueFile = async file => {
   const contentBefore = await readFile(file, { encoding: 'utf8' })
 
-  const contentAfter = contentBefore.replaceAll(/(<path[^>]* d=")([^"]*)"/g, (match, head, inputSvgPath) => {
-    const outputSvgPath = optimizeSvgPath(inputSvgPath)
+  const contentAfter = contentBefore.replaceAll(
+    /(<path[^>]* d=")([^"]*)"/g,
+    (match, head, inputSvgPath) => {
+      const outputSvgPath = optimizeSvgPath(inputSvgPath)
 
-    return `${head}${outputSvgPath}"`
-  })
+      return `${head}${outputSvgPath}"`
+    }
+  )
 
   await writeFileIfContentChanged(file, contentBefore, contentAfter)
 }
 
-const optimizeFileWithSvgs = async (file) => {
+const optimizeFileWithSvgs = async file => {
   const contentBefore = await readFile(file, { encoding: 'utf8' })
 
   let contentAfter = contentBefore
@@ -72,7 +71,7 @@ const optimizeFileWithSvgs = async (file) => {
   await writeFileIfContentChanged(file, contentBefore, contentAfter)
 }
 
-(async () => {
+;(async () => {
   const { positionals: patterns } = parseArgs({
     args: process.argv.slice(2),
     allowPositionals: true

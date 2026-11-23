@@ -26,7 +26,8 @@
             small
             class="ml-2"
           >
-            {{ $filters.prettyCase(key.toString()) }}: {{ getFormattedValue(sensor, key.toString(), value) }}
+            {{ $filters.prettyCase(key.toString()) }}:
+            {{ getFormattedValue(sensor, key.toString(), value) }}
           </v-chip>
         </div>
       </v-expansion-panel-header>
@@ -64,22 +65,20 @@ import SensorChart from './SensorChart.vue'
   }
 })
 export default class Sensors extends Vue {
-  get sensors (): Moonraker.Sensor.Entry[] {
+  get sensors(): Moonraker.Sensor.Entry[] {
     return this.$typedGetters['sensors/getSensors']
   }
 
-  get expanded (): number[] {
+  get expanded(): number[] {
     const sensors = this.sensors
     const expandedKeys = this.$typedState.sensors.expanded
 
     return sensors
-      .map((sensor, index) => expandedKeys.includes(sensor.id)
-        ? index
-        : -1)
+      .map((sensor, index) => (expandedKeys.includes(sensor.id) ? index : -1))
       .filter(i => i !== -1)
   }
 
-  set expanded (value: number[]) {
+  set expanded(value: number[]) {
     const sensors = this.sensors
     const expandedKeys = value
       .map(index => sensors[index]?.id)
@@ -88,25 +87,23 @@ export default class Sensors extends Vue {
     this.$typedDispatch('sensors/saveExpanded', expandedKeys)
   }
 
-  getChartableFields (sensor: Moonraker.Sensor.Entry): string[] {
+  getChartableFields(sensor: Moonraker.Sensor.Entry): string[] {
     return Object.entries(sensor.values)
       .filter(([, value]) => typeof value === 'number')
       .map(([key]) => key)
   }
 
-  getUnits (sensor: Moonraker.Sensor.Entry, key: string): string | undefined {
+  getUnits(sensor: Moonraker.Sensor.Entry, key: string): string | undefined {
     return sensor.parameter_info?.find(x => x.name === key)?.units
   }
 
-  getFormattedValue (sensor: Moonraker.Sensor.Entry, key: string, value: unknown) {
+  getFormattedValue(sensor: Moonraker.Sensor.Entry, key: string, value: unknown) {
     if (value == null || value === '') {
       return '--'
     }
 
     const units = this.getUnits(sensor, key)
-    const suffix = units
-      ? ` ${units}`
-      : ''
+    const suffix = units ? ` ${units}` : ''
 
     if (typeof value === 'number') {
       return `${Math.round(value * 100) / 100}${suffix}`

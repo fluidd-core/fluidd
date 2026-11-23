@@ -1,6 +1,8 @@
 <template>
   <v-card outlined>
-    <v-card-title>{{ $t('app.afc.SettingsDialog.SettingsForTitle', { name: $filters.prettyCase(name) }) }}</v-card-title>
+    <v-card-title>{{
+      $t('app.afc.SettingsDialog.SettingsForTitle', { name: $filters.prettyCase(name) })
+    }}</v-card-title>
 
     <v-card-text>
       <app-setting
@@ -101,47 +103,47 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
 
   changedValue = false
 
-  get afcSettingsExtruder (): Klipper.AfcExtruderSettings | undefined {
+  get afcSettingsExtruder(): Klipper.AfcExtruderSettings | undefined {
     return this.getAfcExtruderSettings(this.name)
   }
 
-  get settingsToolStn (): number {
+  get settingsToolStn(): number {
     return this.afcSettingsExtruder?.tool_stn || 0
   }
 
-  get settingsToolStnUnload (): number {
+  get settingsToolStnUnload(): number {
     return this.afcSettingsExtruder?.tool_stn_unload || 0
   }
 
-  get settingsToolSensorAfterExtruder (): number {
+  get settingsToolSensorAfterExtruder(): number {
     return this.afcSettingsExtruder?.tool_sensor_after_extruder || 0
   }
 
-  get printerObject (): Klipper.AfcExtruderState | undefined {
+  get printerObject(): Klipper.AfcExtruderState | undefined {
     return this.getAfcExtruderObject(this.name)
   }
 
-  get currentToolStn (): number {
+  get currentToolStn(): number {
     return this.printerObject?.tool_stn || 0
   }
 
-  get currentToolStnUnload (): number {
+  get currentToolStnUnload(): number {
     return this.printerObject?.tool_stn_unload || 0
   }
 
-  get currentToolSensorAfterExtruder (): number {
+  get currentToolSensorAfterExtruder(): number {
     return this.printerObject?.tool_sensor_after_extruder || 0
   }
 
-  get lanes (): string[] {
+  get lanes(): string[] {
     return this.printerObject?.lanes ?? []
   }
 
-  get lane_loaded (): string {
+  get lane_loaded(): string {
     return this.printerObject?.lane_loaded ?? ''
   }
 
-  get filledLanes (): string[] {
+  get filledLanes(): string[] {
     const filledLanes: string[] = []
 
     for (const lane of this.lanes) {
@@ -155,14 +157,11 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
     return filledLanes
   }
 
-  get existsToolEndSensor (): boolean {
-    return (
-      this.afcSettingsExtruder != null &&
-      'pin_tool_end' in this.afcSettingsExtruder
-    )
+  get existsToolEndSensor(): boolean {
+    return this.afcSettingsExtruder != null && 'pin_tool_end' in this.afcSettingsExtruder
   }
 
-  get toolStnSubTitle (): string {
+  get toolStnSubTitle(): string {
     if (this.existsToolEndSensor) {
       return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithEndSensor').toString()
     }
@@ -174,17 +173,16 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
     return this.$t('app.afc.SettingsDialog.ToolStnDescriptionWithoutEndSensor').toString()
   }
 
-  get enableSaveButton (): boolean {
+  get enableSaveButton(): boolean {
     return (
-      this.changedValue && (
-        this.currentToolStn !== this.settingsToolStn ||
+      this.changedValue &&
+      (this.currentToolStn !== this.settingsToolStn ||
         this.currentToolStnUnload !== this.settingsToolStnUnload ||
-        this.currentToolSensorAfterExtruder !== this.settingsToolSensorAfterExtruder
-      )
+        this.currentToolSensorAfterExtruder !== this.settingsToolSensorAfterExtruder)
     )
   }
 
-  toggleLane (lane: string) {
+  toggleLane(lane: string) {
     if (this.lane_loaded === lane) {
       this.sendGcode(`TOOL_UNLOAD LANE=${encodeGcodeParamValue(lane)}`)
 
@@ -194,12 +192,14 @@ export default class AfcSettingsDialogExtruder extends Mixins(StateMixin, AfcMix
     this.sendGcode(`CHANGE_TOOL LANE=${encodeGcodeParamValue(lane)}`)
   }
 
-  updateToolheadSensors (name: string, value: number) {
+  updateToolheadSensors(name: string, value: number) {
     this.changedValue = true
-    this.sendGcode(`UPDATE_TOOLHEAD_SENSORS EXTRUDER=${encodeGcodeParamValue(this.name)} ${name}=${value}`)
+    this.sendGcode(
+      `UPDATE_TOOLHEAD_SENSORS EXTRUDER=${encodeGcodeParamValue(this.name)} ${name}=${value}`
+    )
   }
 
-  saveExtruderValues () {
+  saveExtruderValues() {
     this.changedValue = false
     this.sendGcode(`SAVE_EXTRUDER_VALUES EXTRUDER=${encodeGcodeParamValue(this.name)}`)
   }

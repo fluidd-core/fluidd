@@ -23,9 +23,7 @@
               v-on="on"
               @click="ejectLane"
             >
-              <v-icon small>
-                $afcEjectFilament
-              </v-icon>
+              <v-icon small> $afcEjectFilament </v-icon>
             </v-btn>
           </template>
           <span>
@@ -47,21 +45,21 @@ export default class AfcCardUnitLaneEmpty extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane (): Klipper.AfcLaneState | undefined {
+  get lane(): Klipper.AfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 
-  get prep (): boolean {
+  get prep(): boolean {
     return this.lane?.prep === true
   }
 
-  get text (): string {
+  get text(): string {
     if (this.prep) return this.$t('app.afc.PrepDetected').toString()
 
     return this.$t('app.afc.Empty').toString()
   }
 
-  ejectLane () {
+  ejectLane() {
     this.sendGcode(`LANE_UNLOAD LANE=${encodeGcodeParamValue(this.name)}`)
   }
 }

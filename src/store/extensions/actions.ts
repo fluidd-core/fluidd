@@ -6,28 +6,29 @@ import { Globals } from '@/globals'
 import { consola } from 'consola'
 import { isAgentConnectedEvent, isAgentDisconnectedEvent } from '@/util/is-agent-event'
 
-const findAgent = (name: string) => Object.values<{ name: string, eventDispatch: string, klippyDispatch?: string }>(Globals.MOONRAKER_AGENTS)
-  .find(agent => agent.name === name)
+const findAgent = (name: string) =>
+  Object.values<{ name: string; eventDispatch: string; klippyDispatch?: string }>(
+    Globals.MOONRAKER_AGENTS
+  ).find(agent => agent.name === name)
 
 const dispatchAgentEvent = (dispatch: Dispatch, event: Moonraker.Extensions.AgentEvent) => {
   const agent = findAgent(event.agent)
 
-  return agent
-    ? dispatch(agent.eventDispatch, event, { root: true })
-    : undefined
+  return agent ? dispatch(agent.eventDispatch, event, { root: true }) : undefined
 }
 
 export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit, dispatch, state }) {
+  async reset({ commit, dispatch, state }) {
     // Synthesized: Moonraker can't tell us once the socket is gone
-    const promises = state.agents
-      .map(info => dispatchAgentEvent(dispatch, {
+    const promises = state.agents.map(info =>
+      dispatchAgentEvent(dispatch, {
         agent: info.name,
         event: 'disconnected'
-      }))
+      })
+    )
 
     commit('setReset')
 
@@ -37,40 +38,40 @@ export const actions = {
   /**
    * Inits moonraker component
    */
-  async init () {
+  async init() {
     SocketActions.serverExtensionsList()
   },
 
-  async onExtensionsList ({ commit, dispatch }, payload: Moonraker.Extensions.ListResponse) {
+  async onExtensionsList({ commit, dispatch }, payload: Moonraker.Extensions.ListResponse) {
     if (payload) {
       commit('setAgents', payload.agents)
 
       // Synthesized: these connected before we were listening
-      const promises = payload.agents
-        .map(info => dispatchAgentEvent(dispatch, {
+      const promises = payload.agents.map(info =>
+        dispatchAgentEvent(dispatch, {
           agent: info.name,
           event: 'connected',
           data: info
-        }))
+        })
+      )
 
       await Promise.all(promises)
     }
   },
 
-  async onKlippyStateChanged ({ state, dispatch }) {
-    const promises = state.agents
-      .map(info => {
-        const agent = findAgent(info.name)
+  async onKlippyStateChanged({ state, dispatch }) {
+    const promises = state.agents.map(info => {
+      const agent = findAgent(info.name)
 
-        return agent?.klippyDispatch
-          ? dispatch(agent.klippyDispatch, undefined, { root: true })
-          : undefined
-      })
+      return agent?.klippyDispatch
+        ? dispatch(agent.klippyDispatch, undefined, { root: true })
+        : undefined
+    })
 
     await Promise.all(promises)
   },
 
-  async onAgentEvent ({ commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
+  async onAgentEvent({ commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
     let reserved = true
 
     if (isAgentConnectedEvent(payload)) {

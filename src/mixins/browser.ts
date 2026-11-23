@@ -3,34 +3,30 @@ import { Vue, Component } from 'vue-property-decorator'
 
 @Component
 export default class BrowserMixin extends Vue {
-  get isMobileViewport (): boolean {
+  get isMobileViewport(): boolean {
     return this.$vuetify.breakpoint.mobile
   }
 
-  get isMobileUserAgent (): boolean {
+  get isMobileUserAgent(): boolean {
     if (isUserAgentDataMobileSupported(navigator)) {
       return navigator.userAgentData.mobile
     }
 
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-      .test(navigator.userAgent)
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    )
   }
 
-  get isIOS (): boolean {
+  get isIOS(): boolean {
     return (
-      [
-        'iPad Simulator',
-        'iPhone Simulator',
-        'iPod Simulator',
-        'iPad',
-        'iPhone',
-        'iPod'
-      ].includes(navigator.platform) ||
+      ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(
+        navigator.platform
+      ) ||
       (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
     )
   }
 
-  get isAppleDevice (): boolean {
+  get isAppleDevice(): boolean {
     return /iPhone|iPad|iPod|Macintosh|MacIntel|MacPPC|Mac68K/.test(navigator.platform)
   }
 }

@@ -6,7 +6,10 @@ import { consola } from 'consola'
 const baseEmit = async <
   M extends Moonraker.Method,
   R extends Moonraker.MethodResult<M> = Moonraker.MethodResult<M>
-> (method: M, options: EmitOptions<M>): Promise<R> => {
+>(
+  method: M,
+  options: EmitOptions<M>
+): Promise<R> => {
   if (!Vue.$socket) {
     consola.warn('Socket emit denied, socket not ready.', method, options)
 
@@ -17,437 +20,361 @@ const baseEmit = async <
 }
 
 export const SocketActions = {
-  machineServicesRestart (service: string, options?: RequestOptions) {
-    return baseEmit(
-      'machine.services.restart', {
-        wait: Waits.onServiceRestart,
-        ...options,
-        params: {
-          service
-        }
+  machineServicesRestart(service: string, options?: RequestOptions) {
+    return baseEmit('machine.services.restart', {
+      wait: Waits.onServiceRestart,
+      ...options,
+      params: {
+        service
       }
-    )
+    })
   },
 
-  machineServicesStart (service: string, options?: RequestOptions) {
-    return baseEmit(
-      'machine.services.start', {
-        wait: Waits.onServiceStart,
-        ...options,
-        params: {
-          service
-        },
+  machineServicesStart(service: string, options?: RequestOptions) {
+    return baseEmit('machine.services.start', {
+      wait: Waits.onServiceStart,
+      ...options,
+      params: {
+        service
       }
-    )
+    })
   },
 
-  machineServicesStop (service: string, options?: RequestOptions) {
-    return baseEmit(
-      'machine.services.stop', {
-        wait: Waits.onServiceStop,
-        ...options,
-        params: {
-          service
-        }
+  machineServicesStop(service: string, options?: RequestOptions) {
+    return baseEmit('machine.services.stop', {
+      wait: Waits.onServiceStop,
+      ...options,
+      params: {
+        service
       }
-    )
+    })
   },
 
-  machineReboot (options?: RequestOptions) {
-    return baseEmit(
-      'machine.reboot', {
-        ...options
-      }
-    )
+  machineReboot(options?: RequestOptions) {
+    return baseEmit('machine.reboot', {
+      ...options
+    })
   },
 
-  machineShutdown (options?: RequestOptions) {
-    return baseEmit(
-      'machine.shutdown', {
-        ...options
-      }
-    )
+  machineShutdown(options?: RequestOptions) {
+    return baseEmit('machine.shutdown', {
+      ...options
+    })
   },
 
-  machineUpdateStatus (refresh = false, options?: RequestOptions) {
-    return baseEmit(
-      'machine.update.status', {
-        dispatch: 'version/onUpdateStatus',
-        wait: Waits.onVersionRefresh,
-        ...options,
-        params: {
-          refresh
-        }
+  machineUpdateStatus(refresh = false, options?: RequestOptions) {
+    return baseEmit('machine.update.status', {
+      dispatch: 'version/onUpdateStatus',
+      wait: Waits.onVersionRefresh,
+      ...options,
+      params: {
+        refresh
       }
-    )
+    })
   },
 
-  machineUpdateRefresh (name?: string, options?: RequestOptions) {
-    return baseEmit(
-      'machine.update.refresh', {
-        dispatch: 'version/onUpdateStatus',
-        wait: Waits.onVersionRefresh,
-        ...options,
-        params: {
-          name
-        }
+  machineUpdateRefresh(name?: string, options?: RequestOptions) {
+    return baseEmit('machine.update.refresh', {
+      dispatch: 'version/onUpdateStatus',
+      wait: Waits.onVersionRefresh,
+      ...options,
+      params: {
+        name
       }
-    )
+    })
   },
 
-  machineUpdateRecover (name: string, hard = false, options?: RequestOptions) {
-    const dispatch = name === 'moonraker'
-      ? 'version/onUpdatedMoonraker'
-      : name === 'klipper'
-        ? 'version/onUpdatedKlipper'
-        : 'version/onUpdatedClient'
+  machineUpdateRecover(name: string, hard = false, options?: RequestOptions) {
+    const dispatch =
+      name === 'moonraker'
+        ? 'version/onUpdatedMoonraker'
+        : name === 'klipper'
+          ? 'version/onUpdatedKlipper'
+          : 'version/onUpdatedClient'
 
-    return baseEmit(
-      'machine.update.recover', {
-        dispatch,
-        ...options,
-        params: {
-          name,
-          hard
-        }
+    return baseEmit('machine.update.recover', {
+      dispatch,
+      ...options,
+      params: {
+        name,
+        hard
       }
-    )
+    })
   },
 
-  machineUpdateMoonraker (options?: RequestOptions) {
-    return baseEmit(
-      'machine.update.moonraker', {
-        dispatch: 'version/onUpdatedMoonraker',
-        ...options
-      }
-    )
+  machineUpdateMoonraker(options?: RequestOptions) {
+    return baseEmit('machine.update.moonraker', {
+      dispatch: 'version/onUpdatedMoonraker',
+      ...options
+    })
   },
 
-  machineUpdateKlipper (options?: RequestOptions) {
-    return baseEmit(
-      'machine.update.klipper', {
-        dispatch: 'version/onUpdatedKlipper',
-        ...options
-      }
-    )
+  machineUpdateKlipper(options?: RequestOptions) {
+    return baseEmit('machine.update.klipper', {
+      dispatch: 'version/onUpdatedKlipper',
+      ...options
+    })
   },
 
-  machineUpdateClient (name: string, options?: RequestOptions) {
-    const dispatch = name === 'fluidd'
-      ? 'version/onUpdatedFluidd'
-      : 'version/onUpdatedClient'
+  machineUpdateClient(name: string, options?: RequestOptions) {
+    const dispatch = name === 'fluidd' ? 'version/onUpdatedFluidd' : 'version/onUpdatedClient'
 
-    return baseEmit(
-      'machine.update.client', {
-        dispatch,
-        ...options,
-        params: {
-          name
-        }
+    return baseEmit('machine.update.client', {
+      dispatch,
+      ...options,
+      params: {
+        name
       }
-    )
+    })
   },
 
-  machineUpdateSystem (options?: RequestOptions) {
-    return baseEmit(
-      'machine.update.system', {
-        dispatch: 'version/onUpdatedSystem',
-        ...options
-      }
-    )
+  machineUpdateSystem(options?: RequestOptions) {
+    return baseEmit('machine.update.system', {
+      dispatch: 'version/onUpdatedSystem',
+      ...options
+    })
   },
 
-  machineUpdateAll (options?: RequestOptions) {
-    return baseEmit(
-      'machine.update.full', {
-        dispatch: 'version/onUpdatedAll',
-        ...options
-      }
-    )
+  machineUpdateAll(options?: RequestOptions) {
+    return baseEmit('machine.update.full', {
+      dispatch: 'version/onUpdatedAll',
+      ...options
+    })
   },
 
-  machineProcStats (options?: RequestOptions) {
-    return baseEmit(
-      'machine.proc_stats', {
-        dispatch: 'server/onMachineProcStats',
-        ...options
-      }
-    )
+  machineProcStats(options?: RequestOptions) {
+    return baseEmit('machine.proc_stats', {
+      dispatch: 'server/onMachineProcStats',
+      ...options
+    })
   },
 
-  machineSystemInfo (options?: RequestOptions) {
-    return baseEmit(
-      'machine.system_info', {
-        dispatch: 'server/onMachineSystemInfo',
-        ...options
-      }
-    )
+  machineSystemInfo(options?: RequestOptions) {
+    return baseEmit('machine.system_info', {
+      dispatch: 'server/onMachineSystemInfo',
+      ...options
+    })
   },
 
-  machineDevicePowerDevices (options?: RequestOptions) {
-    return baseEmit(
-      'machine.device_power.devices', {
-        dispatch: 'power/onInit',
-        ...options
-      }
-    )
+  machineDevicePowerDevices(options?: RequestOptions) {
+    return baseEmit('machine.device_power.devices', {
+      dispatch: 'power/onInit',
+      ...options
+    })
   },
 
-  machineDevicePowerStatus (device: string, options?: RequestOptions) {
-    return baseEmit(
-      'machine.device_power.status', {
-        dispatch: 'power/onStatus',
-        ...options,
-        params: {
-          [device]: null
-        }
+  machineDevicePowerStatus(device: string, options?: RequestOptions) {
+    return baseEmit('machine.device_power.status', {
+      dispatch: 'power/onStatus',
+      ...options,
+      params: {
+        [device]: null
       }
-    )
+    })
   },
 
-  machineDevicePowerSetDevice (device: string, action: Moonraker.Power.DeviceAction, options?: RequestOptions) {
-    return baseEmit(
-      'machine.device_power.post_device', {
-        dispatch: 'power/onStatus',
-        wait: `${Waits.onDevicePowerToggle}/${device}`,
-        ...options,
-        params: {
-          device,
-          action
-        }
+  machineDevicePowerSetDevice(
+    device: string,
+    action: Moonraker.Power.DeviceAction,
+    options?: RequestOptions
+  ) {
+    return baseEmit('machine.device_power.post_device', {
+      dispatch: 'power/onStatus',
+      wait: `${Waits.onDevicePowerToggle}/${device}`,
+      ...options,
+      params: {
+        device,
+        action
       }
-    )
+    })
   },
 
-  machinePeripheralsUsb (options?: RequestOptions) {
-    return baseEmit(
-      'machine.peripherals.usb', {
-        dispatch: 'server/onMachinePeripherals',
-        wait: Waits.onMachinePeripheralsUsb,
-        ...options
-      }
-    )
+  machinePeripheralsUsb(options?: RequestOptions) {
+    return baseEmit('machine.peripherals.usb', {
+      dispatch: 'server/onMachinePeripherals',
+      wait: Waits.onMachinePeripheralsUsb,
+      ...options
+    })
   },
 
-  machinePeripheralsSerial (options?: RequestOptions) {
-    return baseEmit(
-      'machine.peripherals.serial', {
-        dispatch: 'server/onMachinePeripherals',
-        wait: Waits.onMachinePeripheralsSerial,
-        ...options
-      }
-    )
+  machinePeripheralsSerial(options?: RequestOptions) {
+    return baseEmit('machine.peripherals.serial', {
+      dispatch: 'server/onMachinePeripherals',
+      wait: Waits.onMachinePeripheralsSerial,
+      ...options
+    })
   },
 
-  machinePeripheralsVideo (options?: RequestOptions) {
-    return baseEmit(
-      'machine.peripherals.video', {
-        dispatch: 'server/onMachinePeripherals',
-        wait: Waits.onMachinePeripheralsVideo,
-        ...options
-      }
-    )
+  machinePeripheralsVideo(options?: RequestOptions) {
+    return baseEmit('machine.peripherals.video', {
+      dispatch: 'server/onMachinePeripherals',
+      wait: Waits.onMachinePeripheralsVideo,
+      ...options
+    })
   },
 
-  machinePeripheralsCanbus (canbusInterface: string, options?: RequestOptions) {
-    return baseEmit(
-      'machine.peripherals.canbus', {
-        dispatch: 'server/onMachinePeripheralsCanbus',
-        wait: `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`,
-        ...options,
-        params: {
-          interface: canbusInterface
-        }
+  machinePeripheralsCanbus(canbusInterface: string, options?: RequestOptions) {
+    return baseEmit('machine.peripherals.canbus', {
+      dispatch: 'server/onMachinePeripheralsCanbus',
+      wait: `${Waits.onMachinePeripheralsCanbus}/${canbusInterface}`,
+      ...options,
+      params: {
+        interface: canbusInterface
       }
-    )
+    })
   },
 
-  machineTimelapsePostSettings (settings: Partial<Moonraker.Timelapse.WriteableSettings>, options?: RequestOptions) {
-    return baseEmit(
-      'machine.timelapse.post_settings', {
-        dispatch: 'timelapse/onSettings',
-        ...options,
-        params: settings
-      }
-    )
+  machineTimelapsePostSettings(
+    settings: Partial<Moonraker.Timelapse.WriteableSettings>,
+    options?: RequestOptions
+  ) {
+    return baseEmit('machine.timelapse.post_settings', {
+      dispatch: 'timelapse/onSettings',
+      ...options,
+      params: settings
+    })
   },
 
-  machineTimelapseSaveFrames (options?: RequestOptions) {
-    return baseEmit(
-      'machine.timelapse.saveframes', {
-        wait: Waits.onTimelapseSaveFrame,
-        ...options
-      }
-    )
+  machineTimelapseSaveFrames(options?: RequestOptions) {
+    return baseEmit('machine.timelapse.saveframes', {
+      wait: Waits.onTimelapseSaveFrame,
+      ...options
+    })
   },
 
-  machineTimelapseRender (options?: RequestOptions) {
-    return baseEmit(
-      'machine.timelapse.render', {
-        ...options
-      }
-    )
+  machineTimelapseRender(options?: RequestOptions) {
+    return baseEmit('machine.timelapse.render', {
+      ...options
+    })
   },
 
-  machineTimelapseGetSettings (options?: RequestOptions) {
-    return baseEmit(
-      'machine.timelapse.get_settings', {
-        dispatch: 'timelapse/onSettings',
-        ...options
-      }
-    )
+  machineTimelapseGetSettings(options?: RequestOptions) {
+    return baseEmit('machine.timelapse.get_settings', {
+      dispatch: 'timelapse/onSettings',
+      ...options
+    })
   },
 
-  machineTimelapseLastFrameInfo (options?: RequestOptions) {
-    return baseEmit(
-      'machine.timelapse.lastframeinfo', {
-        dispatch: 'timelapse/onLastFrame',
-        ...options
-      }
-    )
+  machineTimelapseLastFrameInfo(options?: RequestOptions) {
+    return baseEmit('machine.timelapse.lastframeinfo', {
+      dispatch: 'timelapse/onLastFrame',
+      ...options
+    })
   },
 
-  printerInfo (options?: RequestOptions) {
-    return baseEmit(
-      'printer.info', {
-        dispatch: 'printer/onPrinterInfo',
-        ...options
-      }
-    )
+  printerInfo(options?: RequestOptions) {
+    return baseEmit('printer.info', {
+      dispatch: 'printer/onPrinterInfo',
+      ...options
+    })
   },
 
-  printerRestart (options?: RequestOptions) {
-    return baseEmit(
-      'printer.restart', {
-        wait: Waits.onKlipperRestart,
-        ...options
-      }
-    )
+  printerRestart(options?: RequestOptions) {
+    return baseEmit('printer.restart', {
+      wait: Waits.onKlipperRestart,
+      ...options
+    })
   },
 
-  printerFirmwareRestart (options?: RequestOptions) {
-    return baseEmit(
-      'printer.firmware_restart', {
-        wait: Waits.onKlipperFirmwareRestart,
-        ...options
-      }
-    )
+  printerFirmwareRestart(options?: RequestOptions) {
+    return baseEmit('printer.firmware_restart', {
+      wait: Waits.onKlipperFirmwareRestart,
+      ...options
+    })
   },
 
-  printerQueryEndstops (options?: RequestOptions) {
-    return baseEmit(
-      'printer.query_endstops.status', {
-        dispatch: 'printer/onQueryEndstops',
-        wait: Waits.onQueryEndstops,
-        ...options
-      }
-    )
+  printerQueryEndstops(options?: RequestOptions) {
+    return baseEmit('printer.query_endstops.status', {
+      dispatch: 'printer/onQueryEndstops',
+      wait: Waits.onQueryEndstops,
+      ...options
+    })
   },
 
-  printerObjectsList (options?: RequestOptions) {
-    return baseEmit(
-      'printer.objects.list', {
-        dispatch: 'printer/onPrinterObjectsList',
-        ...options
-      }
-    )
+  printerObjectsList(options?: RequestOptions) {
+    return baseEmit('printer.objects.list', {
+      dispatch: 'printer/onPrinterObjectsList',
+      ...options
+    })
   },
 
-  printerObjectsSubscribe (objects: Record<string, null>, options?: RequestOptions) {
-    return baseEmit(
-      'printer.objects.subscribe', {
-        dispatch: 'printer/onPrinterObjectsSubscribe',
-        ...options,
-        params: {
-          objects
-        }
+  printerObjectsSubscribe(objects: Record<string, null>, options?: RequestOptions) {
+    return baseEmit('printer.objects.subscribe', {
+      dispatch: 'printer/onPrinterObjectsSubscribe',
+      ...options,
+      params: {
+        objects
       }
-    )
+    })
   },
 
-  printerPrintStart (path: string, options?: RequestOptions) {
-    return baseEmit(
-      'printer.print.start', {
-        ...options,
-        params: {
-          filename: path
-        }
+  printerPrintStart(path: string, options?: RequestOptions) {
+    return baseEmit('printer.print.start', {
+      ...options,
+      params: {
+        filename: path
       }
-    )
+    })
   },
 
-  printerPrintCancel (options?: RequestOptions) {
-    return baseEmit(
-      'printer.print.cancel', {
-        dispatch: 'printer/onPrintCancel',
-        wait: Waits.onPrintCancel,
-        ...options
-      }
-    )
+  printerPrintCancel(options?: RequestOptions) {
+    return baseEmit('printer.print.cancel', {
+      dispatch: 'printer/onPrintCancel',
+      wait: Waits.onPrintCancel,
+      ...options
+    })
   },
 
-  printerPrintPause (options?: RequestOptions) {
-    return baseEmit(
-      'printer.print.pause', {
-        dispatch: 'printer/onPrintPause',
-        wait: Waits.onPrintPause,
-        ...options
-      }
-    )
+  printerPrintPause(options?: RequestOptions) {
+    return baseEmit('printer.print.pause', {
+      dispatch: 'printer/onPrintPause',
+      wait: Waits.onPrintPause,
+      ...options
+    })
   },
 
-  printerPrintResume (options?: RequestOptions) {
-    return baseEmit(
-      'printer.print.resume', {
-        dispatch: 'printer/onPrintResume',
-        wait: Waits.onPrintResume,
-        ...options
-      }
-    )
+  printerPrintResume(options?: RequestOptions) {
+    return baseEmit('printer.print.resume', {
+      dispatch: 'printer/onPrintResume',
+      wait: Waits.onPrintResume,
+      ...options
+    })
   },
 
-  printerGcodeScript (gcode: string, options?: RequestOptions) {
-    return baseEmit(
-      'printer.gcode.script', {
-        dispatch: 'console/onGcodeScript',
-        ...options,
-        params: {
-          script: gcode
-        }
+  printerGcodeScript(gcode: string, options?: RequestOptions) {
+    return baseEmit('printer.gcode.script', {
+      dispatch: 'console/onGcodeScript',
+      ...options,
+      params: {
+        script: gcode
       }
-    )
+    })
   },
 
-  printerGcodeHelp (options?: RequestOptions) {
-    return baseEmit(
-      'printer.gcode.help', {
-        dispatch: 'console/onGcodeHelp',
-        ...options
-      }
-    )
+  printerGcodeHelp(options?: RequestOptions) {
+    return baseEmit('printer.gcode.help', {
+      dispatch: 'console/onGcodeHelp',
+      ...options
+    })
   },
 
-  printerEmergencyStop (options?: RequestOptions) {
-    return baseEmit(
-      'printer.emergency_stop', {
-        ...options
-      }
-    )
+  printerEmergencyStop(options?: RequestOptions) {
+    return baseEmit('printer.emergency_stop', {
+      ...options
+    })
   },
 
-  serverInfo (raw = true, options?: RequestOptions) {
-    return baseEmit(
-      'server.info', {
-        dispatch: 'server/onServerInfo',
-        ...options,
-        params: {
-          raw
-        }
+  serverInfo(raw = true, options?: RequestOptions) {
+    return baseEmit('server.info', {
+      dispatch: 'server/onServerInfo',
+      ...options,
+      params: {
+        raw
       }
-    )
+    })
   },
 
-  aldisStatus (options?: RequestOptions) {
+  aldisStatus(options?: RequestOptions) {
     return SocketActions.serverExtensionsRequest<Aldis.StatusResponse>(
       {
         agent: Globals.MOONRAKER_AGENTS.aldis.name,
@@ -462,7 +389,7 @@ export const SocketActions = {
     )
   },
 
-  aldisUpdate (args: Aldis.UpdateArguments, options?: RequestOptions) {
+  aldisUpdate(args: Aldis.UpdateArguments, options?: RequestOptions) {
     return SocketActions.serverExtensionsRequest<Aldis.UpdateResult>(
       {
         agent: Globals.MOONRAKER_AGENTS.aldis.name,
@@ -476,84 +403,80 @@ export const SocketActions = {
     )
   },
 
-  serverConnectionIdentify (params: Moonraker.MethodParams<'server.connection.identify'>, options?: RequestOptions) {
-    return baseEmit(
-      'server.connection.identify', {
-        dispatch: 'socket/onConnectionId',
-        ...options,
-        params
-      })
+  serverConnectionIdentify(
+    params: Moonraker.MethodParams<'server.connection.identify'>,
+    options?: RequestOptions
+  ) {
+    return baseEmit('server.connection.identify', {
+      dispatch: 'socket/onConnectionId',
+      ...options,
+      params
+    })
   },
 
-  serverConfig (options?: RequestOptions) {
-    return baseEmit(
-      'server.config', {
-        dispatch: 'server/onServerConfig',
-        ...options
+  serverConfig(options?: RequestOptions) {
+    return baseEmit('server.config', {
+      dispatch: 'server/onServerConfig',
+      ...options
+    })
+  },
+
+  serverDatabaseList(options?: RequestOptions) {
+    return baseEmit('server.database.list', {
+      dispatch: 'database/onServerDatabaseList',
+      wait: Waits.onDatabaseList,
+      ...options
+    })
+  },
+
+  serverDatabaseCompact(options?: RequestOptions) {
+    return baseEmit('server.database.compact', {
+      wait: Waits.onDatabaseCompact,
+      ...options
+    })
+  },
+
+  serverDatabasePostBackup(filename: string, options?: RequestOptions) {
+    return baseEmit('server.database.post_backup', {
+      dispatch: 'database/onServerDatabasePostBackup',
+      wait: `${Waits.onDatabasePostBackup}/${filename}`,
+      ...options,
+      params: {
+        filename
       }
-    )
+    })
   },
 
-  serverDatabaseList (options?: RequestOptions) {
-    return baseEmit(
-      'server.database.list', {
-        dispatch: 'database/onServerDatabaseList',
-        wait: Waits.onDatabaseList,
-        ...options
+  serverDatabaseRestore(filename: string, options?: RequestOptions) {
+    return baseEmit('server.database.restore', {
+      wait: `${Waits.onDatabaseRestore}/${filename}`,
+      ...options,
+      params: {
+        filename
       }
-    )
+    })
   },
 
-  serverDatabaseCompact (options?: RequestOptions) {
-    return baseEmit(
-      'server.database.compact', {
-        wait: Waits.onDatabaseCompact,
-        ...options
+  serverDatabaseDeleteBackup(filename: string, options?: RequestOptions) {
+    return baseEmit('server.database.delete_backup', {
+      dispatch: 'database/onServerDatabaseDeleteBackup',
+      wait: `${Waits.onDatabaseDeleteBackup}/${filename}`,
+      ...options,
+      params: {
+        filename
       }
-    )
+    })
   },
 
-  serverDatabasePostBackup (filename: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.database.post_backup', {
-        dispatch: 'database/onServerDatabasePostBackup',
-        wait: `${Waits.onDatabasePostBackup}/${filename}`,
-        ...options,
-        params: {
-          filename
-        }
-      }
-    )
-  },
-
-  serverDatabaseRestore (filename: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.database.restore', {
-        wait: `${Waits.onDatabaseRestore}/${filename}`,
-        ...options,
-        params: {
-          filename
-        }
-      }
-    )
-  },
-
-  serverDatabaseDeleteBackup (filename: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.database.delete_backup', {
-        dispatch: 'database/onServerDatabaseDeleteBackup',
-        wait: `${Waits.onDatabaseDeleteBackup}/${filename}`,
-        ...options,
-        params: {
-          filename
-        }
-      }
-    )
-  },
-
-  serverDatabasePostItem<T = unknown> (key: string | string[], value: T, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: RequestOptions) {
+  serverDatabasePostItem<T = unknown>(
+    key: string | string[],
+    value: T,
+    namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE,
+    options?: RequestOptions
+  ) {
     return baseEmit<'server.database.post_item', Moonraker.Database.PostItemResponse<T>>(
-      'server.database.post_item', {
+      'server.database.post_item',
+      {
         ...options,
         params: {
           namespace,
@@ -564,9 +487,14 @@ export const SocketActions = {
     )
   },
 
-  serverDatabaseDeleteItem<T = unknown> (key: string | string[], namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: RequestOptions) {
+  serverDatabaseDeleteItem<T = unknown>(
+    key: string | string[],
+    namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE,
+    options?: RequestOptions
+  ) {
     return baseEmit<'server.database.delete_item', Moonraker.Database.DeleteItemResponse<T>>(
-      'server.database.delete_item', {
+      'server.database.delete_item',
+      {
         ...options,
         params: {
           namespace,
@@ -576,9 +504,14 @@ export const SocketActions = {
     )
   },
 
-  serverDatabaseGetItem<T = unknown> (key?: string | string[], namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE, options?: RequestOptions) {
+  serverDatabaseGetItem<T = unknown>(
+    key?: string | string[],
+    namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE,
+    options?: RequestOptions
+  ) {
     return baseEmit<'server.database.get_item', Moonraker.Database.GetItemResponse<T>>(
-      'server.database.get_item', {
+      'server.database.get_item',
+      {
         ...options,
         params: {
           namespace,
@@ -588,142 +521,115 @@ export const SocketActions = {
     )
   },
 
-  serverRestart (options?: RequestOptions) {
-    return baseEmit(
-      'server.restart', {
-        ...options
-      }
-    )
+  serverRestart(options?: RequestOptions) {
+    return baseEmit('server.restart', {
+      ...options
+    })
   },
 
-  serverTemperatureStore (options?: RequestOptions) {
-    return baseEmit(
-      'server.temperature_store', {
-        dispatch: 'charts/initTempStore',
-        ...options,
-        params: {
-          include_monitors: true
-        }
+  serverTemperatureStore(options?: RequestOptions) {
+    return baseEmit('server.temperature_store', {
+      dispatch: 'charts/initTempStore',
+      ...options,
+      params: {
+        include_monitors: true
       }
-    )
+    })
   },
 
-  serverGcodeStore (options?: RequestOptions) {
-    return baseEmit(
-      'server.gcode_store', {
-        dispatch: 'console/onGcodeStore',
-        ...options
-      }
-    )
+  serverGcodeStore(options?: RequestOptions) {
+    return baseEmit('server.gcode_store', {
+      dispatch: 'console/onGcodeStore',
+      ...options
+    })
   },
 
-  serverHistoryGetJob (uid: string, options?: RequestOptions) {
+  serverHistoryGetJob(uid: string, options?: RequestOptions) {
     // Answered to the caller, which commits jobs in batches.
-    return baseEmit(
-      'server.history.get_job', {
-        ...options,
-        params: {
-          uid
-        }
+    return baseEmit('server.history.get_job', {
+      ...options,
+      params: {
+        uid
       }
-    )
+    })
   },
 
-  serverHistoryList (params?: Moonraker.MethodParams<'server.history.list'>, options?: RequestOptions) {
-    return baseEmit(
-      'server.history.list', {
-        dispatch: 'history/onHistoryList',
-        ...options,
-        params
-      }
-    )
+  serverHistoryList(
+    params?: Moonraker.MethodParams<'server.history.list'>,
+    options?: RequestOptions
+  ) {
+    return baseEmit('server.history.list', {
+      dispatch: 'history/onHistoryList',
+      ...options,
+      params
+    })
   },
 
-  serverHistoryTotals (options?: RequestOptions) {
-    return baseEmit(
-      'server.history.totals', {
-        dispatch: 'history/onHistoryTotals',
-        ...options
-      }
-    )
+  serverHistoryTotals(options?: RequestOptions) {
+    return baseEmit('server.history.totals', {
+      dispatch: 'history/onHistoryTotals',
+      ...options
+    })
   },
 
-  serverHistoryDeleteJob (uid: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.history.delete_job', {
-        dispatch: 'history/onDelete',
-        ...options,
-        params: uid === 'all'
-          ? { all: true }
-          : { uid }
-      }
-    )
+  serverHistoryDeleteJob(uid: string, options?: RequestOptions) {
+    return baseEmit('server.history.delete_job', {
+      dispatch: 'history/onDelete',
+      ...options,
+      params: uid === 'all' ? { all: true } : { uid }
+    })
   },
 
-  serverHistoryResetTotals (options?: RequestOptions) {
-    return baseEmit(
-      'server.history.reset_totals', {
-        dispatch: 'history/onHistoryResetTotals',
-        ...options
-      }
-    )
+  serverHistoryResetTotals(options?: RequestOptions) {
+    return baseEmit('server.history.reset_totals', {
+      dispatch: 'history/onHistoryResetTotals',
+      ...options
+    })
   },
 
-  serverJobQueueStatus (options?: RequestOptions) {
-    return baseEmit(
-      'server.job_queue.status', {
-        dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue,
-        ...options
-      }
-    )
+  serverJobQueueStatus(options?: RequestOptions) {
+    return baseEmit('server.job_queue.status', {
+      dispatch: 'jobQueue/onJobQueueStatus',
+      wait: Waits.onJobQueue,
+      ...options
+    })
   },
 
-  serverJobQueuePostJob (filenames: string[], reset?: boolean, options?: RequestOptions) {
-    return baseEmit(
-      'server.job_queue.post_job', {
-        dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue,
-        ...options,
-        params: {
-          filenames,
-          reset
-        }
+  serverJobQueuePostJob(filenames: string[], reset?: boolean, options?: RequestOptions) {
+    return baseEmit('server.job_queue.post_job', {
+      dispatch: 'jobQueue/onJobQueueStatus',
+      wait: Waits.onJobQueue,
+      ...options,
+      params: {
+        filenames,
+        reset
       }
-    )
+    })
   },
 
-  serverJobQueueDeleteJobs (jobIds: string[], options?: RequestOptions) {
-    return baseEmit(
-      'server.job_queue.delete_job', {
-        dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue,
-        ...options,
-        params: jobIds.length > 0 && jobIds[0] === 'all'
-          ? { all: true }
-          : { job_ids: jobIds }
-      }
-    )
+  serverJobQueueDeleteJobs(jobIds: string[], options?: RequestOptions) {
+    return baseEmit('server.job_queue.delete_job', {
+      dispatch: 'jobQueue/onJobQueueStatus',
+      wait: Waits.onJobQueue,
+      ...options,
+      params: jobIds.length > 0 && jobIds[0] === 'all' ? { all: true } : { job_ids: jobIds }
+    })
   },
 
-  serverJobQueuePause (options?: RequestOptions) {
-    return baseEmit(
-      'server.job_queue.pause', {
-        dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue,
-        ...options
-      }
-    )
+  serverJobQueuePause(options?: RequestOptions) {
+    return baseEmit('server.job_queue.pause', {
+      dispatch: 'jobQueue/onJobQueueStatus',
+      wait: Waits.onJobQueue,
+      ...options
+    })
   },
 
-  serverJobQueueStart (options?: RequestOptions) {
-    return baseEmit(
-      'server.job_queue.start', {
-        dispatch: 'jobQueue/onJobQueueStatus',
-        wait: Waits.onJobQueue,
-        ...options
-      }
-    )
+  serverJobQueueStart(options?: RequestOptions) {
+    return baseEmit('server.job_queue.start', {
+      dispatch: 'jobQueue/onJobQueueStatus',
+      wait: Waits.onJobQueue,
+      ...options
+    })
   },
 
   /**
@@ -731,425 +637,365 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  serverFilesMetadata (filename: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.metadata', {
-        dispatch: 'files/onFileMetaData',
-        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
-        ...options,
-        params: {
-          filename
-        }
+  serverFilesMetadata(filename: string, options?: RequestOptions) {
+    return baseEmit('server.files.metadata', {
+      dispatch: 'files/onFileMetaData',
+      wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+      ...options,
+      params: {
+        filename
       }
-    )
+    })
   },
 
-  serverFilesMetascan (filename: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.metascan', {
-        dispatch: 'files/onFileMetaData',
-        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
-        ...options,
-        params: {
-          filename
-        }
+  serverFilesMetascan(filename: string, options?: RequestOptions) {
+    return baseEmit('server.files.metascan', {
+      dispatch: 'files/onFileMetaData',
+      wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+      ...options,
+      params: {
+        filename
       }
-    )
+    })
   },
 
   /**
    * This only requires path, but we pass root along too
    * for brevity.
    */
-  serverFilesGetDirectory (path: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.get_directory',
-      {
-        dispatch: 'files/onServerFilesGetDirectory',
-        wait: `${Waits.onFileSystem}/${path}/`,
-        ...options,
-        params: {
-          path,
-          extended: true
-        }
+  serverFilesGetDirectory(path: string, options?: RequestOptions) {
+    return baseEmit('server.files.get_directory', {
+      dispatch: 'files/onServerFilesGetDirectory',
+      wait: `${Waits.onFileSystem}/${path}/`,
+      ...options,
+      params: {
+        path,
+        extended: true
       }
-    )
+    })
   },
 
-  serverFilesRoots (options?: RequestOptions) {
-    return baseEmit(
-      'server.files.roots',
-      {
-        dispatch: 'files/onServerFilesRoots',
-        wait: Waits.onFileSystemRoots,
-        ...options
-      }
-    )
+  serverFilesRoots(options?: RequestOptions) {
+    return baseEmit('server.files.roots', {
+      dispatch: 'files/onServerFilesRoots',
+      wait: Waits.onFileSystemRoots,
+      ...options
+    })
   },
 
-  serverFilesList (root: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.list',
-      {
-        dispatch: 'files/onServerFilesListRoot',
-        wait: `${Waits.onFileSystem}/${root}/`,
-        ...options,
-        params: {
-          root
-        }
+  serverFilesList(root: string, options?: RequestOptions) {
+    return baseEmit('server.files.list', {
+      dispatch: 'files/onServerFilesListRoot',
+      wait: `${Waits.onFileSystem}/${root}/`,
+      ...options,
+      params: {
+        root
       }
-    )
+    })
   },
 
-  serverFilesMove (source: string, dest: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.move', {
-        wait: `${Waits.onFileSystem}/${source}/`,
-        ...options,
-        params: {
-          source,
-          dest
-        }
+  serverFilesMove(source: string, dest: string, options?: RequestOptions) {
+    return baseEmit('server.files.move', {
+      wait: `${Waits.onFileSystem}/${source}/`,
+      ...options,
+      params: {
+        source,
+        dest
       }
-    )
+    })
   },
 
-  serverFilesCopy (source: string, dest: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.copy', {
-        wait: `${Waits.onFileSystem}/${source}/`,
-        ...options,
-        params: {
-          source,
-          dest
-        }
+  serverFilesCopy(source: string, dest: string, options?: RequestOptions) {
+    return baseEmit('server.files.copy', {
+      wait: `${Waits.onFileSystem}/${source}/`,
+      ...options,
+      params: {
+        source,
+        dest
       }
-    )
+    })
   },
 
-  serverFilesZip (dest: string, items: string[], store_only?: boolean, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.zip', {
-        wait: `${Waits.onFileSystem}/${dest}/`,
-        ...options,
-        params: {
-          dest,
-          items,
-          store_only
-        }
+  serverFilesZip(dest: string, items: string[], store_only?: boolean, options?: RequestOptions) {
+    return baseEmit('server.files.zip', {
+      wait: `${Waits.onFileSystem}/${dest}/`,
+      ...options,
+      params: {
+        dest,
+        items,
+        store_only
       }
-    )
+    })
   },
 
   /**
    * Create a directory.
    * Root should be included in the path.
    */
-  serverFilesPostDirectory (path: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.post_directory', {
-        wait: `${Waits.onFileSystem}/${path}/`,
-        ...options,
-        params: {
-          path
-        }
+  serverFilesPostDirectory(path: string, options?: RequestOptions) {
+    return baseEmit('server.files.post_directory', {
+      wait: `${Waits.onFileSystem}/${path}/`,
+      ...options,
+      params: {
+        path
       }
-    )
+    })
   },
 
-  serverFilesDeleteFile (path: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.delete_file', {
-        wait: `${Waits.onFileSystem}/${path}`,
-        ...options,
-        params: {
-          path
-        }
+  serverFilesDeleteFile(path: string, options?: RequestOptions) {
+    return baseEmit('server.files.delete_file', {
+      wait: `${Waits.onFileSystem}/${path}`,
+      ...options,
+      params: {
+        path
       }
-    )
+    })
   },
 
-  serverFilesDeleteDirectory (path: string, force = false, options?: RequestOptions) {
-    return baseEmit(
-      'server.files.delete_directory', {
-        wait: `${Waits.onFileSystem}/${path}/`,
-        ...options,
-        params: {
-          path,
-          force
-        }
+  serverFilesDeleteDirectory(path: string, force = false, options?: RequestOptions) {
+    return baseEmit('server.files.delete_directory', {
+      wait: `${Waits.onFileSystem}/${path}/`,
+      ...options,
+      params: {
+        path,
+        force
       }
-    )
+    })
   },
 
-  serverAnnouncementsList (options?: RequestOptions) {
-    return baseEmit(
-      'server.announcements.list', {
-        dispatch: 'announcements/onAnnouncementsList',
-        ...options
-      }
-    )
+  serverAnnouncementsList(options?: RequestOptions) {
+    return baseEmit('server.announcements.list', {
+      dispatch: 'announcements/onAnnouncementsList',
+      ...options
+    })
   },
 
-  serverAnnouncementsDismiss (entry_id: string, wake_time?: number, options?: RequestOptions) {
-    return baseEmit(
-      'server.announcements.dismiss', {
-        ...options,
-        params: {
-          entry_id,
-          wake_time
-        }
+  serverAnnouncementsDismiss(entry_id: string, wake_time?: number, options?: RequestOptions) {
+    return baseEmit('server.announcements.dismiss', {
+      ...options,
+      params: {
+        entry_id,
+        wake_time
       }
-    )
+    })
   },
 
-  serverLogsRollover (application?: Moonraker.Server.LogsRolloverApplication, options?: RequestOptions) {
-    return baseEmit(
-      'server.logs.rollover', {
-        dispatch: 'server/onLogsRollOver',
-        ...options,
-        params: {
-          application
-        }
+  serverLogsRollover(
+    application?: Moonraker.Server.LogsRolloverApplication,
+    options?: RequestOptions
+  ) {
+    return baseEmit('server.logs.rollover', {
+      dispatch: 'server/onLogsRollOver',
+      ...options,
+      params: {
+        application
       }
-    )
+    })
   },
 
-  serverExtensionsList (options?: RequestOptions) {
-    return baseEmit(
-      'server.extensions.list', {
-        dispatch: 'extensions/onExtensionsList',
-        ...options
-      }
-    )
+  serverExtensionsList(options?: RequestOptions) {
+    return baseEmit('server.extensions.list', {
+      dispatch: 'extensions/onExtensionsList',
+      ...options
+    })
   },
 
-  serverExtensionsRequest<T = unknown> (params: Moonraker.MethodParams<'server.extensions.request'>, options?: RequestOptions) {
-    return baseEmit<'server.extensions.request', T>(
-      'server.extensions.request', {
-        ...options,
-        params
-      }
-    )
+  serverExtensionsRequest<T = unknown>(
+    params: Moonraker.MethodParams<'server.extensions.request'>,
+    options?: RequestOptions
+  ) {
+    return baseEmit<'server.extensions.request', T>('server.extensions.request', {
+      ...options,
+      params
+    })
   },
 
-  serverWebcamsList (options?: RequestOptions) {
-    return baseEmit(
-      'server.webcams.list', {
-        dispatch: 'webcams/onWebcamsList',
-        ...options
-      }
-    )
+  serverWebcamsList(options?: RequestOptions) {
+    return baseEmit('server.webcams.list', {
+      dispatch: 'webcams/onWebcamsList',
+      ...options
+    })
   },
 
-  serverWebcamsWrite (webcam: Moonraker.Webcam.PostItemParams, options?: RequestOptions) {
-    return baseEmit(
-      'server.webcams.post_item', {
-        ...options,
-        params: webcam
-      }
-    )
+  serverWebcamsWrite(webcam: Moonraker.Webcam.PostItemParams, options?: RequestOptions) {
+    return baseEmit('server.webcams.post_item', {
+      ...options,
+      params: webcam
+    })
   },
 
-  serverWebcamsDelete (uid: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.webcams.delete_item', {
-        ...options,
-        params: {
-          uid
-        }
+  serverWebcamsDelete(uid: string, options?: RequestOptions) {
+    return baseEmit('server.webcams.delete_item', {
+      ...options,
+      params: {
+        uid
       }
-    )
+    })
   },
 
-  serverSensorsList (options?: RequestOptions) {
-    return baseEmit(
-      'server.sensors.list', {
-        dispatch: 'sensors/onSensorsList',
-        ...options,
-        params: {
-          extended: true
-        }
+  serverSensorsList(options?: RequestOptions) {
+    return baseEmit('server.sensors.list', {
+      dispatch: 'sensors/onSensorsList',
+      ...options,
+      params: {
+        extended: true
       }
-    )
+    })
   },
 
-  serverAnalysisStatus (options?: RequestOptions) {
-    return baseEmit(
-      'server.analysis.status', {
-        dispatch: 'analysis/onAnalysisStatus',
-        ...options
-      }
-    )
+  serverAnalysisStatus(options?: RequestOptions) {
+    return baseEmit('server.analysis.status', {
+      dispatch: 'analysis/onAnalysisStatus',
+      ...options
+    })
   },
 
-  serverAnalysisEstimate (filename: string, estimator_config?: string, options?: RequestOptions) {
-    return baseEmit(
-      'server.analysis.estimate', {
-        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
-        ...options,
-        params: {
-          filename,
-          estimator_config
-        }
+  serverAnalysisEstimate(filename: string, estimator_config?: string, options?: RequestOptions) {
+    return baseEmit('server.analysis.estimate', {
+      wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+      ...options,
+      params: {
+        filename,
+        estimator_config
       }
-    )
+    })
   },
 
-  serverAnalysisProcess (filename: string, estimator_config?: string, force?: boolean, options?: RequestOptions) {
-    return baseEmit(
-      'server.analysis.process', {
-        wait: `${Waits.onFileSystem}/gcodes/${filename}`,
-        dispatch: 'analysis/onAnalysisProcess',
-        ...options,
-        params: {
-          filename,
-          estimator_config,
-          force
-        }
+  serverAnalysisProcess(
+    filename: string,
+    estimator_config?: string,
+    force?: boolean,
+    options?: RequestOptions
+  ) {
+    return baseEmit('server.analysis.process', {
+      wait: `${Waits.onFileSystem}/gcodes/${filename}`,
+      dispatch: 'analysis/onAnalysisProcess',
+      ...options,
+      params: {
+        filename,
+        estimator_config,
+        force
       }
-    )
+    })
   },
 
-  accessInfo (options?: RequestOptions) {
-    return baseEmit(
-      'access.info', {
-        ...options
-      }
-    )
+  accessInfo(options?: RequestOptions) {
+    return baseEmit('access.info', {
+      ...options
+    })
   },
 
-  accessRefreshJwt (refresh_token: string, options?: RequestOptions) {
-    return baseEmit(
-      'access.refresh_jwt', {
-        ...options,
-        params: {
-          refresh_token
-        }
+  accessRefreshJwt(refresh_token: string, options?: RequestOptions) {
+    return baseEmit('access.refresh_jwt', {
+      ...options,
+      params: {
+        refresh_token
       }
-    )
+    })
   },
 
-  accessLogin (username: string, password: string, source: Moonraker.Authorization.Source = 'moonraker', options?: RequestOptions) {
-    return baseEmit(
-      'access.login', {
-        ...options,
-        params: {
-          username,
-          password,
-          source
-        }
+  accessLogin(
+    username: string,
+    password: string,
+    source: Moonraker.Authorization.Source = 'moonraker',
+    options?: RequestOptions
+  ) {
+    return baseEmit('access.login', {
+      ...options,
+      params: {
+        username,
+        password,
+        source
       }
-    )
+    })
   },
 
-  accessLogout (options?: RequestOptions) {
-    return baseEmit(
-      'access.logout', {
-        ...options
-      }
-    )
+  accessLogout(options?: RequestOptions) {
+    return baseEmit('access.logout', {
+      ...options
+    })
   },
 
-  accessOneshotToken (options?: RequestOptions) {
-    return baseEmit(
-      'access.oneshot_token', {
-        ...options
-      }
-    )
+  accessOneshotToken(options?: RequestOptions) {
+    return baseEmit('access.oneshot_token', {
+      ...options
+    })
   },
 
-  accessGetUser (options?: RequestOptions) {
-    return baseEmit(
-      'access.get_user', {
-        ...options
-      }
-    )
+  accessGetUser(options?: RequestOptions) {
+    return baseEmit('access.get_user', {
+      ...options
+    })
   },
 
-  accessUsersList (options?: RequestOptions) {
-    return baseEmit(
-      'access.users.list', {
-        ...options
-      }
-    )
+  accessUsersList(options?: RequestOptions) {
+    return baseEmit('access.users.list', {
+      ...options
+    })
   },
 
-  accessPostUser (username: string, password: string, options?: RequestOptions) {
-    return baseEmit(
-      'access.post_user', {
-        ...options,
-        params: {
-          username,
-          password
-        }
+  accessPostUser(username: string, password: string, options?: RequestOptions) {
+    return baseEmit('access.post_user', {
+      ...options,
+      params: {
+        username,
+        password
       }
-    )
+    })
   },
 
-  accessDeleteUser (username: string, options?: RequestOptions) {
-    return baseEmit(
-      'access.delete_user', {
-        ...options,
-        params: {
-          username
-        }
+  accessDeleteUser(username: string, options?: RequestOptions) {
+    return baseEmit('access.delete_user', {
+      ...options,
+      params: {
+        username
       }
-    )
+    })
   },
 
-  accessUserPassword (password: string, new_password: string, options?: RequestOptions) {
-    return baseEmit(
-      'access.user.password', {
-        ...options,
-        params: {
-          password,
-          new_password
-        }
+  accessUserPassword(password: string, new_password: string, options?: RequestOptions) {
+    return baseEmit('access.user.password', {
+      ...options,
+      params: {
+        password,
+        new_password
       }
-    )
+    })
   },
 
-  accessGetApiKey (options?: RequestOptions) {
-    return baseEmit(
-      'access.get_api_key', {
-        ...options
-      }
-    )
+  accessGetApiKey(options?: RequestOptions) {
+    return baseEmit('access.get_api_key', {
+      ...options
+    })
   },
 
-  accessPostApiKey (options?: RequestOptions) {
-    return baseEmit(
-      'access.post_api_key', {
-        ...options
-      }
-    )
+  accessPostApiKey(options?: RequestOptions) {
+    return baseEmit('access.post_api_key', {
+      ...options
+    })
   },
 
-  serverSpoolmanGetSpoolId (options?: RequestOptions) {
-    return baseEmit(
-      'server.spoolman.get_spool_id', {
-        dispatch: 'spoolman/onActiveSpool',
-        ...options
-      }
-    )
+  serverSpoolmanGetSpoolId(options?: RequestOptions) {
+    return baseEmit('server.spoolman.get_spool_id', {
+      dispatch: 'spoolman/onActiveSpool',
+      ...options
+    })
   },
 
-  serverSpoolmanPostSpoolId (spoolId: number | undefined, options?: RequestOptions) {
-    return baseEmit(
-      'server.spoolman.post_spool_id', {
-        dispatch: 'spoolman/onActiveSpool',
-        ...options,
-        params: {
-          spool_id: spoolId
-        }
+  serverSpoolmanPostSpoolId(spoolId: number | undefined, options?: RequestOptions) {
+    return baseEmit('server.spoolman.post_spool_id', {
+      dispatch: 'spoolman/onActiveSpool',
+      ...options,
+      params: {
+        spool_id: spoolId
       }
-    )
+    })
   },
 
-  serverSpoolmanProxyGet<T = unknown> (path: string, options?: RequestOptions) {
+  serverSpoolmanProxyGet<T = unknown>(path: string, options?: RequestOptions) {
     return baseEmit<'server.spoolman.proxy', Moonraker.Spoolman.ProxyResponse<T>>(
-      'server.spoolman.proxy', {
+      'server.spoolman.proxy',
+      {
         ...options,
         params: {
           request_method: 'GET',
@@ -1160,21 +1006,21 @@ export const SocketActions = {
     )
   },
 
-  serverSpoolmanProxyGetAvailableSpools (options?: RequestOptions) {
+  serverSpoolmanProxyGetAvailableSpools(options?: RequestOptions) {
     return this.serverSpoolmanProxyGet<Moonraker.Spoolman.Spool[]>('/v1/spool', {
       dispatch: 'spoolman/onAvailableSpools',
       ...options
     })
   },
 
-  serverSpoolmanProxyGetInfo (options?: RequestOptions) {
+  serverSpoolmanProxyGetInfo(options?: RequestOptions) {
     return this.serverSpoolmanProxyGet<Moonraker.Spoolman.Info>('/v1/info', {
       dispatch: 'spoolman/onInfo',
       ...options
     })
   },
 
-  serverSpoolmanProxyGetSettingCurrency (options?: RequestOptions) {
+  serverSpoolmanProxyGetSettingCurrency(options?: RequestOptions) {
     return this.serverSpoolmanProxyGet<Moonraker.Spoolman.Currency>('/v1/setting/currency', {
       dispatch: 'spoolman/onSettingCurrency',
       ...options

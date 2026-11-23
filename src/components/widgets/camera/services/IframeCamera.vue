@@ -23,7 +23,7 @@ export default class IframeCamera extends Mixins(CameraMixin) {
 
   cameraIFrameSource = ''
 
-  startPlayback () {
+  startPlayback() {
     this.updateStatus('connecting')
 
     const url = this.buildAbsoluteUrl(this.camera.stream_url || '').toString()
@@ -33,7 +33,7 @@ export default class IframeCamera extends Mixins(CameraMixin) {
     this.updateRawCameraUrl(url)
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.updateStatus('disconnected')
     this.cameraIFrameSource = ''
     this.cameraIframe.src = ''

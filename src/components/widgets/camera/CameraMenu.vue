@@ -36,9 +36,7 @@
         @click="$emit('select', camera.uid)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $camera
-          </v-icon>
+          <v-icon> $camera </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -56,20 +54,19 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class CamerasMenu extends Mixins(StateMixin) {
-  get activeCamera () {
+  get activeCamera() {
     const activeWebcam: string = this.$typedState.webcams.activeWebcam
-    const camera: Moonraker.Webcam.Entry | undefined = this.$typedGetters['webcams/getWebcamById'](activeWebcam)
+    const camera: Moonraker.Webcam.Entry | undefined =
+      this.$typedGetters['webcams/getWebcamById'](activeWebcam)
 
-    return !camera
-      ? this.$t('app.general.btn.all').toString()
-      : camera.name
+    return !camera ? this.$t('app.general.btn.all').toString() : camera.name
   }
 
-  get enabledWebcams (): Moonraker.Webcam.Entry[] {
+  get enabledWebcams(): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
 
-  get availableCameras (): Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] {
+  get availableCameras(): Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] {
     return [
       {
         uid: 'all',

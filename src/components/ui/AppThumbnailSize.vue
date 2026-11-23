@@ -17,9 +17,7 @@
             v-bind="attrs"
             v-on="{ ...tooltip, ...menu }"
           >
-            <v-icon>
-              $imageSizeSelectLarge
-            </v-icon>
+            <v-icon> $imageSizeSelectLarge </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.general.btn.thumbnail_size') }}</span>

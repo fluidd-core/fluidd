@@ -37,38 +37,33 @@ export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly pin!: IOutputPin
 
-  get pwm () {
-    return (
-      this.pin.pwm ||
-      this.pwmTypes.includes(this.pin.type)
-    )
+  get pwm() {
+    return this.pin.pwm || this.pwmTypes.includes(this.pin.type)
   }
 
-  get pwmTypes () {
-    return [
-      'pwm_cycle_time',
-      'pwm_tool'
-    ]
+  get pwmTypes() {
+    return ['pwm_cycle_time', 'pwm_tool']
   }
 
-  get value () {
+  get value() {
     return Math.round(this.pin.value * 100)
   }
 
-  get resetValue () {
-    return Math.round(this.pin.resetValue / this.pin.scale * 100)
+  get resetValue() {
+    return Math.round((this.pin.resetValue / this.pin.scale) * 100)
   }
 
-  handleChange (target: number | boolean) {
+  handleChange(target: number | boolean) {
     if (typeof target === 'boolean') {
-      target = target
-        ? this.pin.scale
-        : 0
+      target = target ? this.pin.scale : 0
     } else {
       target = Math.round(target * this.pin.scale) / 100
     }
 
-    this.sendGcode(`SET_PIN PIN=${encodeGcodeParamValue(this.pin.name)} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
+    this.sendGcode(
+      `SET_PIN PIN=${encodeGcodeParamValue(this.pin.name)} VALUE=${target}`,
+      `${this.$waits.onSetOutputPin}${this.pin.name}`
+    )
   }
 }
 </script>

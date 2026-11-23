@@ -38,32 +38,16 @@ export default class Outputs extends Vue {
   @Prop({ type: Object, required: true })
   readonly item!: Fan | Led | IOutputPin
 
-  get pinTypes () {
-    return [
-      'output_pin',
-      'pwm_tool',
-      'pwm_cycle_time'
-    ]
+  get pinTypes() {
+    return ['output_pin', 'pwm_tool', 'pwm_cycle_time']
   }
 
-  get fanTypes () {
-    return [
-      'temperature_fan',
-      'controller_fan',
-      'heater_fan',
-      'fan_generic',
-      'fan'
-    ]
+  get fanTypes() {
+    return ['temperature_fan', 'controller_fan', 'heater_fan', 'fan_generic', 'fan']
   }
 
-  get ledTypes () {
-    return [
-      'led',
-      'neopixel',
-      'dotstar',
-      'pca9533',
-      'pca9632'
-    ]
+  get ledTypes() {
+    return ['led', 'neopixel', 'dotstar', 'pca9533', 'pca9632']
   }
 }
 </script>

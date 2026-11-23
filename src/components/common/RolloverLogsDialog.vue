@@ -48,16 +48,13 @@ export default class RolloverLogsDialog extends Mixins(StateMixin) {
 
   application: '' | Moonraker.Server.LogsRolloverApplication = ''
 
-  mounted () {
-    if (
-      this.printerPrinting ||
-      this.printerPaused
-    ) {
+  mounted() {
+    if (this.printerPrinting || this.printerPaused) {
       this.application = 'moonraker'
     }
   }
 
-  sendAccept () {
+  sendAccept() {
     SocketActions.serverLogsRollover(this.application || undefined)
 
     this.open = false

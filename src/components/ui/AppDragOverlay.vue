@@ -46,12 +46,12 @@ export default class AppDragOverlay extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .app-drag-overlay.v-overlay--active {
-    border: dashed 3px #616161;
-    pointer-events: none !important;
-  }
+.app-drag-overlay.v-overlay--active {
+  border: dashed 3px #616161;
+  pointer-events: none !important;
+}
 
-  .app-drag-overlay :deep(.v-overlay__content) {
-    width: 100%;
-  }
+.app-drag-overlay :deep(.v-overlay__content) {
+  width: 100%;
+}
 </style>

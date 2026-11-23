@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    :title="$t('app.system_info.label.mcu_information', {mcu: mcu.prettyName})"
+    :title="$t('app.system_info.label.mcu_information', { mcu: mcu.prettyName })"
     icon="$chip"
   >
     <template #menu>
@@ -8,9 +8,7 @@
         icon
         @click="showMcuInformationDialog"
       >
-        <v-icon dense>
-          $viewHeadline
-        </v-icon>
+        <v-icon dense> $viewHeadline </v-icon>
       </app-btn>
     </template>
 
@@ -79,17 +77,17 @@ export default class PrinterStatsCard extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
-  get klippyApp (): KlippyApp {
+  get klippyApp(): KlippyApp {
     return this.$typedGetters['printer/getKlippyApp']
   }
 
-  get mcuConstants (): Record<string, string | number> {
+  get mcuConstants(): Record<string, string | number> {
     return this.mcu.mcu_constants || {}
   }
 
   mcuInformationDialogOpen = false
 
-  showMcuInformationDialog () {
+  showMcuInformationDialog() {
     this.mcuInformationDialogOpen = true
   }
 }

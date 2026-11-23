@@ -38,8 +38,7 @@ const stringFormatters = () => {
 
       const op = value < 0 ? Math.min : Math.max
 
-      return op(value, 10 ** -fractionDigits)
-        .toFixed(fractionDigits) + unit
+      return op(value, 10 ** -fractionDigits).toFixed(fractionDigits) + unit
     },
 
     /**
@@ -61,8 +60,7 @@ const stringFormatters = () => {
         }
       }
 
-      return value.split(separator)
-        .map(x => x.replace(/^"|"$/g, ''))
+      return value.split(separator).map(x => x.replace(/^"|"$/g, ''))
     },
 
     /**
@@ -88,13 +86,20 @@ const stringFormatters = () => {
         i++
       } while (dataRateInBytesPerSec > 1024)
 
-      return instance.getStringValueWithUnit(dataRateInBytesPerSec, fractionDigits, byteUnits[i] + '/Sec')
+      return instance.getStringValueWithUnit(
+        dataRateInBytesPerSec,
+        fractionDigits,
+        byteUnits[i] + '/Sec'
+      )
     },
 
     /**
      * Formats a number representing mm to human readable distance.
      */
-    getReadableLengthString: (lengthInMm: number, options: { showMicrons?: boolean, showKilometers?: boolean, fractionDigits?: number } = {}) => {
+    getReadableLengthString: (
+      lengthInMm: number,
+      options: { showMicrons?: boolean; showKilometers?: boolean; fractionDigits?: number } = {}
+    ) => {
       const { showMicrons = false, showKilometers = false, fractionDigits } = options
 
       const absLengthInMm = Math.abs(lengthInMm)
@@ -164,7 +169,11 @@ const stringFormatters = () => {
       return instance.getStringValueWithUnit(pressumeInHPa, fractionDigits, ' hPa')
     },
 
-    getReadableCurrencyString: (value: number, currency: string, options?: Intl.NumberFormatOptions) => {
+    getReadableCurrencyString: (
+      value: number,
+      currency: string,
+      options?: Intl.NumberFormatOptions
+    ) => {
       try {
         return getNumberFormat(getAllLocales(), {
           style: 'currency',
@@ -175,9 +184,7 @@ const stringFormatters = () => {
       } catch {
         const valueAsString = value.toFixed(2)
 
-        return currency
-          ? `${valueAsString} ${currency}`
-          : valueAsString
+        return currency ? `${valueAsString} ${currency}` : valueAsString
       }
     }
   }

@@ -77,19 +77,19 @@ import type { ToolheadControlStyle } from '@/store/config/types'
   }
 })
 export default class Toolhead extends Mixins(StateMixin, ToolheadMixin) {
-  get showPressureAdvance (): boolean {
+  get showPressureAdvance(): boolean {
     return this.activeExtruder?.pressure_advance !== undefined
   }
 
-  get toolheadControlStyle (): ToolheadControlStyle {
+  get toolheadControlStyle(): ToolheadControlStyle {
     return this.$typedState.config.uiSettings.general.toolheadControlStyle
   }
 }
 </script>
 
 <style type="scss" scoped>
-  .controls-wrapper {
-    min-width: 380px !important;
-    max-width: 450px !important;
-  }
+.controls-wrapper {
+  min-width: 380px !important;
+  max-width: 450px !important;
+}
 </style>

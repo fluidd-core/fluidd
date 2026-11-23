@@ -50,16 +50,14 @@
           v-on="on"
           @click="$emit('clear')"
         >
-          <v-icon>
-            $delete
-          </v-icon>
+          <v-icon> $delete </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.general.btn.clear') }}</span>
     </v-tooltip>
 
     <div
-      style="max-width: 160px;"
+      style="max-width: 160px"
       class="ml-1"
     >
       <v-text-field

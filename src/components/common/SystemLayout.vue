@@ -25,20 +25,20 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class SystemLayout extends Mixins(StateMixin) {
-  get canEditLayout () {
+  get canEditLayout() {
     return this.$route.meta?.dashboard ?? false
   }
 
-  get layoutMode (): boolean {
+  get layoutMode(): boolean {
     return this.$typedState.config.layoutMode
   }
 
-  set layoutMode (val: boolean) {
+  set layoutMode(val: boolean) {
     this.$typedCommit('config/setLayoutMode', val)
     this.close()
   }
 
-  close () {
+  close() {
     this.$emit('click')
   }
 }

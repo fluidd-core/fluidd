@@ -6,14 +6,20 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
 
-const itemAsMoonrakerFile = (item: Moonraker.Files.ChangeItem, paths: FilePaths): Moonraker.Files.File => ({
+const itemAsMoonrakerFile = (
+  item: Moonraker.Files.ChangeItem,
+  paths: FilePaths
+): Moonraker.Files.File => ({
   filename: paths.filename,
   modified: item.modified,
   size: item.size,
   permissions: item.permissions
 })
 
-const itemAsMoonrakerDir = (item: Moonraker.Files.ChangeItem, paths: FilePaths): Moonraker.Files.Dir => ({
+const itemAsMoonrakerDir = (
+  item: Moonraker.Files.ChangeItem,
+  paths: FilePaths
+): Moonraker.Files.Dir => ({
   dirname: paths.filename,
   modified: item.modified,
   size: item.size,
@@ -24,43 +30,40 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit, dispatch }, payload: ObjectWithRequest<'server.files.get_directory'>) {
+  async onServerFilesGetDirectory(
+    { commit, dispatch },
+    payload: ObjectWithRequest<'server.files.get_directory'>
+  ) {
     const { disk_usage, files, dirs } = payload
     const path = payload.__request__.params?.path ?? 'gcodes'
     const [root] = path.split('/', 1)
 
-    const filteredDirs = dirs
-      .filter(file =>
+    const filteredDirs = dirs.filter(
+      file =>
         !Globals.FILTERED_FOLDER_NAMES.includes(file.dirname) &&
         !Globals.FILTERED_FILES_PREFIX.some(e => file.dirname.startsWith(e)) &&
         !Globals.FILTERED_FILES_EXTENSION.some(e => file.dirname.endsWith(e))
-      )
+    )
 
     commit('setDiskUsage', { root, disk_usage })
     commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
 
     if (root === 'gcodes') {
-      const jobIds = files
-        .map(file => (
-          'job_id' in file
-            ? file.job_id
-            : null
-        ))
-        .filter(Boolean)
+      const jobIds = files.map(file => ('job_id' in file ? file.job_id : null)).filter(Boolean)
 
       dispatch('history/fetchMissingJobs', jobIds, { root: true })
     }
   },
 
-  async onServerFilesRoots ({ commit }, payload: Moonraker.Files.RootsResponse) {
+  async onServerFilesRoots({ commit }, payload: Moonraker.Files.RootsResponse) {
     commit('setServerFilesRoots', [...payload])
   },
 
-  async onServerFilesListRoot ({ commit }, payload: ObjectWithRequest<'server.files.list'>) {
+  async onServerFilesListRoot({ commit }, payload: ObjectWithRequest<'server.files.list'>) {
     const root = payload.__request__.params?.root ?? 'gcodes'
 
     commit('setServerFilesListRoot', { root, files: [...payload] })
@@ -69,18 +72,19 @@ export const actions = {
   /**
    * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileMetaData ({ commit, dispatch, state }, payload: Moonraker.Files.FileWithMetaResponse) {
+  async onFileMetaData({ commit, dispatch, state }, payload: Moonraker.Files.FileWithMetaResponse) {
     const paths = getFilePaths(payload.filename, 'gcodes')
 
     if (!paths.filtered) {
-      const existingFile = state.pathContent[paths.rootPath]?.files
-        .find(file => file.filename === paths.filename)
+      const existingFile = state.pathContent[paths.rootPath]?.files.find(
+        file => file.filename === paths.filename
+      )
       const permissions = existingFile?.permissions ?? 'r'
 
       const file: Moonraker.Files.FileWithMeta = {
         ...payload,
         permissions,
-        filename: paths.filename,
+        filename: paths.filename
       }
 
       commit('setFileUpdate', { paths, file })
@@ -95,7 +99,7 @@ export const actions = {
    * Automated notifications from moonraker.
    */
 
-  async notifyRootUpdate ({ commit }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyRootUpdate({ commit }, payload: Moonraker.Files.ChangeResponse) {
     const root = payload.item.root
 
     commit('setResetRoot', root)
@@ -103,9 +107,14 @@ export const actions = {
     SocketActions.serverFilesGetDirectory(root)
   },
 
-  async notifyModifyFile ({ dispatch }, payload: Moonraker.Files.ChangeResponse) { dispatch('notifyCreateFile', payload) },
+  async notifyModifyFile({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
+    dispatch('notifyCreateFile', payload)
+  },
 
-  async notifyCreateFile ({ commit, getters, dispatch, rootState }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyCreateFile(
+    { commit, getters, dispatch, rootState },
+    payload: Moonraker.Files.ChangeResponse
+  ) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
@@ -133,7 +142,7 @@ export const actions = {
     }
   },
 
-  async notifyCreateDir ({ commit }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyCreateDir({ commit }, payload: Moonraker.Files.ChangeResponse) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
@@ -143,39 +152,27 @@ export const actions = {
     }
   },
 
-  async notifyMoveFile ({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyMoveFile({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
     const { item, source_item } = payload
 
     dispatch('notifyCreateFile', { item })
 
-    if (
-      source_item &&
-      (
-        source_item.root !== item.root ||
-        source_item.path !== item.path
-      )
-    ) {
+    if (source_item && (source_item.root !== item.root || source_item.path !== item.path)) {
       dispatch('notifyDeleteFile', { item: source_item })
     }
   },
 
-  async notifyMoveDir ({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyMoveDir({ dispatch }, payload: Moonraker.Files.ChangeResponse) {
     const { item, source_item } = payload
 
     dispatch('notifyCreateDir', { item })
 
-    if (
-      source_item &&
-      (
-        source_item.root !== item.root ||
-        source_item.path !== item.path
-      )
-    ) {
+    if (source_item && (source_item.root !== item.root || source_item.path !== item.path)) {
       dispatch('notifyDeleteDir', { item: source_item })
     }
   },
 
-  async notifyDeleteFile ({ commit }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyDeleteFile({ commit }, payload: Moonraker.Files.ChangeResponse) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
@@ -183,7 +180,7 @@ export const actions = {
     }
   },
 
-  async notifyDeleteDir ({ commit, getters }, payload: Moonraker.Files.ChangeResponse) {
+  async notifyDeleteDir({ commit, getters }, payload: Moonraker.Files.ChangeResponse) {
     const paths = getFilePaths(payload.item.path, payload.item.root)
 
     if (!paths.filtered) {
@@ -205,23 +202,23 @@ export const actions = {
   /**
    * Handles the state of current uploads and downloads.
    */
-  async updateFileUpload ({ commit }, payload: Partial<FileUpload> & { uid: string }) {
+  async updateFileUpload({ commit }, payload: Partial<FileUpload> & { uid: string }) {
     commit('setUpdateFileUpload', payload)
   },
 
-  async removeFileUpload ({ commit }, payload: string) {
+  async removeFileUpload({ commit }, payload: string) {
     commit('setRemoveFileUpload', payload)
   },
 
-  async updateFileDownload ({ commit }, payload: Partial<FileDownload> & { uid: string }) {
+  async updateFileDownload({ commit }, payload: Partial<FileDownload> & { uid: string }) {
     commit('setUpdateFileDownload', payload)
   },
 
-  async removeFileDownload ({ commit }, payload: string) {
+  async removeFileDownload({ commit }, payload: string) {
     commit('setRemoveFileDownload', payload)
   },
 
-  async updateCurrentPathByRoot ({ commit }, payload: { root: string, path: string }) {
+  async updateCurrentPathByRoot({ commit }, payload: { root: string; path: string }) {
     commit('setCurrentPath', payload)
   }
 } satisfies ActionTree<FilesState, RootState>

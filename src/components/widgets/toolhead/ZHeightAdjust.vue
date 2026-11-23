@@ -51,9 +51,7 @@
             block
             @click="sendZAdjustGcode('+')"
           >
-            <v-icon small>
-              $zUp
-            </v-icon>
+            <v-icon small> $zUp </v-icon>
           </app-btn>
         </v-col>
         <v-col
@@ -67,9 +65,7 @@
             block
             @click="sendZAdjustGcode('-')"
           >
-            <v-icon small>
-              $zDown
-            </v-icon>
+            <v-icon small> $zDown </v-icon>
           </app-btn>
         </v-col>
         <v-col
@@ -83,9 +79,7 @@
             block
             @click="handleZOffsetApply"
           >
-            <v-icon small>
-              $save
-            </v-icon>
+            <v-icon small> $save </v-icon>
           </app-btn>
 
           <v-menu
@@ -102,9 +96,7 @@
                 block
                 v-on="on"
               >
-                <v-icon small>
-                  $save
-                </v-icon>
+                <v-icon small> $save </v-icon>
                 <v-icon
                   small
                   class="ml-1"
@@ -121,9 +113,7 @@
                   @click="sendGcode(command)"
                 >
                   <v-list-item-icon>
-                    <v-icon>
-                      $expandVertical
-                    </v-icon>
+                    <v-icon> $expandVertical </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
                     <v-list-item-title>
@@ -149,44 +139,44 @@ import type { GcodeCommands } from '@/store/printer/types'
 export default class ZHeightAdjust extends Mixins(StateMixin) {
   moveDistanceValue: number | null = null
 
-  get zHomingOrigin (): number {
+  get zHomingOrigin(): number {
     return this.$typedState.printer.printer.gcode_move.homing_origin[2]
   }
 
-  get zAdjustValues (): number[] {
+  get zAdjustValues(): number[] {
     return this.$typedState.config.uiSettings.general.zAdjustDistances
   }
 
-  get moveDistance (): number {
+  get moveDistance(): number {
     return this.moveDistanceValue || this.zAdjustValues[0]
   }
 
-  set moveDistance (value: number) {
+  set moveDistance(value: number) {
     this.moveDistanceValue = value
   }
 
-  get availableCommands (): GcodeCommands {
+  get availableCommands(): GcodeCommands {
     return this.$typedGetters['printer/getAvailableCommands']
   }
 
-  get hasZOffsetApplyProbe (): boolean {
+  get hasZOffsetApplyProbe(): boolean {
     return 'Z_OFFSET_APPLY_PROBE' in this.availableCommands
   }
 
-  get hasZOffsetApplyEndstop (): boolean {
+  get hasZOffsetApplyEndstop(): boolean {
     return 'Z_OFFSET_APPLY_ENDSTOP' in this.availableCommands
   }
 
   /**
    * Send a Z adjust gcode script.
    */
-  sendZAdjustGcode (direction: '+' | '-') {
+  sendZAdjustGcode(direction: '+' | '-') {
     const zHomed: boolean = this.$typedGetters['printer/getHomedAxes']('z')
     const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${this.moveDistance} MOVE=${+zHomed}`
     this.sendGcode(gcode, this.$waits.onZAdjust)
   }
 
-  handleZOffsetApply () {
+  handleZOffsetApply() {
     if (this.hasZOffsetApplyProbe && !this.hasZOffsetApplyEndstop) {
       this.sendGcode('Z_OFFSET_APPLY_PROBE')
     }

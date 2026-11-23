@@ -8,13 +8,17 @@ export type HttpDiagnosticResult =
   | { kind: 'cancelled' }
 
 export interface DiagnoseOptions {
-  timeout?: number;
-  signal?: AbortSignal;
-  probePath?: string;
+  timeout?: number
+  signal?: AbortSignal
+  probePath?: string
 }
 
-const diagnoseHttpEndpoint = async (apiUrl: string, options: DiagnoseOptions = {}): Promise<HttpDiagnosticResult> => {
-  const debug = (message: string, ...args: unknown[]) => consola.debug(`[diagnoseHttpEndpoint] ${apiUrl} ${message}`, ...args)
+const diagnoseHttpEndpoint = async (
+  apiUrl: string,
+  options: DiagnoseOptions = {}
+): Promise<HttpDiagnosticResult> => {
+  const debug = (message: string, ...args: unknown[]) =>
+    consola.debug(`[diagnoseHttpEndpoint] ${apiUrl} ${message}`, ...args)
 
   const { timeout, signal, probePath = '/server/info' } = options
 
@@ -27,21 +31,12 @@ const diagnoseHttpEndpoint = async (apiUrl: string, options: DiagnoseOptions = {
     }
   }
 
-  const timeoutSignal = timeout !== undefined
-    ? AbortSignal.timeout(timeout)
-    : undefined
+  const timeoutSignal = timeout !== undefined ? AbortSignal.timeout(timeout) : undefined
 
-  const combinedSignal = AbortSignal.any(
-    [timeoutSignal, signal]
-      .filter(Boolean)
-  )
+  const combinedSignal = AbortSignal.any([timeoutSignal, signal].filter(Boolean))
 
-  const baseUrl = apiUrl.endsWith('/')
-    ? apiUrl.slice(0, -1)
-    : apiUrl
-  const path = probePath.startsWith('/')
-    ? probePath
-    : `/${probePath}`
+  const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl
+  const path = probePath.startsWith('/') ? probePath : `/${probePath}`
   const probeUrl = `${baseUrl}${path}?t=${Date.now()}`
 
   try {

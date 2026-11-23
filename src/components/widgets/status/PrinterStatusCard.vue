@@ -6,7 +6,7 @@
     :collapsable="collapsable"
     layout-path="dashboard.printer-status-card"
   >
-    <template #title="{inLayout}">
+    <template #title="{ inLayout }">
       <v-tabs
         v-if="!inLayout"
         v-model="tab"
@@ -15,12 +15,8 @@
         height="41"
         hide-slider
       >
-        <v-tab
-          key="status"
-        >
-          <v-icon left>
-            $printer3d
-          </v-icon>
+        <v-tab key="status">
+          <v-icon left> $printer3d </v-icon>
           {{ $t('app.printer.state.' + printerState) || printerState }}
         </v-tab>
         <v-tab
@@ -60,9 +56,7 @@
         v-if="supportsHistoryComponent"
         key="reprint"
       >
-        <reprint-tab
-          @print="handlePrint($event)"
-        />
+        <reprint-tab @print="handlePrint($event)" />
       </v-tab-item>
     </v-tabs-items>
   </collapsable-card>
@@ -91,36 +85,32 @@ export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
 
   // If the user has no history plugin, and there's no print running..
   // then hide the collapse control.
-  get supportsHistoryComponent (): boolean {
+  get supportsHistoryComponent(): boolean {
     return this.$typedGetters['server/componentSupport']('history')
   }
 
-  get collapsable () {
-    return (
-      this.printerPrinting ||
-      this.supportsHistoryComponent ||
-      this.filename !== ''
-    )
+  get collapsable() {
+    return this.printerPrinting || this.supportsHistoryComponent || this.filename !== ''
   }
 
-  get filename (): string {
+  get filename(): string {
     return this.$typedState.printer.printer.print_stats?.filename ?? ''
   }
 
-  get estimates (): TimeEstimates {
+  get estimates(): TimeEstimates {
     return this.$typedGetters['printer/getTimeEstimates']
   }
 
   @Watch('filename')
-  onPrinterPrinting (val: string) {
+  onPrinterPrinting(val: string) {
     this.init(val)
   }
 
-  created () {
+  created() {
     this.init(this.filename)
   }
 
-  init (filename: string) {
+  init(filename: string) {
     if (filename !== '') {
       this.tab = 0
     } else {
@@ -128,7 +118,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
     }
   }
 
-  handlePrint (filename: string) {
+  handlePrint(filename: string) {
     const { rootPath, filename: filenameOnly } = getFilePaths(filename, 'gcodes')
     const fileWithMeta = this.$typedGetters['files/getFile'](rootPath, filenameOnly)
 
@@ -148,7 +138,9 @@ export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
 
     if (this.$typedState.printer.printer.mmu?.enabled === true) {
       if (fileWithMeta != null && 'referenced_tools' in fileWithMeta) {
-        const mmuPrint = (fileWithMeta.referenced_tools?.length ?? 1) > 1 || this.$typedState.printer.printer.mmu.gate !== -2
+        const mmuPrint =
+          (fileWithMeta.referenced_tools?.length ?? 1) > 1 ||
+          this.$typedState.printer.printer.mmu.gate !== -2
 
         if (mmuPrint) {
           this.$typedCommit('mmu/setDialogState', {
@@ -162,7 +154,8 @@ export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
     }
 
     const spoolmanSupported: boolean = this.$typedGetters['spoolman/getAvailable']
-    const autoSpoolSelectionDialog: boolean = this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
+    const autoSpoolSelectionDialog: boolean =
+      this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
 
     if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$typedCommit('spoolman/setDialogState', {
@@ -179,8 +172,8 @@ export default class PrinterStatusCard extends Mixins(StateMixin, AfcMixin) {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-slide-group__prev),
-  :deep(.v-slide-group__next) {
-    display: none;
-  }
+:deep(.v-slide-group__prev),
+:deep(.v-slide-group__next) {
+  display: none;
+}
 </style>

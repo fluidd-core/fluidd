@@ -53,7 +53,7 @@ export default class AppTextField extends Vue {
   readonly form!: VForm
 
   @Watch('value')
-  onValue (value: unknown) {
+  onValue(value: unknown) {
     if (!this.hasFocus) {
       this.currentValue = value
     }
@@ -62,35 +62,28 @@ export default class AppTextField extends Vue {
   currentValue: unknown = ''
   hasFocus = false
 
-  get filteredListeners () {
+  get filteredListeners() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { focus, blur, change, ...listeners } = this.$listeners
 
     return listeners
   }
 
-  handleSubmit () {
-    if (
-      this.submitOnEnter &&
-      !this.submitOnChange &&
-      this.form.validate()
-    ) {
+  handleSubmit() {
+    if (this.submitOnEnter && !this.submitOnChange && this.form.validate()) {
       this.$emit('submit', this.currentValue)
     }
   }
 
-  handleChange () {
+  handleChange() {
     this.$emit('change', this.currentValue)
 
-    if (
-      this.submitOnChange &&
-      this.form.validate()
-    ) {
+    if (this.submitOnChange && this.form.validate()) {
       this.$emit('submit', this.currentValue)
     }
   }
 
-  handleFocus (event: FocusEvent) {
+  handleFocus(event: FocusEvent) {
     this.hasFocus = true
 
     if (event.target instanceof HTMLInputElement) {
@@ -100,7 +93,7 @@ export default class AppTextField extends Vue {
     }
   }
 
-  handleBlur (event: FocusEvent) {
+  handleBlur(event: FocusEvent) {
     this.currentValue = this.inputValue
 
     this.hasFocus = false
@@ -108,7 +101,7 @@ export default class AppTextField extends Vue {
     this.$emit('blur', event)
   }
 
-  mounted () {
+  mounted() {
     this.currentValue = this.inputValue
   }
 }

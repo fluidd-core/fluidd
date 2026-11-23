@@ -111,16 +111,17 @@ import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class SystemControl extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
-  getKlippyLog () {
+  getKlippyLog() {
     this.downloadFile('klippy.log', '')
   }
 
-  getMoonrakerLog () {
+  getMoonrakerLog() {
     this.downloadFile('moonraker.log', '')
   }
 
-  printerPowerOn () {
-    const printerPowerDevice: string = this.$typedState.config.uiSettings.general.printerPowerDevice ?? 'printer'
+  printerPowerOn() {
+    const printerPowerDevice: string =
+      this.$typedState.config.uiSettings.general.printerPowerDevice ?? 'printer'
 
     SocketActions.machineDevicePowerSetDevice(printerPowerDevice, 'on')
   }

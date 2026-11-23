@@ -50,7 +50,7 @@ import type * as monaco from 'monaco-editor/editor/editor.api'
 export const conf: monaco.languages.LanguageConfiguration = {
   comments: { lineComment: '#' },
   brackets: [['[', ']']],
-  autoClosingPairs: [{ open: '[', close: ']' }],
+  autoClosingPairs: [{ open: '[', close: ']' }]
 }
 
 export const language: monaco.languages.IMonarchLanguage = {
@@ -61,31 +61,27 @@ export const language: monaco.languages.IMonarchLanguage = {
         ['white', 'bracket', 'type.identifier', { token: 'bracket', next: 'content' }]
       ],
 
-      [
-        /[#;].*$/,
-        'comment'
-      ],
+      [/[#;].*$/, 'comment'],
 
-      [
-        /[ \t]+/,
-        'white'
-      ],
+      [/[ \t]+/, 'white'],
 
-      [
-        /.*$/,
-        'invalid'
-      ]
+      [/.*$/, 'invalid']
     ],
 
     content: [
       [
         /^([ \t]*)([^#;=: \t[]+(?:[ \t]+[^#;=: \t]+)*)([ \t]*)(=|:)/,
-        ['white', 'keyword', 'white', {
-          cases: {
-            '@eos': { token: 'separator', next: '@checkValue.$1' },
-            '@default': { token: 'separator', next: '@value.$1' }
+        [
+          'white',
+          'keyword',
+          'white',
+          {
+            cases: {
+              '@eos': { token: 'separator', next: '@checkValue.$1' },
+              '@default': { token: 'separator', next: '@value.$1' }
+            }
           }
-        }]
+        ]
       ],
 
       { include: '@root' }
@@ -93,30 +89,18 @@ export const language: monaco.languages.IMonarchLanguage = {
 
     checkValue: [
       // Blank line or comment: stay and keep waiting
-      [
-        /^([ \t]*)((?:[#;].*)?)$/,
-        ['white', 'comment']
-      ],
+      [/^([ \t]*)((?:[#;].*)?)$/, ['white', 'comment']],
 
       // Continuation: strictly more indented than the key (indent = $S2)
-      [
-        '^$S2(?=[ \t]+[^ \t])',
-        { token: 'white', next: '@value.$S2' }
-      ],
+      ['^$S2(?=[ \t]+[^ \t])', { token: 'white', next: '@value.$S2' }],
 
       // Anything else: not a continuation, return to content without consuming
-      [
-        '',
-        { token: '@rematch', next: '@content' }
-      ]
+      ['', { token: '@rematch', next: '@content' }]
     ],
 
     value: [
       // Comment
-      [
-        /([ \t]+)([#;].*)$/,
-        ['white', { token: 'comment', next: '@checkValue.$S2' }]
-      ],
+      [/([ \t]+)([#;].*)$/, ['white', { token: 'comment', next: '@checkValue.$S2' }]],
 
       // Value
       [
@@ -140,5 +124,5 @@ export const language: monaco.languages.IMonarchLanguage = {
         }
       ]
     ]
-  },
+  }
 }

@@ -76,7 +76,9 @@
       d="M0-63c35 0 63 28 63 63S35 63 0 63h-424V-63z"
       vector-effect="non-scaling-stroke"
       :fill="filamentColor"
-      :transform="'matrix(' + computedScale(0.28, 0.4) + ',0,0,' + computedScale(1.65, 3.5) + ',197,250)'"
+      :transform="
+        'matrix(' + computedScale(0.28, 0.4) + ',0,0,' + computedScale(1.65, 3.5) + ',197,250)'
+      "
     />
     <g transform="matrix(0.59,0,0,3.95,37,250)">
       <use
@@ -110,7 +112,13 @@
         text-anchor="middle"
         font-weight="bold"
         font-size="160px"
-        style="fill: red; stroke: #111111; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round"
+        style="
+          fill: red;
+          stroke: #111111;
+          stroke-width: 4;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        "
       >
         !
       </text>
@@ -153,16 +161,16 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
   @Ref('filament')
   readonly filamentRef!: Element
 
-  get details (): MmuGateDetails {
+  get details(): MmuGateDetails {
     if (this.editGateMap) return this.editGateMap[this.gateIndex]
     return this.gateDetails(this.gateIndex)
   }
 
-  get showUnavailableSpoolColor (): boolean {
+  get showUnavailableSpoolColor(): boolean {
     return this.$typedState.config.uiSettings.mmu.showUnavailableSpoolColor
   }
 
-  get spoolStatus (): number {
+  get spoolStatus(): number {
     if (this.gateIndex === this.TOOL_GATE_BYPASS) {
       if (this.filamentPos === this.FILAMENT_POS_LOADED) return this.GATE_AVAILABLE
       return this.GATE_EMPTY
@@ -170,14 +178,21 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
     return this.details.status
   }
 
-  get filamentAmount (): number {
+  get filamentAmount(): number {
     if (this.editGateMap) return 100
-    if (this.spoolStatus === this.GATE_EMPTY && !(this.showUnavailableSpoolColor && this.details.color !== this.NO_FILAMENT_COLOR)) return 0
+    if (
+      this.spoolStatus === this.GATE_EMPTY &&
+      !(this.showUnavailableSpoolColor && this.details.color !== this.NO_FILAMENT_COLOR)
+    ) {
+      return 0
+    }
 
     const spoolmanSpool = this.spoolmanSpool(this.details.spoolId)
     if (!spoolmanSpool) return -1
 
-    if (!this.details.spoolId || this.details.spoolId <= 0 || this.spoolmanSupport === 'off') return -1
+    if (!this.details.spoolId || this.details.spoolId <= 0 || this.spoolmanSupport === 'off') {
+      return -1
+    }
 
     // Pull live from spoolman and calculate percentage
     const remaining = spoolmanSpool?.remaining_weight ?? null
@@ -188,32 +203,32 @@ export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {
     return Math.ceil(Math.max(0, Math.min(100, (remaining / total) * 100)))
   }
 
-  get filamentColor (): string {
+  get filamentColor(): string {
     return this.details.color
   }
 
-  computedScale (start: number, end: number) {
+  computedScale(start: number, end: number) {
     if (this.editGateMap || this.filamentAmount < 0) return end
     return start + (end - start) * (this.filamentAmount / 100)
   }
 
-  get contrastColor (): string {
+  get contrastColor(): string {
     return new TinyColor(this.filamentColor).getLuminance() > 0.5 ? 'black' : 'white'
   }
 
-  get isEspoolerRewind (): boolean {
+  get isEspoolerRewind(): boolean {
     const espooler = this.getEspoolerForGate(this.gateIndex)
 
     return espooler === this.ESPOOLER_REWIND
   }
 
-  get isEspoolerAssist (): boolean {
+  get isEspoolerAssist(): boolean {
     const espooler = this.getEspoolerForGate(this.gateIndex)
 
     return espooler === this.ESPOOLER_ASSIST
   }
 
-  getEspoolerForGate (gateIndex: number): string | undefined {
+  getEspoolerForGate(gateIndex: number): string | undefined {
     const espoolers = this.mmuState?.espooler
 
     if (espoolers) {

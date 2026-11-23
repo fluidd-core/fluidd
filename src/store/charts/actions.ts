@@ -12,18 +12,21 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async resetChartStore ({ commit }) {
+  async resetChartStore({ commit }) {
     commit('setResetChartStore')
   },
 
   /**
    * Loads stored server data for the past 20 minutes.
    */
-  async initTempStore ({ commit, rootGetters }, payload: Moonraker.DataStore.TemperatureStoreResponse) {
+  async initTempStore(
+    { commit, rootGetters },
+    payload: Moonraker.DataStore.TemperatureStoreResponse
+  ) {
     const buffer = buildThermalHistoryBuffer(
       payload,
       rootGetters['printer/getChartableSensors'],
@@ -38,10 +41,11 @@ export const actions = {
   /**
    * Adds Moonraker's process stats - a backlog on connect, one sample when live.
    */
-  async onMoonrakerStats ({ commit, state }, payload: Moonraker.ProcStats.MoonrakerStats | readonly Moonraker.ProcStats.MoonrakerStats[]) {
-    const stats = Array.isArray(payload)
-      ? payload
-      : [payload]
+  async onMoonrakerStats(
+    { commit, state },
+    payload: Moonraker.ProcStats.MoonrakerStats | readonly Moonraker.ProcStats.MoonrakerStats[]
+  ) {
+    const stats = Array.isArray(payload) ? payload : [payload]
 
     commit('setChartEntries', {
       bucket: 'moonraker',
@@ -52,18 +56,21 @@ export const actions = {
   /**
    * Init the chart state from db - only ever `selectedLegends`.
    */
-  initCharts ({ commit }, payload: ChartsDbDocument) {
+  initCharts({ commit }, payload: ChartsDbDocument) {
     commit('setInitCharts', payload)
   },
 
   /**
    * Saves current state of selected legends to store and db
    */
-  saveSelectedLegends ({ commit, state }, payload: ChartSelectedLegends) {
+  saveSelectedLegends({ commit, state }, payload: ChartSelectedLegends) {
     // Only change the data if they require it
     if (!isEqual(state.selectedLegends, payload)) {
       commit('setSelectedLegends', payload)
-      SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.charts.name + '.selectedLegends', payload)
+      SocketActions.serverDatabasePostItem(
+        Globals.MOONRAKER_DB.fluidd.ROOTS.charts.name + '.selectedLegends',
+        payload
+      )
     }
   }
 } satisfies ActionTree<ChartState, RootState>

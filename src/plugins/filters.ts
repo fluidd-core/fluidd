@@ -17,11 +17,8 @@ const Filters = {
   /**
    * Determines API urls from a base url
    */
-  getApiUrls (apiUrl: string): ApiConfig {
-    if (
-      !apiUrl.startsWith('http://') &&
-      !apiUrl.startsWith('https://')
-    ) {
+  getApiUrls(apiUrl: string): ApiConfig {
+    if (!apiUrl.startsWith('http://') && !apiUrl.startsWith('https://')) {
       apiUrl = `http://${apiUrl}`
     }
 
@@ -31,12 +28,8 @@ const Filters = {
 
     const socketUrl = new URL(apiUrl)
 
-    socketUrl.protocol = socketUrl.protocol === 'https:'
-      ? 'wss://'
-      : 'ws://'
-    socketUrl.pathname += socketUrl.pathname.endsWith('/')
-      ? 'websocket'
-      : '/websocket'
+    socketUrl.protocol = socketUrl.protocol === 'https:' ? 'wss://' : 'ws://'
+    socketUrl.pathname += socketUrl.pathname.endsWith('/') ? 'websocket' : '/websocket'
 
     return {
       apiUrl,
@@ -47,16 +40,16 @@ const Filters = {
   /**
    * Tells us if a color is considered dark or light
    */
-  isColorDark (color: string) {
+  isColorDark(color: string) {
     const t = new TinyColor(color).getBrightness()
-    return ((t / 255) * 100) <= 50
+    return (t / 255) * 100 <= 50
   },
 
   /**
    * Simple approach to route somewhere when we don't necessarily want
    * route matching via :to
    */
-  async routeTo (to: RawLocation) {
+  async routeTo(to: RawLocation) {
     try {
       await router.push(to)
     } catch (error) {
@@ -72,83 +65,122 @@ const Filters = {
   ...dateTimeFormatters(
     () => store.state.config.uiSettings.general.dateFormat,
     () => store.state.config.uiSettings.general.timeFormat
-  ),
+  )
 }
 
 export const Rules = {
-  required (v: unknown) {
+  required(v: unknown) {
     return !isNullOrEmpty(v) || i18n.t('app.general.simple_form.error.required')
   },
 
-  numberValid (v: unknown) {
-    return isNullOrEmpty(v) || Number.isFinite(+v) || i18n.t('app.general.simple_form.error.invalid_number')
+  numberValid(v: unknown) {
+    return (
+      isNullOrEmpty(v) ||
+      Number.isFinite(+v) ||
+      i18n.t('app.general.simple_form.error.invalid_number')
+    )
   },
 
-  numberGreaterThan (min: number) {
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v > min || i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
+  numberGreaterThan(min: number) {
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) ||
+      v > min ||
+      i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
   },
 
-  numberGreaterThanOrEqual (min: number) {
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v >= min || i18n.t('app.general.simple_form.error.min', { min })
+  numberGreaterThanOrEqual(min: number) {
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) || v >= min || i18n.t('app.general.simple_form.error.min', { min })
   },
 
-  numberGreaterThanOrEqualOrZero (min: number) {
+  numberGreaterThanOrEqualOrZero(min: number) {
     if (min === 0) {
       return Rules.numberGreaterThanOrEqual(0)
     }
 
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v >= min || i18n.t('app.general.simple_form.error.min_or_0', { min })
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) ||
+      +v === 0 ||
+      v >= min ||
+      i18n.t('app.general.simple_form.error.min_or_0', { min })
   },
 
-  numberGreaterThanOrZero (min: number) {
+  numberGreaterThanOrZero(min: number) {
     if (min === 0) {
       return Rules.numberGreaterThan(0)
     }
 
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v > min || i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) ||
+      +v === 0 ||
+      v > min ||
+      i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
   },
 
-  numberLessThan (max: number) {
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v < max || i18n.t('app.general.simple_form.error.max', { max: `< ${max}` })
+  numberLessThan(max: number) {
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) ||
+      v < max ||
+      i18n.t('app.general.simple_form.error.max', { max: `< ${max}` })
   },
 
-  numberLessThanOrEqual (max: number) {
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || v <= max || i18n.t('app.general.simple_form.error.max', { max })
+  numberLessThanOrEqual(max: number) {
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) || v <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  numberLessThanOrEqualOrZero (max: number) {
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v <= max || i18n.t('app.general.simple_form.error.max', { max })
+  numberLessThanOrEqualOrZero(max: number) {
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) ||
+      +v === 0 ||
+      v <= max ||
+      i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  numberLessThanOrZero (max: number) {
-    return (v: NullableOrEmpty<number>) => isNullOrEmpty(v) || +v === 0 || v < max || i18n.t('app.general.simple_form.error.max', { max })
+  numberLessThanOrZero(max: number) {
+    return (v: NullableOrEmpty<number>) =>
+      isNullOrEmpty(v) ||
+      +v === 0 ||
+      v < max ||
+      i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  lengthGreaterThanOrEqual (min: number) {
-    return (v: NullableOrEmpty<string | unknown[]>) => isNullOrEmpty(v) || v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
+  lengthGreaterThanOrEqual(min: number) {
+    return (v: NullableOrEmpty<string | unknown[]>) =>
+      isNullOrEmpty(v) || v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
   },
 
-  lengthLessThanOrEqual (max: number) {
-    return (v: NullableOrEmpty<string | unknown[]>) => isNullOrEmpty(v) || v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
+  lengthLessThanOrEqual(max: number) {
+    return (v: NullableOrEmpty<string | unknown[]>) =>
+      isNullOrEmpty(v) || v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  numberArrayValid (v: NullableOrEmpty<unknown[]>) {
-    return isNullOrEmpty(v) || v.every(i => !isNullOrEmpty(i) && Number.isFinite(+i)) || i18n.t('app.general.simple_form.error.arrayofnums')
+  numberArrayValid(v: NullableOrEmpty<unknown[]>) {
+    return (
+      isNullOrEmpty(v) ||
+      v.every(i => !isNullOrEmpty(i) && Number.isFinite(+i)) ||
+      i18n.t('app.general.simple_form.error.arrayofnums')
+    )
   },
 
-  numberArrayGreaterThan (min: number) {
-    return (v: NullableOrEmpty<number[]>) => isNullOrEmpty(v) || v.every(i => !isNullOrEmpty(i) && i > min) || i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
+  numberArrayGreaterThan(min: number) {
+    return (v: NullableOrEmpty<number[]>) =>
+      isNullOrEmpty(v) ||
+      v.every(i => !isNullOrEmpty(i) && i > min) ||
+      i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
   },
 
-  passwordNotEqualUsername (username?: string | null) {
-    return (v: string) => (v.toLowerCase() !== (username ?? '').toLowerCase()) || i18n.t('app.general.simple_form.error.password_username')
+  passwordNotEqualUsername(username?: string | null) {
+    return (v: string) =>
+      v.toLowerCase() !== (username ?? '').toLowerCase() ||
+      i18n.t('app.general.simple_form.error.password_username')
   },
 
-  aspectRatioValid (v: string) {
+  aspectRatioValid(v: string) {
     return /^\d+\s*[:/]\s*\d+$/.test(v) || i18n.t('app.general.simple_form.error.invalid_aspect')
   },
 
-  regExpPatternValid (v: string) {
+  regExpPatternValid(v: string) {
     try {
       // oxlint-disable-next-line no-new
       new RegExp(v)
@@ -158,13 +190,13 @@ export const Rules = {
     }
   },
 
-  regExpValid (regExp: RegExp, errorMessage: string | TranslateResult) {
+  regExpValid(regExp: RegExp, errorMessage: string | TranslateResult) {
     return (v: string) => regExp.test(v) || errorMessage || 'Invalid'
   }
 }
 
 export const FiltersPlugin = {
-  install (Vue: typeof _Vue) {
+  install(Vue: typeof _Vue) {
     Vue.prototype.$filters = Filters
     Vue.prototype.$rules = Rules
     Vue.prototype.$globals = Globals
@@ -183,14 +215,14 @@ export const FiltersPlugin = {
     }
 
     Object.defineProperty(Vue.prototype, '$typedState', {
-      get (): RootState {
+      get(): RootState {
         return this.$store.state as RootState
       },
       enumerable: true
     })
 
     Object.defineProperty(Vue.prototype, '$typedGetters', {
-      get (): RootGetters {
+      get(): RootGetters {
         return this.$store.getters as RootGetters
       },
       enumerable: true
@@ -200,24 +232,24 @@ export const FiltersPlugin = {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $filters: typeof Filters;
-    $rules: typeof Rules;
-    $globals: typeof Globals;
-    $waits: typeof Waits;
-    $typedState: RootState;
-    $typedGetters: RootGetters;
-    $typedCommit: RootMutations;
-    $typedDispatch: RootActions;
+    $filters: typeof Filters
+    $rules: typeof Rules
+    $globals: typeof Globals
+    $waits: typeof Waits
+    $typedState: RootState
+    $typedGetters: RootGetters
+    $typedCommit: RootMutations
+    $typedDispatch: RootActions
   }
 
   interface VueConstructor {
-    $filters: typeof Filters;
-    $rules: typeof Rules;
-    $globals: typeof Globals;
-    $waits: typeof Waits;
-    $typedState: RootState;
-    $typedGetters: RootGetters;
-    $typedCommit: RootMutations;
-    $typedDispatch: RootActions;
+    $filters: typeof Filters
+    $rules: typeof Rules
+    $globals: typeof Globals
+    $waits: typeof Waits
+    $typedState: RootState
+    $typedGetters: RootGetters
+    $typedCommit: RootMutations
+    $typedDispatch: RootActions
   }
 }

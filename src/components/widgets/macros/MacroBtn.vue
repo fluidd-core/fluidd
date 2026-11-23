@@ -19,7 +19,7 @@
     >
       <template #activator="{ on, attrs, value }">
         <app-btn
-          v-bind="{...$attrs, ...attrs}"
+          v-bind="{ ...$attrs, ...attrs }"
           min-width="24"
           class="px-0"
           :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
@@ -39,7 +39,7 @@
             <v-row
               v-for="(param, key) in params"
               :key="key"
-              style="max-width: 150px;"
+              style="max-width: 150px"
             >
               <v-col>
                 <v-text-field
@@ -79,7 +79,11 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
-import { gcodeCommandBuilder, isBasicGcodeCommand, getParamNameForRawGcodeCommand } from '@/util/gcode-helpers'
+import {
+  gcodeCommandBuilder,
+  isBasicGcodeCommand,
+  getParamNameForRawGcodeCommand
+} from '@/util/gcode-helpers'
 import type { KlippyApp } from '@/store/printer/types'
 
 type MacroParameter = {
@@ -96,23 +100,23 @@ export default class MacroBtn extends Mixins(StateMixin) {
 
   params: Record<string, MacroParameter> = {}
 
-  get hasParams () {
+  get hasParams() {
     return Object.keys(this.params).length > 0
   }
 
-  get macroName () {
+  get macroName() {
     return this.macro.name.toUpperCase()
   }
 
-  get isBasicGcodeCommand () {
+  get isBasicGcodeCommand() {
     return isBasicGcodeCommand(this.macroName)
   }
 
-  get paramNameForRawGcodeCommand () {
+  get paramNameForRawGcodeCommand() {
     return getParamNameForRawGcodeCommand(this.macroName)
   }
 
-  get filteredListeners () {
+  get filteredListeners() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { click, ...listeners } = this.$listeners
 
@@ -122,30 +126,30 @@ export default class MacroBtn extends Mixins(StateMixin) {
   /**
    * The formatted run command for a macro.
    */
-  get runCommand () {
+  get runCommand() {
     return gcodeCommandBuilder(this.macroName, this.params)
   }
 
-  get borderStyle () {
+  get borderStyle() {
     if (this.macro?.color) {
       return `border-color: ${this.macro.color} !important; border-left: solid 4px ${this.macro.color} !important;`
     }
     return ''
   }
 
-  get klippyApp (): KlippyApp {
+  get klippyApp(): KlippyApp {
     return this.$typedGetters['printer/getKlippyApp']
   }
 
-  get supportsPythonGcodeMacros () {
+  get supportsPythonGcodeMacros() {
     return this.klippyApp.isKalicoOrDangerKlipper
   }
 
-  handleClick () {
+  handleClick() {
     this.$emit('click', this.macroName)
   }
 
-  mounted () {
+  mounted() {
     const gcode = this.macro.config?.gcode
 
     if (!gcode) return
@@ -155,10 +159,7 @@ export default class MacroBtn extends Mixins(StateMixin) {
     if (paramNameForRawGcodeCommand) {
       this.$set(this.params, paramNameForRawGcodeCommand, { value: '', reset: '' })
     } else {
-      if (
-        this.supportsPythonGcodeMacros &&
-        /^\s*!/.test(gcode)
-      ) {
+      if (this.supportsPythonGcodeMacros && /^\s*!/.test(gcode)) {
         return
       }
 
@@ -173,17 +174,17 @@ export default class MacroBtn extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .macro-params {
-    height: 160px;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-  }
-  .macro-params > * {
-    flex: 1 1 40px;
-  }
+.macro-params {
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.macro-params > * {
+  flex: 1 1 40px;
+}
 
-  .console-command :deep(.v-text-field__slot input) {
-    font-family: monospace;
-  }
+.console-command :deep(.v-text-field__slot input) {
+  font-family: monospace;
+}
 </style>

@@ -5,19 +5,16 @@ import { SocketActions } from '@/api/socketActions'
 import getFilePaths from '@/util/get-file-paths'
 
 export const actions = {
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async init () {
+  async init() {
     SocketActions.serverJobQueueStatus()
   },
 
-  async updateJobsMetadata ({ state, rootState }) {
-    const pathFilenames = new Set(
-      state.queuedJobs
-        .map(job => job.filename)
-    )
+  async updateJobsMetadata({ state, rootState }) {
+    const pathFilenames = new Set(state.queuedJobs.map(job => job.filename))
 
     for (const pathFilename of pathFilenames) {
       const { rootPath, filename } = getFilePaths(pathFilename, 'gcodes')
@@ -30,7 +27,7 @@ export const actions = {
     }
   },
 
-  async onJobQueueStatus ({ commit, dispatch }, payload: Moonraker.JobQueue.StatusResponse) {
+  async onJobQueueStatus({ commit, dispatch }, payload: Moonraker.JobQueue.StatusResponse) {
     if (payload) {
       commit('setQueueState', payload.queue_state)
       commit('setQueuedJobs', payload.queued_jobs)
@@ -39,7 +36,7 @@ export const actions = {
     }
   },
 
-  async onJobQueueChanged ({ commit, dispatch }, payload: Moonraker.JobQueue.ChangedEvent) {
+  async onJobQueueChanged({ commit, dispatch }, payload: Moonraker.JobQueue.ChangedEvent) {
     if (payload) {
       const { queue_state, updated_queue } = payload
 

@@ -3,7 +3,14 @@ import { v4 as uuidv4 } from 'uuid'
 import type { MutationTree } from 'vuex'
 import { createState } from './state'
 import { Globals } from '@/globals'
-import type { ConsoleEntry, ConsoleFilter, ConsoleState, PromptDialogItemButton, PromptDialogItem, PromptDialogItemButtonGroup } from './types'
+import type {
+  ConsoleEntry,
+  ConsoleFilter,
+  ConsoleState,
+  PromptDialogItemButton,
+  PromptDialogItem,
+  PromptDialogItemButtonGroup
+} from './types'
 import { escapeRegExp } from 'lodash-es'
 
 const compileExpression = (filter: ConsoleFilter): RegExp => {
@@ -21,14 +28,14 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
   /**
    * Adds a console entry
    */
-  setConsoleEntry (state, entry: ConsoleEntry) {
+  setConsoleEntry(state, entry: ConsoleEntry) {
     if (entry.id === undefined) {
       state.consoleEntryCount++
       entry.id = state.consoleEntryCount
@@ -42,13 +49,12 @@ export const mutations = {
   /**
    * Sets all console entries from moonraker store.
    */
-  setAllEntries (state, payload: ConsoleEntry[]) {
+  setAllEntries(state, payload: ConsoleEntry[]) {
     state.consoleEntryCount = payload.length
-    state.console = payload
-      .map(entry => Object.freeze(entry))
+    state.console = payload.map(entry => Object.freeze(entry))
   },
 
-  setResetPromptDialog (state, payload: string) {
+  setResetPromptDialog(state, payload: string) {
     const { promptDialog } = createState()
 
     Object.assign(state, {
@@ -59,25 +65,24 @@ export const mutations = {
     })
   },
 
-  setPromptDialogItem (state, payload: PromptDialogItem) {
+  setPromptDialogItem(state, payload: PromptDialogItem) {
     const { items, pendingItems } = state.promptDialog
     const target = pendingItems ?? items
 
     target.push(payload)
   },
 
-  setPromptDialogButtonGroupStart (state) {
+  setPromptDialogButtonGroupStart(state) {
     if (state.promptDialog.pendingItems === null) {
       state.promptDialog.pendingItems = []
     }
   },
 
-  setPromptDialogButtonGroupEnd (state, payload: number) {
+  setPromptDialogButtonGroupEnd(state, payload: number) {
     const { items, pendingItems } = state.promptDialog
 
     if (pendingItems !== null) {
-      const buttons = pendingItems
-        .filter(item => item.type === 'button')
+      const buttons = pendingItems.filter(item => item.type === 'button')
 
       if (buttons.length > 0) {
         const item: PromptDialogItemButtonGroup = {
@@ -93,11 +98,11 @@ export const mutations = {
     }
   },
 
-  setPromptDialogFooterButton (state, payload: PromptDialogItemButton) {
+  setPromptDialogFooterButton(state, payload: PromptDialogItemButton) {
     state.promptDialog.footerButtons.push(payload)
   },
 
-  setPromptDialogOpen (state, payload: boolean) {
+  setPromptDialogOpen(state, payload: boolean) {
     if (payload) {
       const { items, pendingItems } = state.promptDialog
 
@@ -114,35 +119,34 @@ export const mutations = {
   /**
    * Defines the list of available commands
    */
-  setGcodeHelp (state, payload: Moonraker.KlippyApis.GcodeHelpResponse) {
+  setGcodeHelp(state, payload: Moonraker.KlippyApis.GcodeHelpResponse) {
     state.gcodeHelp = Object.freeze(payload)
   },
 
   /**
    * Inits the console history from db
    */
-  setInitConsole (state, payload: Partial<ConsoleState>) {
+  setInitConsole(state, payload: Partial<ConsoleState>) {
     if (payload) {
       if (payload.consoleFilters) {
-        payload.consoleFiltersRegexp = payload.consoleFilters
-          .map(filter => {
-            if (typeof filter.type === 'number') {
-              switch (filter.type) {
-                case 1:
-                  filter.type = 'starts-with'
-                  break
+        payload.consoleFiltersRegexp = payload.consoleFilters.map(filter => {
+          if (typeof filter.type === 'number') {
+            switch (filter.type) {
+              case 1:
+                filter.type = 'starts-with'
+                break
 
-                case 2:
-                  filter.type = 'expression'
-                  break
+              case 2:
+                filter.type = 'expression'
+                break
 
-                default:
-                  filter.type = 'contains'
-              }
+              default:
+                filter.type = 'contains'
             }
+          }
 
-            return compileExpression(filter)
-          })
+          return compileExpression(filter)
+        })
       }
       Object.assign(state, payload)
     }
@@ -151,7 +155,7 @@ export const mutations = {
   /**
    * Inits the console history from file
    */
-  setUpdateCommandHistory (state, payload: string[]) {
+  setUpdateCommandHistory(state, payload: string[]) {
     if (payload) {
       state.commandHistory = [...payload]
     }
@@ -160,22 +164,22 @@ export const mutations = {
   /**
    * Maintains the current console command
    */
-  setConsoleCommand (state, payload: string) {
+  setConsoleCommand(state, payload: string) {
     state.consoleCommand = payload
   },
 
-  setConsoleSearch (state, payload: string) {
+  setConsoleSearch(state, payload: string) {
     state.consoleSearch = payload
   },
 
   /**
    * Sets auto scroll
    */
-  setAutoScroll (state, payload: boolean) {
+  setAutoScroll(state, payload: boolean) {
     state.autoScroll = payload
   },
 
-  setFilter (state, filter: ConsoleFilter) {
+  setFilter(state, filter: ConsoleFilter) {
     if (filter.id) {
       const i = state.consoleFilters.findIndex(c => c.id === filter.id)
       if (i >= 0) {
@@ -194,7 +198,7 @@ export const mutations = {
     }
   },
 
-  setRemoveFilter (state, filter: ConsoleFilter) {
+  setRemoveFilter(state, filter: ConsoleFilter) {
     const i = state.consoleFilters.findIndex(c => c.id === filter.id)
     if (i >= 0) {
       state.consoleFilters.splice(i, 1)
@@ -202,7 +206,7 @@ export const mutations = {
     }
   },
 
-  setLastCleared (state) {
+  setLastCleared(state) {
     state.lastCleared = Date.now()
   }
 } satisfies MutationTree<ConsoleState>

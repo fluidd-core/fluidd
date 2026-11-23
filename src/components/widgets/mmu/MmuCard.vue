@@ -40,9 +40,7 @@
         <v-list dense>
           <v-list-item @click="handleOpenEditTtgMapDialog">
             <v-list-item-icon>
-              <v-icon left>
-                $mmuEditTtgMap
-              </v-icon>
+              <v-icon left> $mmuEditTtgMap </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -53,9 +51,7 @@
 
           <v-list-item @click="openEditGateMapDialog()">
             <v-list-item-icon>
-              <v-icon left>
-                $mmuEditGateMap
-              </v-icon>
+              <v-icon left> $mmuEditGateMap </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -69,9 +65,7 @@
             @click="showRecoverStateDialog = true"
           >
             <v-list-item-icon>
-              <v-icon left>
-                $mmuRecoverState
-              </v-icon>
+              <v-icon left> $mmuRecoverState </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -85,9 +79,7 @@
             @click="showMaintenanceDialog = true"
           >
             <v-list-item-icon>
-              <v-icon left>
-                $mmuMaintenance
-              </v-icon>
+              <v-icon left> $mmuMaintenance </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -103,9 +95,7 @@
             @click="sendGcode('MMU_STATS SHOWCOUNTS=1', $waits.onMmuStats)"
           >
             <v-list-item-icon>
-              <v-icon left>
-                $mmuPrintStats
-              </v-icon>
+              <v-icon left> $mmuPrintStats </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -120,9 +110,7 @@
             @click="handleSyncSpoolman()"
           >
             <v-list-item-icon>
-              <v-icon left>
-                $mmuSyncSpoolman
-              </v-icon>
+              <v-icon left> $mmuSyncSpoolman </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -137,9 +125,7 @@
             @click="sendGcode('MMU_CHECK_GATES', $waits.onMmuCheckGates)"
           >
             <v-list-item-icon>
-              <v-icon left>
-                $mmuCheckAllGates
-              </v-icon>
+              <v-icon left> $mmuCheckAllGates </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -233,9 +219,7 @@
             cols="auto"
             class="d-flex align-center justify-center"
           >
-            <v-icon class="error-icon">
-              $mmuError
-            </v-icon>
+            <v-icon class="error-icon"> $mmuError </v-icon>
           </v-col>
           <v-col class="d-flex align-center">
             <div>
@@ -289,8 +273,8 @@ import MmuMaintenanceDialog from '@/components/widgets/mmu/MmuMaintenanceDialog.
     MmuSettings,
     MmuRecoverStateDialog,
     MmuEditGateMapDialog,
-    MmuMaintenanceDialog,
-  },
+    MmuMaintenanceDialog
+  }
 })
 export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   showRecoverStateDialog = false
@@ -298,12 +282,12 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
   showMaintenanceDialog = false
   initialEditGate: number | null = null
 
-  get col1Size (): number {
+  get col1Size(): number {
     if (this.$typedState.config.uiSettings.mmu.largeFilamentStatus) return 6
     return 5
   }
 
-  get title (): string {
+  get title(): string {
     const headline = this.$tc('app.mmu.title.headline')
     if (this.hasMmu && !this.enabled) {
       return `${headline} (disabled)`
@@ -311,54 +295,61 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     return headline
   }
 
-  get showClogDetection (): boolean {
-    return (this.hasEncoder || this.hasSyncFeedback) && this.$typedState.config.uiSettings.mmu.showClogDetection
+  get showClogDetection(): boolean {
+    return (
+      (this.hasEncoder || this.hasSyncFeedback) &&
+      this.$typedState.config.uiSettings.mmu.showClogDetection
+    )
   }
 
-  get showTtgMap (): boolean {
+  get showTtgMap(): boolean {
     return this.$typedState.config.uiSettings.mmu.showTtgMap
   }
 
-  get showDetails (): boolean {
+  get showDetails(): boolean {
     return this.$typedState.config.uiSettings.mmu.showDetails
   }
 
-  handleSyncSpoolman () {
+  handleSyncSpoolman() {
     this.sendGcode('MMU_SPOOLMAN REFRESH=1 QUIET=1', this.$waits.onMmuSpoolman)
   }
 
-  handleOpenEditTtgMapDialog () {
+  handleOpenEditTtgMapDialog() {
     this.$typedCommit('mmu/setDialogState', {
-      show: true,
+      show: true
     })
   }
 
-  get hasSyncFeedback (): boolean {
-    return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
+  get hasSyncFeedback(): boolean {
+    return (
+      this.hasFilamentCompressionSensor ||
+      this.hasFilamentTensionSensor ||
+      this.hasFilamentProportionalSensor
+    )
   }
 
-  get hasFilamentProportionalSensor (): boolean {
+  get hasFilamentProportionalSensor(): boolean {
     return this.hasSensor('filament_proportional')
   }
 
-  get hasFilamentCompressionSensor (): boolean {
+  get hasFilamentCompressionSensor(): boolean {
     return this.hasSensor('filament_compression')
   }
 
-  get hasFilamentTensionSensor (): boolean {
+  get hasFilamentTensionSensor(): boolean {
     return this.hasSensor('filament_tension')
   }
 
-  private hasSensor (sensorName: string): boolean {
+  private hasSensor(sensorName: string): boolean {
     return sensorName in this.sensors
   }
 
-  openEditGateMapDialog (gate?: number | null) {
+  openEditGateMapDialog(gate?: number | null) {
     this.initialEditGate = typeof gate === 'number' ? gate : null
     this.showEditGateMapDialog = true
   }
 
-  private selectGate (gate: number) {
+  private selectGate(gate: number) {
     if (gate === this.TOOL_GATE_BYPASS) {
       this.sendGcode('MMU_SELECT BYPASS=1', this.$waits.onMmuSelect)
       return
@@ -367,7 +358,7 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
     this.sendGcode(`MMU_SELECT GATE=${gate}`, this.$waits.onMmuSelect)
   }
 
-  private editFilament (gate: number) {
+  private editFilament(gate: number) {
     this.openEditGateMapDialog(gate)
   }
 }
@@ -375,17 +366,17 @@ export default class MmuCard extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .mmu-disabled {
-    pointer-events: none !important;
-    opacity: 0.5 !important;
+  pointer-events: none !important;
+  opacity: 0.5 !important;
 }
 
 .error-icon {
-    color: red;
+  color: red;
 }
 
 .smaller-font {
-    font-size: 0.8em;
-    min-height: 1.0em;
-    line-height: 1.0em;
+  font-size: 0.8em;
+  min-height: 1em;
+  line-height: 1em;
 }
 </style>

@@ -9,9 +9,7 @@
     :vertical="$vuetify.breakpoint.smAndDown"
   >
     <template v-if="file">
-      <div class="mb-2">
-        {{ $t('app.gcode.label.parsing_file') }}: {{ file.filename }}
-      </div>
+      <div class="mb-2"> {{ $t('app.gcode.label.parsing_file') }}: {{ file.filename }} </div>
       <v-progress-linear
         :value="percent"
         color="primary"
@@ -19,12 +17,9 @@
       />
       <table>
         <tr>
-          <td class="pr-2">
-            {{ $t('app.gcode.label.parsed') }}:
-          </td>
+          <td class="pr-2"> {{ $t('app.gcode.label.parsed') }}: </td>
           <td>
-            {{ percent }}%
-            ({{ $filters.getReadableFileSizeString(progress) }} /
+            {{ percent }}% ({{ $filters.getReadableFileSizeString(progress) }} /
             {{ $filters.getReadableFileSizeString(file.size) }})
           </td>
         </tr>
@@ -33,7 +28,10 @@
     <template #action="{ attrs }">
       <app-btn
         v-bind="attrs"
-        @click="$emit('cancel'); open = false"
+        @click="
+          $emit('cancel');
+          open = false
+        "
       >
         {{ $t('app.general.btn.cancel') }}
       </app-btn>
@@ -57,14 +55,14 @@ export default class GcodePreviewParserProgressDialog extends Mixins(StateMixin)
   @Prop({ type: Object })
   readonly file!: AppFile
 
-  get percent () {
+  get percent() {
     return Math.floor((this.progress / this.file.size) * 100)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-progress-linear__determinate) {
-    transition-duration: 0.05s !important;
-  }
+:deep(.v-progress-linear__determinate) {
+  transition-duration: 0.05s !important;
+}
 </style>

@@ -38,6 +38,5 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class JobQueueBulkActions extends Vue {
-}
+export default class JobQueueBulkActions extends Vue {}
 </script>

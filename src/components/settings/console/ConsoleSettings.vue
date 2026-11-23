@@ -40,18 +40,14 @@
             icon
             @click.stop="handleEditFilterDialog(filter)"
           >
-            <v-icon dense>
-              $edit
-            </v-icon>
+            <v-icon dense> $edit </v-icon>
           </app-btn>
 
           <app-btn
             icon
             @click.stop="handleRemoveFilter(filter)"
           >
-            <v-icon dense>
-              $delete
-            </v-icon>
+            <v-icon dense> $delete </v-icon>
           </app-btn>
         </app-setting>
       </template>
@@ -83,11 +79,11 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     filter: null
   }
 
-  get filters (): ConsoleFilter[] {
+  get filters(): ConsoleFilter[] {
     return this.$typedState.console.consoleFilters
   }
 
-  handleEditFilterDialog (filter: ConsoleFilter | null) {
+  handleEditFilterDialog(filter: ConsoleFilter | null) {
     const filterCopy: ConsoleFilter = filter
       ? { ...filter }
       : {
@@ -104,9 +100,11 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     }
   }
 
-  async handleRemoveFilter (filter: ConsoleFilter) {
+  async handleRemoveFilter(filter: ConsoleFilter) {
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_remove_console_filter', { name: filter.name }).toString(),
+      this.$t('app.general.simple_form.msg.confirm_remove_console_filter', {
+        name: filter.name
+      }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
@@ -115,7 +113,7 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleSaveFilter (filter: ConsoleFilter) {
+  handleSaveFilter(filter: ConsoleFilter) {
     this.$typedDispatch('console/onSaveFilter', filter)
   }
 }

@@ -2,12 +2,7 @@
   <g id="parts">
     <template v-for="part in parts">
       <g
-        v-if="(
-          part.polygon &&
-          part.polygon.length > 0 &&
-          part.center &&
-          part.center.length >= 2
-        )"
+        v-if="part.polygon && part.polygon.length > 0 && part.center && part.center.length >= 2"
         :key="part.name"
         :class="iconClasses(part)"
         class="layer"
@@ -22,8 +17,8 @@
           height="7"
           viewBox="0 0 24 24"
           class="partIcon"
-          :x="part.center[0] - 7/2"
-          :y="part.center[1] - 7/2"
+          :x="part.center[0] - 7 / 2"
+          :y="part.center[1] - 7 / 2"
         >
           <path :d="iconCancelled" />
           <path
@@ -49,11 +44,11 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   @Prop({ type: String })
   readonly shapeRendering?: string
 
-  get parts (): ExcludeObjectPart[] {
+  get parts(): ExcludeObjectPart[] {
     return this.$typedGetters['printer/getExcludeObjectParts']
   }
 
-  iconClasses (part: ExcludeObjectPart) {
+  iconClasses(part: ExcludeObjectPart) {
     if (part.isExcluded) {
       return 'partExcluded'
     } else if (part.isCurrent) {
@@ -63,19 +58,17 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
     }
   }
 
-  partSVG (part: ExcludeObjectPart) {
-    const polygonAsString = part.polygon!
-      .map(point => `${point[0]},${point[1]}`)
-      .join('L')
+  partSVG(part: ExcludeObjectPart) {
+    const polygonAsString = part.polygon!.map(point => `${point[0]},${point[1]}`).join('L')
 
     return `M${polygonAsString}z`
   }
 
-  get iconCancelled () {
+  get iconCancelled() {
     return Icons.cancelled
   }
 
-  get iconCircle () {
+  get iconCircle() {
     return Icons.circle
   }
 }
@@ -92,12 +85,12 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 
   .partOutline {
     filter: opacity(60%);
-    stroke-width: .5;
+    stroke-width: 0.5;
   }
 
   .partIcon {
     fill-opacity: 15%;
-    stroke-width: .5;
+    stroke-width: 0.5;
 
     .hitarea {
       pointer-events: all;

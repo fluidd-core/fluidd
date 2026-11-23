@@ -27,8 +27,10 @@ const fill = (
 ): void => {
   for (let i = 0; i < count; i++) {
     const values: Record<string, number> = {}
-    keys.forEach(key => { values[key] = i })
-    appendChartSample(buffer, startMs + (i * stepMs), values)
+    keys.forEach(key => {
+      values[key] = i
+    })
+    appendChartSample(buffer, startMs + i * stepMs, values)
   }
 }
 
@@ -119,7 +121,13 @@ describe('chart-buffer', () => {
       expect(source.date.length).toBe(5)
       // With 1s spacing and a 5s retention, only the last 5 appended values
       // (by original append index) should still be live.
-      expect(Array.from(source.load)).toEqual([total - 5, total - 4, total - 3, total - 2, total - 1])
+      expect(Array.from(source.load)).toEqual([
+        total - 5,
+        total - 4,
+        total - 3,
+        total - 2,
+        total - 1
+      ])
     })
 
     it('grows capacity instead of dropping data when a burst outpaces retention', () => {

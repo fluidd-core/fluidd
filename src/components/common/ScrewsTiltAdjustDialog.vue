@@ -10,9 +10,7 @@
         <thead>
           <tr>
             <th>{{ $t('app.general.label.name') }}</th>
-            <th class="text-right">
-              Z
-            </th>
+            <th class="text-right"> Z </th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -22,14 +20,15 @@
             :key="screw.name"
           >
             <td>
-              {{ screw.prettyName }}<br>
+              {{ screw.prettyName }}<br />
               <small class="secondary--text">{{ `X = ${screw.x}, Y = ${screw.y}` }}</small>
             </td>
             <td class="focus--text text-right">
               <small
                 v-if="screw.relativeZ"
                 class="secondary--text"
-              >({{ `${screw.relativeZ < 0 ? '' : '+'}${screw.relativeZ.toFixed(4)}` }})</small>
+                >({{ `${screw.relativeZ < 0 ? '' : '+'}${screw.relativeZ.toFixed(4)}` }})</small
+              >
               {{ screw.z.toFixed(4) }}
             </td>
             <td class="text-right">
@@ -50,7 +49,13 @@
                   left
                   small
                 >
-                  {{ screw.adjustMinutes === 0 ? '$success' : screw.sign === 'CW' ? '$zRotateClockwise' : '$zRotateCounterclockwise' }}
+                  {{
+                    screw.adjustMinutes === 0
+                      ? '$success'
+                      : screw.sign === 'CW'
+                        ? '$zRotateClockwise'
+                        : '$zRotateCounterclockwise'
+                  }}
                 </v-icon>
                 {{ screw.adjust }}
               </v-chip>
@@ -81,32 +86,31 @@ import type { ScrewsTiltAdjust } from '@/store/printer/types'
 
 @Component({})
 export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  get screwsTiltAdjust (): ScrewsTiltAdjust {
+  get screwsTiltAdjust(): ScrewsTiltAdjust {
     return this.$typedGetters['printer/getScrewsTiltAdjust']
   }
 
-  get showScrewsTiltAdjustDialogAutomatically (): boolean {
+  get showScrewsTiltAdjustDialogAutomatically(): boolean {
     return this.$typedState.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
   }
 
   @Watch('hasScrewsTiltAdjustResults')
-  onHasScrewsTiltAdjustResults (value: boolean) {
-    this.screwsTiltAdjustDialogOpen = (
+  onHasScrewsTiltAdjustResults(value: boolean) {
+    this.screwsTiltAdjustDialogOpen =
       value &&
       this.showScrewsTiltAdjustDialogAutomatically &&
       this.klippyReady &&
       !this.printerPrinting
-    )
   }
 
   @Watch('screwsTiltAdjustDialogOpen')
-  onScrewsTiltAdjustDialogOpen (value: boolean) {
+  onScrewsTiltAdjustDialogOpen(value: boolean) {
     if (!value) {
       this.$typedCommit('printer/setClearScrewsTiltAdjust')
     }
   }
 
-  retry () {
+  retry() {
     this.sendGcode('SCREWS_TILT_CALCULATE', this.$waits.onBedScrewsCalculate)
     this.screwsTiltAdjustDialogOpen = false
   }

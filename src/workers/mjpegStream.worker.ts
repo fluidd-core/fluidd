@@ -2,19 +2,22 @@ import mjpegStream from './mjpegStream'
 import { consola } from 'consola'
 
 export type MjpegWorkerRequestMessage = {
-  action: 'start',
+  action: 'start'
   url: string
 }
 
-export type MjpegWorkerResponseMessage = {
-  action: 'frame',
-  data: Uint8Array<ArrayBuffer>
-} | {
-  action: 'done'
-} | {
-  action: 'error',
-  error?: unknown
-}
+export type MjpegWorkerResponseMessage =
+  | {
+      action: 'frame'
+      data: Uint8Array<ArrayBuffer>
+    }
+  | {
+      action: 'done'
+    }
+  | {
+      action: 'error'
+      error?: unknown
+    }
 
 const sendFrame = (data: Uint8Array<ArrayBuffer>) => {
   const message: MjpegWorkerResponseMessage = {

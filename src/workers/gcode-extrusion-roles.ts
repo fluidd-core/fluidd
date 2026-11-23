@@ -3,9 +3,8 @@ import { ExtrusionRole } from '@/store/gcodePreview/types'
 type RoleTags = [tag: string, role: ExtrusionRole][]
 
 // tags are matched case-insensitively
-const roleMap = (...tables: RoleTags[]) => new Map(
-  tables.flat().map(([tag, role]) => [tag.toLowerCase(), role])
-)
+const roleMap = (...tables: RoleTags[]) =>
+  new Map(tables.flat().map(([tag, role]) => [tag.toLowerCase(), role]))
 
 // "Skirt" is from 2.3.1 and earlier
 const prusaSlicerTags: RoleTags = [
@@ -114,7 +113,14 @@ const ideaMakerTags: RoleTags = [
   ['WALL-INNER', ExtrusionRole.Perimeter]
 ]
 
-export const typeRoleTags = [prusaSlicerTags, superSlicerTags, orcaSlicerTags, bambuStudioTags, curaTags, ideaMakerTags]
+export const typeRoleTags = [
+  prusaSlicerTags,
+  superSlicerTags,
+  orcaSlicerTags,
+  bambuStudioTags,
+  curaTags,
+  ideaMakerTags
+]
 
 const typeRoles = roleMap(...typeRoleTags)
 
@@ -171,7 +177,7 @@ export const parseExtrusionRoleComment = (comment: string): ExtrusionRole | unde
     return simplify3dRoles.get(comment.substring(8).trim().toLowerCase()) ?? ExtrusionRole.None
   }
 
-  if (comment.startsWith('\'')) {
+  if (comment.startsWith("'")) {
     const match = kisslicerRegExp.exec(comment)
 
     if (match) {

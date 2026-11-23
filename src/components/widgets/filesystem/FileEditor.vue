@@ -1,7 +1,5 @@
 <template>
-  <div
-    ref="monaco-editor"
-  >
+  <div ref="monaco-editor">
     <div
       v-if="!editor"
       class="spinner"
@@ -58,30 +56,30 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   canSaveAndRestartKey: Monaco.editor.IContextKey<boolean> | null = null
 
   @Watch('filename')
-  onFilenameChange () {
+  onFilenameChange() {
     if (this.saveViewState()) {
       this.viewStateHash = 'monaco.' + md5(this.apiFileUrl)
     }
   }
 
   @Watch('canSaveAndRestart')
-  onCanSaveAndRestartChange (value: boolean) {
+  onCanSaveAndRestartChange(value: boolean) {
     this.canSaveAndRestartKey?.set(value)
   }
 
-  get pathFilename (): string {
+  get pathFilename(): string {
     return this.path ? `${this.path}/${this.filename}` : this.filename
   }
 
-  get apiFileUrl (): string {
+  get apiFileUrl(): string {
     return `${this.$typedState.config.apiUrl}/server/files/${this.pathFilename}`
   }
 
-  get restoreViewState (): RestoreViewState {
+  get restoreViewState(): RestoreViewState {
     return this.$typedState.config.uiSettings.editor.restoreViewState
   }
 
-  get restoreViewStateStorage (): Storage | undefined {
+  get restoreViewStateStorage(): Storage | undefined {
     switch (this.restoreViewState) {
       case 'local':
         return localStorage
@@ -91,12 +89,12 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     }
   }
 
-  async mounted () {
+  async mounted() {
     // Init the editor.
     await this.initEditor()
   }
 
-  async initEditor () {
+  async initEditor() {
     if (!monaco) {
       const { default: promise } = await import('./setupMonaco')
       monaco = await promise
@@ -110,39 +108,45 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     }
 
     // Create an editor instance.
-    this.editor = markRaw(monaco.editor.create(this.monacoEditor, {
-      contextmenu: true,
-      readOnly: this.readonly,
-      codeLens: this.codeLens,
-      automaticLayout: true,
-      fontSize: 16,
-      scrollbar: {
-        useShadows: false
-      },
-      minimap: {
-        enabled: (!this.isMobileViewport)
-      },
-      rulers: (this.isMobileViewport) ? [80, 120] : []
-    }))
+    this.editor = markRaw(
+      monaco.editor.create(this.monacoEditor, {
+        contextmenu: true,
+        readOnly: this.readonly,
+        codeLens: this.codeLens,
+        automaticLayout: true,
+        fontSize: 16,
+        scrollbar: {
+          useShadows: false
+        },
+        minimap: {
+          enabled: !this.isMobileViewport
+        },
+        rulers: this.isMobileViewport ? [80, 120] : []
+      })
+    )
 
     if (!this.readonly) {
-      this.editorDisposables.push(this.editor.addAction({
-        id: 'action-save-file',
-        label: this.$tc('app.general.btn.save'),
-        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-        run: () => {
-          this.$emit('save')
-        }
-      }))
+      this.editorDisposables.push(
+        this.editor.addAction({
+          id: 'action-save-file',
+          label: this.$tc('app.general.btn.save'),
+          keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+          run: () => {
+            this.$emit('save')
+          }
+        })
+      )
 
-      this.editorDisposables.push(this.editor.addAction({
-        id: 'action-save-file-as',
-        label: this.$tc('app.general.btn.save_as'),
-        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
-        run: () => {
-          this.$emit('save-as')
-        }
-      }))
+      this.editorDisposables.push(
+        this.editor.addAction({
+          id: 'action-save-file-as',
+          label: this.$tc('app.general.btn.save_as'),
+          keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS],
+          run: () => {
+            this.$emit('save-as')
+          }
+        })
+      )
 
       const lineCommentActions = [
         { id: 'editor.action.addCommentLine', key: monaco.KeyCode.KeyC, order: 1.4 },
@@ -155,20 +159,22 @@ export default class FileEditor extends Mixins(BrowserMixin) {
         if (action) {
           // Monaco has no public API to add a built-in action to the context menu.
           // Reusing its id replaces it, avoiding a duplicate Command Palette entry.
-          this.editorDisposables.push(this.editor.addAction({
-            id,
-            label: action.label,
-            keybindings: [
-              monaco.KeyMod.chord(
-                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK,
-                monaco.KeyMod.CtrlCmd | key
-              )
-            ],
-            keybindingContext: 'editorTextFocus',
-            contextMenuGroupId: '1_modification',
-            contextMenuOrder: order,
-            run: () => action.run()
-          }))
+          this.editorDisposables.push(
+            this.editor.addAction({
+              id,
+              label: action.label,
+              keybindings: [
+                monaco.KeyMod.chord(
+                  monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK,
+                  monaco.KeyMod.CtrlCmd | key
+                )
+              ],
+              keybindingContext: 'editorTextFocus',
+              contextMenuGroupId: '1_modification',
+              contextMenuOrder: order,
+              run: () => action.run()
+            })
+          )
         }
       }
     }
@@ -177,31 +183,33 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       this.editor.createContextKey('fluiddCanSaveAndRestart', !!this.canSaveAndRestart)
     )
 
-    this.editorDisposables.push(this.editor.addAction({
-      id: 'action-save-file-restart',
-      label: this.$tc('app.general.btn.save_restart'),
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyS],
-      precondition: 'fluiddCanSaveAndRestart',
-      run: () => {
-        this.$emit('save-and-restart')
-      }
-    }))
+    this.editorDisposables.push(
+      this.editor.addAction({
+        id: 'action-save-file-restart',
+        label: this.$tc('app.general.btn.save_restart'),
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KeyS],
+        precondition: 'fluiddCanSaveAndRestart',
+        run: () => {
+          this.$emit('save-and-restart')
+        }
+      })
+    )
 
-    this.editorDisposables.push(this.editor.addAction({
-      id: 'action-emergency-stop',
-      label: this.$tc('app.general.tooltip.estop'),
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyE],
-      run: () => {
-        this.$emit('emergency-stop')
-      }
-    }))
+    this.editorDisposables.push(
+      this.editor.addAction({
+        id: 'action-emergency-stop',
+        label: this.$tc('app.general.tooltip.estop'),
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyE],
+        run: () => {
+          this.$emit('emergency-stop')
+        }
+      })
+    )
 
     // Define the model. The filename will map to the supported languages.
-    const model = markRaw(monaco.editor.createModel(
-      this.value,
-      undefined,
-      monaco.Uri.file(this.pathFilename)
-    ))
+    const model = markRaw(
+      monaco.editor.createModel(this.value, undefined, monaco.Uri.file(this.pathFilename))
+    )
     this.editorDisposables.push(model)
     this.editor.setModel(model)
 
@@ -213,7 +221,9 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       const viewState = restoreViewStateStorage.getItem(this.viewStateHash)
 
       if (viewState) {
-        this.editor.restoreViewState(JSON.parse(viewState) as Monaco.editor.ICodeEditorViewState | null)
+        this.editor.restoreViewState(
+          JSON.parse(viewState) as Monaco.editor.ICodeEditorViewState | null
+        )
       }
     }
 
@@ -231,18 +241,18 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     })
   }
 
-  focus () {
+  focus() {
     this.editor?.focus()
   }
 
-  showCommandPalette () {
+  showCommandPalette() {
     if (this.editor) {
       this.editor.focus()
       this.editor.trigger(null, 'editor.action.quickCommand', null)
     }
   }
 
-  saveViewState (): boolean {
+  saveViewState(): boolean {
     const restoreViewStateStorage = this.restoreViewStateStorage
 
     if (this.editor && restoreViewStateStorage && this.viewStateHash) {
@@ -261,7 +271,7 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   }
 
   // Ensure we dispose of our models and editor.
-  destroyed () {
+  destroyed() {
     this.saveViewState()
 
     this.editor?.dispose()
@@ -272,17 +282,17 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 </script>
 
 <style lang="scss" scoped>
-  :deep() {
-    // margin-top: 12px;
-    min-width: 100%;
-    height: 90%;
-    height: calc(100% - 48px);
-  }
+:deep() {
+  // margin-top: 12px;
+  min-width: 100%;
+  height: 90%;
+  height: calc(100% - 48px);
+}
 
-  :deep(.spinner) {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-  }
+:deep(.spinner) {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
 </style>

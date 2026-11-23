@@ -63,19 +63,17 @@ export default class FirmwareStatus extends Vue {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  get updatable (): boolean {
+  get updatable(): boolean {
     return isUpdatable({
       state: this.state,
       actions: this.actions
     })
   }
 
-  get stateLabel (): string {
+  get stateLabel(): string {
     const key = `app.firmware.state.${this.state}`
 
-    return this.$te(key)
-      ? this.$t(key).toString()
-      : this.state
+    return this.$te(key) ? this.$t(key).toString() : this.state
   }
 }
 </script>

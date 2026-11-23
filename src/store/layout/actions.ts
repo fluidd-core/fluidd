@@ -8,15 +8,15 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async initLayout ({ commit }, payload: LayoutState) {
+  async initLayout({ commit }, payload: LayoutState) {
     commit('setInitLayout', payload)
   },
 
-  async onLayoutChange ({ commit, state }, payload: { name: string; value: LayoutContainer }) {
+  async onLayoutChange({ commit, state }, payload: { name: string; value: LayoutContainer }) {
     const layout = state.layouts[payload.name]
     if (layout || payload.name.startsWith('dashboard')) {
       commit('setLayoutChange', payload)
@@ -27,7 +27,10 @@ export const actions = {
     }
   },
 
-  async onUpdateConfig ({ commit, state, dispatch }, payload: { name: string; value: LayoutConfig }) {
+  async onUpdateConfig(
+    { commit, state, dispatch },
+    payload: { name: string; value: LayoutConfig }
+  ) {
     let containers = state.layouts[payload.name]
     if (!containers) {
       // user/device specific layout doesn't exist yet, so we create it

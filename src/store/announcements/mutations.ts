@@ -6,11 +6,14 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setAnnouncementsList (state, payload: Moonraker.Announcements.ListResponse | Moonraker.Announcements.UpdateEvent) {
+  setAnnouncementsList(
+    state,
+    payload: Moonraker.Announcements.ListResponse | Moonraker.Announcements.UpdateEvent
+  ) {
     state.entries = payload.entries
 
     if ('feeds' in payload) {
@@ -18,7 +21,7 @@ export const mutations = {
     }
   },
 
-  setAnnouncementDismissed (state, payload: { entry_id: string, dismissed: boolean }) {
+  setAnnouncementDismissed(state, payload: { entry_id: string; dismissed: boolean }) {
     const entries = [...state.entries]
 
     const entry = entries.find(entry => entry.entry_id === payload.entry_id)

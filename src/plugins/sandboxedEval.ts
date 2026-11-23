@@ -6,13 +6,13 @@ import {
 } from '@/workers/sandboxedEval'
 
 export interface SandboxedEvalOptions {
-  feature?: string;
-  timeout?: number;
-  context?: unknown;
+  feature?: string
+  timeout?: number
+  context?: unknown
 }
 
 type PendingRequest = {
-  resolve: (value: unknown) => void,
+  resolve: (value: unknown) => void
   reject: (reason: unknown) => void
 }
 
@@ -21,17 +21,13 @@ let nextId = 1
 const ports = new Map<string, MessagePort>()
 const pendingRequests = new Map<number, PendingRequest>()
 
-const isWorkerResponseMessage = (data: unknown): data is SandboxedEvalWorkerResponseMessage => (
+const isWorkerResponseMessage = (data: unknown): data is SandboxedEvalWorkerResponseMessage =>
   data != null &&
   typeof data === 'object' &&
   'id' in data &&
   typeof data.id === 'number' &&
   'action' in data &&
-  (
-    data.action === 'result' ||
-    data.action === 'error'
-  )
-)
+  (data.action === 'result' || data.action === 'error')
 
 // a frame the page's own CSP blocks never announces it is ready
 const FRAME_LOAD_TIMEOUT = 5000
@@ -48,11 +44,7 @@ const getFrame = () => {
     iframe.srcdoc = buildSandboxedEvalFrameSrcdoc()
 
     const onMessage = (event: MessageEvent<unknown>) => {
-      if (
-        iframe.contentWindow &&
-        event.source === iframe.contentWindow &&
-        event.data === 'ready'
-      ) {
+      if (iframe.contentWindow && event.source === iframe.contentWindow && event.data === 'ready') {
         window.removeEventListener('message', onMessage)
         clearTimeout(timer)
         resolve(iframe.contentWindow)
@@ -116,9 +108,7 @@ const getPort = (worker: string) => {
         action: 'create',
         worker
       },
-      [
-        channel.port2
-      ]
+      [channel.port2]
     )
   }
 
@@ -135,13 +125,14 @@ const terminate = (worker: string) => {
   })
 }
 
-const sandboxedEval = async (code: string, options: SandboxedEvalOptions = {}): Promise<unknown> => {
+const sandboxedEval = async (
+  code: string,
+  options: SandboxedEvalOptions = {}
+): Promise<unknown> => {
   const { feature, timeout = 800, context } = options
 
   const id = nextId++
-  const worker = feature
-    ? `feature:${feature}`
-    : `request:${id}`
+  const worker = feature ? `feature:${feature}` : `request:${id}`
 
   const signal = AbortSignal.timeout(timeout)
 
@@ -169,10 +160,7 @@ const sandboxedEval = async (code: string, options: SandboxedEvalOptions = {}): 
   try {
     return await result
   } finally {
-    if (
-      !feature ||
-      signal.aborted
-    ) {
+    if (!feature || signal.aborted) {
       terminate(worker)
     }
   }

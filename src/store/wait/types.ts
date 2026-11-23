@@ -1,3 +1,3 @@
 export interface WaitState {
-  waits: string[];
+  waits: string[]
 }

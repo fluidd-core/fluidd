@@ -15,6 +15,5 @@ import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCar
     GcodePreviewCard
   }
 })
-export default class GcodePreview extends Vue {
-}
+export default class GcodePreview extends Vue {}
 </script>

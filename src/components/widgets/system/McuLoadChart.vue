@@ -19,11 +19,11 @@ export default class McuLoadChart extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
-  get chartData (): ChartDataSource {
+  get chartData(): ChartDataSource {
     return chartBufferSource(this.$typedState.charts.mcus[this.mcu.key])
   }
 
-  get labels (): AppInlineChartLabel[] {
+  get labels(): AppInlineChartLabel[] {
     return [
       {
         text: this.$t('app.system_info.label.mcu_load', { mcu: this.mcu.prettyName }).toString(),
@@ -38,7 +38,7 @@ export default class McuLoadChart extends Vue {
     ]
   }
 
-  get options (): EChartsOption {
+  get options(): EChartsOption {
     const options: EChartsOption = {
       ...this.$typedGetters['charts/getBaseChartOptions']({
         load: ' %',
@@ -48,11 +48,8 @@ export default class McuLoadChart extends Vue {
       series: this.series
     }
 
-    if (
-      options.yAxis &&
-      !Array.isArray(options.yAxis)
-    ) {
-      options.yAxis.max = (value) => {
+    if (options.yAxis && !Array.isArray(options.yAxis)) {
+      options.yAxis.max = value => {
         // Grab the max, and add some buffer.
         if (value.max <= 10) return 15
         if (value.max <= 20) return 25
@@ -70,7 +67,7 @@ export default class McuLoadChart extends Vue {
     return options
   }
 
-  get series (): LineSeriesOption[] {
+  get series(): LineSeriesOption[] {
     return [
       {
         ...this.$typedGetters['charts/getBaseSeries'],

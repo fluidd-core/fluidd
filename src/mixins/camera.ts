@@ -23,42 +23,38 @@ export default class CameraMixin extends Vue {
   rawCameraUrl = ''
 
   @Watch('camera')
-  onCamera () {
+  onCamera() {
     this.stopPlayback()
     this.checkPlayback()
   }
 
-  get apiUrl (): string {
+  get apiUrl(): string {
     return this.$typedState.config.apiUrl
   }
 
-  get cameraStyle () {
+  get cameraStyle() {
     return {
       transform: this.cameraTransformStyle || undefined
     }
   }
 
-  get autoRaiseFrameEvent () {
+  get autoRaiseFrameEvent() {
     return true
   }
 
-  createTransform (): string {
+  createTransform(): string {
     const element = this.streamingElement
     const { rotation, flip_horizontal, flip_vertical } = this.camera
     const transformsArray: string[] = []
 
     const { clientWidth, clientHeight } = element
 
-    const scale = (
-      rotation === 0 ||
-      rotation === 180 ||
-      clientHeight === 0 ||
-      clientWidth === 0
-    )
-      ? 1
-      : clientHeight < clientWidth
-        ? clientHeight / clientWidth
-        : clientWidth / clientHeight
+    const scale =
+      rotation === 0 || rotation === 180 || clientHeight === 0 || clientWidth === 0
+        ? 1
+        : clientHeight < clientWidth
+          ? clientHeight / clientWidth
+          : clientWidth / clientHeight
 
     if (scale !== 1 || flip_horizontal) {
       transformsArray.push(`scaleX(${flip_horizontal ? -scale : scale})`)
@@ -75,7 +71,7 @@ export default class CameraMixin extends Vue {
     return transformsArray.join(' ')
   }
 
-  updateCameraTransformStyle () {
+  updateCameraTransformStyle() {
     requestAnimationFrame(() => {
       if (!this.animating) {
         return
@@ -93,23 +89,23 @@ export default class CameraMixin extends Vue {
     })
   }
 
-  created () {
+  created() {
     this.animating = true
     this.updateCameraTransformStyle()
   }
 
-  mounted () {
+  mounted() {
     document.addEventListener('visibilitychange', this.checkPlayback, false)
     this.checkPlayback()
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.animating = false
     document.removeEventListener('visibilitychange', this.checkPlayback)
     this.stopPlayback()
   }
 
-  checkPlayback () {
+  checkPlayback() {
     if (!document.hidden) {
       this.startPlayback()
     } else {
@@ -117,46 +113,46 @@ export default class CameraMixin extends Vue {
     }
   }
 
-  buildAbsoluteUrl (url: string) {
+  buildAbsoluteUrl(url: string) {
     const { origin } = new URL(document.URL)
 
     return new URL(url, origin)
   }
 
   @Emit('update:status')
-  updateStatus (status: CameraConnectionStatus) {
+  updateStatus(status: CameraConnectionStatus) {
     this.status = status
   }
 
   @Emit('update:camera-name')
-  updateCameraName (cameraName: string) {
+  updateCameraName(cameraName: string) {
     this.cameraName = cameraName
   }
 
   @Emit('update:camera-name-menu-items')
-  updateCameraNameMenuItems (cameraNameMenuItems: CameraNameMenuItem[]) {
+  updateCameraNameMenuItems(cameraNameMenuItems: CameraNameMenuItem[]) {
     this.cameraNameMenuItems = cameraNameMenuItems
   }
 
   @Emit('update:frames-per-second')
-  updateFramesPerSecond (framesPerSecond: number) {
+  updateFramesPerSecond(framesPerSecond: number) {
     this.framesPerSecond = framesPerSecond
   }
 
   @Emit('update:raw-camera-url')
-  updateRawCameraUrl (rawCameraUrl: string) {
+  updateRawCameraUrl(rawCameraUrl: string) {
     this.rawCameraUrl = rawCameraUrl
   }
 
-  startPlayback () {
+  startPlayback() {
     // noop
   }
 
-  stopPlayback () {
+  stopPlayback() {
     // noop
   }
 
-  menuItemClick (item: CameraNameMenuItem) {
+  menuItemClick(item: CameraNameMenuItem) {
     consola.debug('Menu item click', item)
   }
 }

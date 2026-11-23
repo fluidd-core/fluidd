@@ -17,9 +17,7 @@
           :disabled="!isSupported || updateDisabled || !hasUpdates"
           @click="updateAll"
         >
-          <v-icon left>
-            $download
-          </v-icon>
+          <v-icon left> $download </v-icon>
           {{ $t('app.firmware.btn.update_all') }}
         </app-btn>
 
@@ -166,39 +164,39 @@ import { Waits } from '@/globals'
   }
 })
 export default class FirmwareSettings extends Mixins(StateMixin) {
-  get isSupported (): boolean {
+  get isSupported(): boolean {
     return this.$typedGetters['firmware/isSupported']
   }
 
-  get isLoading (): boolean {
+  get isLoading(): boolean {
     return this.$typedGetters['firmware/isLoading']
   }
 
-  get isApiSupported (): boolean {
+  get isApiSupported(): boolean {
     return this.$typedGetters['firmware/isApiSupported']
   }
 
-  get isRefreshing (): boolean {
+  get isRefreshing(): boolean {
     return this.hasWait(Waits.onFirmwareRefresh)
   }
 
-  get busy (): boolean {
+  get busy(): boolean {
     return this.$typedGetters['firmware/isBusy']
   }
 
-  get status (): Aldis.StatusResponse | null {
+  get status(): Aldis.StatusResponse | null {
     return this.$typedState.firmware.status
   }
 
-  get statusError (): string | null {
+  get statusError(): string | null {
     return this.$typedState.firmware.statusError
   }
 
-  get host (): Aldis.Host | null {
+  get host(): Aldis.Host | null {
     return this.$typedGetters['firmware/getHost']
   }
 
-  get hostSubTitle (): string {
+  get hostSubTitle(): string {
     const host = this.host
 
     if (!host) {
@@ -210,27 +208,27 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
       : `${host.klippy_state}: ${host.klippy_message}`
   }
 
-  get blocker (): Aldis.Blocker | null {
+  get blocker(): Aldis.Blocker | null {
     return this.$typedGetters['firmware/getBlocker']
   }
 
-  get mcus (): Aldis.Mcu[] {
+  get mcus(): Aldis.Mcu[] {
     return this.$typedGetters['firmware/getMcus']
   }
 
-  get hasUpdates (): boolean {
+  get hasUpdates(): boolean {
     return this.$typedGetters['firmware/hasUpdates']
   }
 
-  get lastResult (): Aldis.RunResult | null {
+  get lastResult(): Aldis.RunResult | null {
     return this.$typedGetters['firmware/getLastResult']
   }
 
-  get lastMessage (): string | null {
+  get lastMessage(): string | null {
     return this.$typedGetters['firmware/getLastMessage']
   }
 
-  get updateDisabled (): boolean {
+  get updateDisabled(): boolean {
     return (
       this.isLoading ||
       this.blocker != null ||
@@ -241,11 +239,11 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
     )
   }
 
-  get enableNotifications (): boolean {
+  get enableNotifications(): boolean {
     return this.$typedState.config.uiSettings.general.enableFirmwareNotifications
   }
 
-  set enableNotifications (value: boolean) {
+  set enableNotifications(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.enableFirmwareNotifications',
       value,
@@ -253,7 +251,7 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
     }).then(() => this.$typedDispatch('firmware/updateNotification'))
   }
 
-  mcuVersionLabel (mcu: Aldis.Mcu): string {
+  mcuVersionLabel(mcu: Aldis.Mcu): string {
     if (mcu.state === 'update_available' && mcu.message) {
       return mcu.message
     }
@@ -261,7 +259,7 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
     return mcu.running_version || this.$t('app.firmware.label.unknown_version').toString()
   }
 
-  transportLabel (transport: Aldis.Transport): string {
+  transportLabel(transport: Aldis.Transport): string {
     const { type } = transport
 
     if (transport.type === 'can') {
@@ -275,15 +273,15 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
     return type
   }
 
-  refresh () {
+  refresh() {
     this.$typedDispatch('firmware/refresh')
   }
 
-  updateOne (name: string) {
+  updateOne(name: string) {
     this.$typedDispatch('firmware/update', { mcus: [name] })
   }
 
-  updateAll () {
+  updateAll() {
     const mcus: string[] = this.$typedGetters['firmware/getUpdatableMcus']
 
     if (mcus.length > 0) {
@@ -291,7 +289,7 @@ export default class FirmwareSettings extends Mixins(StateMixin) {
     }
   }
 
-  dismissLastResult () {
+  dismissLastResult() {
     this.$typedCommit('firmware/setClearLastResult')
   }
 }

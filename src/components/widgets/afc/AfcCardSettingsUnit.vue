@@ -21,16 +21,15 @@ export default class AfcCardSettingsUnit extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get unitName (): string {
+  get unitName(): string {
     return this.name.substring(this.name.indexOf(' ') + 1)
   }
 
-  get showUnit () {
-    return !this.afcHiddenUnits
-      .includes(this.name)
+  get showUnit() {
+    return !this.afcHiddenUnits.includes(this.name)
   }
 
-  set showUnit (value: boolean) {
+  set showUnit(value: boolean) {
     const values = new Set(this.afcHiddenUnits)
 
     if (value) {

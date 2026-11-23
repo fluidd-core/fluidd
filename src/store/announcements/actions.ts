@@ -7,48 +7,48 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Inits moonraker component
    */
-  async init () {
+  async init() {
     SocketActions.serverAnnouncementsList()
   },
 
-  async onAnnouncementsList ({ commit }, payload: Moonraker.Announcements.ListResponse) {
+  async onAnnouncementsList({ commit }, payload: Moonraker.Announcements.ListResponse) {
     if (payload) {
       commit('setAnnouncementsList', payload)
     }
   },
 
-  async onAnnouncementUpdate ({ commit }, payload: Moonraker.Announcements.UpdateEvent) {
+  async onAnnouncementUpdate({ commit }, payload: Moonraker.Announcements.UpdateEvent) {
     if (payload) {
       commit('setAnnouncementsList', payload)
     }
   },
 
-  async onAnnouncementDismissed ({ commit }, payload: Moonraker.Announcements.DismissedEvent) {
+  async onAnnouncementDismissed({ commit }, payload: Moonraker.Announcements.DismissedEvent) {
     if (payload) {
       commit('setAnnouncementDismissed', { entry_id: payload.entry_id, dismissed: true })
     }
   },
 
-  async onAnnouncementWake ({ commit }, payload: Moonraker.Announcements.WakeEvent) {
+  async onAnnouncementWake({ commit }, payload: Moonraker.Announcements.WakeEvent) {
     if (payload) {
       commit('setAnnouncementDismissed', { entry_id: payload.entry_id, dismissed: false })
     }
   },
 
-  async dismiss (_, payload: { entry_id: string; wake_time?: number }) {
+  async dismiss(_, payload: { entry_id: string; wake_time?: number }) {
     SocketActions.serverAnnouncementsDismiss(payload.entry_id, payload.wake_time)
   },
 
-  async dismissAll ({ state }) {
+  async dismissAll({ state }) {
     const entries = [...state.entries]
 
-    entries.forEach(async (entry) => await SocketActions.serverAnnouncementsDismiss(entry.entry_id))
+    entries.forEach(async entry => await SocketActions.serverAnnouncementsDismiss(entry.entry_id))
   }
 } satisfies ActionTree<AnnouncementsState, RootState>

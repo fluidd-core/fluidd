@@ -16,9 +16,7 @@
           icon
           @click="clearMessage"
         >
-          <v-icon small>
-            $close
-          </v-icon>
+          <v-icon small> $close </v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -32,23 +30,25 @@ import { consola } from 'consola'
 
 @Component
 export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {
-  get type (): string {
+  get type(): string {
     const type = this.afc?.message?.type ?? 'error'
     const possibleTypes = ['info', 'warning', 'success', 'error']
 
     if (!possibleTypes.includes(type)) {
-      consola.warn(`AfcCardMessage: Invalid message type "${type}" detected. Defaulting to "error".`)
+      consola.warn(
+        `AfcCardMessage: Invalid message type "${type}" detected. Defaulting to "error".`
+      )
       return 'error'
     }
 
     return type
   }
 
-  get message (): string | undefined | null {
+  get message(): string | undefined | null {
     return this.afc?.message?.message
   }
 
-  clearMessage () {
+  clearMessage() {
     this.sendGcode('AFC_CLEAR_MESSAGE')
   }
 }

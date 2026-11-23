@@ -24,9 +24,7 @@
     <v-card>
       <v-card-text class="text-center">
         <div>
-          <v-icon large>
-            $account
-          </v-icon>
+          <v-icon large> $account </v-icon>
         </div>
         <span class="text-h5">{{ currentUser }}</span>
 
@@ -46,7 +44,11 @@
             class="mt-2"
           >
             <small>
-              {{ $t('app.general.label.user_managed_source', { source: $t(`app.general.label.${user.source}`) }) }}
+              {{
+                $t('app.general.label.user_managed_source', {
+                  source: $t(`app.general.label.${user.source}`)
+                })
+              }}
             </small>
           </div>
         </div>
@@ -90,11 +92,11 @@ import type { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {
-  get user (): AppUser | null {
+  get user(): AppUser | null {
     return this.$typedState.auth.currentUser
   }
 
-  get currentUser () {
+  get currentUser() {
     if (!this.user) return ''
     if (
       this.user.username === '_TRUSTED_USER_' ||
@@ -106,15 +108,14 @@ export default class AppNotificationMenu extends Vue {
     }
   }
 
-  get isTrustedOnly () {
+  get isTrustedOnly() {
     if (!this.user) return false
     return (
-      this.user.username === '_TRUSTED_USER_' ||
-      this.user.username === '_API__API_KEY_USER_USER_'
+      this.user.username === '_TRUSTED_USER_' || this.user.username === '_API__API_KEY_USER_USER_'
     )
   }
 
-  async handleLogout () {
+  async handleLogout() {
     await this.$typedDispatch('auth/checkTrust')
   }
 }

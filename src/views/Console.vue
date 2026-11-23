@@ -15,6 +15,5 @@ import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
     ConsoleCard
   }
 })
-export default class Console extends Vue {
-}
+export default class Console extends Vue {}
 </script>

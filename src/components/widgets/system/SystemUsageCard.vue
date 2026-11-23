@@ -38,15 +38,15 @@ import type { MCU } from '@/store/printer/types'
   }
 })
 export default class PrinterStatsCard extends Vue {
-  get procStats (): Moonraker.ProcStats.MoonrakerStats[] {
+  get procStats(): Moonraker.ProcStats.MoonrakerStats[] {
     return this.$typedState.server.moonraker_stats
   }
 
-  get systemStats (): Klipper.SystemStatsState {
+  get systemStats(): Klipper.SystemStatsState {
     return this.$typedState.printer.printer.system_stats
   }
 
-  get mcus (): MCU[] {
+  get mcus(): MCU[] {
     return this.$typedGetters['printer/getMcus']
   }
 }

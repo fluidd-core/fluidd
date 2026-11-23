@@ -16,10 +16,7 @@
           spellcheck="false"
           class="mt-0"
           hide-details="auto"
-          :rules="[
-            $rules.required,
-            $rules.lengthLessThanOrEqual(60)
-          ]"
+          :rules="[$rules.required, $rules.lengthLessThanOrEqual(60)]"
         />
       </app-setting>
 
@@ -55,7 +52,7 @@ export default class AddUserDialog extends Vue {
   username: string = ''
   password: string = ''
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', {
       username: this.username,
       password: this.password

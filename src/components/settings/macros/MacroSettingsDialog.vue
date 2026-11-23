@@ -61,9 +61,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.general.label.visible')"
-      >
+      <app-setting :title="$t('app.general.label.visible')">
         <v-switch
           v-model="macro.visible"
           class="mt-0 pt-0"
@@ -87,26 +85,26 @@ export default class MacroMoveDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
 
-  get categories () {
+  get categories() {
     // Grabs all categories and filters by the currently defined one.
     const categories: MacroCategory[] = [...this.$typedGetters['macros/getCategories']]
     categories.unshift({ name: this.$t('app.general.label.uncategorized').toString(), id: '0' })
     return categories
   }
 
-  get color (): string | undefined {
+  get color(): string | undefined {
     return this.macro.color || this.$vuetify.theme.currentTheme.secondary?.toString()
   }
 
-  set color (value: string | undefined) {
+  set color(value: string | undefined) {
     this.macro.color = value
   }
 
-  handleResetColor () {
+  handleResetColor() {
     this.macro.color = undefined
   }
 
-  handleSave () {
+  handleSave() {
     this.$typedDispatch('macros/saveMacro', this.macro)
     this.open = false
   }

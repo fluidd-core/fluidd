@@ -34,7 +34,7 @@
           cols="12"
           md="6"
           :lg="columnSpan"
-          :class="{ 'drag': inLayout }"
+          :class="{ drag: inLayout }"
         >
           <app-draggable
             v-model="containers[containerIndex]"
@@ -84,30 +84,30 @@ import type Sortable from 'sortablejs'
   }
 })
 export default class Diagnostics extends Mixins(StateMixin) {
-  dialogState: { active: boolean, card: DiagnosticsCardConfig | null } = {
+  dialogState: { active: boolean; card: DiagnosticsCardConfig | null } = {
     active: false,
     card: null
   }
 
   containers: Array<DiagnosticsCardConfig[]> = []
 
-  mounted () {
+  mounted() {
     this.onLayoutChange()
   }
 
-  handleAddCard () {
+  handleAddCard() {
     const defaultCard = createDiagnosticsCardState()
     defaultCard.id = ''
     this.dialogState.card = defaultCard
     this.dialogState.active = true
   }
 
-  handleEditCard (card: DiagnosticsCardConfig) {
+  handleEditCard(card: DiagnosticsCardConfig) {
     this.dialogState.card = JSON.parse(JSON.stringify(card)) as DiagnosticsCardConfig
     this.dialogState.active = true
   }
 
-  handleDeleteCard (id: string) {
+  handleDeleteCard(id: string) {
     for (const container of Object.values(this.layout)) {
       const index = container.findIndex(card => card.id === id)
       if (index > -1) {
@@ -119,7 +119,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
     this.updateLayout()
   }
 
-  handleSaveCard (card: DiagnosticsCardConfig) {
+  handleSaveCard(card: DiagnosticsCardConfig) {
     if (card.id === '') {
       card.id = uuidv4()
       this.layout.container1.push(card)
@@ -136,33 +136,33 @@ export default class Diagnostics extends Mixins(StateMixin) {
     this.updateLayout()
   }
 
-  get columnCount () {
+  get columnCount() {
     if (this.inLayout) return 4
 
     return this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
   }
 
-  get columnSpan () {
+  get columnSpan() {
     return 12 / this.columnCount
   }
 
-  get draggableOptions (): Sortable.Options {
+  get draggableOptions(): Sortable.Options {
     return {
       group: 'diagnostics',
       disabled: !this.inLayout
     }
   }
 
-  get inLayout (): boolean {
+  get inLayout(): boolean {
     return this.$typedState.config.layoutMode
   }
 
-  get layout (): DiagnosticsCardContainer {
+  get layout(): DiagnosticsCardContainer {
     return this.$typedGetters['layout/getLayout']('diagnostics') as DiagnosticsCardContainer
   }
 
   @Watch('layout', { deep: true })
-  onLayoutChange () {
+  onLayoutChange() {
     const containers = Object.values(this.layout)
 
     while (containers.length < 4) {
@@ -172,7 +172,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
     this.containers = containers.slice(0, 4)
   }
 
-  updateLayout () {
+  updateLayout() {
     this.$typedDispatch('layout/onLayoutChange', {
       name: 'diagnostics',
       value: {
@@ -184,7 +184,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
     })
   }
 
-  hasCards (container: LayoutConfig[]) {
+  hasCards(container: LayoutConfig[]) {
     return container.some(card => card.enabled)
   }
 }

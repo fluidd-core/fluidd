@@ -44,21 +44,21 @@ describe('gcode Monarch tokenizer', () => {
     })
 
     it('chains with subsequent commands and params on the same line', () => {
-      expect(tokenize('N5 G1 X10')).toEqual([t(
-        ['keyword.command.n', 'N5'],
-        ['white', ' '],
-        ['keyword.command.g', 'G1'],
-        ['white', ' '],
-        ['keyword.param.x', 'X10']
-      )])
+      expect(tokenize('N5 G1 X10')).toEqual([
+        t(
+          ['keyword.command.n', 'N5'],
+          ['white', ' '],
+          ['keyword.command.g', 'G1'],
+          ['white', ' '],
+          ['keyword.param.x', 'X10']
+        )
+      ])
     })
 
     it('tokenizes mid-line N as invalid', () => {
-      expect(tokenize('G1 N5')).toEqual([t(
-        ['keyword.command.g', 'G1'],
-        ['white', ' '],
-        ['invalid', 'N5']
-      )])
+      expect(tokenize('G1 N5')).toEqual([
+        t(['keyword.command.g', 'G1'], ['white', ' '], ['invalid', 'N5'])
+      ])
     })
 
     it('still applies ignoreCase to the line-start rule', () => {
@@ -68,60 +68,61 @@ describe('gcode Monarch tokenizer', () => {
     // The canonical USB-serial line: line number + command + params +
     // checksum, all in one line.
     it('tokenizes a full N + command + checksum line', () => {
-      expect(tokenize('N5 G1 X10*123')).toEqual([t(
-        ['keyword.command.n', 'N5'],
-        ['white', ' '], ['keyword.command.g', 'G1'],
-        ['white', ' '], ['keyword.param.x', 'X10'],
-        ['tag', '*123']
-      )])
+      expect(tokenize('N5 G1 X10*123')).toEqual([
+        t(
+          ['keyword.command.n', 'N5'],
+          ['white', ' '],
+          ['keyword.command.g', 'G1'],
+          ['white', ' '],
+          ['keyword.param.x', 'X10'],
+          ['tag', '*123']
+        )
+      ])
     })
   })
 
   describe('parameter letter + decimal', () => {
     it.each<[string, TokenLine[][]]>([
-      [
-        'G1 X10',
-        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X10'])]
-      ],
+      ['G1 X10', [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X10'])]],
       [
         'G1 X10 Y-3.5 Z.5',
-        [t(
-          ['keyword.command.g', 'G1'],
-          ['white', ' '], ['keyword.param.x', 'X10'],
-          ['white', ' '], ['keyword.param.y', 'Y-3.5'],
-          ['white', ' '], ['keyword.param.z', 'Z.5']
-        )]
+        [
+          t(
+            ['keyword.command.g', 'G1'],
+            ['white', ' '],
+            ['keyword.param.x', 'X10'],
+            ['white', ' '],
+            ['keyword.param.y', 'Y-3.5'],
+            ['white', ' '],
+            ['keyword.param.z', 'Z.5']
+          )
+        ]
       ],
       // Multiple spaces between tokens collapse into a single white token.
       [
         'G1   X10  Y20',
-        [t(
-          ['keyword.command.g', 'G1'],
-          ['white', '   '], ['keyword.param.x', 'X10'],
-          ['white', '  '], ['keyword.param.y', 'Y20']
-        )]
+        [
+          t(
+            ['keyword.command.g', 'G1'],
+            ['white', '   '],
+            ['keyword.param.x', 'X10'],
+            ['white', '  '],
+            ['keyword.param.y', 'Y20']
+          )
+        ]
       ],
       // `decimal` accepts both `+` and `-` prefixes — Marlin's `strtof`
       // and Klipper's `float()` both accept either, so `S+200` etc.
       // should highlight as a normal param value, not invalid.
-      [
-        'G1 X+10',
-        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X+10'])]
-      ],
+      ['G1 X+10', [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X+10'])]],
       [
         'M104 S+200',
         [t(['keyword.command.m', 'M104'], ['white', ' '], ['keyword.param.s', 'S+200'])]
       ],
-      [
-        'G1 X+.5',
-        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X+.5'])]
-      ],
+      ['G1 X+.5', [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X+.5'])]],
       // The decimal regex's second alt `\d*\.\d+` matches `-.5` (sign +
       // leading-dot decimal).
-      [
-        'G1 X-.5',
-        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X-.5'])]
-      ],
+      ['G1 X-.5', [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X-.5'])]],
       // The param rule allows whitespace (`\s*`) between the letter and
       // the number — the whole `X 10` is one `keyword.param.x` token,
       // including the inner space. Marlin/Klipper parsers accept this
@@ -130,10 +131,7 @@ describe('gcode Monarch tokenizer', () => {
         'M114 X 10',
         [t(['keyword.command.m', 'M114'], ['white', ' '], ['keyword.param.x', 'X 10'])]
       ],
-      [
-        'G1 X\t10',
-        [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X\t10'])]
-      ]
+      ['G1 X\t10', [t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X\t10'])]]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
     })
@@ -141,9 +139,9 @@ describe('gcode Monarch tokenizer', () => {
 
   describe('case-insensitive matching (ignoreCase)', () => {
     it('lowercase command and param tokenize the same as uppercase', () => {
-      expect(tokenize('g1 x10')).toEqual([t(
-        ['keyword.command.g', 'g1'], ['white', ' '], ['keyword.param.x', 'x10']
-      )])
+      expect(tokenize('g1 x10')).toEqual([
+        t(['keyword.command.g', 'g1'], ['white', ' '], ['keyword.param.x', 'x10'])
+      ])
     })
   })
 
@@ -152,11 +150,15 @@ describe('gcode Monarch tokenizer', () => {
       ['; full line comment', [t(['comment', '; full line comment'])]],
       [
         'G1 X10 ; some comment',
-        [t(
-          ['keyword.command.g', 'G1'],
-          ['white', ' '], ['keyword.param.x', 'X10'],
-          ['white', ' '], ['comment', '; some comment']
-        )]
+        [
+          t(
+            ['keyword.command.g', 'G1'],
+            ['white', ' '],
+            ['keyword.param.x', 'X10'],
+            ['white', ' '],
+            ['comment', '; some comment']
+          )
+        ]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
@@ -165,11 +167,9 @@ describe('gcode Monarch tokenizer', () => {
 
   describe('checksum tag (*N)', () => {
     it('captures a *NNN checksum after a value', () => {
-      expect(tokenize('G1 X0*123')).toEqual([t(
-        ['keyword.command.g', 'G1'],
-        ['white', ' '], ['keyword.param.x', 'X0'],
-        ['tag', '*123']
-      )])
+      expect(tokenize('G1 X0*123')).toEqual([
+        t(['keyword.command.g', 'G1'], ['white', ' '], ['keyword.param.x', 'X0'], ['tag', '*123'])
+      ])
     })
 
     it('captures a standalone *NNN as a tag', () => {
@@ -190,29 +190,32 @@ describe('gcode Monarch tokenizer', () => {
     // Realistic serial-protocol line: command + params + checksum +
     // trailing comment.
     it('tokenizes a command with both checksum and trailing comment', () => {
-      expect(tokenize('G1 X10 Y10*123 ; comment')).toEqual([t(
-        ['keyword.command.g', 'G1'],
-        ['white', ' '], ['keyword.param.x', 'X10'],
-        ['white', ' '], ['keyword.param.y', 'Y10'],
-        ['tag', '*123'],
-        ['white', ' '], ['comment', '; comment']
-      )])
+      expect(tokenize('G1 X10 Y10*123 ; comment')).toEqual([
+        t(
+          ['keyword.command.g', 'G1'],
+          ['white', ' '],
+          ['keyword.param.x', 'X10'],
+          ['white', ' '],
+          ['keyword.param.y', 'Y10'],
+          ['tag', '*123'],
+          ['white', ' '],
+          ['comment', '; comment']
+        )
+      ])
     })
   })
 
   describe('M117 / M118 string payload', () => {
     it('captures the rest of the line as a single string token', () => {
-      expect(tokenize('M117 Hello World')).toEqual([t(
-        ['keyword.command.m', 'M117'],
-        ['string', ' Hello World']
-      )])
+      expect(tokenize('M117 Hello World')).toEqual([
+        t(['keyword.command.m', 'M117'], ['string', ' Hello World'])
+      ])
     })
 
     it('also applies to M118', () => {
-      expect(tokenize('M118 status: ok')).toEqual([t(
-        ['keyword.command.m', 'M118'],
-        ['string', ' status: ok']
-      )])
+      expect(tokenize('M118 status: ok')).toEqual([
+        t(['keyword.command.m', 'M118'], ['string', ' status: ok'])
+      ])
     })
 
     it('emits no string token when the payload is empty', () => {
@@ -245,10 +248,9 @@ describe('gcode Monarch tokenizer', () => {
     // M117/M118 read the raw command line (klippy/gcode.py
     // `get_raw_command_parameters`), which never strips a `;`.
     it('keeps a trailing ; inside the payload', () => {
-      expect(tokenize('M117 ; not a comment')).toEqual([t(
-        ['keyword.command.m', 'M117'],
-        ['string', ' ; not a comment']
-      )])
+      expect(tokenize('M117 ; not a comment')).toEqual([
+        t(['keyword.command.m', 'M117'], ['string', ' ; not a comment'])
+      ])
     })
 
     // Inside a klipper-config value configparser cuts ` ;test` first.
@@ -257,10 +259,7 @@ describe('gcode Monarch tokenizer', () => {
       ['M118 test ;test', 'M118', ' test ;test'],
       ['M117 a;b', 'M117', ' a;b']
     ])('keeps the payload of %j intact', (input, command, payload) => {
-      expect(tokenize(input)).toEqual([t(
-        ['keyword.command.m', command],
-        ['string', payload]
-      )])
+      expect(tokenize(input)).toEqual([t(['keyword.command.m', command], ['string', payload])])
     })
 
     // No space is required between the command and the payload — the
@@ -268,26 +267,21 @@ describe('gcode Monarch tokenizer', () => {
     // first char (letters, quotes, punctuation) is captured into the
     // string payload.
     it('captures a payload with no space after M117', () => {
-      expect(tokenize('M117hello')).toEqual([t(
-        ['keyword.command.m', 'M117'],
-        ['string', 'hello']
-      )])
+      expect(tokenize('M117hello')).toEqual([t(['keyword.command.m', 'M117'], ['string', 'hello'])])
     })
 
     it('keeps a ; inside a no-space payload', () => {
-      expect(tokenize('M117hello;comment')).toEqual([t(
-        ['keyword.command.m', 'M117'],
-        ['string', 'hello;comment']
-      )])
+      expect(tokenize('M117hello;comment')).toEqual([
+        t(['keyword.command.m', 'M117'], ['string', 'hello;comment'])
+      ])
     })
 
     it('captures quote characters as part of a no-space M117 payload (root, not @string)', () => {
       // The M117/M118 special rule fires at root, so a `"` in the payload
       // is just a `string` character — @string state is not entered.
-      expect(tokenize('M117"hello"')).toEqual([t(
-        ['keyword.command.m', 'M117'],
-        ['string', '"hello"']
-      )])
+      expect(tokenize('M117"hello"')).toEqual([
+        t(['keyword.command.m', 'M117'], ['string', '"hello"'])
+      ])
     })
   })
 
@@ -297,45 +291,63 @@ describe('gcode Monarch tokenizer', () => {
     })
 
     it('tokenizes key=value macro params', () => {
-      expect(tokenize('MY_MACRO X=1 Y=2')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '], ['keyword.param', 'X'], ['operator', '='], ['string', '1'],
-        ['white', ' '], ['keyword.param', 'Y'], ['operator', '='], ['string', '2']
-      )])
+      expect(tokenize('MY_MACRO X=1 Y=2')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string', '1'],
+          ['white', ' '],
+          ['keyword.param', 'Y'],
+          ['operator', '='],
+          ['string', '2']
+        )
+      ])
     })
 
     it('tokenizes quoted-string macro params', () => {
-      expect(tokenize('MY_MACRO MSG="hello world"')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '],
-        ['keyword.param', 'MSG'],
-        ['operator', '='],
-        ['string.quote', '"'],
-        ['string', 'hello world'],
-        ['string.quote', '"']
-      )])
+      expect(tokenize('MY_MACRO MSG="hello world"')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'MSG'],
+          ['operator', '='],
+          ['string.quote', '"'],
+          ['string', 'hello world'],
+          ['string.quote', '"']
+        )
+      ])
     })
 
     // Backslash-escaped quotes inside a quoted string are part of the string
     // body — the closing `"` is the unescaped one.
     it('preserves \\" sequences inside the quoted string body', () => {
-      expect(tokenize('MY_MACRO MSG="he said \\"hi\\""')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '],
-        ['keyword.param', 'MSG'],
-        ['operator', '='],
-        ['string.quote', '"'],
-        ['string', 'he said \\"hi\\"'],
-        ['string.quote', '"']
-      )])
+      expect(tokenize('MY_MACRO MSG="he said \\"hi\\""')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'MSG'],
+          ['operator', '='],
+          ['string.quote', '"'],
+          ['string', 'he said \\"hi\\"'],
+          ['string.quote', '"']
+        )
+      ])
     })
 
     it('lets a trailing ; comment terminate the param list', () => {
-      expect(tokenize('MY_MACRO X=1 ; comment')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '], ['keyword.param', 'X'], ['operator', '='], ['string', '1'],
-        ['white', ' '], ['comment', '; comment']
-      )])
+      expect(tokenize('MY_MACRO X=1 ; comment')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string', '1'],
+          ['white', ' '],
+          ['comment', '; comment']
+        )
+      ])
     })
 
     // Empty / missing values. At end of line the `key=` rule branches via
@@ -343,18 +355,24 @@ describe('gcode Monarch tokenizer', () => {
     // straight back to @params instead of entering @value, avoiding a
     // cross-line leak (see "state resets across lines").
     it('emits no string token when the value is empty (end of line)', () => {
-      expect(tokenize('MY_MACRO X=')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '], ['keyword.param', 'X'], ['operator', '=']
-      )])
+      expect(tokenize('MY_MACRO X=')).toEqual([
+        t(['keyword.macro', 'MY_MACRO'], ['white', ' '], ['keyword.param', 'X'], ['operator', '='])
+      ])
     })
 
     it('handles an empty value followed by another param', () => {
-      expect(tokenize('MY_MACRO X= Y=2')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
-        ['white', ' '], ['keyword.param', 'Y'], ['operator', '='], ['string', '2']
-      )])
+      expect(tokenize('MY_MACRO X= Y=2')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['white', ' '],
+          ['keyword.param', 'Y'],
+          ['operator', '='],
+          ['string', '2']
+        )
+      ])
     })
 
     // Empty quoted string: the open and close quotes are both
@@ -362,52 +380,78 @@ describe('gcode Monarch tokenizer', () => {
     // span "" — there is no inner string token because @string consumes
     // nothing before seeing the closing quote.
     it('handles an empty quoted value', () => {
-      expect(tokenize('MY_MACRO X=""')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
-        ['string.quote', '""']
-      )])
+      expect(tokenize('MY_MACRO X=""')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string.quote', '""']
+        )
+      ])
     })
 
     // The @value state's `\S+` rule is greedy and stops only at whitespace,
     // `*`, or `;` — so `Y=2` after `X=` is consumed as the value of X, not
     // parsed as a new key=value pair.
     it('treats the next non-whitespace run as the value, even if it looks like a key=value', () => {
-      expect(tokenize('MY_MACRO X=Y=2')).toEqual([t(
-        ['keyword.macro', 'MY_MACRO'],
-        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
-        ['string', 'Y=2']
-      )])
+      expect(tokenize('MY_MACRO X=Y=2')).toEqual([
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string', 'Y=2']
+        )
+      ])
     })
 
     // Realistic Klipper command — multiple quoted-string params on the
     // same line. Verifies the @string → @value → @params → @value →
     // @string cycle works end-to-end.
     it('tokenizes multiple quoted macro params on one line', () => {
-      expect(tokenize('RESPOND PREFIX="!" MSG="hello"')).toEqual([t(
-        ['keyword.macro', 'RESPOND'],
-        ['white', ' '], ['keyword.param', 'PREFIX'], ['operator', '='],
-        ['string.quote', '"'], ['string', '!'], ['string.quote', '"'],
-        ['white', ' '], ['keyword.param', 'MSG'], ['operator', '='],
-        ['string.quote', '"'], ['string', 'hello'], ['string.quote', '"']
-      )])
+      expect(tokenize('RESPOND PREFIX="!" MSG="hello"')).toEqual([
+        t(
+          ['keyword.macro', 'RESPOND'],
+          ['white', ' '],
+          ['keyword.param', 'PREFIX'],
+          ['operator', '='],
+          ['string.quote', '"'],
+          ['string', '!'],
+          ['string.quote', '"'],
+          ['white', ' '],
+          ['keyword.param', 'MSG'],
+          ['operator', '='],
+          ['string.quote', '"'],
+          ['string', 'hello'],
+          ['string.quote', '"']
+        )
+      ])
     })
 
     // ignoreCase is set globally — the macro rule matches any case mix.
     it('tokenizes mixed-case macro names', () => {
-      expect(tokenize('My_Macro X=1')).toEqual([t(
-        ['keyword.macro', 'My_Macro'],
-        ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
-        ['string', '1']
-      )])
+      expect(tokenize('My_Macro X=1')).toEqual([
+        t(
+          ['keyword.macro', 'My_Macro'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string', '1']
+        )
+      ])
     })
 
     it('tokenizes lowercase macro names', () => {
-      expect(tokenize('set_pressure_advance ADVANCE=0.05')).toEqual([t(
-        ['keyword.macro', 'set_pressure_advance'],
-        ['white', ' '], ['keyword.param', 'ADVANCE'], ['operator', '='],
-        ['string', '0.05']
-      )])
+      expect(tokenize('set_pressure_advance ADVANCE=0.05')).toEqual([
+        t(
+          ['keyword.macro', 'set_pressure_advance'],
+          ['white', ' '],
+          ['keyword.param', 'ADVANCE'],
+          ['operator', '='],
+          ['string', '0.05']
+        )
+      ])
     })
   })
 
@@ -420,53 +464,50 @@ describe('gcode Monarch tokenizer', () => {
   // `G28T0` (different sub-types: g and t) stays as two distinct tokens.
   describe('chained commands without whitespace', () => {
     it('tokenizes a long no-space chain of commands and params', () => {
-      expect(tokenize('G28G1X10Y2.2T0M106S200M140S50')).toEqual([t(
-        ['keyword.command.g', 'G28G1'],
-        ['keyword.param.x', 'X10'],
-        ['keyword.param.y', 'Y2.2'],
-        ['keyword.command.t', 'T0'],
-        ['keyword.command.m', 'M106'],
-        ['keyword.param.s', 'S200'],
-        ['keyword.command.m', 'M140'],
-        ['keyword.param.s', 'S50']
-      )])
+      expect(tokenize('G28G1X10Y2.2T0M106S200M140S50')).toEqual([
+        t(
+          ['keyword.command.g', 'G28G1'],
+          ['keyword.param.x', 'X10'],
+          ['keyword.param.y', 'Y2.2'],
+          ['keyword.command.t', 'T0'],
+          ['keyword.command.m', 'M106'],
+          ['keyword.param.s', 'S200'],
+          ['keyword.command.m', 'M140'],
+          ['keyword.param.s', 'S50']
+        )
+      ])
     })
 
     it('tokenizes command + param with no space', () => {
-      expect(tokenize('G1X10')).toEqual([t(
-        ['keyword.command.g', 'G1'], ['keyword.param.x', 'X10']
-      )])
+      expect(tokenize('G1X10')).toEqual([
+        t(['keyword.command.g', 'G1'], ['keyword.param.x', 'X10'])
+      ])
     })
 
     it('keeps adjacent params with different letters as separate tokens', () => {
-      expect(tokenize('G1X10Y20')).toEqual([t(
-        ['keyword.command.g', 'G1'],
-        ['keyword.param.x', 'X10'],
-        ['keyword.param.y', 'Y20']
-      )])
+      expect(tokenize('G1X10Y20')).toEqual([
+        t(['keyword.command.g', 'G1'], ['keyword.param.x', 'X10'], ['keyword.param.y', 'Y20'])
+      ])
     })
 
     it('keeps adjacent commands with different letters as separate tokens', () => {
-      expect(tokenize('G28T0')).toEqual([t(
-        ['keyword.command.g', 'G28'], ['keyword.command.t', 'T0']
-      )])
+      expect(tokenize('G28T0')).toEqual([
+        t(['keyword.command.g', 'G28'], ['keyword.command.t', 'T0'])
+      ])
     })
 
     it('merges adjacent same-letter commands into one span', () => {
       // G28 and G1 are both `keyword.command.g`; the override keeps merging
       // through G28.1 too.
-      expect(tokenize('G28.1G1X10')).toEqual([t(
-        ['keyword.command.g', 'G28.1G1'],
-        ['keyword.param.x', 'X10']
-      )])
+      expect(tokenize('G28.1G1X10')).toEqual([
+        t(['keyword.command.g', 'G28.1G1'], ['keyword.param.x', 'X10'])
+      ])
     })
 
     it('captures a checksum tag even with no whitespace before it', () => {
-      expect(tokenize('G1X10*123')).toEqual([t(
-        ['keyword.command.g', 'G1'],
-        ['keyword.param.x', 'X10'],
-        ['tag', '*123']
-      )])
+      expect(tokenize('G1X10*123')).toEqual([
+        t(['keyword.command.g', 'G1'], ['keyword.param.x', 'X10'], ['tag', '*123'])
+      ])
     })
   })
 
@@ -476,60 +517,86 @@ describe('gcode Monarch tokenizer', () => {
   // user would actually edit.
   describe('realistic Marlin/Klipper lines', () => {
     it('tokenizes a typical print move', () => {
-      expect(tokenize('G1 X100 Y100 Z0.2 E5 F1500')).toEqual([t(
-        ['keyword.command.g', 'G1'],
-        ['white', ' '], ['keyword.param.x', 'X100'],
-        ['white', ' '], ['keyword.param.y', 'Y100'],
-        ['white', ' '], ['keyword.param.z', 'Z0.2'],
-        ['white', ' '], ['keyword.param.e', 'E5'],
-        ['white', ' '], ['keyword.param.f', 'F1500']
-      )])
+      expect(tokenize('G1 X100 Y100 Z0.2 E5 F1500')).toEqual([
+        t(
+          ['keyword.command.g', 'G1'],
+          ['white', ' '],
+          ['keyword.param.x', 'X100'],
+          ['white', ' '],
+          ['keyword.param.y', 'Y100'],
+          ['white', ' '],
+          ['keyword.param.z', 'Z0.2'],
+          ['white', ' '],
+          ['keyword.param.e', 'E5'],
+          ['white', ' '],
+          ['keyword.param.f', 'F1500']
+        )
+      ])
     })
 
     it('tokenizes a clockwise arc with I/J center offsets', () => {
-      expect(tokenize('G2 X10 Y10 I5 J5')).toEqual([t(
-        ['keyword.command.g', 'G2'],
-        ['white', ' '], ['keyword.param.x', 'X10'],
-        ['white', ' '], ['keyword.param.y', 'Y10'],
-        ['white', ' '], ['keyword.param.i', 'I5'],
-        ['white', ' '], ['keyword.param.j', 'J5']
-      )])
+      expect(tokenize('G2 X10 Y10 I5 J5')).toEqual([
+        t(
+          ['keyword.command.g', 'G2'],
+          ['white', ' '],
+          ['keyword.param.x', 'X10'],
+          ['white', ' '],
+          ['keyword.param.y', 'Y10'],
+          ['white', ' '],
+          ['keyword.param.i', 'I5'],
+          ['white', ' '],
+          ['keyword.param.j', 'J5']
+        )
+      ])
     })
 
     // `T0` here is a tool selector argument to M104, but the Monarch
     // rules don't have semantic context — the command rule fires before
     // the param rule, so any `[gmt]\d+` run tokenizes as a command.
     it('tokenizes M-code with tool-selector argument (T as command, not param)', () => {
-      expect(tokenize('M104 S200 T0')).toEqual([t(
-        ['keyword.command.m', 'M104'],
-        ['white', ' '], ['keyword.param.s', 'S200'],
-        ['white', ' '], ['keyword.command.t', 'T0']
-      )])
+      expect(tokenize('M104 S200 T0')).toEqual([
+        t(
+          ['keyword.command.m', 'M104'],
+          ['white', ' '],
+          ['keyword.param.s', 'S200'],
+          ['white', ' '],
+          ['keyword.command.t', 'T0']
+        )
+      ])
     })
 
     it('tokenizes Marlin print-progress (M73 P R)', () => {
-      expect(tokenize('M73 P50 R5')).toEqual([t(
-        ['keyword.command.m', 'M73'],
-        ['white', ' '], ['keyword.param.p', 'P50'],
-        ['white', ' '], ['keyword.param.r', 'R5']
-      )])
+      expect(tokenize('M73 P50 R5')).toEqual([
+        t(
+          ['keyword.command.m', 'M73'],
+          ['white', ' '],
+          ['keyword.param.p', 'P50'],
+          ['white', ' '],
+          ['keyword.param.r', 'R5']
+        )
+      ])
     })
 
     it('tokenizes G92 set-position', () => {
-      expect(tokenize('G92 X0 Y0 Z0 E0')).toEqual([t(
-        ['keyword.command.g', 'G92'],
-        ['white', ' '], ['keyword.param.x', 'X0'],
-        ['white', ' '], ['keyword.param.y', 'Y0'],
-        ['white', ' '], ['keyword.param.z', 'Z0'],
-        ['white', ' '], ['keyword.param.e', 'E0']
-      )])
+      expect(tokenize('G92 X0 Y0 Z0 E0')).toEqual([
+        t(
+          ['keyword.command.g', 'G92'],
+          ['white', ' '],
+          ['keyword.param.x', 'X0'],
+          ['white', ' '],
+          ['keyword.param.y', 'Y0'],
+          ['white', ' '],
+          ['keyword.param.z', 'Z0'],
+          ['white', ' '],
+          ['keyword.param.e', 'E0']
+        )
+      ])
     })
 
     it('tokenizes negative param values (M104 S-1 to disable a heater)', () => {
-      expect(tokenize('M104 S-1')).toEqual([t(
-        ['keyword.command.m', 'M104'],
-        ['white', ' '], ['keyword.param.s', 'S-1']
-      )])
+      expect(tokenize('M104 S-1')).toEqual([
+        t(['keyword.command.m', 'M104'], ['white', ' '], ['keyword.param.s', 'S-1'])
+      ])
     })
   })
 
@@ -545,7 +612,13 @@ describe('gcode Monarch tokenizer', () => {
 
     it('returns to root after a macro line with params', () => {
       expect(tokenize('MY_MACRO X=1\nG28')).toEqual([
-        t(['keyword.macro', 'MY_MACRO'], ['white', ' '], ['keyword.param', 'X'], ['operator', '='], ['string', '1']),
+        t(
+          ['keyword.macro', 'MY_MACRO'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string', '1']
+        ),
         t(['keyword.command.g', 'G28'])
       ])
     })
@@ -575,8 +648,11 @@ describe('gcode Monarch tokenizer', () => {
       expect(tokenize('MY_MACRO X="hello\nG28')).toEqual([
         t(
           ['keyword.macro', 'MY_MACRO'],
-          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
-          ['string.quote', '"'], ['invalid', 'hello']
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string.quote', '"'],
+          ['invalid', 'hello']
         ),
         t(['keyword.command.g', 'G28'])
       ])
@@ -588,7 +664,9 @@ describe('gcode Monarch tokenizer', () => {
       expect(tokenize('MY_MACRO X="\nG28')).toEqual([
         t(
           ['keyword.macro', 'MY_MACRO'],
-          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
           ['invalid', '"']
         ),
         t(['keyword.command.g', 'G28'])
@@ -603,8 +681,12 @@ describe('gcode Monarch tokenizer', () => {
       expect(tokenize('MY_MACRO X="hello"\nG28')).toEqual([
         t(
           ['keyword.macro', 'MY_MACRO'],
-          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
-          ['string.quote', '"'], ['string', 'hello'], ['string.quote', '"']
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string.quote', '"'],
+          ['string', 'hello'],
+          ['string.quote', '"']
         ),
         t(['keyword.command.g', 'G28'])
       ])
@@ -617,8 +699,12 @@ describe('gcode Monarch tokenizer', () => {
       expect(tokenize('MY_MACRO X="hello" \nG28')).toEqual([
         t(
           ['keyword.macro', 'MY_MACRO'],
-          ['white', ' '], ['keyword.param', 'X'], ['operator', '='],
-          ['string.quote', '"'], ['string', 'hello'], ['string.quote', '"'],
+          ['white', ' '],
+          ['keyword.param', 'X'],
+          ['operator', '='],
+          ['string.quote', '"'],
+          ['string', 'hello'],
+          ['string.quote', '"'],
           ['white', ' ']
         ),
         t(['keyword.command.g', 'G28'])

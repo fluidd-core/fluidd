@@ -18,6 +18,5 @@ import Retract from '@/components/widgets/retract/Retract.vue'
     Retract
   }
 })
-export default class RetractCard extends Vue {
-}
+export default class RetractCard extends Vue {}
 </script>

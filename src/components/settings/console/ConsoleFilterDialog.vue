@@ -29,10 +29,7 @@
           dense
           class="mt-0"
           hide-details="auto"
-          :rules="[
-            $rules.required,
-            customRules.uniqueName
-          ]"
+          :rules="[$rules.required, customRules.uniqueName]"
         />
       </app-setting>
 
@@ -65,10 +62,7 @@
           spellcheck="false"
           class="mt-0"
           hide-details="auto"
-          :rules="[
-            $rules.required,
-            ...type.rules
-          ]"
+          :rules="[$rules.required, ...type.rules]"
         />
       </app-setting>
     </v-card-text>
@@ -87,13 +81,16 @@ export default class ConsoleFilterDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly filter!: ConsoleFilter
 
-  get customRules () {
+  get customRules() {
     return {
-      uniqueName: (v: string) => !this.filters.some((c: ConsoleFilter) => c.id !== this.filter.id && c.name.toLowerCase() === v.toLowerCase()) || this.$t('app.general.simple_form.error.exists')
+      uniqueName: (v: string) =>
+        !this.filters.some(
+          (c: ConsoleFilter) => c.id !== this.filter.id && c.name.toLowerCase() === v.toLowerCase()
+        ) || this.$t('app.general.simple_form.error.exists')
     }
   }
 
-  get types () {
+  get types() {
     return [
       {
         text: this.$t('app.setting.label.contains'),
@@ -108,22 +105,20 @@ export default class ConsoleFilterDialog extends Vue {
       {
         text: this.$t('app.setting.label.expression'),
         value: 'expression',
-        rules: [
-          this.$rules.regExpPatternValid
-        ]
+        rules: [this.$rules.regExpPatternValid]
       }
     ]
   }
 
-  get type () {
+  get type() {
     return this.types.find(f => f.value === this.filter?.type) || this.types[0]
   }
 
-  get filters (): ConsoleFilter[] {
+  get filters(): ConsoleFilter[] {
     return this.$typedState.console.consoleFilters
   }
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.filter)
     this.open = false
   }

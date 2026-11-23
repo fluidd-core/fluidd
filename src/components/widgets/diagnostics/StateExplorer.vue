@@ -22,7 +22,7 @@ const JsonViewer = JsonViewerModule.default ?? JsonViewerModule
   }
 })
 export default class StateExplorer extends Mixins(StateMixin) {
-  get state () {
+  get state() {
     return {
       printer: this.$typedState.printer.printer
     }
@@ -33,13 +33,11 @@ export default class StateExplorer extends Mixins(StateMixin) {
    * we try our best to fix them.
    * e.g. ("printer.tmc2209 extruder" -> "printer['tmc2209 extruder']")
    */
-  handleClick (path: string) {
-    const sanitizedPath = path
-      .replace('$.', '')
-      .replace(/\.(\w*\s+\w*)/g, (_, match) => {
-        if (isNaN(match)) return `['${match}']`
-        return `[${match}]`
-      })
+  handleClick(path: string) {
+    const sanitizedPath = path.replace('$.', '').replace(/\.(\w*\s+\w*)/g, (_, match) => {
+      if (isNaN(match)) return `['${match}']`
+      return `[${match}]`
+    })
 
     this.$emit('input', sanitizedPath)
   }
@@ -47,7 +45,7 @@ export default class StateExplorer extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss">
-.jv-container>.jv-code {
+.jv-container > .jv-code {
   padding: 0 !important;
 }
 
@@ -55,9 +53,15 @@ export default class StateExplorer extends Mixins(StateMixin) {
   background: transparent !important;
   color: rgba(255, 255, 255, 0.8) !important;
 
-  .jv-item.jv-object { color: rgba(255, 255, 255, 0.8) !important; }
-  .jv-item.jv-array { color: rgba(255, 255, 255, 0.8) !important; }
-  .jv-key { color: rgba(255, 255, 255, 0.8) !important; }
+  .jv-item.jv-object {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+  .jv-item.jv-array {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+  .jv-key {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
 
   .jv-ellipsis {
     color: rgba(255, 255, 255, 0.5) !important;

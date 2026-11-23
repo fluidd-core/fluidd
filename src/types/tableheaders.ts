@@ -7,5 +7,4 @@ import type { DataTableHeader } from 'vuetify'
  * configurable: if a user can toggle this header or not. Defaults to true if not defined.
  */
 
-export interface AppDataTableHeader extends DataTableHeader, ConfiguredTableHeader {
-}
+export interface AppDataTableHeader extends DataTableHeader, ConfiguredTableHeader {}

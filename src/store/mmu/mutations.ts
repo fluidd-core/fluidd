@@ -6,11 +6,11 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setDialogState (state, payload: MmuDialogState) {
+  setDialogState(state, payload: MmuDialogState) {
     state.dialog = payload
-  },
+  }
 } satisfies MutationTree<MmuState>

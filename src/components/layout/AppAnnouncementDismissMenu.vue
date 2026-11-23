@@ -30,14 +30,12 @@
     </template>
     <v-list dense>
       <v-list-item
-        v-for="(preset) of presets"
+        v-for="preset of presets"
         :key="preset.delay"
         @click="$emit('dismiss', preset.delay)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $clock
-          </v-icon>
+          <v-icon> $clock </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -55,7 +53,7 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class AppAnnouncementDismissMenu extends Mixins(StateMixin) {
-  get presets () {
+  get presets() {
     return [
       {
         label: this.$filters.formatRelativeTime(1, 'hour', { numeric: 'always' }),

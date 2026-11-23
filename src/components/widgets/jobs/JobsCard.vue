@@ -13,9 +13,7 @@
         icon
         @click="$filters.routeTo({ name: 'jobs' })"
       >
-        <v-icon dense>
-          $fullScreen
-        </v-icon>
+        <v-icon dense> $fullScreen </v-icon>
       </app-btn>
     </template>
 
@@ -53,12 +51,12 @@ export default class JobsCard extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .full-screen {
-    max-height: calc(100vh - 190px);
-    max-height: calc(100svh - 190px);
-  }
+.full-screen {
+  max-height: calc(100vh - 190px);
+  max-height: calc(100svh - 190px);
+}
 
-  .partial-screen {
-    height: 400px;
-  }
+.partial-screen {
+  height: 400px;
+}
 </style>

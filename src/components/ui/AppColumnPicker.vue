@@ -17,9 +17,7 @@
             v-bind="attrs"
             v-on="{ ...tooltip, ...menu }"
           >
-            <v-icon>
-              $tableColumn
-            </v-icon>
+            <v-icon> $tableColumn </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.general.btn.select_columns') }}</span>
@@ -73,22 +71,21 @@ export default class AppColumnPicker extends Vue {
     group: 'columnPicker'
   })
 
-  get configurableHeaders (): AppDataTableHeader[] {
+  get configurableHeaders(): AppDataTableHeader[] {
     return this.headers
   }
 
-  set configurableHeaders (value: AppDataTableHeader[]) {
-    const headers = value
-      .map(({ value, visible }): ConfiguredTableHeader => ({
-        value,
-        visible
-      }))
+  set configurableHeaders(value: AppDataTableHeader[]) {
+    const headers = value.map(({ value, visible }): ConfiguredTableHeader => ({
+      value,
+      visible
+    }))
 
     this.$typedDispatch('config/updateHeaders', { name: this.keyName, headers })
   }
 
-  handleToggleHeader (value: AppDataTableHeader) {
-    const header : ConfiguredTableHeader = {
+  handleToggleHeader(value: AppDataTableHeader) {
+    const header: ConfiguredTableHeader = {
       value: value.value,
       visible: !(value.visible !== false)
     }

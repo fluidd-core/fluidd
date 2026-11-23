@@ -1,114 +1,111 @@
 declare namespace Moonraker.Machine {
   export interface SystemInfoResponse {
-    system_info: SystemInfo;
+    system_info: SystemInfo
   }
 
   export interface SystemInfo {
-    provider: string;
-    cpu_info: CpuInfo;
-    sd_info: SDInfo | Record<string, never>;
-    distribution: Distribution;
-    available_services: string[];
-    instance_ids: InstanceIds;
-    service_state: ServiceState;
-    virtualization: Virtualization;
-    python: Python;
-    network: Network;
-    canbus: CanBusState;
+    provider: string
+    cpu_info: CpuInfo
+    sd_info: SDInfo | Record<string, never>
+    distribution: Distribution
+    available_services: string[]
+    instance_ids: InstanceIds
+    service_state: ServiceState
+    virtualization: Virtualization
+    python: Python
+    network: Network
+    canbus: CanBusState
   }
 
   export interface CpuInfo {
-    cpu_count: number | null;
-    bits: string;
-    processor: string;
-    cpu_desc: string;
-    serial_number: string;
-    hardware_desc: string;
-    model: string;
-    total_memory: number | null;
-    memory_units: string;
+    cpu_count: number | null
+    bits: string
+    processor: string
+    cpu_desc: string
+    serial_number: string
+    hardware_desc: string
+    model: string
+    total_memory: number | null
+    memory_units: string
   }
 
   export interface SDInfo {
-    manufacturer_id: string;
-    manufacturer: string;
-    oem_id: string;
-    product_name: string;
-    product_revision: string;
-    serial_number: string;
-    manufacturer_date: string;
-    capacity: string;
-    total_bytes: number;
+    manufacturer_id: string
+    manufacturer: string
+    oem_id: string
+    product_name: string
+    product_revision: string
+    serial_number: string
+    manufacturer_date: string
+    capacity: string
+    total_bytes: number
   }
 
   export interface Distribution {
-    name: string;
-    id: string;
-    version: string;
-    version_parts: DistributionVersionParts;
-    like: string;
-    codename: string;
-    release_info: ReleaseInfo;
-    kernel_version?: string;
+    name: string
+    id: string
+    version: string
+    version_parts: DistributionVersionParts
+    like: string
+    codename: string
+    release_info: ReleaseInfo
+    kernel_version?: string
   }
 
   export interface DistributionVersionParts {
-    major: string;
-    minor: string;
-    build_number: string;
+    major: string
+    minor: string
+    build_number: string
   }
 
   export interface ReleaseInfo {
-    codename?: string;
-    id?: string;
-    name?: string;
-    version_id?: string;
+    codename?: string
+    id?: string
+    name?: string
+    version_id?: string
   }
 
   export interface InstanceIds {
-    moonraker: string;
-    klipper: string;
+    moonraker: string
+    klipper: string
   }
 
-  export interface ServiceState extends Record<string, ServiceStateDetails> {
-  }
+  export interface ServiceState extends Record<string, ServiceStateDetails> {}
 
   interface ServiceStateDetails {
-    active_state: string;
-    sub_state: string;
+    active_state: string
+    sub_state: string
   }
 
   export interface Virtualization {
-    virt_type: string;
-    virt_identifier: string;
+    virt_type: string
+    virt_identifier: string
   }
 
   export interface Python {
-    version: (string | number)[];
-    version_string: string;
+    version: (string | number)[]
+    version_string: string
   }
 
-  export interface Network extends Record<string, NetworkInterface> {
-  }
+  export interface Network extends Record<string, NetworkInterface> {}
 
   export interface NetworkInterface {
-    mac_address: string;
-    ip_addresses: NetworkIpAddress[];
+    mac_address: string
+    ip_addresses: NetworkIpAddress[]
   }
 
   export interface NetworkIpAddress {
-    family: string;
-    address: string;
-    is_link_local: boolean;
+    family: string
+    address: string
+    is_link_local: boolean
   }
 
-  export interface CanBusState extends Record<string, CanBusInterface> {
-  }
+  export interface CanBusState extends Record<string, CanBusInterface> {}
 
   export interface CanBusInterface {
-    tx_queue_len: number;
-    bitrate: number;
-    driver: string;
+    tx_queue_len: number
+    bitrate: number
+    driver: string
   }
 }
 
@@ -117,31 +114,31 @@ declare namespace Moonraker {
     'machine.services.restart': {
       params: {
         service: string
-      },
+      }
       result: OkResponse
-    },
+    }
     'machine.services.start': {
       params: {
         service: string
-      },
+      }
       result: OkResponse
-    },
+    }
     'machine.services.stop': {
       params: {
         service: string
-      },
+      }
       result: OkResponse
-    },
+    }
     'machine.reboot': {
-      params: undefined,
+      params: undefined
       result: OkResponse
-    },
+    }
     'machine.shutdown': {
-      params: undefined,
+      params: undefined
       result: OkResponse
-    },
+    }
     'machine.system_info': {
-      params: undefined,
+      params: undefined
       result: Machine.SystemInfoResponse
     }
   }

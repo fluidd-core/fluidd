@@ -6,19 +6,20 @@ const extensionRegExp = /((?:\.[a-z~][a-z0-9~]*)*)$/i
 const charCode_0 = 0x30
 const charCode_9 = 0x39
 const charCode_A = 0x41
-const charCode_Z = 0x5A
+const charCode_Z = 0x5a
 const charCode_a = 0x61
-const charCode_z = 0x7A
+const charCode_z = 0x7a
 const charCode_tilde = 0x7e
 
 const isDigit = (c: number) => c >= charCode_0 && c <= charCode_9
-const isAlpha = (c: number) => (c >= charCode_A && c <= charCode_Z) || (c >= charCode_a && c <= charCode_z)
+const isAlpha = (c: number) =>
+  (c >= charCode_A && c <= charCode_Z) || (c >= charCode_a && c <= charCode_z)
 
 const stringToAsciiByteArray = (value: string) => {
   const bytes = []
   for (let index = 0; index < value.length; index++) {
     const charCode = value.charCodeAt(index)
-    bytes.push(charCode & 0xFF)
+    bytes.push(charCode & 0xff)
   }
   return bytes
 }

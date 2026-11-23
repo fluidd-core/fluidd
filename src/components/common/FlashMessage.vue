@@ -44,8 +44,8 @@ export default class FlashMessage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-snack__wrapper .v-snack__content) {
-    overflow: hidden;
-    overflow-wrap: break-word;
-  }
+:deep(.v-snack__wrapper .v-snack__content) {
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
 </style>

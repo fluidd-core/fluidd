@@ -23,11 +23,9 @@
               icon
               text
               v-bind="attrs"
-              v-on="{... menu, ...tooltip}"
+              v-on="{ ...menu, ...tooltip }"
             >
-              <v-icon>
-                $filter
-              </v-icon>
+              <v-icon> $filter </v-icon>
             </app-btn>
           </v-badge>
         </template>
@@ -69,9 +67,9 @@ import type { FileFilterType, RootProperties } from '@/store/files/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 type FileFilter = {
-  type: FileFilterType,
-  text: string,
-  desc?: string,
+  type: FileFilterType
+  text: string
+  desc?: string
 }
 
 @Component({})
@@ -82,11 +80,11 @@ export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  get rootProperties (): RootProperties {
+  get rootProperties(): RootProperties {
     return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
-  get filters (): FileFilter[] {
+  get filters(): FileFilter[] {
     return this.rootProperties.filterTypes
       .filter(filterType => {
         switch (filterType) {
@@ -103,20 +101,19 @@ export default class FileSystemFilterMenu extends Vue {
       }))
   }
 
-  get selectedFilterTypes (): FileFilterType[] {
-    const selectedFilters: FileFilterType[] = this.$typedState.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
-    const filters = new Set(this.filters
-      .map(filter => filter.type))
+  get selectedFilterTypes(): FileFilterType[] {
+    const selectedFilters: FileFilterType[] =
+      this.$typedState.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
+    const filters = new Set(this.filters.map(filter => filter.type))
 
-    return selectedFilters
-      .filter(selectedFilter => filters.has(selectedFilter))
+    return selectedFilters.filter(selectedFilter => filters.has(selectedFilter))
   }
 
-  set selectedFilterTypes (value: FileFilterType[]) {
+  set selectedFilterTypes(value: FileFilterType[]) {
     this.$emit('change', value)
   }
 
-  get supportsHistoryComponent (): boolean {
+  get supportsHistoryComponent(): boolean {
     return this.$typedGetters['server/componentSupport']('history')
   }
 }
@@ -129,5 +126,4 @@ export default class FileSystemFilterMenu extends Vue {
 :deep(.v-list-item--active:hover::before) {
   opacity: 0.08;
 }
-
 </style>

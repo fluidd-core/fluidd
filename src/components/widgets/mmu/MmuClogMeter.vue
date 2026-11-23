@@ -80,14 +80,18 @@
       text-anchor="middle"
       class="small-text-color"
       font-size="11px"
-    >{{ $t('app.mmu.label.flow') }}</text>
+    >
+      {{ $t('app.mmu.label.flow') }}
+    </text>
     <text
       x="70"
       y="80"
       text-anchor="middle"
       class="small-text-color"
       font-size="20px"
-    >{{ encoderFlowRate }}%</text>
+    >
+      {{ encoderFlowRate }}%
+    </text>
     <text
       v-if="encoderDetectionMode === 2"
       x="70"
@@ -112,7 +116,9 @@
       y="139"
       class="small-text-color"
       font-size="12px"
-    >0</text>
+    >
+      0
+    </text>
   </svg>
 </template>
 
@@ -142,38 +148,48 @@ export default class MmuClogMeter extends Mixins(StateMixin, MmuMixin) {
   y1MinHeadroom: number = 70 + 64 * Math.sin(((120 + 0) * Math.PI) / 180)
   headroomWarning: boolean = false
 
-  get headroomArc (): number {
-    return this.circumference * (1 - (this.encoderDesiredHeadroom / this.encoderDetectionLength) * (300 / 360))
+  get headroomArc(): number {
+    return (
+      this.circumference *
+      (1 - (this.encoderDesiredHeadroom / this.encoderDetectionLength) * (300 / 360))
+    )
   }
 
-  get headroomRotate (): number {
+  get headroomRotate(): number {
     return 420 - (this.encoderDesiredHeadroom / this.encoderDetectionLength) * 300
   }
 
   @Watch('$typedState.printer.printer.mmu.encoder.headroom')
-  onHeadroomChanged (newHeadroom: number): void {
+  onHeadroomChanged(newHeadroom: number): void {
     const clogPercent =
-            (Math.min(Math.max(0, this.encoderDetectionLength - newHeadroom), this.encoderDetectionLength) /
-                this.encoderDetectionLength) *
-            100
+      (Math.min(
+        Math.max(0, this.encoderDetectionLength - newHeadroom),
+        this.encoderDetectionLength
+      ) /
+        this.encoderDetectionLength) *
+      100
     const offset = ((100 - (clogPercent * 300) / 360) / 100) * this.circumference
     this.animateMeter(offset)
   }
 
   @Watch('$typedState.printer.printer.mmu.encoder.min_headroom')
-  onMinHeadroomChanged (newMinHeadroom: number): void {
+  onMinHeadroomChanged(newMinHeadroom: number): void {
     const clogPercent =
-            (Math.min(Math.max(0, this.encoderDetectionLength - newMinHeadroom), this.encoderDetectionLength) /
-                this.encoderDetectionLength) *
-            100
+      (Math.min(
+        Math.max(0, this.encoderDetectionLength - newMinHeadroom),
+        this.encoderDetectionLength
+      ) /
+        this.encoderDetectionLength) *
+      100
     const angle = clogPercent * 3
     this.x1MinHeadroom = 70 + 66 * Math.cos(((120 + angle) * Math.PI) / 180)
     this.y1MinHeadroom = 70 + 66 * Math.sin(((120 + angle) * Math.PI) / 180)
     this.headroomWarning = newMinHeadroom < this.encoderDesiredHeadroom
   }
 
-  private animateMeter (newOffset: number) {
-    const currentOffset = parseFloat(getComputedStyle(this.dialCircle).strokeDashoffset) ?? this.circumference
+  private animateMeter(newOffset: number) {
+    const currentOffset =
+      parseFloat(getComputedStyle(this.dialCircle).strokeDashoffset) ?? this.circumference
     const difference = Math.abs(currentOffset - newOffset)
     const duration = (difference / this.circumference) * this.rotationTime
     // const duration = this.rotationTime
@@ -185,16 +201,16 @@ export default class MmuClogMeter extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .disabled-clog {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .primary-color {
-    stroke: var(--v-primary-lighten1, #2ca9bc);
+  stroke: var(--v-primary-lighten1, #2ca9bc);
 }
 .warning-color {
-    stroke: var(--v-error-base, #ff0000);
+  stroke: var(--v-error-base, #ff0000);
 }
 .small-text-color {
-    fill: var(--v-primary-lighten1, #2ca9bc);
+  fill: var(--v-primary-lighten1, #2ca9bc);
 }
 </style>

@@ -31,9 +31,7 @@
                     @click="handleRestoreBackup(item)"
                     v-on="on"
                   >
-                    <v-icon dense>
-                      $open
-                    </v-icon>
+                    <v-icon dense> $open </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.database.tooltip.restore_backup') }}</span>
@@ -48,9 +46,7 @@
                     @click="handleDeleteBackup(item)"
                     v-on="on"
                   >
-                    <v-icon dense>
-                      $delete
-                    </v-icon>
+                    <v-icon dense> $delete </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.database.tooltip.delete_backup') }}</span>
@@ -107,13 +103,13 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
 
-@Component({ })
+@Component({})
 export default class MoonrakerDatabaseCard extends Mixins(StateMixin) {
-  get backups (): string[] {
+  get backups(): string[] {
     return this.$typedGetters['database/getBackups']
   }
 
-  async handleRestoreBackup (filename: string) {
+  async handleRestoreBackup(filename: string) {
     const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_restore_backup'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
@@ -124,24 +120,25 @@ export default class MoonrakerDatabaseCard extends Mixins(StateMixin) {
     }
   }
 
-  async handleDeleteBackup (filename: string) {
-    const result = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm_delete', 1),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async handleDeleteBackup(filename: string) {
+    const result = await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_delete', 1), {
+      title: this.$tc('app.general.label.confirm'),
+      color: 'card-heading',
+      icon: '$error'
+    })
 
     if (result) {
       SocketActions.serverDatabaseDeleteBackup(filename)
     }
   }
 
-  handleCreateBackup () {
+  handleCreateBackup() {
     const timestamp = this.$filters.formatTimestamp(Date.now())
 
     SocketActions.serverDatabasePostBackup(`${timestamp}.db`)
   }
 
-  handleCompactDatabase () {
+  handleCompactDatabase() {
     SocketActions.serverDatabaseCompact()
   }
 }

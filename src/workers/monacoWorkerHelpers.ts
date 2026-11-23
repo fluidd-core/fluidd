@@ -1,23 +1,25 @@
 export type MonacoLanguageWorkerRequestMessage = {
-  language: string,
+  language: string
   lines: string[]
 }
 
-export type MonacoLanguageWorkerResponseMessage<T> = {
-  action: 'result',
-  result: T
-} | {
-  action: 'error',
-  error?: unknown
-}
+export type MonacoLanguageWorkerResponseMessage<T> =
+  | {
+      action: 'result'
+      result: T
+    }
+  | {
+      action: 'error'
+      error?: unknown
+    }
 
 export type ReduceState<T> = {
-  current?: T,
+  current?: T
   result: T[]
 }
 
 export type StackReduceState<U, T> = {
-  stack: U[],
+  stack: U[]
   result: T[]
 }
 

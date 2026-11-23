@@ -11,7 +11,7 @@
       >
         <v-list-item-content>
           <v-list-item-title>
-            {{ instance.name }}<br>
+            {{ instance.name }}<br />
             <small>{{ instance.apiUrl }}</small>
           </v-list-item-title>
         </v-list-item-content>
@@ -20,9 +20,7 @@
             icon
             @click.stop="removeInstance(instance)"
           >
-            <v-icon dense>
-              $delete
-            </v-icon>
+            <v-icon dense> $delete </v-icon>
           </app-btn>
         </v-list-item-action>
       </v-list-item>
@@ -59,24 +57,26 @@ import { appInit } from '@/init'
 export default class SystemPrinters extends Mixins(StateMixin) {
   instanceDialogOpen = false
 
-  get instanceName (): string {
+  get instanceName(): string {
     return this.$typedState.config.uiSettings.general.instanceName
   }
 
-  get instances (): InstanceConfig[] {
+  get instances(): InstanceConfig[] {
     return this.$typedGetters['config/getInstances']
   }
 
   @Watch('socketInitializing')
-  onSocketInitializingChanged (value: boolean) {
+  onSocketInitializingChanged(value: boolean) {
     if (!value && this.$typedState.config.apiUrl === '') {
       this.instanceDialogOpen = true
     }
   }
 
-  async removeInstance (instance: InstanceConfig) {
+  async removeInstance(instance: InstanceConfig) {
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_remove_printer', { name: instance.name }).toString(),
+      this.$t('app.general.simple_form.msg.confirm_remove_printer', {
+        name: instance.name
+      }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
@@ -85,11 +85,11 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     }
   }
 
-  addInstanceDialog () {
+  addInstanceDialog() {
     this.instanceDialogOpen = true
   }
 
-  async activateInstance (instance: InstanceConfig) {
+  async activateInstance(instance: InstanceConfig) {
     // Close the drawer
     this.$emit('click')
     if (!instance.active) {
@@ -101,10 +101,10 @@ export default class SystemPrinters extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-list-item__action) {
-    margin: 6px -6px 6px 0;
-  }
-  :deep(.v-list-item--active::before) {
-    opacity: 0.08;
-  }
+:deep(.v-list-item__action) {
+  margin: 6px -6px 6px 0;
+}
+:deep(.v-list-item--active::before) {
+  opacity: 0.08;
+}
 </style>

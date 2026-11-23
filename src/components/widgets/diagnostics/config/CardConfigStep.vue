@@ -7,9 +7,7 @@
         dense
         single-line
         hide-details="auto"
-        :rules="[
-          $rules.required
-        ]"
+        :rules="[$rules.required]"
       />
     </app-setting>
 
@@ -24,7 +22,7 @@
         hide-details="auto"
         :items="icons"
       >
-        <template #item="{item}">
+        <template #item="{ item }">
           <v-icon
             dense
             color="primary"
@@ -33,12 +31,8 @@
           </v-icon>
           <span class="ml-2">{{ item.text }}</span>
         </template>
-        <template #selection="{item}">
-          <v-icon
-            color="primary"
-          >
-            ${{ item.text }}
-          </v-icon>
+        <template #selection="{ item }">
+          <v-icon color="primary"> ${{ item.text }} </v-icon>
           <span class="ml-2">{{ item.text }}</span>
         </template>
       </v-select>
@@ -54,10 +48,7 @@
         single-line
         hide-details="auto"
         suffix="px"
-        :rules="[
-          $rules.required,
-          $rules.numberGreaterThanOrEqual(1)
-        ]"
+        :rules="[$rules.required, $rules.numberGreaterThanOrEqual(1)]"
       />
     </app-setting>
   </div>
@@ -73,7 +64,7 @@ export default class CardConfigStep extends Vue {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig
 
-  get icons () {
+  get icons() {
     const icons = Object.keys(Icons)
     return icons.sort().map(icon => ({ text: icon, value: icon }))
   }

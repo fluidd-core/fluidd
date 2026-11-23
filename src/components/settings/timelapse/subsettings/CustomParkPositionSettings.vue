@@ -68,43 +68,43 @@ import { defaultWritableSettings } from '@/store/timelapse/state'
   }
 })
 export default class CustomParkPositionSettings extends Mixins(StateMixin) {
-  getCustomParkPosBlocked (axis: 'x' | 'y'): boolean {
+  getCustomParkPosBlocked(axis: 'x' | 'y'): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)
   }
 
-  get parkpos (): Moonraker.Timelapse.ParkPosition {
+  get parkpos(): Moonraker.Timelapse.ParkPosition {
     return this.settings.parkpos ?? defaultWritableSettings.parkpos
   }
 
-  set parkpos (value: Moonraker.Timelapse.ParkPosition) {
+  set parkpos(value: Moonraker.Timelapse.ParkPosition) {
     SocketActions.machineTimelapsePostSettings({ parkpos: value })
   }
 
-  get parkPosX (): number {
+  get parkPosX(): number {
     return this.settings.park_custom_pos_x ?? defaultWritableSettings.park_custom_pos_x
   }
 
-  setParkPosX (value: number) {
+  setParkPosX(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_custom_pos_x: value })
   }
 
-  get parkPosY (): number {
+  get parkPosY(): number {
     return this.settings.park_custom_pos_y ?? defaultWritableSettings.park_custom_pos_y
   }
 
-  setParkPosY (value: number) {
+  setParkPosY(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_custom_pos_y: value })
   }
 
-  get bedSize (): BedSize {
+  get bedSize(): BedSize {
     return this.$typedGetters['printer/getBedSize']
   }
 
-  get settings (): Moonraker.Timelapse.WriteableSettings {
+  get settings(): Moonraker.Timelapse.WriteableSettings {
     return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  subtitleIfBlocked (blocked: boolean): string {
+  subtitleIfBlocked(blocked: boolean): string {
     return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }

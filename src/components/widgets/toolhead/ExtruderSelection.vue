@@ -10,7 +10,7 @@
     outlined
     dense
     class="mb-2 v-input--x-dense"
-    style="max-width: 256px;"
+    style="max-width: 256px"
   />
 </template>
 
@@ -22,16 +22,19 @@ import type { KnownExtruder } from '@/store/printer/types'
 
 @Component({})
 export default class ExtruderSelection extends Mixins(StateMixin) {
-  get extruders (): KnownExtruder[] {
+  get extruders(): KnownExtruder[] {
     return this.$typedGetters['printer/getExtruders']
   }
 
-  get extruder (): string {
+  get extruder(): string {
     return this.$typedState.printer.printer.toolhead.extruder
   }
 
-  set extruder (extruder: string) {
-    this.sendGcode(`ACTIVATE_EXTRUDER EXTRUDER=${encodeGcodeParamValue(extruder)}`, this.$waits.onExtruderChange)
+  set extruder(extruder: string) {
+    this.sendGcode(
+      `ACTIVATE_EXTRUDER EXTRUDER=${encodeGcodeParamValue(extruder)}`,
+      this.$waits.onExtruderChange
+    )
   }
 }
 </script>

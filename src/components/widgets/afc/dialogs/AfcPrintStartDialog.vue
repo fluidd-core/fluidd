@@ -90,38 +90,38 @@ import { EventBus } from '@/eventBus'
   }
 })
 export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, FilesMixin) {
-  get open (): boolean {
+  get open(): boolean {
     return this.$typedState.afc.dialog.show
   }
 
-  set open (val: boolean) {
+  set open(val: boolean) {
     this.$typedCommit('afc/setDialogState', {
       ...this.$typedState.afc.dialog,
       show: val
     })
   }
 
-  get filename (): string | undefined {
+  get filename(): string | undefined {
     return this.$typedState.afc.dialog.filename
   }
 
-  get currentFile (): AppFileWithMeta | undefined {
+  get currentFile(): AppFileWithMeta | undefined {
     if (!this.filename) return undefined
 
     const { filename, rootPath } = getFilePaths(this.filename, 'gcodes')
     return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
-  get shortFilename (): string {
+  get shortFilename(): string {
     if (!this.filename) return ''
     return getFilePaths(this.filename, 'gcodes').filename
   }
 
-  get activeSpool () {
+  get activeSpool() {
     return this.$typedGetters['spoolman/getActiveSpool']
   }
 
-  get question (): string {
+  get question(): string {
     if (this.activeSpool) {
       return this.$t('app.afc.PrintStartDialog.QuestionWithSpool', {
         filename: this.shortFilename
@@ -133,19 +133,19 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
     }).toString()
   }
 
-  get thumbnailUrl (): string {
+  get thumbnailUrl(): string {
     if (!this.currentFile || !this.filename) return ''
 
     const { path } = getFilePaths(this.filename, 'gcodes')
     return this.getThumbUrl(this.currentFile, 'gcodes', path, true, this.currentFile.modified)
   }
 
-  get thumbnailWidth (): number {
+  get thumbnailWidth(): number {
     const thumb = this.currentFile?.thumbnails?.reduce((a, b) => (a.size > b.size ? a : b))
     return thumb?.width ?? 400
   }
 
-  get usedTools (): number[] {
+  get usedTools(): number[] {
     const filamentWeights: number[] = this.currentFile?.filament_weights ?? []
 
     return filamentWeights.reduce<number[]>((tools, weight, index) => {
@@ -155,7 +155,7 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
   }
 
   // Map used tools to loaded lanes with the lowest total cost (see util/afc-auto-map)
-  handleAutoMap () {
+  handleAutoMap() {
     const file = this.currentFile
     if (!file || !this.usedTools.length) return
 
@@ -179,11 +179,16 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
         color: info.color,
         material: info.material,
         weight: info.remainingWeight,
-        current: this.usedTools.reduce<boolean[]>((acc, tool) => { acc[tool] = isMapped(lane, tool); return acc }, [])
+        current: this.usedTools.reduce<boolean[]>((acc, tool) => {
+          acc[tool] = isMapped(lane, tool)
+          return acc
+        }, [])
       }))
 
     if (!lanes.length) {
-      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapNoLanes').toString(), { type: 'warning' })
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapNoLanes').toString(), {
+        type: 'warning'
+      })
       return
     }
 
@@ -192,20 +197,30 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
 
     const gcode = [...mapping]
       .filter(([tool, lane]) => !isMapped(lane, tool))
-      .map(([tool, lane]) => `SET_MAP LANE=${encodeGcodeParamValue(lane)} MAP=${encodeGcodeParamValue(`T${tool}`)}`)
+      .map(
+        ([tool, lane]) =>
+          `SET_MAP LANE=${encodeGcodeParamValue(lane)} MAP=${encodeGcodeParamValue(`T${tool}`)}`
+      )
 
     if (gcode.length) {
       this.sendGcode(gcode.join('\n'))
     }
 
     if (unmapped.length) {
-      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnmapped', { tools: unmapped.join(', ') }).toString(), { type: 'warning' })
+      EventBus.$emit(
+        this.$t('app.afc.PrintStartDialog.AutoMapUnmapped', {
+          tools: unmapped.join(', ')
+        }).toString(),
+        { type: 'warning' }
+      )
     } else if (!gcode.length) {
-      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnchanged').toString(), { type: 'success' })
+      EventBus.$emit(this.$t('app.afc.PrintStartDialog.AutoMapUnchanged').toString(), {
+        type: 'success'
+      })
     }
   }
 
-  handlePrint () {
+  handlePrint() {
     if (this.filename) {
       SocketActions.printerPrintStart(this.filename)
 
@@ -217,7 +232,7 @@ export default class AfcPrintStartDialog extends Mixins(StateMixin, AfcMixin, Fi
   }
 
   @Watch('open')
-  onOpenChange (val: boolean) {
+  onOpenChange(val: boolean) {
     if (val && this.filename && this.currentFile == null) {
       SocketActions.serverFilesMetadata(this.filename)
     }

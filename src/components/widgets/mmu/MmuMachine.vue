@@ -67,11 +67,11 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
   @Prop({ required: false, default: false })
   readonly hideBypass!: boolean
 
-  get unitArray (): number[] {
+  get unitArray(): number[] {
     return Array.from({ length: this.numUnits }, (_, k) => k)
   }
 
-  unitClasses (index: number) {
+  unitClasses(index: number) {
     return {
       'mmu-unit': true,
       'mmu-unit-dark-theme': this.$vuetify.theme.dark,
@@ -80,18 +80,18 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
     }
   }
 
-  get showStandaloneBypass () {
+  get showStandaloneBypass() {
     for (let i = 0; i < this.numUnits; i++) {
       if (this.unitDetails(i).hasBypass) return false
     }
     return true
   }
 
-  private selectGate (gate: number) {
+  private selectGate(gate: number) {
     this.$emit('select-gate', gate)
   }
 
-  private editFilament (gate: number) {
+  private editFilament(gate: number) {
     this.$emit('edit-filament', gate)
   }
 }
@@ -99,26 +99,26 @@ export default class MmuMachine extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .mmu-unit {
-    overflow: hidden;
-    margin-left: 4px;
-    margin-right: 4px;
-    padding-left: 16px;
-    padding-right: 16px;
-    border-radius: 32px 32px 8px 8px;
+  overflow: hidden;
+  margin-left: 4px;
+  margin-right: 4px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 32px 32px 8px 8px;
 }
 
 .mmu-unit-light-theme {
-    background: #f0f0f0;
-    box-shadow: inset 0px 4px 2px -4px #2c2c2c80;
+  background: #f0f0f0;
+  box-shadow: inset 0px 4px 2px -4px #2c2c2c80;
 }
 
 .mmu-unit-dark-theme {
-    background: #2c2c2c;
-    box-shadow: inset 0px 4px 4px -4px #ffffff80;
+  background: #2c2c2c;
+  box-shadow: inset 0px 4px 4px -4px #ffffff80;
 }
 
 .mmu-unit-clear {
-    background: none !important;
-    box-shadow: none !important;
+  background: none !important;
+  box-shadow: none !important;
 }
 </style>

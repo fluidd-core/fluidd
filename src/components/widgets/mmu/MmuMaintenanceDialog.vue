@@ -26,9 +26,7 @@
             color="secondary"
             @click="sendGcode('MMU_SYNC_GEAR_MOTOR SYNC=1', $waits.onMmuSyncGearMotor)"
           >
-            <v-icon left>
-              $mmuSync
-            </v-icon>
+            <v-icon left> $mmuSync </v-icon>
             {{ $t('app.mmu.btn.sync') }}
           </v-btn>
         </v-col>
@@ -41,9 +39,7 @@
             color="secondary"
             @click="sendGcode('MMU_SYNC_GEAR_MOTOR SYNC=0', $waits.onMmuSyncGearMotor)"
           >
-            <v-icon left>
-              $mmuUnsync
-            </v-icon>
+            <v-icon left> $mmuUnsync </v-icon>
             {{ $t('app.mmu.btn.unsync') }}
           </v-btn>
         </v-col>
@@ -63,9 +59,7 @@
             color="secondary"
             @click="sendGcode('MMU_LOAD EXTRUDER_ONLY=1', $waits.onMmuLoad)"
           >
-            <v-icon left>
-              $mmuLoad2
-            </v-icon>
+            <v-icon left> $mmuLoad2 </v-icon>
             {{ $t('app.mmu.btn.load') }}
           </v-btn>
         </v-col>
@@ -78,9 +72,7 @@
             color="secondary"
             @click="sendGcode('MMU_UNLOAD EXTRUDER_ONLY=1', $waits.onMmuUnload)"
           >
-            <v-icon left>
-              $mmuUnload2
-            </v-icon>
+            <v-icon left> $mmuUnload2 </v-icon>
             {{ $t('app.mmu.btn.unload') }}
           </v-btn>
         </v-col>
@@ -101,9 +93,7 @@
             color="secondary"
             @click="sendGcode('MMU_MOTORS_ON', $waits.onMmuMotorsOn)"
           >
-            <v-icon left>
-              $mmuOn
-            </v-icon>
+            <v-icon left> $mmuOn </v-icon>
             {{ $t('app.mmu.btn.on') }}
           </v-btn>
         </v-col>
@@ -116,9 +106,7 @@
             color="secondary"
             @click="sendGcode('MMU_MOTORS_OFF', $waits.onMmuMotorsOff)"
           >
-            <v-icon left>
-              $mmuOff
-            </v-icon>
+            <v-icon left> $mmuOff </v-icon>
             {{ $t('app.mmu.btn.off') }}
           </v-btn>
         </v-col>
@@ -165,9 +153,7 @@
                   color="secondary"
                   @click="sendGcode('MMU_HOME', $waits.onMmuHome)"
                 >
-                  <v-icon left>
-                    $mmuHome
-                  </v-icon>
+                  <v-icon left> $mmuHome </v-icon>
                   {{ $t('app.mmu.btn.home') }}
                 </v-btn>
               </v-col>
@@ -182,9 +168,7 @@
                   color="secondary"
                   @click="sendGcode('MMU_GRIP', $waits.onMmuGrip)"
                 >
-                  <v-icon left>
-                    $mmuGrip
-                  </v-icon>
+                  <v-icon left> $mmuGrip </v-icon>
                   {{ $t('app.mmu.btn.grip') }}
                 </v-btn>
               </v-col>
@@ -197,9 +181,7 @@
                   color="secondary"
                   @click="sendGcode('MMU_RELEASE', $waits.onMmuRelease)"
                 >
-                  <v-icon left>
-                    $mmuRelease
-                  </v-icon>
+                  <v-icon left> $mmuRelease </v-icon>
                   {{ $t('app.mmu.btn.release') }}
                 </v-btn>
               </v-col>
@@ -233,9 +215,7 @@
                   color="secondary"
                   @click="sendGcode('MMU_HOME', $waits.onMmuHome)"
                 >
-                  <v-icon left>
-                    $mmuHome2
-                  </v-icon>
+                  <v-icon left> $mmuHome2 </v-icon>
                   {{ $t('app.mmu.btn.home') }}
                 </v-btn>
               </v-col>
@@ -250,9 +230,7 @@
                   color="secondary"
                   @click="sendGcode('MMU_SERVO POS=up', $waits.onMmuServo)"
                 >
-                  <v-icon left>
-                    $mmuUp
-                  </v-icon>
+                  <v-icon left> $mmuUp </v-icon>
                   {{ $t('app.mmu.btn.up') }}
                 </v-btn>
               </v-col>
@@ -265,9 +243,7 @@
                   color="secondary"
                   @click="sendGcode('MMU_SERVO POS=down', $waits.onMmuServo)"
                 >
-                  <v-icon left>
-                    $mmuDown
-                  </v-icon>
+                  <v-icon left> $mmuDown </v-icon>
                   {{ $t('app.mmu.btn.down') }}
                 </v-btn>
               </v-col>
@@ -280,9 +256,7 @@
                   color="secondary"
                   @click="sendGcode('MMU_SERVO POS=move', $waits.onMmuServo)"
                 >
-                  <v-icon left>
-                    $mmuMove
-                  </v-icon>
+                  <v-icon left> $mmuMove </v-icon>
                   {{ $t('app.mmu.btn.move') }}
                 </v-btn>
               </v-col>
@@ -409,9 +383,7 @@
             :loading="hasWait($waits.onMmuLed)"
             @click="updateLeds"
           >
-            <v-icon>
-              $mmuUpdateLeds
-            </v-icon>
+            <v-icon> $mmuUpdateLeds </v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -480,7 +452,7 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
   private localTMacroColor: string = 'slicer'
 
   @Watch('open')
-  onOpenChanged (newValue: boolean): void {
+  onOpenChanged(newValue: boolean): void {
     if (newValue) {
       this.localLedEnable = this.macroVarsLedEnable
       this.localLedAnimation = this.macroVarsLedAnimation
@@ -491,15 +463,15 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
     }
   }
 
-  get unitArray (): number[] {
+  get unitArray(): number[] {
     return Array.from({ length: this.numUnits }, (_, k) => k)
   }
 
-  get mmuLeds (): boolean {
+  get mmuLeds(): boolean {
     return this.$typedState.printer.printer.mmu_leds != null
   }
 
-  private hasLedsOfType (type: string): boolean {
+  private hasLedsOfType(type: string): boolean {
     const mmuLeds = this.$typedState.printer.printer.mmu_leds
 
     return (
@@ -510,16 +482,16 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
     )
   }
 
-  get ledEffectModule (): boolean {
+  get ledEffectModule(): boolean {
     return this.$typedState.printer.printer.mmu_leds?.led_effect_module ?? false
   }
 
-  private unitDisplayName (unitIndex: number): string {
+  private unitDisplayName(unitIndex: number): string {
     const name = this.unitDetails(unitIndex).name
     return `MMU #${unitIndex + 1} - ${name}`
   }
 
-  private updateLeds () {
+  private updateLeds() {
     const command: string = `
             MMU_LED QUIET=1
             ENABLE=${this.localLedEnable ? 1 : 0}
@@ -535,7 +507,7 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
     this.updateTMacroColor()
   }
 
-  private updateTMacroColor () {
+  private updateTMacroColor() {
     const command: string = `MMU_TEST_CONFIG QUIET=1 t_macro_color=${this.localTMacroColor}`
     this.sendGcode(command, this.$waits.onMmuTestConfig)
   }
@@ -544,45 +516,45 @@ export default class MmuMaintainanceStateDialog extends Mixins(BrowserMixin, Sta
 
 <style scoped>
 .settings-row-title {
-    display: block;
-    width: 100%;
-    font-weight: bold;
+  display: block;
+  width: 100%;
+  font-weight: bold;
 }
 
 .settings-row-subtitle {
-    display: block;
-    font-size: 0.8em;
-    line-height: 1.3;
-    margin-top: 3px;
+  display: block;
+  font-size: 0.8em;
+  line-height: 1.3;
+  margin-top: 3px;
 }
 
 .short-switch {
-    padding-top: 4px;
-    margin-top: 2px;
-    margin-bottom: 4px;
+  padding-top: 4px;
+  margin-top: 2px;
+  margin-bottom: 4px;
 }
 
 ::v-deep .short-switch .v-label {
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
 
 .btn-small-text {
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
 
 .btn-small-text .v-icon {
-    margin-right: 4px;
+  margin-right: 4px;
 }
 
 .btn-no-text {
-    height: 50% !important;
+  height: 50% !important;
 }
 
 .btn-no-text .v-icon {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .disabled-row {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 </style>

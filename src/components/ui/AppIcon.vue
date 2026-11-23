@@ -1,8 +1,6 @@
 <template>
   <div class="app-icon">
-    <inline-svg
-      :src="logoSrc"
-    />
+    <inline-svg :src="logoSrc" />
   </div>
 </template>
 
@@ -12,18 +10,18 @@ import type { ThemeConfig } from '@/store/config/types'
 
 @Component({})
 export default class AppIcon extends Vue {
-  get theme (): ThemeConfig {
+  get theme(): ThemeConfig {
     return this.$typedState.config.uiSettings.theme
   }
 
-  get logoSrc () {
+  get logoSrc() {
     return `${import.meta.env.BASE_URL}${this.theme.logo.src}`
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .app-icon {
-    display: flex;
-  }
+.app-icon {
+  display: flex;
+}
 </style>

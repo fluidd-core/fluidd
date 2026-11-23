@@ -9,16 +9,39 @@ import type * as monaco from 'monaco-editor/editor/editor.api'
 // for standard Jinja. Both hosts must set `ignoreCase: true`.
 
 const JINJA_KEYWORDS = [
-  'if', 'elif', 'else', 'endif',
-  'for', 'endfor', 'in',
-  'is', 'not', 'and', 'or',
-  'set', 'block', 'endblock',
-  'macro', 'endmacro', 'call', 'endcall',
-  'filter', 'endfilter',
-  'with', 'endwith', 'without', 'context',
-  'include', 'import', 'from', 'as',
-  'do', 'break', 'continue',
-  'raw', 'endraw'
+  'if',
+  'elif',
+  'else',
+  'endif',
+  'for',
+  'endfor',
+  'in',
+  'is',
+  'not',
+  'and',
+  'or',
+  'set',
+  'block',
+  'endblock',
+  'macro',
+  'endmacro',
+  'call',
+  'endcall',
+  'filter',
+  'endfilter',
+  'with',
+  'endwith',
+  'without',
+  'context',
+  'include',
+  'import',
+  'from',
+  'as',
+  'do',
+  'break',
+  'continue',
+  'raw',
+  'endraw'
 ]
 
 const JINJA_CONSTANTS = ['true', 'false', 'none']
@@ -48,15 +71,15 @@ type Action = monaco.languages.IMonarchLanguageAction
 type ExpandedAction = monaco.languages.IExpandedMonarchLanguageAction
 
 interface GcodeAttributes {
-  messageCommand: RegExp;
-  decimal: RegExp;
-  override: RegExp;
+  messageCommand: RegExp
+  decimal: RegExp
+  override: RegExp
 }
 
 export interface StandaloneGcodeRules {
-  attributes: GcodeAttributes;
+  attributes: GcodeAttributes
 
-  states: Tokenizer;
+  states: Tokenizer
 }
 
 export interface EmbeddedGcodeRules {
@@ -66,29 +89,31 @@ export interface EmbeddedGcodeRules {
    * where `kind` records any Jinja region left open, so the host matches the
    * key indent as `$S2` and resumes with `resumeAction`.
    */
-  checkState: string;
+  checkState: string
 
   /** Action for the host's key rule; `indent` is the capture holding it. */
-  entryAction: (indent: string, token: string) => ExpandedAction;
+  entryAction: (indent: string, token: string) => ExpandedAction
 
   /** Action for the host's continuation rule. */
-  resumeAction: Action;
+  resumeAction: Action
 
-  attributes: GcodeAttributes & { jinjaConstants: string[] };
+  attributes: GcodeAttributes & { jinjaConstants: string[] }
 
-  states: Tokenizer;
+  states: Tokenizer
 }
 
-export function createGcodeRules (mode: 'standalone'): StandaloneGcodeRules
-export function createGcodeRules (mode: 'embedded'): EmbeddedGcodeRules
-export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGcodeRules | EmbeddedGcodeRules {
+export function createGcodeRules(mode: 'standalone'): StandaloneGcodeRules
+export function createGcodeRules(mode: 'embedded'): EmbeddedGcodeRules
+export function createGcodeRules(
+  mode: 'standalone' | 'embedded'
+): StandaloneGcodeRules | EmbeddedGcodeRules {
   const embedded = mode === 'embedded'
 
   // Unmatched text is an error in a .gcode file, but inside a config value it
   // is just more value.
   const fallback = embedded ? 'string' : 'invalid'
 
-  const name = (suffix: string): string => embedded ? `gcode${upperFirst(suffix)}` : suffix
+  const name = (suffix: string): string => (embedded ? `gcode${upperFirst(suffix)}` : suffix)
 
   const entryState = embedded ? name('value') : 'root'
   const paramsState = name('params')
@@ -125,8 +150,10 @@ export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGc
   // case and cannot be the state name: `$Sn` substitution runs through
   // `fixCase`, which `ignoreCase` makes destructive.
   const jinjaOpeners = (returnTag: 'value' | 'arg'): Rule[] => {
-    const open = (kind: string) =>
-      ({ token: 'delimiter.jinja', switchTo: `@${jinjaState}.$S2.${kind}.${returnTag}` })
+    const open = (kind: string) => ({
+      token: 'delimiter.jinja',
+      switchTo: `@${jinjaState}.$S2.${kind}.${returnTag}`
+    })
 
     return [
       [/\{%/, open('stmt')],
@@ -152,30 +179,15 @@ export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGc
   const entryRules: Rule[] = [
     ...prologue,
 
-    [
-      /^(\s*)(n\d+)/,
-      ['white', eosSwitch('keyword.command.n')]
-    ],
+    [/^(\s*)(n\d+)/, ['white', eosSwitch('keyword.command.n')]],
 
-    [
-      /;.*$/,
-      eosSwitch('comment')
-    ],
+    [/;.*$/, eosSwitch('comment')],
 
-    [
-      /\*\d+/,
-      eosSwitch('tag')
-    ],
+    [/\*\d+/, eosSwitch('tag')],
 
-    [
-      embedded ? MESSAGE_EMBEDDED : MESSAGE,
-      ['keyword.command.m', eosSwitch('string')]
-    ],
+    [embedded ? MESSAGE_EMBEDDED : MESSAGE, ['keyword.command.m', eosSwitch('string')]],
 
-    [
-      /([gmt])\d+@override/,
-      eosSwitch('keyword.command.$1')
-    ],
+    [/([gmt])\d+@override/, eosSwitch('keyword.command.$1')],
 
     [
       /[a-z_]{2,}\d*/,
@@ -189,10 +201,7 @@ export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGc
         : { token: 'keyword.macro', ...enter(paramsState) }
     ],
 
-    [
-      /([a-mo-z])\s*@decimal/,
-      eosSwitch('keyword.param.$1')
-    ],
+    [/([a-mo-z])\s*@decimal/, eosSwitch('keyword.param.$1')],
 
     ...(embedded
       ? ([
@@ -203,53 +212,38 @@ export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGc
         ] satisfies Rule[])
       : []),
 
-    [
-      /\s+/,
-      eosSwitch('white')
-    ],
+    [/\s+/, eosSwitch('white')],
 
-    [
-      /.*$/,
-      eosSwitch(fallback)
-    ]
+    [/.*$/, eosSwitch(fallback)]
   ]
 
   const paramsRules: Rule[] = [
     ...prologue,
 
-    [
-      /[*;]/,
-      { token: '@rematch', ...leaveTo(entryState) }
-    ],
+    [/[*;]/, { token: '@rematch', ...leaveTo(entryState) }],
 
     [
       /([a-z_]+)(=)/,
-      ['keyword.param', {
-        cases: {
-          '@eos': { token: 'operator', ...abandon('@pop') },
-          '@default': { token: 'operator', ...enter(argValueState) }
+      [
+        'keyword.param',
+        {
+          cases: {
+            '@eos': { token: 'operator', ...abandon('@pop') },
+            '@default': { token: 'operator', ...enter(argValueState) }
+          }
         }
-      }]
+      ]
     ],
 
-    [
-      /\s+/,
-      eosSwitch('white')
-    ],
+    [/\s+/, eosSwitch('white')],
 
-    [
-      '',
-      { token: '', ...leaveTo(entryState) }
-    ]
+    ['', { token: '', ...leaveTo(entryState) }]
   ]
 
   const argValueRules: Rule[] = [
     ...prologue,
 
-    [
-      /[*;]/,
-      { token: '@rematch', ...leaveTo(paramsState) }
-    ],
+    [/[*;]/, { token: '@rematch', ...leaveTo(paramsState) }],
 
     [
       /"/,
@@ -270,14 +264,9 @@ export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGc
 
           [/\s+/, { token: '@rematch', switchTo: goTo(paramsState) }]
         ] satisfies Rule[])
-      : ([
-          [/\S+/, { token: 'string', next: '@pop' }]
-        ] satisfies Rule[])),
+      : ([[/\S+/, { token: 'string', next: '@pop' }]] satisfies Rule[])),
 
-    [
-      '',
-      { token: '', ...leaveTo(paramsState) }
-    ]
+    ['', { token: '', ...leaveTo(paramsState) }]
   ]
 
   const stringRules: Rule[] = [
@@ -338,7 +327,9 @@ export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGc
   // keyword. `$0==` matches the lower-case spelling only. Constants keep the
   // `@list` form — Jinja accepts `True`/`False`/`None` too.
   const wordCases: Record<string, ExpandedAction> = {
-    ...Object.fromEntries(JINJA_KEYWORDS.map(word => [`$0==${word}`, stay('keyword.control.jinja')])),
+    ...Object.fromEntries(
+      JINJA_KEYWORDS.map(word => [`$0==${word}`, stay('keyword.control.jinja')])
+    ),
     '@jinjaConstants': stay('constant.language.jinja'),
     '@default': stay('variable.jinja')
   }
@@ -363,58 +354,28 @@ export function createGcodeRules (mode: 'standalone' | 'embedded'): StandaloneGc
       { cases: { '$S3==expr': jinjaCloseEos('delimiter.jinja'), '@default': stay('operator') } }
     ],
 
-    [
-      /"(?:\\.|[^"\\])*"/,
-      stay('string.jinja')
-    ],
+    [/"(?:\\.|[^"\\])*"/, stay('string.jinja')],
 
-    [
-      /'(?:\\.|[^'\\])*'/,
-      stay('string.jinja')
-    ],
+    [/'(?:\\.|[^'\\])*'/, stay('string.jinja')],
 
-    [
-      /@decimal/,
-      stay('number.jinja')
-    ],
+    [/@decimal/, stay('number.jinja')],
 
     // Attribute access — the name is never a keyword, so this precedes the
     // identifier rule.
-    [
-      /(\.)([a-z_]\w*)/,
-      ['operator', stay('variable.jinja')]
-    ],
+    [/(\.)([a-z_]\w*)/, ['operator', stay('variable.jinja')]],
 
-    [
-      /[a-z_]\w*/,
-      { cases: wordCases }
-    ],
+    [/[a-z_]\w*/, { cases: wordCases }],
 
-    [
-      /[.,|()[\]]/,
-      stay('operator')
-    ],
+    [/[.,|()[\]]/, stay('operator')],
 
-    [
-      /[=!<>]=|[-+*/%~<>=]/,
-      stay('operator')
-    ],
+    [/[=!<>]=|[-+*/%~<>=]/, stay('operator')],
 
-    [
-      /[ \t]+/,
-      stay('white')
-    ],
+    [/[ \t]+/, stay('white')],
 
-    [
-      /./,
-      stay('invalid')
-    ],
+    [/./, stay('invalid')],
 
     // Defensive: only reachable against an already-empty remainder.
-    [
-      '',
-      { token: '', switchTo: checkRef('$S2', '$S3.$S4') }
-    ]
+    ['', { token: '', switchTo: checkRef('$S2', '$S3.$S4') }]
   ]
 
   return {

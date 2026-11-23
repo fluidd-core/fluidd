@@ -20,7 +20,7 @@ import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vu
   }
 })
 export default class History extends Vue {
-  get breakpoint () {
+  get breakpoint() {
     if (this.$vuetify.breakpoint.mdAndDown) {
       return 12
     }

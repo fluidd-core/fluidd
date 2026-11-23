@@ -1,64 +1,70 @@
 import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
 import { createState } from './state'
-import type { BBox, ExtrusionRole, GcodePreviewState, Layer, MoveStore, Part, ValueRange } from './types'
+import type {
+  BBox,
+  ExtrusionRole,
+  GcodePreviewState,
+  Layer,
+  MoveStore,
+  Part,
+  ValueRange
+} from './types'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setMoves (state, payload: MoveStore) {
+  setMoves(state, payload: MoveStore) {
     state.moves = Object.freeze(payload)
   },
 
-  setLayers (state, payload: Layer[]) {
+  setLayers(state, payload: Layer[]) {
     state.layers = Object.freeze(payload)
   },
 
-  setParts (state, payload: Part[]) {
+  setParts(state, payload: Part[]) {
     state.parts = Object.freeze(payload)
   },
 
-  setTools (state, payload: number[]) {
+  setTools(state, payload: number[]) {
     state.tools = Object.freeze(payload)
   },
 
-  setRoles (state, payload: ExtrusionRole[]) {
+  setRoles(state, payload: ExtrusionRole[]) {
     state.roles = Object.freeze(payload)
   },
 
-  setSpeedRange (state, payload: ValueRange | null) {
+  setSpeedRange(state, payload: ValueRange | null) {
     state.speedRange = Object.freeze(payload)
   },
 
-  setFanRange (state, payload: ValueRange | null) {
+  setFanRange(state, payload: ValueRange | null) {
     state.fanRange = Object.freeze(payload)
   },
 
-  setTempRange (state, payload: ValueRange | null) {
+  setTempRange(state, payload: ValueRange | null) {
     state.tempRange = Object.freeze(payload)
   },
 
-  setBounds (state, payload: BBox | null) {
+  setBounds(state, payload: BBox | null) {
     state.bounds = Object.freeze(payload)
   },
 
-  setFile (state, file: AppFile | AppFileWithMeta | null) {
+  setFile(state, file: AppFile | AppFileWithMeta | null) {
     state.file = file
   },
 
-  setParserProgress (state, payload: number) {
+  setParserProgress(state, payload: number) {
     state.parserProgress = payload
   },
 
-  setParserWorker (state, payload: Worker | null) {
-    state.parserWorker = payload != null
-      ? markRaw(payload)
-      : null
+  setParserWorker(state, payload: Worker | null) {
+    state.parserWorker = payload != null ? markRaw(payload) : null
   }
 } satisfies MutationTree<GcodePreviewState>

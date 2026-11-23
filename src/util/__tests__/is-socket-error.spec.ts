@@ -1,4 +1,8 @@
-import { isSocketError, isMoonrakerNotFoundError, isMoonrakerUnauthorizedError } from '../is-socket-error'
+import {
+  isSocketError,
+  isMoonrakerNotFoundError,
+  isMoonrakerUnauthorizedError
+} from '../is-socket-error'
 
 const error = (code: number) => ({ code, message: 'error' })
 

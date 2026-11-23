@@ -47,9 +47,13 @@
         <app-setting
           :key="`user::${user.username}`"
           :sub-title="
-            user.username === currentUser ? $t('app.general.label.current_user') :
-            user.source !== 'moonraker' ? $t('app.general.label.user_managed_source', { source: $t(`app.general.label.${user.source}`) }) :
-            undefined
+            user.username === currentUser
+              ? $t('app.general.label.current_user')
+              : user.source !== 'moonraker'
+                ? $t('app.general.label.user_managed_source', {
+                    source: $t(`app.general.label.${user.source}`)
+                  })
+                : undefined
           "
           :r-cols="3"
         >
@@ -62,9 +66,7 @@
             icon
             @click.stop="handleRemoveUser(user)"
           >
-            <v-icon dense>
-              $delete
-            </v-icon>
+            <v-icon dense> $delete </v-icon>
           </app-btn>
         </app-setting>
       </template>
@@ -102,27 +104,29 @@ export default class AuthSettings extends Vue {
   addUserDialogOpen = false
   apiKeyDialogOpen = false
 
-  get users (): AppUser[] {
+  get users(): AppUser[] {
     return this.$typedState.auth.users
   }
 
-  get currentUser () {
+  get currentUser() {
     const currentUser: AppUser | null = this.$typedState.auth.currentUser
 
     return currentUser?.username ?? ''
   }
 
-  handleAddUserDialog () {
+  handleAddUserDialog() {
     this.addUserDialogOpen = true
   }
 
-  handleApiKeyDialog () {
+  handleApiKeyDialog() {
     this.apiKeyDialogOpen = true
   }
 
-  async handleRemoveUser (user: AppUser) {
+  async handleRemoveUser(user: AppUser) {
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_remove_user', { username: user.username }).toString(),
+      this.$t('app.general.simple_form.msg.confirm_remove_user', {
+        username: user.username
+      }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
@@ -131,7 +135,7 @@ export default class AuthSettings extends Vue {
     }
   }
 
-  async handleSaveUser (user: { username: string, password: string }) {
+  async handleSaveUser(user: { username: string; password: string }) {
     const isFirstUser = this.users.length === 0
 
     await SocketActions.accessPostUser(user.username, user.password)

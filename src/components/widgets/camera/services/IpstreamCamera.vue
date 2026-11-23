@@ -25,11 +25,11 @@ export default class IpstreamCamera extends Mixins(CameraMixin) {
 
   cameraVideoSource = ''
 
-  get autoRaiseFrameEvent () {
+  get autoRaiseFrameEvent() {
     return false
   }
 
-  startPlayback () {
+  startPlayback() {
     try {
       this.updateStatus('connecting')
 
@@ -43,7 +43,7 @@ export default class IpstreamCamera extends Mixins(CameraMixin) {
     }
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.updateStatus('disconnected')
     this.cameraVideoSource = ''
     this.cameraVideo.src = ''

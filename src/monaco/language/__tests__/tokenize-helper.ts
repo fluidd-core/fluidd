@@ -1,8 +1,8 @@
 import * as monaco from 'monaco-editor/editor/editor.api'
 
 export interface TokenLine {
-  type: string;
-  value: string;
+  type: string
+  value: string
 }
 
 export const registerLanguage = (
@@ -24,21 +24,20 @@ export const tokenizeLines = (text: string, langId: string): TokenLine[][] => {
   return monaco.editor.tokenize(text, langId).map((tokens, lineIdx) => {
     const line = lines[lineIdx] ?? ''
 
-    return tokens
-      .map((tok, i) => ({
-        type: tok.type,
-        value: line.slice(tok.offset, tokens[i + 1]?.offset ?? line.length)
-      }))
+    return tokens.map((tok, i) => ({
+      type: tok.type,
+      value: line.slice(tok.offset, tokens[i + 1]?.offset ?? line.length)
+    }))
   })
 }
 
 // Variadic line-builder factory bound to a language id. Each `[baseType,
 // value]` tuple becomes one token; Monaco appends `.<langId>` to every
 // Monarch token type, so this keeps the per-case expectations readable.
-export const tokenBuilder = (langId: string) =>
+export const tokenBuilder =
+  (langId: string) =>
   (...tokens: Array<[baseType: string, value: string]>): TokenLine[] =>
-    tokens
-      .map(([baseType, value]) => ({
-        type: `${baseType}.${langId}`,
-        value
-      }))
+    tokens.map(([baseType, value]) => ({
+      type: `${baseType}.${langId}`,
+      value
+    }))

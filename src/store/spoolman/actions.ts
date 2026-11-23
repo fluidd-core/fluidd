@@ -15,7 +15,9 @@ import diagnoseHttpEndpoint from '@/util/http-endpoint-diagnostics'
 
 const logPrefix = '[SPOOLMAN]'
 
-const payloadAsSpoolmanProxyResponseV2 = <T>(payload: Moonraker.Spoolman.ProxyResponse<T>): Moonraker.Spoolman.ProxyResponseV2<T> => {
+const payloadAsSpoolmanProxyResponseV2 = <T>(
+  payload: Moonraker.Spoolman.ProxyResponse<T>
+): Moonraker.Spoolman.ProxyResponseV2<T> => {
   if (
     payload != null &&
     typeof payload === 'object' &&
@@ -23,7 +25,9 @@ const payloadAsSpoolmanProxyResponseV2 = <T>(payload: Moonraker.Spoolman.ProxyRe
     'response' in payload
   ) {
     if (payload.error != null) {
-      EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, { type: 'error' })
+      EventBus.$emit(typeof payload.error === 'string' ? payload.error : payload.error.message, {
+        type: 'error'
+      })
     }
 
     return payload
@@ -40,9 +44,7 @@ const createSpoolmanSocket = (spoolmanUrl: string): WebSocket | undefined => {
     const socketUrl = new URL(spoolmanUrl)
 
     socketUrl.pathname += `${socketUrl.pathname.endsWith('/') ? '' : '/'}api/v1/`
-    socketUrl.protocol = socketUrl.protocol === 'https:'
-      ? 'wss:'
-      : 'ws:'
+    socketUrl.protocol = socketUrl.protocol === 'https:' ? 'wss:' : 'ws:'
 
     return new WebSocket(socketUrl)
   } catch (err) {
@@ -56,24 +58,24 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Make a socket request to init the spoolman component.
    */
-  async init () {
+  async init() {
     SocketActions.serverSpoolmanGetSpoolId()
     SocketActions.serverSpoolmanProxyGetAvailableSpools()
     SocketActions.serverSpoolmanProxyGetInfo()
   },
 
-  async onActiveSpool ({ commit }, payload: Moonraker.Spoolman.SpoolIdResponse) {
+  async onActiveSpool({ commit }, payload: Moonraker.Spoolman.SpoolIdResponse) {
     commit('setActiveSpool', payload.spool_id)
   },
 
-  async onSpoolChange ({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
+  async onSpoolChange({ commit, state }, { type, payload }: WebsocketSpoolPayload) {
     const spools = [...state.spools]
 
     switch (type) {
@@ -107,48 +109,46 @@ export const actions = {
     commit('setSpools', spools)
   },
 
-  async onFilamentChange ({ commit, state }, { type, payload }: WebsocketFilamentPayload) {
+  async onFilamentChange({ commit, state }, { type, payload }: WebsocketFilamentPayload) {
     if (type !== 'updated') {
       // we only care about updated filament types
       return
     }
 
-    const spools = state.spools
-      .map(spool => (
-        spool.filament.id === payload.id
-          ? {
-              ...spool,
-              filament: payload
-            }
-          : spool
-      ))
+    const spools = state.spools.map(spool =>
+      spool.filament.id === payload.id
+        ? {
+            ...spool,
+            filament: payload
+          }
+        : spool
+    )
 
     commit('setSpools', spools)
   },
 
-  async onVendorChange ({ commit, state }, { type, payload }: WebsocketVendorPayload) {
+  async onVendorChange({ commit, state }, { type, payload }: WebsocketVendorPayload) {
     if (type !== 'updated') {
       // we only care about updated vendors
       return
     }
 
-    const spools = state.spools
-      .map(spool => (
-        spool.filament.vendor?.id === payload.id
-          ? {
-              ...spool,
-              filament: {
-                ...spool.filament,
-                vendor: payload
-              }
+    const spools = state.spools.map(spool =>
+      spool.filament.vendor?.id === payload.id
+        ? {
+            ...spool,
+            filament: {
+              ...spool.filament,
+              vendor: payload
             }
-          : spool
-      ))
+          }
+        : spool
+    )
 
     commit('setSpools', spools)
   },
 
-  async onStatusChanged ({ commit, dispatch }, payload: boolean) {
+  async onStatusChanged({ commit, dispatch }, payload: boolean) {
     if (payload) {
       // refresh data, connected state will be set on data retrieval
       dispatch('init')
@@ -157,7 +157,10 @@ export const actions = {
     }
   },
 
-  async onAvailableSpools ({ commit, dispatch }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>) {
+  async onAvailableSpools(
+    { commit, dispatch },
+    payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Spool[]>
+  ) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
@@ -171,7 +174,10 @@ export const actions = {
     dispatch('initializeWebsocketConnection')
   },
 
-  async onInfo ({ state, commit }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>) {
+  async onInfo(
+    { state, commit },
+    payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Info>
+  ) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
@@ -180,16 +186,15 @@ export const actions = {
 
     commit('setInfo', payload.response)
 
-    if (
-      state.info &&
-      valid(state.info.version) &&
-      gte(state.info.version, '0.16.0')
-    ) {
+    if (state.info && valid(state.info.version) && gte(state.info.version, '0.16.0')) {
       SocketActions.serverSpoolmanProxyGetSettingCurrency()
     }
   },
 
-  async onSettingCurrency ({ commit }, payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Currency>) {
+  async onSettingCurrency(
+    { commit },
+    payload: Moonraker.Spoolman.ProxyResponse<Moonraker.Spoolman.Currency>
+  ) {
     payload = payloadAsSpoolmanProxyResponseV2(payload)
 
     if (payload.error != null) {
@@ -199,7 +204,7 @@ export const actions = {
     commit('setCurrency', payload.response)
   },
 
-  async initializeWebsocketConnection ({ state, getters, rootState, commit, dispatch }) {
+  async initializeWebsocketConnection({ state, getters, rootState, commit, dispatch }) {
     if (rootState.server.config.spoolman?.server) {
       if (state.socket?.readyState === WebSocket.OPEN) {
         // we already have a working WS conn
@@ -266,7 +271,7 @@ export const actions = {
     }
   },
 
-  async diagnoseSocketFailure ({ getters, commit }) {
+  async diagnoseSocketFailure({ getters, commit }) {
     const spoolmanUrl: string | undefined = getters.getSpoolmanUrl
 
     if (!spoolmanUrl) {

@@ -1,75 +1,75 @@
 declare namespace Moonraker.ProcStats {
   export interface Response {
-    moonraker_stats: MoonrakerStats[];
-    throttled_state: ThrottledState | null;
-    cpu_temp: number | null;
-    network: Record<string, NetworkStats>;
-    system_cpu_usage: Record<string, number>;
-    system_uptime: number;
-    system_memory: SystemMemory | Record<string, never>;
-    websocket_connections: number;
+    moonraker_stats: MoonrakerStats[]
+    throttled_state: ThrottledState | null
+    cpu_temp: number | null
+    network: Record<string, NetworkStats>
+    system_cpu_usage: Record<string, number>
+    system_uptime: number
+    system_memory: SystemMemory | Record<string, never>
+    websocket_connections: number
   }
 
   export interface UpdateEvent {
-    moonraker_stats: MoonrakerStats;
-    cpu_temp: number | null;
-    network: Record<string, NetworkStats>;
-    system_cpu_usage: Record<string, number>;
-    system_memory: SystemMemory | Record<string, never>;
-    websocket_connections: number;
+    moonraker_stats: MoonrakerStats
+    cpu_temp: number | null
+    network: Record<string, NetworkStats>
+    system_cpu_usage: Record<string, number>
+    system_memory: SystemMemory | Record<string, never>
+    websocket_connections: number
   }
 
   export interface MoonrakerStats {
-    time: number;
-    cpu_usage: number;
-    memory: number;
-    mem_units: string;
+    time: number
+    cpu_usage: number
+    memory: number
+    mem_units: string
   }
 
   export interface ThrottledState {
-    bits: number;
-    flags: ThrottledStateFlags[];
+    bits: number
+    flags: ThrottledStateFlags[]
   }
 
   export type ThrottledStateFlags =
-    'Under-Voltage Detected' |
-    'Frequency Capped' |
-    'Currently Throttled' |
-    'Temperature Limit Active' |
-    'Previously Under-Volted' |
-    'Previously Frequency Capped' |
-    'Previously Throttled' |
-    'Previously Temperature Limited'
+    | 'Under-Voltage Detected'
+    | 'Frequency Capped'
+    | 'Currently Throttled'
+    | 'Temperature Limit Active'
+    | 'Previously Under-Volted'
+    | 'Previously Frequency Capped'
+    | 'Previously Throttled'
+    | 'Previously Temperature Limited'
 
   export interface NetworkStats {
-    rx_bytes: number;
-    tx_bytes: number;
-    rx_packets: number;
-    tx_packets: number;
-    rx_errs: number;
-    tx_errs: number;
-    rx_drop: number;
-    tx_drop: number;
-    bandwidth: number;
+    rx_bytes: number
+    tx_bytes: number
+    rx_packets: number
+    tx_packets: number
+    rx_errs: number
+    tx_errs: number
+    rx_drop: number
+    tx_drop: number
+    bandwidth: number
   }
 
   export interface SystemMemory {
-    total: number;
-    available: number;
-    used: number;
+    total: number
+    available: number
+    used: number
   }
 }
 
 declare namespace Moonraker {
   export interface Methods {
     'machine.proc_stats': {
-      params: undefined,
+      params: undefined
       result: ProcStats.Response
     }
   }
 
   export interface Notifications {
-    notify_cpu_throttled: [ProcStats.ThrottledState],
+    notify_cpu_throttled: [ProcStats.ThrottledState]
     notify_proc_stat_update: [ProcStats.UpdateEvent]
   }
 }

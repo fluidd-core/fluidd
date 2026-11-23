@@ -103,9 +103,7 @@
                             <div class="small-font text-center">
                               {{ $t('app.mmu.label.gate') }}
                             </div>
-                            <div class="text-center">
-                              #{{ g }}
-                            </div>
+                            <div class="text-center"> #{{ g }} </div>
                             <v-spacer />
                             <v-divider />
                             <div class="text-start no-break">
@@ -171,9 +169,7 @@
               >
                 <v-list-item v-if="selectedTool !== -1">
                   <v-list-item-content
-                    v-if="
-                      toolMetaData[selectedTool] && referencedTools.includes(selectedTool)
-                    "
+                    v-if="toolMetaData[selectedTool] && referencedTools.includes(selectedTool)"
                   >
                     <div class="text-overline">
                       {{ $t('app.mmu.label.slicer_expects') }}
@@ -211,19 +207,17 @@
                   </v-list-item-content>
                   <v-list-item-content v-else>
                     <v-list-item-subtitle class="wrap-tool-name">
-                      <div
-                        v-if="toolMetaData[selectedTool] || referencedTools.length > 0"
-                      >
+                      <div v-if="toolMetaData[selectedTool] || referencedTools.length > 0">
                         {{
                           $t('app.mmu.msg.tool_not_used', {
-                            tool: toolText(selectedTool),
+                            tool: toolText(selectedTool)
                           })
                         }}
                       </div>
                       <div v-else>
                         {{
                           $t('app.mmu.msg.no_slicer_info', {
-                            tool: toolText(selectedTool),
+                            tool: toolText(selectedTool)
                           })
                         }}
                       </div>
@@ -298,7 +292,7 @@ import MmuGateDialogRow from '@/components/widgets/mmu/MmuGateDialogRow.vue'
 import getFilePaths from '@/util/get-file-paths'
 
 @Component({
-  components: { MmuSpool, MmuTtgMap, MmuGateDialogRow },
+  components: { MmuSpool, MmuTtgMap, MmuGateDialogRow }
 })
 export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   private localTtgMap: number[] = []
@@ -313,22 +307,22 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
   private selectedTool: number = -1
   private selectedGate: number = -1
 
-  get open (): boolean {
+  get open(): boolean {
     return this.$typedState.mmu.dialog.show
   }
 
-  set open (val: boolean) {
+  set open(val: boolean) {
     this.$typedCommit('mmu/setDialogState', {
       ...this.$typedState.spoolman.dialog,
       show: val
     })
   }
 
-  get filename (): string | undefined {
+  get filename(): string | undefined {
     return this.$typedState.mmu.dialog.filename
   }
 
-  get file (): AppFileWithMeta | undefined {
+  get file(): AppFileWithMeta | undefined {
     if (this.filename != null) {
       const { rootPath, filename } = getFilePaths(this.filename, 'gcodes')
 
@@ -337,21 +331,21 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
   }
 
   @Watch('ttgMap')
-  onTtgMapChanged (): void {
+  onTtgMapChanged(): void {
     this.initialize()
   }
 
   @Watch('endlessSpoolGroups')
-  onEndlessSpoolGroupsChanged (): void {
+  onEndlessSpoolGroupsChanged(): void {
     this.initialize()
   }
 
   @Watch('open')
-  onOpenChanged (): void {
+  onOpenChanged(): void {
     this.initialize()
   }
 
-  private initialize () {
+  private initialize() {
     if (this.open) {
       this.localTtgMap = Array.from(this.ttgMap)
       this.localEndlessSpoolGroups = Array.from(this.endlessSpoolGroups)
@@ -381,12 +375,12 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
   }
 
   @Watch('allTools')
-  onAllToolsChanged (): void {
+  onAllToolsChanged(): void {
     this.selectedTool = -1
     this.selectedGate = -1
   }
 
-  private toolCardClass (tool: number): string[] {
+  private toolCardClass(tool: number): string[] {
     const classes = []
     classes.push('no-padding')
     classes.push(this.$vuetify.theme.dark ? 'card-dark-theme' : 'card-light-theme')
@@ -395,39 +389,39 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     return classes
   }
 
-  get gateItems () {
+  get gateItems() {
     if (this.selectedTool < 0) return []
     return this.gateMap
   }
 
-  get gateTableHeaders () {
+  get gateTableHeaders() {
     if (this.selectedTool < 0) return []
     return [
       {
         text: this.$t('app.mmu.label.gate'),
         align: 'start',
         value: 'index',
-        sortable: false,
+        sortable: false
       },
       {
         text: '',
         align: 'center',
-        sortable: false,
+        sortable: false
       },
       {
         text: this.$t('app.mmu.label.filament_info'),
         align: 'start',
-        sortable: false,
+        sortable: false
       },
       {
         text: this.$t('app.mmu.label.endless_spool'),
         align: 'center',
-        sortable: false,
-      },
+        sortable: false
+      }
     ]
   }
 
-  private selectTool (tool: number) {
+  private selectTool(tool: number) {
     if (this.selectedTool === tool) {
       this.selectedTool = -1
       this.selectedGate = -1
@@ -438,12 +432,12 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     }
   }
 
-  private selectGate (gate: number) {
+  private selectGate(gate: number) {
     this.selectedGate = gate
     Vue.set(this.localTtgMap, this.selectedTool, gate)
   }
 
-  private selectEndlessSpool (gate: number) {
+  private selectEndlessSpool(gate: number) {
     if (this.selectedGate !== -1 && this.selectedGate !== gate) {
       // Adjust EndlessSpool groups if gate already selected
       let group = this.localEndlessSpoolGroups[this.selectedGate]
@@ -463,7 +457,7 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     }
   }
 
-  private scrollToGateRow (gate: number) {
+  private scrollToGateRow(gate: number) {
     this.$nextTick(() => {
       const targetRow = this.$refs[`row-${gate}`] as Vue | undefined
       if (targetRow && 'scrollIntoView' in targetRow.$el) {
@@ -472,14 +466,14 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     })
   }
 
-  private handleEscapePress (event: KeyboardEvent) {
+  private handleEscapePress(event: KeyboardEvent) {
     if (event.key === 'Escape' || event.keyCode === 27) {
       this.selectedTool = -1
       this.selectedGate = -1
     }
   }
 
-  private esSpoolsText (gate: number): string {
+  private esSpoolsText(gate: number): string {
     const esGates: number[] = []
     const group = this.localEndlessSpoolGroups[gate]
     this.localEndlessSpoolGroups.forEach((g, index) => {
@@ -494,38 +488,39 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
 
   // Slicer tool...
 
-  get toolNameText (): string {
+  get toolNameText(): string {
     return this.toolMetaData[this.selectedTool].name
   }
 
-  get toolDetailsText (): string {
+  get toolDetailsText(): string {
     const toolMaterialText = this.toolMetaData[this.selectedTool].material
     let toolTempText = null
     if (this.toolMetaData[this.selectedTool].temp >= 0) {
       toolTempText = this.toolMetaData[this.selectedTool].temp + '\u00B0' + 'C'
     }
-    return [toolMaterialText, toolTempText].filter((v) => v !== null).join(' | ')
+    return [toolMaterialText, toolTempText].filter(v => v !== null).join(' | ')
   }
 
-  get toolColor (): string {
+  get toolColor(): string {
     return this.toolMetaData[this.selectedTool].color
   }
 
-  get alerts (): string[] | null {
+  get alerts(): string[] | null {
     const maxTempDiff = 5
     const maxColorDiff = 16000
     const alerts = []
 
     if (
       this.toolMetaData[this.selectedTool].material.toUpperCase() !==
-            this.gateDetails(this.selectedGate).material.toUpperCase()
+      this.gateDetails(this.selectedGate).material.toUpperCase()
     ) {
       alerts.push('\u2022 ' + this.$t('app.mmu.msg.material'))
     }
 
     if (
-      Math.abs(this.toolMetaData[this.selectedTool].temp - this.gateDetails(this.selectedGate).temperature) >
-            maxTempDiff
+      Math.abs(
+        this.toolMetaData[this.selectedTool].temp - this.gateDetails(this.selectedGate).temperature
+      ) > maxTempDiff
     ) {
       alerts.push('\u2022 ' + this.$t('app.mmu.msg.temperature'))
     }
@@ -544,14 +539,14 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     return null
   }
 
-  private hexToRgb (hex: string): number[] {
+  private hexToRgb(hex: string): number[] {
     const r = parseInt(hex.slice(1, 3), 16)
     const g = parseInt(hex.slice(3, 5), 16)
     const b = parseInt(hex.slice(5, 7), 16)
     return [r, g, b]
   }
 
-  private weightedEuclideanDistance (
+  private weightedEuclideanDistance(
     color1: number[],
     color2: number[],
     weights: number[] = [0.3, 0.59, 0.11]
@@ -561,27 +556,28 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
 
   // Actions...
 
-  async resetTtgMap () {
-    const result = await this.$confirm(
-      this.$tc('app.mmu.msg.reset_ttg_map_confirmation', 1),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async resetTtgMap() {
+    const result = await this.$confirm(this.$tc('app.mmu.msg.reset_ttg_map_confirmation', 1), {
+      title: this.$tc('app.general.label.confirm'),
+      color: 'card-heading',
+      icon: '$error'
+    })
 
     if (result) this.executeResetTtgMap()
   }
 
-  executeResetTtgMap () {
+  executeResetTtgMap() {
     this.initialize()
     this.sendGcode('MMU_TTG_MAP RESET=1')
   }
 
-  close () {
+  close() {
     this.selectedTool = -1
     this.selectedGate = -1
     this.open = false
   }
 
-  async commit () {
+  async commit() {
     const mapStr = this.localTtgMap.join(',')
     const esGrpStr = this.localEndlessSpoolGroups.join(',')
 
@@ -601,11 +597,11 @@ MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}" QUIET=1`
     this.close()
   }
 
-  mounted () {
+  mounted() {
     document.addEventListener('keydown', this.handleEscapePress)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     document.removeEventListener('keydown', this.handleEscapePress)
   }
 }
@@ -613,119 +609,119 @@ MMU_ENDLESS_SPOOL GROUPS="${esGrpStr}" QUIET=1`
 
 <style scoped>
 .card-light-theme {
-    background: #f0f0f0;
+  background: #f0f0f0;
 }
 
 .card-dark-theme {
-    background: #2c2c2c;
+  background: #2c2c2c;
 }
 
 .selected-card {
-    background: #595959 !important;
+  background: #595959 !important;
 }
 
 .disabled-card {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .small-font {
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
 
 .tiny-font {
-    font-size: 0.8em;
-    line-height: 0.8em;
+  font-size: 0.8em;
+  line-height: 0.8em;
 }
 
 .no-break {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .no-padding {
-    padding: 3px;
+  padding: 3px;
 }
 
 .min-width-card {
-    min-width: 96px;
+  min-width: 96px;
 }
 
 .min-width-map {
-    min-width: 180px;
+  min-width: 180px;
 }
 
 .no-padding .v-card__title,
 .no-padding .v-card__subtitle,
 .no-padding .v-card__text {
-    padding: 0px;
-    line-height: 1em;
+  padding: 0px;
+  line-height: 1em;
 }
 
 .short-switch {
-    padding-top: 0px;
-    margin-top: 0px;
-    margin-bottom: 2px;
+  padding-top: 0px;
+  margin-top: 0px;
+  margin-bottom: 2px;
 }
 
 .scrollable-table {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
 .fixed-area {
-    height: 300px;
-    position: relative;
+  height: 300px;
+  position: relative;
 }
 
 .drop-down-table {
-    height: 300px;
-    overflow-y: auto;
+  height: 300px;
+  overflow-y: auto;
 }
 
 .wrap-tool-name {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .tool-swatch {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    border: 1px solid lightgray;
-    vertical-align: middle;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid lightgray;
+  vertical-align: middle;
 }
 
 .triangle {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 40px 0 40px 15px;
-    border-color: transparent transparent transparent #595959;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 40px 0 40px 15px;
+  border-color: transparent transparent transparent #595959;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fade-enter,
 .fade-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 
 .overlay-text {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
 }
 
 .alert-text {
-    font-size: 1em;
+  font-size: 1em;
 }
 </style>

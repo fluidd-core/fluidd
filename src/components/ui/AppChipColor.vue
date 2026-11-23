@@ -25,15 +25,15 @@ export default class AppChipColor extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  @include theme(app-chip-color) using ($material) {
-    border-color: map-deep-get($material, 'text', 'primary');
-  }
+@include theme(app-chip-color) using ($material) {
+  border-color: map-deep-get($material, 'text', 'primary');
+}
 
-  .app-chip-color {
-    border-style: solid;
-    padding: 0;
-    width: 24px;
-  }
+.app-chip-color {
+  border-style: solid;
+  padding: 0;
+  width: 24px;
+}
 </style>

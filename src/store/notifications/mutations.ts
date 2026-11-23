@@ -7,21 +7,21 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setPushNotification (state, n: AppNotification) {
+  setPushNotification(state, n: AppNotification) {
     state.notifications.push(n)
   },
 
-  setMergeNotification (state, options: { n: AppNotification; i: number }) {
+  setMergeNotification(state, options: { n: AppNotification; i: number }) {
     if (options && options.n && options.i >= 0) {
       Vue.set(state.notifications, options.i, options.n)
     }
   },
 
-  setClearNotification (state, notification: AppNotification | string) {
+  setClearNotification(state, notification: AppNotification | string) {
     let i = -1
     if (typeof notification === 'string') {
       i = state.notifications.findIndex(n => n.id === notification)
@@ -33,8 +33,7 @@ export const mutations = {
     }
   },
 
-  setClearAllNotifications (state) {
-    state.notifications = state.notifications
-      .filter(n => !n.clear)
+  setClearAllNotifications(state) {
+    state.notifications = state.notifications.filter(n => !n.clear)
   }
 } satisfies MutationTree<NotificationsState>

@@ -4,9 +4,7 @@
     :class="containerClasses"
   >
     <v-row>
-      <v-col
-        class="pl-6 py-4 text-no-wrap"
-      >
+      <v-col class="pl-6 py-4 text-no-wrap">
         <v-tooltip top>
           <template #activator="{ on, attr }">
             <span
@@ -91,19 +89,19 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get afcExtruder () {
+  get afcExtruder() {
     return this.getAfcExtruderObject(this.name)
   }
 
-  get settings () {
+  get settings() {
     return this.getAfcExtruderSettings(this.name)
   }
 
-  get useRamming (): boolean {
+  get useRamming(): boolean {
     return this.afcExtruder?.tool_start === 'buffer'
   }
 
-  get hasActiveLane (): boolean {
+  get hasActiveLane(): boolean {
     const currentLane = this.afcCurrentLane
 
     if (currentLane == null) {
@@ -115,58 +113,56 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return lanes.includes(currentLane.name)
   }
 
-  get onShuttle (): boolean {
+  get onShuttle(): boolean {
     return this.afcExtruder?.on_shuttle === true
   }
 
-  get containerClasses () {
+  get containerClasses() {
     const isError = this.hasActiveLane && this.afcErrorState
 
     return {
-      'border-primary': !isError && (this.hasActiveLane || (this.onShuttle && this.afcHasToolchanger)),
-      'border-warning': !isError && (this.afcExtruder?.next_pickup === true),
+      'border-primary':
+        !isError && (this.hasActiveLane || (this.onShuttle && this.afcHasToolchanger)),
+      'border-warning': !isError && this.afcExtruder?.next_pickup === true,
       'border-error': isError,
       'darken-3': this.$vuetify.theme.dark,
-      'lighten-2': !this.$vuetify.theme.dark,
+      'lighten-2': !this.$vuetify.theme.dark
     }
   }
 
-  get rammingState (): boolean {
+  get rammingState(): boolean {
     if (!this.useRamming) return false
 
     const extruder = this.afcCurrentLane?.extruder ?? ''
     const bufferState = (this.afcCurrentBuffer?.state ?? '').toLowerCase()
 
-    return (
-      extruder === this.name &&
-      bufferState === 'trailing'
-    )
+    return extruder === this.name && bufferState === 'trailing'
   }
 
-  get laneLoaded (): string {
+  get laneLoaded(): string {
     return this.afcExtruder?.lane_loaded ?? ''
   }
 
-  get preSensorStatus (): boolean {
+  get preSensorStatus(): boolean {
     return this.afcExtruder?.tool_start_status === true
   }
 
-  get preSensorClasses () {
+  get preSensorClasses() {
     if (this.useRamming) {
       return {
         success: !this.laneLoaded && this.rammingState,
         error: !this.laneLoaded && !this.rammingState,
-        'grey lighten4': this.laneLoaded,
+        'grey lighten4': this.laneLoaded
       }
     }
 
     return {
       success: this.preSensorStatus,
-      error: !this.preSensorStatus,
+      error: !this.preSensorStatus
     }
   }
 
-  get preSensorOutput (): string {
+  get preSensorOutput(): string {
     if (this.useRamming) {
       if (this.laneLoaded) return `${this.$t('app.afc.RammingSensor')}`
 
@@ -179,31 +175,28 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return `${this.$t('app.afc.PreExtruderSensor')} - ${status}`
   }
 
-  get hasPostSensor (): boolean {
-    return (
-      this.settings != null &&
-      'pin_tool_end' in this.settings
-    )
+  get hasPostSensor(): boolean {
+    return this.settings != null && 'pin_tool_end' in this.settings
   }
 
-  get postSensorStatus (): boolean {
+  get postSensorStatus(): boolean {
     return this.afcExtruder?.tool_end_status === true
   }
 
-  get postSensorClasses () {
+  get postSensorClasses() {
     return {
       success: this.postSensorStatus,
-      error: !this.postSensorStatus,
+      error: !this.postSensorStatus
     }
   }
 
-  get postSensorOutput (): string {
+  get postSensorOutput(): string {
     const status = this.postSensorStatus ? this.$t('app.afc.Detected') : this.$t('app.afc.Empty')
 
     return `${this.$t('app.afc.PostExtruderSensor')} - ${status}`
   }
 
-  get bufferOutput (): string {
+  get bufferOutput(): string {
     const extruder = this.afcCurrentLane?.extruder
 
     // "Standalone" lanes don't have buffers, so don't show any buffer status
@@ -218,13 +211,16 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return `${this.afcCurrentLane?.buffer ?? '--'}: ${this.afcCurrentBuffer?.state ?? '--'}`
   }
 
-  get toolSelectionDisabled (): boolean {
-    return !this.klippyReady || this.printerPrinting ||
-     (this.afcExtruder?.status ?? 'Idle') !== 'Idle' ||
+  get toolSelectionDisabled(): boolean {
+    return (
+      !this.klippyReady ||
+      this.printerPrinting ||
+      (this.afcExtruder?.status ?? 'Idle') !== 'Idle' ||
       (this.afcCurrentState !== 'Idle' && this.afcCurrentState !== 'Error')
+    )
   }
 
-  get state (): string {
+  get state(): string {
     const extruder = this.afcCurrentLane?.extruder
 
     if (this.afcExtruder?.status && this.afcExtruder.status !== 'Idle') {
@@ -242,7 +238,7 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return this.$t('app.afc.Idle').toString()
   }
 
-  get stateLane (): string {
+  get stateLane(): string {
     if (this.afcExtruder?.lane_loaded) {
       return this.afcExtruder.lane_loaded
     }
@@ -254,22 +250,22 @@ export default class AfcCardExtruder extends Mixins(StateMixin, AfcMixin) {
     return this.$t('app.afc.LaneLoadedNone').toString()
   }
 
-  get stateLaneClasses () {
+  get stateLaneClasses() {
     return {
       'primary--text': this.hasActiveLane,
-      'error--text': this.hasActiveLane && this.afcErrorState,
+      'error--text': this.hasActiveLane && this.afcErrorState
     }
   }
 
-  get toolSelectionIcon (): string {
+  get toolSelectionIcon(): string {
     return this.onShuttle ? '$afcUnselectTool' : '$afcSelectTool'
   }
 
-  get toolSelectionLabel (): string {
+  get toolSelectionLabel(): string {
     return this.$t(this.onShuttle ? 'app.afc.UnselectTool' : 'app.afc.SelectTool').toString()
   }
 
-  toolSelectionHandler () {
+  toolSelectionHandler() {
     if (this.onShuttle) {
       this.sendGcode('AFC_UNSELECT_TOOL')
       return

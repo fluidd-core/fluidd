@@ -8,7 +8,12 @@ import getFilePaths from '@/util/get-file-paths'
 
 const isTmc = (item: string): item is Klipper.TmcKey => /^tmc\d{4} /.test(item)
 
-export const handleTrinamicDriversChange = (payload: Partial<Klipper.PrinterState>, state: RootState, dispatch: Dispatch, getters: any) => {
+export const handleTrinamicDriversChange = (
+  payload: Partial<Klipper.PrinterState>,
+  state: RootState,
+  dispatch: Dispatch,
+  getters: any
+) => {
   for (const item in payload) {
     if (
       isTmc(item) &&
@@ -24,7 +29,9 @@ export const handleTrinamicDriversChange = (payload: Partial<Klipper.PrinterStat
         id: `${item}-otpw`,
         title: i18n.t('app.printer.title.stepper_driver_overheating', { name }).toString(),
         description: i18n.t('app.printer.msg.possible_print_failure').toString(),
-        to: i18n.t('app.printer.url.stepper_driver_overheating', { klipperDomain: klippyApp.domain }).toString(),
+        to: i18n
+          .t('app.printer.url.stepper_driver_overheating', { klipperDomain: klippyApp.domain })
+          .toString(),
         type: 'error',
         snackbar: true,
         merge: true,
@@ -37,36 +44,34 @@ export const handleTrinamicDriversChange = (payload: Partial<Klipper.PrinterStat
   }
 }
 
-export const handlePrintStateChange = (payload: Partial<Klipper.PrinterState>, state: RootState, dispatch: Dispatch) => {
+export const handlePrintStateChange = (
+  payload: Partial<Klipper.PrinterState>,
+  state: RootState,
+  dispatch: Dispatch
+) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
   if (payload.print_stats?.state != null) {
     const currentPrintState = state.printer.printer.print_stats?.state
 
-    if (
-      currentPrintState !== 'printing' &&
-      payload.print_stats.state === 'printing'
-    ) {
+    if (currentPrintState !== 'printing' && payload.print_stats.state === 'printing') {
       // This is a new print starting...
       dispatch('printer/onPrintStart', payload, { root: true })
-    } else if (
-      currentPrintState === 'printing' &&
-      payload.print_stats.state === 'complete'
-    ) {
+    } else if (currentPrintState === 'printing' && payload.print_stats.state === 'complete') {
       // This is a completed print...
       dispatch('printer/onPrintEnd', payload, { root: true })
-    } else if (
-      currentPrintState === 'printing' &&
-      payload.print_stats.state === 'standby'
-    ) {
+    } else if (currentPrintState === 'printing' && payload.print_stats.state === 'standby') {
       // This is a cancelled print...
       dispatch('printer/onPrintEnd', payload, { root: true })
     }
   }
 }
 
-export const handleCurrentFileChange = (payload: Partial<Klipper.PrinterState>, state: RootState) => {
+export const handleCurrentFileChange = (
+  payload: Partial<Klipper.PrinterState>,
+  state: RootState
+) => {
   if (
     payload.print_stats?.filename &&
     payload.print_stats.filename !== state.printer.printer.print_stats?.filename

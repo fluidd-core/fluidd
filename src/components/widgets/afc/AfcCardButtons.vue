@@ -11,9 +11,7 @@
         v-bind="attrs"
         v-on="on"
       >
-        <v-icon dense>
-          $menu
-        </v-icon>
+        <v-icon dense> $menu </v-icon>
       </app-btn>
     </template>
     <v-list dense>
@@ -119,17 +117,17 @@ import downloadUrl from '@/util/download-url'
 import type { Macro } from '@/store/macros/types'
 
 type AfcCommand = {
-  icon: string,
-  text: string,
-  command: string,
-  description?: string,
+  icon: string
+  text: string
+  command: string
+  description?: string
   disabled?: boolean
 }
 
 type AfcMacro = {
-  text: string,
-  macroName: string,
-  macro: Macro,
+  text: string
+  macroName: string
+  macro: Macro
   disabled?: boolean
 }
 
@@ -142,19 +140,19 @@ type AfcMacro = {
 export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
   showAfcSettings = false
 
-  get printerSettings (): Klipper.SettingsState {
+  get printerSettings(): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  get printerConfig (): Klipper.ConfigState {
+  get printerConfig(): Klipper.ConfigState {
     return this.$typedGetters['printer/getPrinterConfig']
   }
 
-  get availableCommands (): GcodeCommands {
+  get availableCommands(): GcodeCommands {
     return this.$typedGetters['printer/getAvailableCommands']
   }
 
-  get commands () {
+  get commands() {
     const availableCommands = this.availableCommands
 
     const commands: AfcCommand[] = []
@@ -189,10 +187,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
       }
     }
 
-    if (
-      this.afc?.td1_present === true &&
-      'AFC_GET_TD_ONE_DATA' in availableCommands
-    ) {
+    if (this.afc?.td1_present === true && 'AFC_GET_TD_ONE_DATA' in availableCommands) {
       commands.push({
         icon: '',
         text: this.$t('app.afc.CaptureTd').toString(),
@@ -205,7 +200,7 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
     return commands
   }
 
-  get macros () {
+  get macros() {
     const settings: Klipper.AfcSettings | undefined = this.printerSettings.afc
 
     const afcMacros: AfcMacro[] = []
@@ -241,22 +236,19 @@ export default class AfcCardButtons extends Mixins(StateMixin, AfcMixin) {
     return afcMacros
   }
 
-  downloadDebugJson () {
+  downloadDebugJson() {
     const printer: Klipper.PrinterState = this.$typedState.printer.printer
 
     const output = {
       config: Object.fromEntries(
-        Object.entries(this.printerConfig)
-          .filter(([key]) => /^afc(?:$|_)/.test(key))
+        Object.entries(this.printerConfig).filter(([key]) => /^afc(?:$|_)/.test(key))
       ),
       settings: Object.fromEntries(
-        Object.entries(this.printerSettings)
-          .filter(([key]) => /^afc(?:$|_)/.test(key))
+        Object.entries(this.printerSettings).filter(([key]) => /^afc(?:$|_)/.test(key))
       ),
       printer: Object.fromEntries(
-        Object.entries(printer)
-          .filter(([key]) => /^afc(?:$|_)/.test(key))
-      ),
+        Object.entries(printer).filter(([key]) => /^afc(?:$|_)/.test(key))
+      )
     }
 
     const jsonString = JSON.stringify(output)

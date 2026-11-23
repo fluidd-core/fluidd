@@ -8,53 +8,52 @@ const AFC_DEFAULT_SPOOL_WEIGHT = 1000
 
 @Component
 export default class AfcMixin extends Vue {
-  get afc (): Klipper.AfcState | undefined {
+  get afc(): Klipper.AfcState | undefined {
     return this.$typedState.printer.printer.AFC
   }
 
-  get afcExtruders (): string[] {
+  get afcExtruders(): string[] {
     return this.afc?.extruders ?? []
   }
 
-  get afcHubs (): string[] {
+  get afcHubs(): string[] {
     return this.afc?.hubs ?? []
   }
 
-  get afcUnits (): string[] {
+  get afcUnits(): string[] {
     return this.afc?.units ?? []
   }
 
-  get afcLanes (): string[] {
+  get afcLanes(): string[] {
     return this.afc?.lanes ?? []
   }
 
-  get afcLoadedSpools (): Record<number, string> {
-    const loadedSpools = this.afcLanes
-      .reduce<Record<number, string>>((loadedSpools, laneName) => {
-        const lane = this.getAfcLaneObject(laneName)
+  get afcLoadedSpools(): Record<number, string> {
+    const loadedSpools = this.afcLanes.reduce<Record<number, string>>((loadedSpools, laneName) => {
+      const lane = this.getAfcLaneObject(laneName)
 
-        if (lane?.spool_id) {
-          loadedSpools[lane.spool_id] = lane.name
-        }
+      if (lane?.spool_id) {
+        loadedSpools[lane.spool_id] = lane.name
+      }
 
-        return loadedSpools
-      }, {})
+      return loadedSpools
+    }, {})
 
     return loadedSpools
   }
 
-  get afcErrorState (): boolean {
+  get afcErrorState(): boolean {
     return this.afc?.error_state === true
   }
 
-  get afcHasToolchanger (): boolean {
+  get afcHasToolchanger(): boolean {
     const printerState = this.$typedState.printer.printer
 
     // AFC_Toolchanger has to be registered as a named section in klipper config
     return Object.keys(printerState).some(key => key.startsWith('AFC_Toolchanger '))
   }
 
-  get afcCurrentLane (): Klipper.AfcLaneState | undefined {
+  get afcCurrentLane(): Klipper.AfcLaneState | undefined {
     const laneName = this.afc?.current_load ?? this.afc?.current_lane
 
     if (laneName != null) {
@@ -62,7 +61,7 @@ export default class AfcMixin extends Vue {
     }
   }
 
-  get afcCurrentBuffer (): Klipper.AfcBufferState | undefined {
+  get afcCurrentBuffer(): Klipper.AfcBufferState | undefined {
     const bufferName = this.afcCurrentLane?.buffer
 
     if (bufferName != null) {
@@ -70,48 +69,47 @@ export default class AfcMixin extends Vue {
     }
   }
 
-  get afcCurrentState (): Klipper.AfcStateState {
+  get afcCurrentState(): Klipper.AfcStateState {
     return this.afc?.current_state ?? 'Idle'
   }
 
-  get afcExistsSpoolman (): boolean {
+  get afcExistsSpoolman(): boolean {
     return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
-  get afcShowFilamentName (): boolean {
+  get afcShowFilamentName(): boolean {
     return this.$typedState.config.uiSettings.afc.showFilamentName
   }
 
-  get afcShowLaneInfinite (): boolean {
+  get afcShowLaneInfinite(): boolean {
     return this.$typedState.config.uiSettings.afc.showLaneInfinite
   }
 
-  get afcShowUnitIcons (): boolean {
+  get afcShowUnitIcons(): boolean {
     return this.$typedState.config.uiSettings.afc.showUnitIcons
   }
 
-  get afcShowTd1Color (): boolean {
+  get afcShowTd1Color(): boolean {
     return this.$typedState.config.uiSettings.afc.showTd1Color
   }
 
-  get afcHiddenExtruders (): string[] {
+  get afcHiddenExtruders(): string[] {
     return this.$typedState.config.uiSettings.afc.hiddenExtruders
   }
 
-  get afcHiddenUnits (): string[] {
+  get afcHiddenUnits(): string[] {
     return this.$typedState.config.uiSettings.afc.hiddenUnits
   }
 
-  getAfcLaneObject (lane: string): Klipper.AfcLaneState | undefined {
+  getAfcLaneObject(lane: string): Klipper.AfcLaneState | undefined {
     const printerState = this.$typedState.printer.printer
 
-    return (
-      printerState[(`AFC_stepper ${lane}`)] ??
-      printerState[(`AFC_lane ${lane}`)]
-    )
+    return printerState[`AFC_stepper ${lane}`] ?? printerState[`AFC_lane ${lane}`]
   }
 
-  getAfcLaneSettings (lane: string): Klipper.AfcLaneSettings | Klipper.AfcStepperSettings | undefined {
+  getAfcLaneSettings(
+    lane: string
+  ): Klipper.AfcLaneSettings | Klipper.AfcStepperSettings | undefined {
     const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return (
@@ -120,31 +118,31 @@ export default class AfcMixin extends Vue {
     )
   }
 
-  getAfcExtruderObject (extruder: string): Klipper.AfcExtruderState | undefined {
-    return this.$typedState.printer.printer[(`AFC_extruder ${extruder}`)]
+  getAfcExtruderObject(extruder: string): Klipper.AfcExtruderState | undefined {
+    return this.$typedState.printer.printer[`AFC_extruder ${extruder}`]
   }
 
-  getAfcExtruderSettings (extruder: string): Klipper.AfcExtruderSettings | undefined {
+  getAfcExtruderSettings(extruder: string): Klipper.AfcExtruderSettings | undefined {
     const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_extruder ${extruder.toLowerCase()}`]
   }
 
-  getAfcBufferObject (buffer: string): Klipper.AfcBufferState | undefined {
+  getAfcBufferObject(buffer: string): Klipper.AfcBufferState | undefined {
     return this.$typedState.printer.printer[`AFC_buffer ${buffer}`]
   }
 
-  getAfcBufferSettings (buffer: string): Klipper.AfcBufferSettings | undefined {
+  getAfcBufferSettings(buffer: string): Klipper.AfcBufferSettings | undefined {
     const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_buffer ${buffer.toLowerCase()}`]
   }
 
-  getAfcHubObject (hub: string): Klipper.AfcHubState | undefined {
+  getAfcHubObject(hub: string): Klipper.AfcHubState | undefined {
     return this.$typedState.printer.printer[`AFC_hub ${hub}`]
   }
 
-  getAfcHubSettings (hub: string): Klipper.AfcHubSettings | undefined {
+  getAfcHubSettings(hub: string): Klipper.AfcHubSettings | undefined {
     const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings[`afc_hub ${hub.toLowerCase()}`]
@@ -154,7 +152,7 @@ export default class AfcMixin extends Vue {
   // Single method returning all resolved lane + spool data so each component
   // does not need to call individual accessors or implement its own look-ups.
 
-  getAfcLaneInfo (lane: string): Klipper.AfcSpoolLaneInfo {
+  getAfcLaneInfo(lane: string): Klipper.AfcSpoolLaneInfo {
     const laneObj = this.getAfcLaneObject(lane)
 
     const spoolId = laneObj?.spool_id ?? undefined
@@ -182,9 +180,10 @@ export default class AfcMixin extends Vue {
     }
 
     const spoolmanBase: string | undefined = this.$typedGetters['spoolman/getSpoolmanUrl']
-    const spoolUrl = spoolmanBase && spoolId
-      ? `${spoolmanBase.replace(/\/$/, '')}/spool/show/${spoolId}`
-      : undefined
+    const spoolUrl =
+      spoolmanBase && spoolId
+        ? `${spoolmanBase.replace(/\/$/, '')}/spool/show/${spoolId}`
+        : undefined
 
     return {
       spoolId,
@@ -200,11 +199,11 @@ export default class AfcMixin extends Vue {
       extruderTemp: spool?.filament?.settings_extruder_temp ?? laneObj?.extruder_temp ?? undefined,
       bedTemp: spool?.filament?.settings_bed_temp ?? laneObj?.bed_temp ?? undefined,
       spoolUrl,
-      filamentLoaded: laneObj ? (laneObj?.prep && laneObj?.load) : undefined
+      filamentLoaded: laneObj ? laneObj?.prep && laneObj?.load : undefined
     }
   }
 
-  shouldShowAfcDialog (fileWithMeta: AppFileWithMeta | AppFile | undefined): boolean {
+  shouldShowAfcDialog(fileWithMeta: AppFileWithMeta | AppFile | undefined): boolean {
     if (this.afc == null) return false
     // File not in store yet (e.g. reprint): open anyway, the dialog fetches metadata
     if (fileWithMeta == null) return true

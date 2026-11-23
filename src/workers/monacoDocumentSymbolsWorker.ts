@@ -1,79 +1,98 @@
 import { consola } from 'consola'
-import { getFirstNonWhitespaceColumn, getLastNonWhitespaceColumn, type MonacoLanguageWorkerRequestMessage, type MonacoLanguageWorkerResponseMessage, type ReduceState } from './monacoWorkerHelpers'
+import {
+  getFirstNonWhitespaceColumn,
+  getLastNonWhitespaceColumn,
+  type MonacoLanguageWorkerRequestMessage,
+  type MonacoLanguageWorkerResponseMessage,
+  type ReduceState
+} from './monacoWorkerHelpers'
 import type { IRange } from 'monaco-editor/editor/editor.api'
 
-export type MonacoDocumentSymbolsWorkerResponseMessage = MonacoLanguageWorkerResponseMessage<MonacoSymbol[]>
+export type MonacoDocumentSymbolsWorkerResponseMessage = MonacoLanguageWorkerResponseMessage<
+  MonacoSymbol[]
+>
 
 export type MonacoSymbol = {
-  name: string,
-  range: IRange,
+  name: string
+  range: IRange
   children: MonacoSymbolChild[]
 }
 
 export type MonacoSymbolChild = {
-  name: string,
+  name: string
   range: IRange
 }
 
 const klipperConfigDocumentSymbols = (lines: string[]): MonacoSymbol[] => {
   return lines
-    .reduce<ReduceState<{ name: string, children: ReduceState<{ name: string, range: IRange }>, range: IRange }>>((state, lineContent, index) => {
-      const section = /^\s*\[[^\]]+\]/.exec(lineContent)
+    .reduce<
+      ReduceState<{
+        name: string
+        children: ReduceState<{ name: string; range: IRange }>
+        range: IRange
+      }>
+    >(
+      (state, lineContent, index) => {
+        const section = /^\s*\[[^\]]+\]/.exec(lineContent)
 
-      if (section) {
-        state.result.push(state.current = {
-          name: section[0],
-          range: {
-            startLineNumber: index + 1,
-            startColumn: getFirstNonWhitespaceColumn(lineContent),
-            endLineNumber: index + 1,
-            endColumn: getLastNonWhitespaceColumn(lineContent)
-          },
-          children: { result: [] }
-        })
-      } else {
-        const isNotComment = /^\s*[^#;\s]/.test(lineContent)
-
-        if (isNotComment && state.current) {
-          const startColumn = getFirstNonWhitespaceColumn(lineContent)
-
-          const property = (
-            state.current.children.current != null &&
-            startColumn > state.current.children.current.range.startColumn
-          )
-            ? null
-            : /^\s*([^=:\s#;](?:[^=:]*[^=:\s])?)\s*[=:]/.exec(lineContent)
-
-          if (property) {
-            state.current.children.result.push(state.current.children.current = {
-              name: property[1],
+        if (section) {
+          state.result.push(
+            (state.current = {
+              name: section[0],
               range: {
                 startLineNumber: index + 1,
-                startColumn,
+                startColumn: getFirstNonWhitespaceColumn(lineContent),
+                endLineNumber: index + 1,
+                endColumn: getLastNonWhitespaceColumn(lineContent)
+              },
+              children: { result: [] }
+            })
+          )
+        } else {
+          const isNotComment = /^\s*[^#;\s]/.test(lineContent)
+
+          if (isNotComment && state.current) {
+            const startColumn = getFirstNonWhitespaceColumn(lineContent)
+
+            const property =
+              state.current.children.current != null &&
+              startColumn > state.current.children.current.range.startColumn
+                ? null
+                : /^\s*([^=:\s#;](?:[^=:]*[^=:\s])?)\s*[=:]/.exec(lineContent)
+
+            if (property) {
+              state.current.children.result.push(
+                (state.current.children.current = {
+                  name: property[1],
+                  range: {
+                    startLineNumber: index + 1,
+                    startColumn,
+                    endLineNumber: index + 1,
+                    endColumn: getLastNonWhitespaceColumn(lineContent)
+                  }
+                })
+              )
+            } else if (state.current.children.current) {
+              state.current.children.current.range = {
+                ...state.current.children.current.range,
                 endLineNumber: index + 1,
                 endColumn: getLastNonWhitespaceColumn(lineContent)
               }
-            })
-          } else if (state.current.children.current) {
-            state.current.children.current.range = {
-              ...state.current.children.current.range,
+            }
+
+            state.current.range = {
+              ...state.current.range,
               endLineNumber: index + 1,
               endColumn: getLastNonWhitespaceColumn(lineContent)
             }
           }
-
-          state.current.range = {
-            ...state.current.range,
-            endLineNumber: index + 1,
-            endColumn: getLastNonWhitespaceColumn(lineContent)
-          }
         }
-      }
 
-      return state
-    }, { result: [] })
-    .result
-    .map(section => ({
+        return state
+      },
+      { result: [] }
+    )
+    .result.map(section => ({
       name: section.name,
       range: section.range,
       children: section.children.result

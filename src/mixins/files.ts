@@ -10,8 +10,8 @@ import downloadUrl from '@/util/download-url'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 
-type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestConfig<D> & (
-  T extends string
+type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestConfig<D> &
+  (T extends string
     ? { responseType?: 'text' | 'json' }
     : T extends ArrayBuffer
       ? { responseType: 'arraybuffer' }
@@ -19,30 +19,35 @@ type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestCon
         ? { responseType: 'blob' }
         : T extends FormData
           ? { responseType: 'formdata' }
-          : unknown
-        )
+          : unknown)
 
 @Component
 export default class FilesMixin extends Vue {
-  get apiUrl (): string {
+  get apiUrl(): string {
     return this.$typedState.config.apiUrl
   }
 
-  get isTrustedUser (): boolean {
+  get isTrustedUser(): boolean {
     const currentUser: AppUser | null = this.$typedState.auth.currentUser
 
     return currentUser?.username === '_TRUSTED_USER_'
   }
 
-  getThumbUrl (file: AppFile, root: string, path: string, large: boolean, date?: number) {
+  getThumbUrl(file: AppFile, root: string, path: string, large: boolean, date?: number) {
     const thumb = this.getThumb(file, root, path, large, date)
 
     return thumb?.url ?? ''
   }
 
-  getThumb (file: AppFile, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
+  getThumb(
+    file: AppFile,
+    root: string,
+    path: string,
+    large = true,
+    date?: number
+  ): AppFileThumbnail | undefined {
     if (file.thumbnails?.length) {
-      const thumb = file.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
+      const thumb = file.thumbnails.reduce((a, b) => (a.size > b.size === large ? a : b))
 
       if (thumb.relative_path) {
         const filepath = path ? `${root}/${path}` : root
@@ -60,21 +65,22 @@ export default class FilesMixin extends Vue {
    * stream and parse without buffering the whole file in memory. Prompts
    * the user for confirmation if the file exceeds 100 MB.
    */
-  async getGcodePreviewUrl (file: AppFile): Promise<string | undefined> {
+  async getGcodePreviewUrl(file: AppFile): Promise<string | undefined> {
     const sizeInMB = file.size / 1024 / 1024
 
-    const result = (
+    const result =
       sizeInMB < 100 ||
-      await this.$confirm(
+      (await this.$confirm(
         this.$t('app.gcode.msg.confirm', {
           filename: file.filename,
           size: this.$filters.getReadableFileSizeString(file.size)
-        }).toString(), {
+        }).toString(),
+        {
           title: this.$tc('app.general.title.gcode_preview'),
           color: 'card-heading',
           icon: '$error'
-        })
-    )
+        }
+      ))
 
     if (result) {
       const path = file.path ? `gcodes/${file.path}` : 'gcodes'
@@ -88,7 +94,12 @@ export default class FilesMixin extends Vue {
    * @param filename The filename to retrieve
    * @param path The path to the file
    */
-  async getFile<T = unknown> (filename: string, path: string, size = 0, options?: AxiosRequestConfigForReturnType<T>) {
+  async getFile<T = unknown>(
+    filename: string,
+    path: string,
+    size = 0,
+    options?: AxiosRequestConfigForReturnType<T>
+  ) {
     const currentDownload: FileDownload | null = this.$typedState.files.download
 
     if (currentDownload) {
@@ -98,9 +109,7 @@ export default class FilesMixin extends Vue {
     }
 
     // Sort out the filepath
-    const filepath = path
-      ? `${path}/${filename}`
-      : filename
+    const filepath = path ? `${path}/${filename}` : filename
     const uid = uuidv4()
 
     try {
@@ -118,18 +127,14 @@ export default class FilesMixin extends Vue {
       })
 
       const response = await this.serverFilesGet<T>(filepath, {
-        ...options ?? {} as AxiosRequestConfigForReturnType<T>,
+        ...(options ?? ({} as AxiosRequestConfigForReturnType<T>)),
         signal: abortController.signal,
         onDownloadProgress: (event: AxiosProgressEvent) => {
           if (abortController.signal.aborted) {
             return
           }
 
-          const progress = event.progress ?? (
-            size > 0
-              ? event.loaded / size
-              : 0
-          )
+          const progress = event.progress ?? (size > 0 ? event.loaded / size : 0)
 
           const payload: any = {
             uid,
@@ -159,7 +164,7 @@ export default class FilesMixin extends Vue {
    * @param filename The filename to retrieve.
    * @param path The path to the file.
    */
-  async downloadFile (filename: string, path: string) {
+  async downloadFile(filename: string, path: string) {
     // Grab a oneshot.
     const url = await this.createFileUrlWithToken(filename, path)
 
@@ -173,21 +178,18 @@ export default class FilesMixin extends Vue {
    * @param path The path to the file.
    * @returns The url for the requested file
    */
-  createFileUrl (filename: string, path: string, date?: number) {
-    const filepath = (path) ? `${path}/${filename}` : `${filename}`
+  createFileUrl(filename: string, path: string, date?: number) {
+    const filepath = path ? `${path}/${filename}` : `${filename}`
 
-    const encodedFilepath = filepath
-      .replace(/[^/]+/g, match => encodeURIComponent(match))
+    const encodedFilepath = filepath.replace(/[^/]+/g, match => encodeURIComponent(match))
 
     return `${this.apiUrl}/server/files/${encodedFilepath}?date=${date || Date.now()}`
   }
 
-  async createFileUrlWithToken (filename: string, path: string, date?: number) {
+  async createFileUrlWithToken(filename: string, path: string, date?: number) {
     const url = this.createFileUrl(filename, path, date)
 
-    return this.isTrustedUser
-      ? url
-      : `${url}&token=${await SocketActions.accessOneshotToken()}`
+    return this.isTrustedUser ? url : `${url}&token=${await SocketActions.accessOneshotToken()}`
   }
 
   /**
@@ -200,10 +202,15 @@ export default class FilesMixin extends Vue {
    * @returns The response, or `undefined` if the upload failed or was cancelled.
    * Failures are logged and reported to the user here.
    */
-  async uploadFile (file: File, path: string, root: string, andPrint: boolean, uid?: string, options?: AxiosRequestConfig) {
-    const filepath = path
-      ? `${path}/${file.name}`
-      : file.name
+  async uploadFile(
+    file: File,
+    path: string,
+    root: string,
+    andPrint: boolean,
+    uid?: string,
+    options?: AxiosRequestConfig
+  ) {
+    const filepath = path ? `${path}/${file.name}` : file.name
     uid = uid || uuidv4()
 
     try {
@@ -245,7 +252,9 @@ export default class FilesMixin extends Vue {
       if (!axios.isCancel(error)) {
         consola.error(`[FileUpload] ${filepath}`, error)
 
-        EventBus.$emit(this.$t('app.file_system.msg.upload_failed', { filepath }).toString(), { type: 'error' })
+        EventBus.$emit(this.$t('app.file_system.msg.upload_failed', { filepath }).toString(), {
+          type: 'error'
+        })
       }
     } finally {
       this.$typedDispatch('files/removeFileUpload', uid)
@@ -253,44 +262,37 @@ export default class FilesMixin extends Vue {
   }
 
   // Upload some files.
-  async uploadFiles (files: FileList | File[] | FileWithPath[], path: string, root: string, andPrint: boolean) {
+  async uploadFiles(
+    files: FileList | File[] | FileWithPath[],
+    path: string,
+    root: string,
+    andPrint: boolean
+  ) {
     // For each file, adds the associated state.
-    const fileUploads = [...files]
-      .map(file => {
-        const uid = uuidv4()
-        const [fullPath, fileObject] = 'path' in file
-          ? [
-              [path, file.path]
-                .filter(Boolean)
-                .join('/'),
-              file.file
-            ]
-          : [
-              path,
-              file
-            ]
+    const fileUploads = [...files].map(file => {
+      const uid = uuidv4()
+      const [fullPath, fileObject] =
+        'path' in file ? [[path, file.path].filter(Boolean).join('/'), file.file] : [path, file]
 
-        const filepath = fullPath
-          ? `${fullPath}/${fileObject.name}`
-          : fileObject.name
+      const filepath = fullPath ? `${fullPath}/${fileObject.name}` : fileObject.name
 
-        this.$typedDispatch('files/updateFileUpload', {
-          uid,
-          filepath,
-          size: fileObject.size,
-          loaded: 0,
-          percent: 0,
-          speed: 0,
-          cancelled: false,
-          complete: false
-        })
-
-        return {
-          uid,
-          fullPath,
-          fileObject
-        }
+      this.$typedDispatch('files/updateFileUpload', {
+        uid,
+        filepath,
+        size: fileObject.size,
+        loaded: 0,
+        percent: 0,
+        speed: 0,
+        cancelled: false,
+        complete: false
       })
+
+      return {
+        uid,
+        fullPath,
+        fileObject
+      }
+    })
 
     if (fileUploads.length > 1) {
       andPrint = false
@@ -305,20 +307,35 @@ export default class FilesMixin extends Vue {
       const fileState = currentUploads.find(u => u.uid === fileUpload.uid)
 
       if (fileState && !fileState?.cancelled) {
-        await this.uploadFile(fileUpload.fileObject, fileUpload.fullPath, root, andPrint, fileUpload.uid)
+        await this.uploadFile(
+          fileUpload.fileObject,
+          fileUpload.fullPath,
+          root,
+          andPrint,
+          fileUpload.uid
+        )
       } else {
         this.$typedDispatch('files/removeFileUpload', fileUpload.uid)
       }
     }
   }
 
-  async serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfigForReturnType<T>) {
+  async serverFilesGet<T = unknown>(
+    filepath: string,
+    options?: AxiosRequestConfigForReturnType<T>
+  ) {
     const fileUrl = await this.createFileUrlWithToken(filepath, '')
 
     return axios.get<T>(fileUrl, options)
   }
 
-  async serverFilesUploadPost (file: File, path: string, root: string, print?: boolean, options?: AxiosRequestConfig) {
+  async serverFilesUploadPost(
+    file: File,
+    path: string,
+    root: string,
+    print?: boolean,
+    options?: AxiosRequestConfig
+  ) {
     const formData = new FormData()
 
     formData.append('file', file, file.name)
@@ -330,6 +347,10 @@ export default class FilesMixin extends Vue {
 
     const token = this.isTrustedUser ? null : await SocketActions.accessOneshotToken()
 
-    return axios.postForm<Moonraker.Files.UploadResponse>(`${this.apiUrl}/server/files/upload${token ? `?token=${token}` : ''}`, formData, options)
+    return axios.postForm<Moonraker.Files.UploadResponse>(
+      `${this.apiUrl}/server/files/upload${token ? `?token=${token}` : ''}`,
+      formData,
+      options
+    )
   }
 }

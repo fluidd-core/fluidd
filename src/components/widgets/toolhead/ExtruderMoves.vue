@@ -103,7 +103,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
 
   valid = true
 
-  get extrudeSpeed () {
+  get extrudeSpeed() {
     const extrudeSpeed: number = this.$typedState.config.uiSettings.toolhead.extrudeSpeed
 
     return extrudeSpeed === -1
@@ -111,7 +111,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
       : extrudeSpeed
   }
 
-  set extrudeSpeed (value: number) {
+  set extrudeSpeed(value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.toolhead.extrudeSpeed',
       value,
@@ -119,7 +119,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
     })
   }
 
-  get extrudeLength () {
+  get extrudeLength() {
     const extrudeLength: number = this.$typedState.config.uiSettings.toolhead.extrudeLength
 
     return extrudeLength === -1
@@ -127,7 +127,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
       : extrudeLength
   }
 
-  set extrudeLength (value: number) {
+  set extrudeLength(value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.toolhead.extrudeLength',
       value,
@@ -136,31 +136,31 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   @Watch('activeExtruder')
-  activeExtruderChanged () {
+  activeExtruderChanged() {
     this.form.validate()
   }
 
-  maxExtrudeLengthRule (value: number) {
+  maxExtrudeLengthRule(value: number) {
     return this.$rules.numberLessThanOrEqual(this.maxExtrudeLength)(value)
   }
 
-  maxExtrudeSpeedRule (value: number) {
+  maxExtrudeSpeedRule(value: number) {
     return this.$rules.numberLessThanOrEqual(this.maxExtrudeSpeed)(value)
   }
 
-  retract () {
+  retract() {
     if (this.valid) {
       this.sendExtrudeGcode(-this.extrudeLength, this.extrudeSpeed, this.$waits.onExtrude)
     }
   }
 
-  extrude () {
+  extrude() {
     if (this.valid) {
       this.sendExtrudeGcode(this.extrudeLength, this.extrudeSpeed, this.$waits.onExtrude)
     }
   }
 
-  mounted () {
+  mounted() {
     this.form.validate()
   }
 }

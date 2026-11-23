@@ -103,7 +103,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
   private localFilamentPos: number = -1
 
   @Watch('open')
-  onShowDialogChanged (newValue: boolean): void {
+  onShowDialogChanged(newValue: boolean): void {
     if (newValue) {
       this.localGate = this.gate
       this.localTool = this.tool
@@ -111,7 +111,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     }
   }
 
-  get selectedTool (): string {
+  get selectedTool(): string {
     if (this.localTool === this.TOOL_GATE_UNKNOWN) {
       return 'Unknown'
     } else if (this.localTool === this.TOOL_GATE_BYPASS) {
@@ -120,8 +120,8 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return `T${this.localTool}`
   }
 
-  set selectedTool (newTool: string) {
-    const index = this.toolsList.findIndex((item) => item === newTool)
+  set selectedTool(newTool: string) {
+    const index = this.toolsList.findIndex(item => item === newTool)
     if (index === this.numGates) {
       this.localTool = this.TOOL_GATE_BYPASS
     } else {
@@ -129,7 +129,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     }
   }
 
-  get toolsList (): string[] {
+  get toolsList(): string[] {
     const tools: string[] = []
     for (let i = 0; i < this.numGates; i++) {
       tools.push(`T${i}`)
@@ -138,16 +138,19 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return tools
   }
 
-  get toolErrorMessage () {
+  get toolErrorMessage() {
     if (this.localTool === this.TOOL_GATE_UNKNOWN) {
       return this.$t('app.mmu.msg.no_tool')
-    } else if (this.localGate === this.TOOL_GATE_BYPASS && this.localTool !== this.TOOL_GATE_BYPASS) {
+    } else if (
+      this.localGate === this.TOOL_GATE_BYPASS &&
+      this.localTool !== this.TOOL_GATE_BYPASS
+    ) {
       return this.$t('app.mmu.msg.gate_bypass')
     }
     return ''
   }
 
-  get selectedGate (): string {
+  get selectedGate(): string {
     if (this.localGate === this.TOOL_GATE_UNKNOWN) {
       return 'Unknown'
     } else if (this.localGate === this.TOOL_GATE_BYPASS) {
@@ -156,8 +159,8 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return `${this.gateIndexText(this.localGate)}`
   }
 
-  set selectedGate (newGate: string) {
-    const index = this.gatesList.findIndex((item) => item === newGate)
+  set selectedGate(newGate: string) {
+    const index = this.gatesList.findIndex(item => item === newGate)
     if (index === this.numGates) {
       this.localGate = this.TOOL_GATE_BYPASS
     } else {
@@ -165,7 +168,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     }
   }
 
-  get gatesList (): string[] {
+  get gatesList(): string[] {
     const gates: string[] = []
     for (let gate = 0; gate < this.numGates; gate++) {
       gates.push(this.gateIndexText(gate))
@@ -174,10 +177,13 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return gates
   }
 
-  get gateErrorMessage () {
+  get gateErrorMessage() {
     if (this.localGate === this.TOOL_GATE_UNKNOWN) {
       return this.$t('app.mmu.msg.no_gate')
-    } else if (this.localTool === this.TOOL_GATE_BYPASS && this.localGate !== this.TOOL_GATE_BYPASS) {
+    } else if (
+      this.localTool === this.TOOL_GATE_BYPASS &&
+      this.localGate !== this.TOOL_GATE_BYPASS
+    ) {
       return this.$t('app.mmu.msg.tool_bypass')
     } else if (this.localGate >= 0 && this.ttgMap[this.localGate] !== this.localTool) {
       const msg = this.$t('app.mmu.msg.remap', { tool: `T${this.localTool}` })
@@ -186,7 +192,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return ''
   }
 
-  private gateIndexText (gateIndex: number): string {
+  private gateIndexText(gateIndex: number): string {
     const mmuMachine = this.$typedState.printer.printer?.mmu_machine
 
     if (mmuMachine != null && mmuMachine.num_units > 1) {
@@ -211,7 +217,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return `${gateIndex}`
   }
 
-  get selectedPos (): string {
+  get selectedPos(): string {
     if (this.localFilamentPos === this.FILAMENT_POS_UNLOADED) {
       return 'UNLOADED'
     } else if (this.localFilamentPos === this.FILAMENT_POS_LOADED) {
@@ -220,7 +226,7 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     return 'UNKNOWN'
   }
 
-  set selectedPos (newPos: string) {
+  set selectedPos(newPos: string) {
     if (newPos === 'UNLOADED') {
       this.localFilamentPos = this.FILAMENT_POS_UNLOADED
     } else if (newPos === 'LOADED') {
@@ -230,31 +236,31 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
     }
   }
 
-  get posList (): string[] {
+  get posList(): string[] {
     return ['UNKNOWN', 'UNLOADED', 'LOADED']
   }
 
-  get posErrorMessage () {
+  get posErrorMessage() {
     if (this.localFilamentPos === this.FILAMENT_POS_UNKNOWN) {
       return `${this.$t('app.mmu.msg.warning_prefix')} ${this.$t('app.mmu.msg.no_position')}`
     }
     return ''
   }
 
-  get okDisabled (): boolean {
+  get okDisabled(): boolean {
     const tError =
-            this.toolErrorMessage !== '' &&
-            !this.toolErrorMessage.toString().startsWith(this.$t('app.mmu.msg.warning_prefix').toString())
+      this.toolErrorMessage !== '' &&
+      !this.toolErrorMessage.toString().startsWith(this.$t('app.mmu.msg.warning_prefix').toString())
     const gError =
-            this.gateErrorMessage !== '' &&
-            !this.gateErrorMessage.toString().startsWith(this.$t('app.mmu.msg.warning_prefix').toString())
+      this.gateErrorMessage !== '' &&
+      !this.gateErrorMessage.toString().startsWith(this.$t('app.mmu.msg.warning_prefix').toString())
     const pError =
-            this.posErrorMessage !== '' &&
-            !this.posErrorMessage.toString().startsWith(this.$t('app.mmu.msg.warning_prefix').toString())
+      this.posErrorMessage !== '' &&
+      !this.posErrorMessage.toString().startsWith(this.$t('app.mmu.msg.warning_prefix').toString())
     return tError || gError || pError
   }
 
-  commit () {
+  commit() {
     let cmd = `MMU_RECOVER TOOL=${this.localTool} GATE=${this.localGate}`
     if (this.localFilamentPos === this.FILAMENT_POS_UNLOADED) {
       cmd += ' LOADED=0'
@@ -269,19 +275,19 @@ export default class MmuRecoverStateDialog extends Mixins(BrowserMixin, StateMix
 
 <style scoped>
 .settings-row-title {
-    display: block;
-    width: 100%;
-    font-weight: bold;
+  display: block;
+  width: 100%;
+  font-weight: bold;
 }
 
 .settings-row-subtitle {
-    display: block;
-    font-size: 0.8em;
-    line-height: 1.3;
-    margin-top: 3px;
+  display: block;
+  font-size: 0.8em;
+  line-height: 1.3;
+  margin-top: 3px;
 }
 
 .fixed-height {
-    min-height: 100px;
+  min-height: 100px;
 }
 </style>

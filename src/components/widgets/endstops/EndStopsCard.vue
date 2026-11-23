@@ -10,9 +10,7 @@
         icon
         @click="queryEndstops"
       >
-        <v-icon dense>
-          $refresh
-        </v-icon>
+        <v-icon dense> $refresh </v-icon>
       </app-btn>
     </template>
     <v-simple-table v-if="hasEndstops">
@@ -60,19 +58,19 @@ import type { Endstop, Probe } from '@/store/printer/types'
   components: {}
 })
 export default class EndStopsCard extends Mixins(StateMixin) {
-  get endstops (): Endstop[] {
+  get endstops(): Endstop[] {
     return this.$typedGetters['printer/getEndstops']
   }
 
-  get hasSteppers (): boolean {
+  get hasSteppers(): boolean {
     return this.$typedGetters['printer/getSteppers'].length > 0
   }
 
-  get probe (): Probe | undefined {
+  get probe(): Probe | undefined {
     return this.$typedGetters['printer/getProbe']
   }
 
-  get endstopsAndProbes () {
+  get endstopsAndProbes() {
     const endstopsAndProbes = [...this.endstops]
 
     const probe = this.probe
@@ -88,11 +86,11 @@ export default class EndStopsCard extends Mixins(StateMixin) {
     return endstopsAndProbes
   }
 
-  get hasEndstops () {
+  get hasEndstops() {
     return this.endstops.length > 0
   }
 
-  queryEndstops () {
+  queryEndstops() {
     if (this.hasSteppers) {
       SocketActions.printerQueryEndstops()
     }
@@ -102,7 +100,7 @@ export default class EndStopsCard extends Mixins(StateMixin) {
     }
   }
 
-  destroyed () {
+  destroyed() {
     this.$typedCommit('printer/setClearEndStops')
   }
 }

@@ -1,31 +1,41 @@
 import { consola } from 'consola'
 import type { IRange } from 'monaco-editor/editor/editor.api'
-import { getFirstNonWhitespaceColumn, getLastNonWhitespaceColumn, type MonacoLanguageWorkerRequestMessage, type MonacoLanguageWorkerResponseMessage, type ReduceState } from './monacoWorkerHelpers'
+import {
+  getFirstNonWhitespaceColumn,
+  getLastNonWhitespaceColumn,
+  type MonacoLanguageWorkerRequestMessage,
+  type MonacoLanguageWorkerResponseMessage,
+  type ReduceState
+} from './monacoWorkerHelpers'
 
-export type MonacoCodeLensWorkerResponseMessage = MonacoLanguageWorkerResponseMessage<MonacoCodeLens[]>
+export type MonacoCodeLensWorkerResponseMessage = MonacoLanguageWorkerResponseMessage<
+  MonacoCodeLens[]
+>
 
 export type MonacoCodeLens = {
-  sectionName: string,
+  sectionName: string
   range: IRange
 }
 
 const klipperConfigCodeLens = (lines: string[]): MonacoCodeLens[] => {
-  return lines
-    .reduce<ReduceState<MonacoCodeLens>>((state, lineContent, index) => {
+  return lines.reduce<ReduceState<MonacoCodeLens>>(
+    (state, lineContent, index) => {
       const section = /^\s*\[([^\]]+)\]/.exec(lineContent)
 
       if (section) {
         const lineNumber = index + 1
 
-        state.result.push(state.current = {
-          sectionName: section[1].split(' ', 1)[0],
-          range: {
-            startLineNumber: lineNumber,
-            startColumn: getFirstNonWhitespaceColumn(lineContent),
-            endLineNumber: lineNumber,
-            endColumn: getLastNonWhitespaceColumn(lineContent)
-          }
-        })
+        state.result.push(
+          (state.current = {
+            sectionName: section[1].split(' ', 1)[0],
+            range: {
+              startLineNumber: lineNumber,
+              startColumn: getFirstNonWhitespaceColumn(lineContent),
+              endLineNumber: lineNumber,
+              endColumn: getLastNonWhitespaceColumn(lineContent)
+            }
+          })
+        )
       } else {
         const isNotComment = /^\s*[^#;\s]/.test(lineContent)
 
@@ -39,8 +49,9 @@ const klipperConfigCodeLens = (lines: string[]): MonacoCodeLens[] => {
       }
 
       return state
-    }, { result: [] })
-    .result
+    },
+    { result: [] }
+  ).result
 }
 
 const sendResult = (result: MonacoCodeLens[]) => {

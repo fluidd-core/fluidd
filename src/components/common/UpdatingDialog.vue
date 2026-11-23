@@ -23,9 +23,7 @@
         icon
         @click="consoleBrowserElement.scrollToLatest()"
       >
-        <v-icon dense>
-          $down
-        </v-icon>
+        <v-icon dense> $down </v-icon>
       </app-btn>
     </template>
 
@@ -75,7 +73,7 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
   invokedDialog = false
   autoScrollPaused = false
 
-  get open (): boolean {
+  get open(): boolean {
     if (this.invokedDialog || this.updating) {
       this.invokedDialog = true
 
@@ -85,19 +83,19 @@ export default class UpdatingDialog extends Mixins(StateMixin, BrowserMixin) {
     return false
   }
 
-  set open (value: boolean) {
+  set open(value: boolean) {
     if (!value) {
       this.invokedDialog = false
       this.$emit('close')
     }
   }
 
-  get endedWithNothingToShow (): boolean {
+  get endedWithNothingToShow(): boolean {
     return !this.updating && this.responses.length === 0
   }
 
   @Watch('endedWithNothingToShow')
-  onEndedWithNothingToShow (ended: boolean) {
+  onEndedWithNothingToShow(ended: boolean) {
     if (ended) {
       this.open = false
     }

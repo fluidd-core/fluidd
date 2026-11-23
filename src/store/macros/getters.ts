@@ -12,7 +12,6 @@ export const MACRO_DEFAULTS = {
 }
 
 export const getters = {
-
   /**
    * Returns all available macros, transformed.
    * Should include the macro's config.
@@ -27,9 +26,8 @@ export const getters = {
         const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
         const stored = state.stored.find(macro => macro.name?.toLowerCase() === lowerCaseName)
         const variables = rootState.printer.printer[key]
-        const description = config && config.description !== 'G-Code macro'
-          ? config.description
-          : undefined
+        const description =
+          config && config.description !== 'G-Code macro' ? config.description : undefined
 
         const macro: Macro = {
           ...MACRO_DEFAULTS,
@@ -57,18 +55,20 @@ export const getters = {
     return macros
   },
 
-  getMacroByName: (state, getters) => (...names: string[]) => {
-    const macros: Macro[] = getters.getMacros
+  getMacroByName:
+    (state, getters) =>
+    (...names: string[]) => {
+      const macros: Macro[] = getters.getMacros
 
-    for (const name of names) {
-      const lowerCaseName = name.toLowerCase()
-      const macro = macros.find(macro => macro.name.toLowerCase() === lowerCaseName)
+      for (const name of names) {
+        const lowerCaseName = name.toLowerCase()
+        const macro = macros.find(macro => macro.name.toLowerCase() === lowerCaseName)
 
-      if (macro) {
-        return macro
+        if (macro) {
+          return macro
+        }
       }
-    }
-  },
+    },
 
   // Gets visible macros, transformed. Should include the macro's config.
   // Is only used on the dashboard. Grouped by category.
@@ -78,14 +78,15 @@ export const getters = {
 
     return categories
       .map(({ id, name }) => {
-        const macros: Macro[] = getters.getMacrosByCategory(id)
+        const macros: Macro[] = getters
+          .getMacrosByCategory(id)
           .filter((macro: Macro) => macro.visible)
 
-        return ({
+        return {
           id,
           name,
           macros
-        })
+        }
       })
       .filter(category => category.macros.length > 0)
   },
@@ -95,21 +96,16 @@ export const getters = {
    * If no category is passed, return all those that are uncategorized.
    */
   getMacrosByCategory: (state, getters) => (categoryId?: string) => {
-    const id = !categoryId
-      ? '0'
-      : categoryId
+    const id = !categoryId ? '0' : categoryId
 
     const macros: Macro[] = getters.getMacros
 
     return macros
-      .filter(macro => (
-        !macro.name.startsWith('_') &&
-        macro.categoryId === id
-      ))
+      .filter(macro => !macro.name.startsWith('_') && macro.categoryId === id)
       .sort((a: Macro, b: Macro) => {
         // Sorts preferrentially by order, then by name
         // This offers backward compatibility with macros that have no order
-        if ((a.order !== undefined && b.order !== undefined) && a.order !== b.order) {
+        if (a.order !== undefined && b.order !== undefined && a.order !== b.order) {
           return a.order - b.order
         }
 
@@ -122,23 +118,20 @@ export const getters = {
    * them.
    */
   getCategories: (state, getters) => {
-    const categories: MacroCategory[] = state.categories
-      .map(category => {
-        const { id, name } = category
+    const categories: MacroCategory[] = state.categories.map(category => {
+      const { id, name } = category
 
-        const macros: Macro[] = getters.getMacrosByCategory(id)
-        const count = macros.length
-        const visible = macros
-          .filter(macro => macro.visible)
-          .length
+      const macros: Macro[] = getters.getMacrosByCategory(id)
+      const count = macros.length
+      const visible = macros.filter(macro => macro.visible).length
 
-        return {
-          id,
-          name,
-          visible,
-          count
-        }
-      })
+      return {
+        id,
+        name,
+        visible,
+        count
+      }
+    })
 
     return categories
   }

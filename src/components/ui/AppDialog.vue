@@ -56,9 +56,7 @@
                 :disabled="closeButtonDisabled"
                 @click="open = false"
               >
-                <v-icon dense>
-                  $close
-                </v-icon>
+                <v-icon dense> $close </v-icon>
               </app-btn>
             </v-col>
           </v-row>
@@ -171,15 +169,15 @@ export default class AppDialog extends Mixins(BrowserMixin) {
   @Ref('form')
   readonly form!: VForm
 
-  get hasSubTitleSlot () {
+  get hasSubTitleSlot() {
     return !!this.$slots['sub-title'] || !!this.$scopedSlots['sub-title']
   }
 
-  validate () {
+  validate() {
     return this.form.validate()
   }
 
-  handleCancel () {
+  handleCancel() {
     if (this.$listeners.cancel) {
       this.$emit('cancel')
     } else {
@@ -187,7 +185,7 @@ export default class AppDialog extends Mixins(BrowserMixin) {
     }
   }
 
-  handleSave () {
+  handleSave() {
     if (this.validate()) {
       this.$emit('save')
     }

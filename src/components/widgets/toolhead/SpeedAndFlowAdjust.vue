@@ -46,19 +46,19 @@ import BrowserMixin from '@/mixins/browser'
 
 @Component({})
 export default class SpeedAndFlowAdjust extends Mixins(StateMixin, BrowserMixin) {
-  get flow () {
+  get flow() {
     return Math.round(this.$typedState.printer.printer.gcode_move.extrude_factor * 100) || 100
   }
 
-  handleSetFlow (val: number) {
+  handleSetFlow(val: number) {
     this.sendGcode(`M221 S${val}`, this.$waits.onSetFlow)
   }
 
-  get speed () {
+  get speed() {
     return Math.round(this.$typedState.printer.printer.gcode_move.speed_factor * 100) || 100
   }
 
-  handleSetSpeed (val: number) {
+  handleSetSpeed(val: number) {
     this.sendGcode(`M220 S${val}`, this.$waits.onSetSpeed)
   }
 }

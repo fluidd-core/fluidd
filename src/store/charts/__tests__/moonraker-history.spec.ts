@@ -14,7 +14,10 @@ const stats = (
 
 describe('moonrakerChartSamples', () => {
   it('converts timestamps to milliseconds and rounds load to 2 decimal places', () => {
-    const samples = moonrakerChartSamples(stats(3, index => 10.126 + index), -Infinity)
+    const samples = moonrakerChartSamples(
+      stats(3, index => 10.126 + index),
+      -Infinity
+    )
 
     expect(samples).toEqual([
       { time: 1_000_000, values: { load: 10.13 } },
@@ -24,7 +27,10 @@ describe('moonrakerChartSamples', () => {
   })
 
   it('keeps only the samples past the tail', () => {
-    const samples = moonrakerChartSamples(stats(5, index => index), 1_002_000)
+    const samples = moonrakerChartSamples(
+      stats(5, index => index),
+      1_002_000
+    )
 
     expect(samples).toEqual([
       { time: 1_003_000, values: { load: 3 } },
@@ -33,7 +39,12 @@ describe('moonrakerChartSamples', () => {
   })
 
   it('yields nothing for an entirely stale backlog', () => {
-    expect(moonrakerChartSamples(stats(3, index => index), 1_002_000)).toEqual([])
+    expect(
+      moonrakerChartSamples(
+        stats(3, index => index),
+        1_002_000
+      )
+    ).toEqual([])
   })
 
   it('yields nothing for an empty backlog', () => {
@@ -41,14 +52,20 @@ describe('moonrakerChartSamples', () => {
   })
 
   it('skips out-of-range samples without leaving a gap', () => {
-    const samples = moonrakerChartSamples(stats(4, index => (index === 1 ? 4523.7 : index)), -Infinity)
+    const samples = moonrakerChartSamples(
+      stats(4, index => (index === 1 ? 4523.7 : index)),
+      -Infinity
+    )
 
     expect(samples.map(sample => sample.time)).toEqual([1_000_000, 1_002_000, 1_003_000])
     expect(samples.map(sample => sample.values.load)).toEqual([0, 2, 3])
   })
 
   it('yields a monotonically increasing timeline', () => {
-    const samples = moonrakerChartSamples(stats(1800, index => index % 100), -Infinity)
+    const samples = moonrakerChartSamples(
+      stats(1800, index => index % 100),
+      -Infinity
+    )
 
     expect(samples).toHaveLength(1800)
 

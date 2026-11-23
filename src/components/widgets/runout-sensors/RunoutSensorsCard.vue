@@ -12,9 +12,7 @@
         icon
         @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon dense>
-          $fullScreen
-        </v-icon>
+        <v-icon dense> $fullScreen </v-icon>
       </app-btn>
     </template>
 
@@ -65,11 +63,11 @@ export default class RunoutSensorsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  get sensors (): RunoutSensor[] {
+  get sensors(): RunoutSensor[] {
     return this.$typedGetters['printer/getRunoutSensors']
   }
 
-  changeSensor (item: RunoutSensor, value: boolean) {
+  changeSensor(item: RunoutSensor, value: boolean) {
     const gcodes = [
       `SET_FILAMENT_SENSOR SENSOR=${encodeGcodeParamValue(item.name)} ENABLE=${+value}`
     ]

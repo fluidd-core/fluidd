@@ -1,7 +1,11 @@
 <template>
   <app-dialog
     v-model="open"
-    :title="'commits_behind' in component ? $t('app.version.label.commit_history'): $t('app.version.label.package_list')"
+    :title="
+      'commits_behind' in component
+        ? $t('app.version.label.commit_history')
+        : $t('app.version.label.package_list')
+    "
     max-width="850"
     no-actions
   >
@@ -15,7 +19,7 @@
         dense
       >
         <v-timeline-item
-          v-for="(key) in commitHistory.keys"
+          v-for="key in commitHistory.keys"
           :key="`key-${key}`"
           color="transparent"
           small
@@ -35,9 +39,7 @@
 
           <ol class="commit-history">
             <template v-for="commit in commitHistory.result[key]">
-              <li
-                :key="commit.sha"
-              >
+              <li :key="commit.sha">
                 <div>
                   <div class="commit-subject">
                     {{ commit.subject }}
@@ -60,7 +62,8 @@
                           v-bind="attrs"
                           v-on="on"
                         >
-                          {{ $t('app.version.label.committed') }} {{ $filters.formatRelativeTimeToNow(+commit.date * 1000) }}
+                          {{ $t('app.version.label.committed') }}
+                          {{ $filters.formatRelativeTimeToNow(+commit.date * 1000) }}
                         </span>
                       </template>
                       <span>{{ $filters.formatDateTime(+commit.date * 1000) }}</span>
@@ -82,7 +85,8 @@
                   <span
                     v-else
                     class="primary--text"
-                  >{{ commit.sha.substring(0, 7) }}</span>
+                    >{{ commit.sha.substring(0, 7) }}</span
+                  >
                 </div>
               </li>
             </template>
@@ -125,18 +129,18 @@ export default class VersionInformationDialog extends Vue {
   // For type system, show the packages available to update.
   // For type client, just show the release notes if we can.
 
-  get commitHistory () {
+  get commitHistory() {
     return this.$typedGetters['version/getCommitHistory'](this.component.name)
   }
 
-  get baseUrl () {
+  get baseUrl() {
     if ('remote_url' in this.component) {
-      const [, owner, repo] = /^https?:\/\/(?:www\.)?github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/i.exec(this.component.remote_url) ?? []
+      const [, owner, repo] =
+        /^https?:\/\/(?:www\.)?github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/i.exec(
+          this.component.remote_url
+        ) ?? []
 
-      if (
-        owner &&
-        repo
-      ) {
+      if (owner && repo) {
         return `https://github.com/${owner}/${repo}`
       }
     }
@@ -147,45 +151,45 @@ export default class VersionInformationDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  ol.commit-history {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    border: thin solid rgba(map-get($shades, 'white'), 0.12);
-    border-radius: 6px;
+ol.commit-history {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  border: thin solid rgba(map-get($shades, 'white'), 0.12);
+  border-radius: 6px;
 
-    li {
-      padding: 8px 16px;
-      border-bottom: thin solid rgba(map-get($shades, 'white'), 0.12);
-      display: flex;
-      flex: 1 0 auto;
-      justify-content: space-between;
-      align-items: center;
+  li {
+    padding: 8px 16px;
+    border-bottom: thin solid rgba(map-get($shades, 'white'), 0.12);
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: space-between;
+    align-items: center;
 
-      &:hover {
-        background-color: rgba(map-get($shades, 'white'), 0.025)
-      }
+    &:hover {
+      background-color: rgba(map-get($shades, 'white'), 0.025);
+    }
 
-      // div.commit-subject {
-        // max-width: 350px;
-        // overflow: hidden;
-        // white-space: nowrap;
-        // text-overflow: ellipsis;
-      // }
+    // div.commit-subject {
+    // max-width: 350px;
+    // overflow: hidden;
+    // white-space: nowrap;
+    // text-overflow: ellipsis;
+    // }
 
-      &:last-child {
-        border: none;
-      }
+    &:last-child {
+      border: none;
     }
   }
-  .commit-table {
-    border-bottom: thin solid rgba(map-get($shades, 'white'), 0.12);
-    border-radius: 6px;
-  }
+}
+.commit-table {
+  border-bottom: thin solid rgba(map-get($shades, 'white'), 0.12);
+  border-radius: 6px;
+}
 
-  :deep(.v-timeline-item__dot) {
-    box-shadow: none !important;
-  }
+:deep(.v-timeline-item__dot) {
+  box-shadow: none !important;
+}
 </style>

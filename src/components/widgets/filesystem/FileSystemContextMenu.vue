@@ -22,9 +22,7 @@
               @click="$emit('print', file)"
             >
               <v-list-item-icon>
-                <v-icon>
-                  $printer
-                </v-icon>
+                <v-icon> $printer </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ $t('app.general.btn.print') }}</v-list-item-title>
@@ -39,7 +37,7 @@
                 <v-icon>$enqueueJob</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>{{ $t("app.general.btn.add_to_queue") }}</v-list-item-title>
+                <v-list-item-title>{{ $t('app.general.btn.add_to_queue') }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
@@ -49,9 +47,7 @@
               @click="$emit('preheat', file)"
             >
               <v-list-item-icon>
-                <v-icon>
-                  $fire
-                </v-icon>
+                <v-icon> $fire </v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ $t('app.general.btn.preheat') }}</v-list-item-title>
@@ -102,7 +98,9 @@
                 <v-icon>$stopwatch</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>{{ $t('app.general.btn.perform_time_analysis') }}</v-list-item-title>
+                <v-list-item-title>{{
+                  $t('app.general.btn.perform_time_analysis')
+                }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
@@ -126,7 +124,9 @@
                 <v-icon>$fileZipAdd</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>{{ $t('app.general.btn.create_zip_archive') }}</v-list-item-title>
+                <v-list-item-title>{{
+                  $t('app.general.btn.create_zip_archive')
+                }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
@@ -193,7 +193,7 @@
               class="mx-2"
               :src="getThumbUrl(file, root, file.path, true, file.modified)"
               :height="150"
-            >
+            />
           </v-btn>
         </v-col>
       </v-row>
@@ -227,11 +227,11 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   @Prop({ type: Number, required: true })
   readonly positionY!: number
 
-  get rootProperties (): RootProperties {
+  get rootProperties(): RootProperties {
     return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
-  get canPrint () {
+  get canPrint() {
     return (
       this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
@@ -240,7 +240,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canEdit () {
+  get canEdit() {
     return (
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
@@ -248,7 +248,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canView () {
+  get canView() {
     return (
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
@@ -257,7 +257,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canPreheat () {
+  get canPreheat() {
     return (
       this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
@@ -266,15 +266,11 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get printerReady () {
-    return (
-      !this.printerPrinting &&
-      !this.printerPaused &&
-      this.klippyReady
-    )
+  get printerReady() {
+    return !this.printerPrinting && !this.printerPaused && this.klippyReady
   }
 
-  get canPreviewGcode () {
+  get canPreviewGcode() {
     return (
       this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
@@ -283,44 +279,35 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     )
   }
 
-  get canCreateZip (): boolean {
+  get canCreateZip(): boolean {
     return (
-      (
-        Array.isArray(this.file) ||
-        this.file.type !== 'file' ||
-        this.file.extension !== '.zip'
-      ) &&
+      (Array.isArray(this.file) || this.file.type !== 'file' || this.file.extension !== '.zip') &&
       !this.rootProperties.readonly &&
       this.$typedGetters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 
-  get isGcodesRootWithAcceptedFiles () {
+  get isGcodesRootWithAcceptedFiles() {
     const files = Array.isArray(this.file) ? this.file : [this.file]
 
     return (
       this.root === 'gcodes' &&
-      files.some(x =>
-        x.type !== 'directory' &&
-        this.rootProperties.accepts.includes(x.extension)
-      )
+      files.some(x => x.type !== 'directory' && this.rootProperties.accepts.includes(x.extension))
     )
   }
 
-  get canAddToQueue (): boolean {
+  get canAddToQueue(): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
       this.$typedGetters['server/componentSupport']('job_queue')
     )
   }
 
-  get canRefreshMetadata (): boolean {
-    return (
-      this.isGcodesRootWithAcceptedFiles
-    )
+  get canRefreshMetadata(): boolean {
+    return this.isGcodesRootWithAcceptedFiles
   }
 
-  get canPerformTimeAnalysys (): boolean {
+  get canPerformTimeAnalysys(): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
       this.$typedGetters['server/componentSupport']('analysis')

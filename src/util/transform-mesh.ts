@@ -1,6 +1,10 @@
 import type { ProcessedMesh } from '@/store/mesh/types'
 
-export const transformMesh = (bedMesh: Klipper.BedMeshState, meshMatrix: 'probed_matrix' | 'mesh_matrix', makeFlat = false): ProcessedMesh => {
+export const transformMesh = (
+  bedMesh: Klipper.BedMeshState,
+  meshMatrix: 'probed_matrix' | 'mesh_matrix',
+  makeFlat = false
+): ProcessedMesh => {
   const matrix = bedMesh[meshMatrix]
   const coordinates = []
   let min = 0
@@ -32,20 +36,14 @@ export const transformMesh = (bedMesh: Klipper.BedMeshState, meshMatrix: 'probed
 
     for (const x_axis of matrix) {
       x_idx = 0
-      const y_coord = bedMesh.mesh_min[1] + (y_idx * y_distance)
+      const y_coord = bedMesh.mesh_min[1] + y_idx * y_distance
       for (const z_coord of x_axis) {
-        const x_coord = bedMesh.mesh_min[0] + (x_idx * x_distance)
+        const x_coord = bedMesh.mesh_min[0] + x_idx * x_distance
         x_idx++
-        coordinates.push(
-          {
-            name: `x${x_idx}_y${y_idx}`,
-            value: [
-              x_coord,
-              y_coord,
-              (makeFlat) ? mid : z_coord
-            ]
-          }
-        )
+        coordinates.push({
+          name: `x${x_idx}_y${y_idx}`,
+          value: [x_coord, y_coord, makeFlat ? mid : z_coord]
+        })
       }
       y_idx++
     }

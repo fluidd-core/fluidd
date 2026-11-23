@@ -61,7 +61,9 @@
               dense
               @mouseleave="closeContextMenu"
             >
-              <v-subheader class="compact-subheader d-block text-subtitle-2 text-center mb-0 h-auto pb-2">
+              <v-subheader
+                class="compact-subheader d-block text-subtitle-2 text-center mb-0 h-auto pb-2"
+              >
                 {{ contextMenuHeader(g) }}
               </v-subheader>
               <v-divider />
@@ -87,7 +89,14 @@
 
           <div
             v-if="isSelectedGate(g)"
-            style="position: absolute; bottom: 0%; left: 0%; width: 100%; height: auto; background: none;"
+            style="
+              position: absolute;
+              bottom: 0%;
+              left: 0%;
+              width: 100%;
+              height: auto;
+              background: none;
+            "
           >
             <svg
               width="100%"
@@ -113,11 +122,11 @@
                 >
                   <stop
                     offset="0%"
-                    style="stop-color:rgba(255, 255, 255, 0.9); stop-opacity:1"
+                    style="stop-color: rgba(255, 255, 255, 0.9); stop-opacity: 1"
                   />
                   <stop
                     offset="100%"
-                    style="stop-color:rgba(255, 255, 0, 0); stop-opacity:0"
+                    style="stop-color: rgba(255, 255, 0, 0); stop-opacity: 0"
                   />
                 </radialGradient>
               </defs>
@@ -162,13 +171,9 @@ import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
 import MmuUnitFooter from '@/components/widgets/mmu/MmuUnitFooter.vue'
 
-type MenuDisabled =
-  | boolean
-  | ((gate: number) => boolean)
+type MenuDisabled = boolean | ((gate: number) => boolean)
 
-type MenuAction =
-  | { kind: 'gcode', command: string }
-  | { kind: 'call', fn: (gate: number) => void }
+type MenuAction = { kind: 'gcode'; command: string } | { kind: 'call'; fn: (gate: number) => void }
 
 type ContextMenuItem = {
   icon: string
@@ -179,7 +184,7 @@ type ContextMenuItem = {
 }
 
 @Component({
-  components: { MmuSpool, MmuGateStatus, MmuUnitFooter },
+  components: { MmuSpool, MmuGateStatus, MmuUnitFooter }
 })
 export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) {
   @Prop({ required: false, default: 0 })
@@ -209,66 +214,69 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
   menuX = 0
   menuY = 0
 
-  get mmuMachineUnit () {
+  get mmuMachineUnit() {
     return this.unitDetails(this.unitIndex)
   }
 
-  get unitGateRange (): number[] {
+  get unitGateRange(): number[] {
     if (this.unitIndex < 0) return []
-    return Array.from({ length: this.mmuMachineUnit.numGates }, (v, k) => k + this.mmuMachineUnit.firstGate)
+    return Array.from(
+      { length: this.mmuMachineUnit.numGates },
+      (v, k) => k + this.mmuMachineUnit.firstGate
+    )
   }
 
-  get displayGates (): number[] {
+  get displayGates(): number[] {
     const gates = this.unitGateRange
     return this.showBypass ? [...gates, this.TOOL_GATE_BYPASS] : gates
   }
 
-  isSelectedGate (g: number): boolean {
-    return (this.editGateMap && this.editGateSelected === g) || (!this.editGateMap && this.gate === g)
+  isSelectedGate(g: number): boolean {
+    return (
+      (this.editGateMap && this.editGateSelected === g) || (!this.editGateMap && this.gate === g)
+    )
   }
 
-  get clipHeight (): number {
+  get clipHeight(): number {
     return Math.trunc(this.spoolWidth * 1.6)
   }
 
-  get showBypass () {
+  get showBypass() {
     if (this.hideBypass) return false
     if (this.unitIndex < 0) return true
 
     return this.mmuMachineUnit.hasBypass
   }
 
-  contextMenuHeader (gate: number): string {
+  contextMenuHeader(gate: number): string {
     if (gate >= 0) return this.$t('app.mmu.label.gate') + ' ' + gate
     return 'Bypass'
   }
 
-  tooltipTitle (gate: number): string | null {
+  tooltipTitle(gate: number): string | null {
     const details = this.gateDetails(gate)
     if (details.status === this.GATE_EMPTY) return null
 
     return details.filamentName
   }
 
-  tooltipText (gate: number): string {
+  tooltipText(gate: number): string {
     const details = this.gateDetails(gate)
     if (details.status === this.GATE_EMPTY) {
       return this.$t('app.mmu.tooltip.empty').toString()
     }
     const output = []
 
-    const tempStr = details.temperature > 0
-      ? ` | ${details.temperature}°C`
-      : ''
+    const tempStr = details.temperature > 0 ? ` | ${details.temperature}°C` : ''
     output.push(details.material + tempStr)
 
     if (details.color && details.color !== '#808182E3') {
       const color = details.color
       output.push(
         this.$t('app.mmu.tooltip.color').toString() +
-                    ': ' +
-                    color.substring(0, 7) +
-                    (color.length > 7 && color.substring(7, 9) !== 'FF' ? color.substring(7, 9) : '')
+          ': ' +
+          color.substring(0, 7) +
+          (color.length > 7 && color.substring(7, 9) !== 'FF' ? color.substring(7, 9) : '')
       )
     }
 
@@ -279,20 +287,25 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return output.join('\n')
   }
 
-  gateStatusClass (index: number): string[] {
-    const firstGate = (this.unitIndex < 0 || index === 0)
-    const lastGate = index === (this.displayGates.length - 1)
+  gateStatusClass(index: number): string[] {
+    const firstGate = this.unitIndex < 0 || index === 0
+    const lastGate = index === this.displayGates.length - 1
 
     const classes = ['gate-status-row']
     if (firstGate) classes.push('first-gate')
     if (lastGate) classes.push('last-gate')
-    classes.push(this.$vuetify.theme.dark ? 'gate-status-row-dark-theme' : 'gate-status-row-light-theme')
+    classes.push(
+      this.$vuetify.theme.dark ? 'gate-status-row-dark-theme' : 'gate-status-row-light-theme'
+    )
     return classes
   }
 
-  spoolClass (gate: number): string[] {
+  spoolClass(gate: number): string[] {
     const classes = []
-    if ((this.editGateMap && this.editGateSelected === gate) || (!this.editGateMap && this.gate === gate)) {
+    if (
+      (this.editGateMap && this.editGateSelected === gate) ||
+      (!this.editGateMap && this.gate === gate)
+    ) {
       classes.push('highlight-spool')
     } else {
       if (!this.isMobileViewport) classes.push('hover-effect')
@@ -303,7 +316,7 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     return classes
   }
 
-  get footerStyle () {
+  get footerStyle() {
     const numSpools = this.mmuMachineUnit.numGates + (this.showBypass ? 1 : 0)
     const maxWidth = this.spoolWidth * numSpools + 32
     return { maxWidth: `${maxWidth}px` }
@@ -311,13 +324,13 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
   // Gate context menu handling...
 
-  private isItemDisabled (item: ContextMenuItem, gate: number): boolean {
+  private isItemDisabled(item: ContextMenuItem, gate: number): boolean {
     if (!this.klippyReady) return true
     if (!item.disabled) return false
     return typeof item.disabled === 'function' ? item.disabled(gate) : item.disabled
   }
 
-  private runMenuItem (item: ContextMenuItem, gate: number) {
+  private runMenuItem(item: ContextMenuItem, gate: number) {
     if (this.isItemDisabled(item, gate)) return
 
     this.closeContextMenu()
@@ -329,13 +342,13 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     }
   }
 
-  contextMenuItems (gate: number): ContextMenuItem[] {
+  contextMenuItems(gate: number): ContextMenuItem[] {
     const items = this.allContextMenuItems
     if (gate < 0) return items.slice(0, 1)
     return items
   }
 
-  get allContextMenuItems (): ContextMenuItem[] {
+  get allContextMenuItems(): ContextMenuItem[] {
     const isLoaded = this.filamentPos === this.FILAMENT_POS_LOADED
     const canCrossload = this.unitDetails(this.unitIndex).canCrossload
 
@@ -343,57 +356,55 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
       {
         icon: '$mmuSelectGate',
         label: this.$t('app.mmu.btn.select').toString(),
-        action: { kind: 'call', fn: (gate) => this.selectGate(gate) },
-        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting || isLoaded,
+        action: { kind: 'call', fn: gate => this.selectGate(gate) },
+        disabled: gate => !this.canSend || gate === this.gate || this.isPrinting || isLoaded
       },
       {
         icon: '$mmuEditGateMap',
         label: this.$t('app.mmu.btn.edit_gate_map').toString(),
-        action: { kind: 'call', fn: (gate) => this.editFilament(gate) },
+        action: { kind: 'call', fn: gate => this.editFilament(gate) }
       },
       {
         icon: '$mmuPreload',
         label: this.$t('app.mmu.btn.preload').toString(),
         wait: this.$waits.onMmuPreload,
         action: { kind: 'gcode', command: 'MMU_PRELOAD' },
-        disabled: (gate) =>
-          !this.canSend ||
-            (gate === this.gate && !canCrossload) ||
-            (gate === this.gate && isLoaded),
+        disabled: gate =>
+          !this.canSend || (gate === this.gate && !canCrossload) || (gate === this.gate && isLoaded)
       },
       {
         icon: '$mmuEject',
         label: this.$t('app.mmu.btn.eject').toString(),
         wait: this.$waits.onMmuEject,
         action: { kind: 'gcode', command: 'MMU_EJECT' },
-        disabled: (gate) => !this.canSend || (gate !== this.gate && !canCrossload),
+        disabled: gate => !this.canSend || (gate !== this.gate && !canCrossload)
       },
       {
         icon: '$mmuChangeTool',
         label: this.$t('app.mmu.btn.change_tool').toString(),
         wait: this.$waits.onMmuChangeTool,
         action: { kind: 'gcode', command: 'MMU_CHANGE_TOOL' },
-        disabled: (gate) => !this.canSend || gate === this.gate || this.isPrinting,
-      },
+        disabled: gate => !this.canSend || gate === this.gate || this.isPrinting
+      }
     ]
 
     return items
   }
 
-  private selectGate (gate: number) {
+  private selectGate(gate: number) {
     this.$emit('select-gate', gate)
   }
 
-  private editFilament (gate: number) {
+  private editFilament(gate: number) {
     this.$emit('edit-filament', gate)
   }
 
-  handleClickGate (gate: number, e: MouseEvent) {
+  handleClickGate(gate: number, e: MouseEvent) {
     if (this.showContextMenu) return this.openContextMenu(gate, e)
     this.selectGate(gate)
   }
 
-  openContextMenu (gate: number, e: MouseEvent) {
+  openContextMenu(gate: number, e: MouseEvent) {
     e.preventDefault()
 
     this.menuX = e.clientX - 20
@@ -407,20 +418,20 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
     }, 6000)
   }
 
-  closeContextMenu () {
+  closeContextMenu() {
     this.clearCloseTimeout()
     Object.keys(this.gateMenuVisible).forEach(key => {
       this.$set(this.gateMenuVisible, Number(key), false)
     })
   }
 
-  clearCloseTimeout () {
+  clearCloseTimeout() {
     if (this.closeTimeout === null) return
     clearTimeout(this.closeTimeout)
     this.closeTimeout = null
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.clearCloseTimeout()
   }
 }
@@ -428,95 +439,95 @@ export default class MmuUnit extends Mixins(BrowserMixin, StateMixin, MmuMixin) 
 
 <style scoped>
 .unit-container {
-    padding: 0;
+  padding: 0;
 }
 
 .spool-tooltip {
-    max-width: 180px;
-    font-size: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  max-width: 180px;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .spool-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 8px 0px 0px 0px;
-    gap: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 0px 0px 0px;
+  gap: 0px;
 }
 
 .gate-status-row {
-    box-shadow: inset 0px 4px 4px -4px #ffffff80;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    position: relative;
-    z-index: 1;
+  box-shadow: inset 0px 4px 4px -4px #ffffff80;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 .gate-status-row-dark-theme {
-    background-image: linear-gradient(to bottom, #3c3c3c 0%, #2c2c2c 100%);
+  background-image: linear-gradient(to bottom, #3c3c3c 0%, #2c2c2c 100%);
 }
 
 .gate-status-row-light-theme {
-    background-image: linear-gradient(to bottom, #d0d0d0 0%, #f0f0f0ff 100%);
+  background-image: linear-gradient(to bottom, #d0d0d0 0%, #f0f0f0ff 100%);
 }
 
 .first-gate {
-    border-radius: 8px 0 0 0;
-    margin-left: -16px;
-    padding-left: 16px;
+  border-radius: 8px 0 0 0;
+  margin-left: -16px;
+  padding-left: 16px;
 }
 
 .last-gate {
-    border-radius: 0 8px 0 0;
-    margin-right: -16px;
-    padding-right: 16px;
+  border-radius: 0 8px 0 0;
+  margin-right: -16px;
+  padding-right: 16px;
 }
 
 .first-gate.last-gate {
-    border-radius: 8px 8px 0 0;
+  border-radius: 8px 8px 0 0;
 }
 
 .clip-spool {
-    position: relative;
-    margin-top: 8px;
+  position: relative;
+  margin-top: 8px;
 }
 
 .gate {
-    font-size: 0px;
-    border-radius: 12px;
-    line-height: 1em;
-    cursor: pointer;
+  font-size: 0px;
+  border-radius: 12px;
+  line-height: 1em;
+  cursor: pointer;
 }
 
 .gate--menu {
-    cursor: context-menu;
+  cursor: context-menu;
 }
 
 .highlight-spool {
-    transform: translateY(-8px);
-    opacity: 1;
+  transform: translateY(-8px);
+  opacity: 1;
 }
 
 .unhighlight-spool {
-    opacity: 0.4;
+  opacity: 0.4;
 }
 
 .hover-effect {
-    transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 }
 
 .hover-effect:hover {
-    transform: translateY(-5px);
-    opacity: 1;
+  transform: translateY(-5px);
+  opacity: 1;
 }
 
 .v-list--dense .compact-subheader {
-    height: auto;
-    padding-bottom: 4px;
-    display: block;
-    text-align: center;
+  height: auto;
+  padding-bottom: 4px;
+  display: block;
+  text-align: center;
 }
 </style>

@@ -24,7 +24,7 @@
       font-weight="bold"
       font-size="30px"
       :fill="fontColor"
-    >
+>
       {{ gateIndex }}
     </text>
     <text
@@ -35,7 +35,7 @@
       font-weight="bold"
       font-size="20px"
       :fill="fontColor"
-    >
+>
       {{ $t('app.mmu.label.bypass') }}
     </text>
   </svg>
@@ -59,7 +59,7 @@ export default class MmuGateStatus extends Mixins(StateMixin, MmuMixin) {
   @Prop({ required: false, default: -1 })
   readonly editGateSelected!: number
 
-  get statusColor (): string {
+  get statusColor(): string {
     if (this.gateIndex < 0) return 'none'
 
     let status = this.gateStatus[this.gateIndex]
@@ -73,7 +73,7 @@ export default class MmuGateStatus extends Mixins(StateMixin, MmuMixin) {
     return 'orange' // Unknown
   }
 
-  get selectedColor (): string {
+  get selectedColor(): string {
     if (this.editGateMap) return 'none'
 
     if (this.gate === this.gateIndex) {
@@ -83,7 +83,7 @@ export default class MmuGateStatus extends Mixins(StateMixin, MmuMixin) {
     }
   }
 
-  get fontColor (): string {
+  get fontColor(): string {
     if (!this.editGateMap && this.gateIndex === this.gate) return '#000000'
     if (this.$vuetify.theme.dark) return '#c0c0c0'
     return '#808080'
@@ -91,5 +91,4 @@ export default class MmuGateStatus extends Mixins(StateMixin, MmuMixin) {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -4,20 +4,22 @@ declare namespace Moonraker.Spoolman {
   }
 
   export interface StatusChangedEvent {
-    spoolman_connected: boolean;
+    spoolman_connected: boolean
   }
 
   export interface ProxyResponseV2Success<T> {
-    response: T;
-    response_headers?: Record<string, string>;
-    error: null;
+    response: T
+    response_headers?: Record<string, string>
+    error: null
   }
 
   export interface ProxyResponseV2Error {
-    response: null;
-    error: string | {
-      message: string;
-    };
+    response: null
+    error:
+      | string
+      | {
+          message: string
+        }
   }
 
   export type ProxyResponseV2<T> = ProxyResponseV2Success<T> | ProxyResponseV2Error
@@ -25,107 +27,105 @@ declare namespace Moonraker.Spoolman {
   export type ProxyResponse<T> = T | ProxyResponseV2<T>
 
   export interface Info {
-    version: string;
-    debug_mode: boolean;
-    automatic_backups: boolean;
-    data_dir: string;
-    logs_dir: string;
-    backups_dir: string;
-    db_type: string;
-    git_commit: string;
-    build_date: Date;
+    version: string
+    debug_mode: boolean
+    automatic_backups: boolean
+    data_dir: string
+    logs_dir: string
+    backups_dir: string
+    db_type: string
+    git_commit: string
+    build_date: Date
   }
 
   export interface Currency {
-    value: string;
+    value: string
   }
 
   export interface Spool {
-    id: number;
-    registered: string;
-    filament: Filament;
+    id: number
+    registered: string
+    filament: Filament
 
-    first_used?: string;
-    last_used?: string;
-    price?: number;
-    remaining_weight?: number;
-    initial_weight?: number;
-    spool_weight?: number;
-    used_weight?: number;
-    remaining_length?: number;
-    used_length?: number;
-    location?: string;
-    lot_nr?: string;
-    comment?: string;
-    archived: boolean;
-    extra?: Record<string, unknown>;
+    first_used?: string
+    last_used?: string
+    price?: number
+    remaining_weight?: number
+    initial_weight?: number
+    spool_weight?: number
+    used_weight?: number
+    remaining_length?: number
+    used_length?: number
+    location?: string
+    lot_nr?: string
+    comment?: string
+    archived: boolean
+    extra?: Record<string, unknown>
   }
 
-  export type FilamentMultiColorDirection =
-    | 'coaxial'
-    | 'longitudinal'
+  export type FilamentMultiColorDirection = 'coaxial' | 'longitudinal'
 
   export interface Filament {
-    id: number;
-    registered: string;
-    density: number;
-    diameter: number;
+    id: number
+    registered: string
+    density: number
+    diameter: number
 
-    name?: string;
-    vendor?: Vendor;
-    material?: string;
-    price?: number;
-    weight?: number;
-    spool_weight?: number;
-    article_number?: string;
-    comment?: string;
-    settings_extruder_temp?: number;
-    settings_bed_temp?: number;
-    color_hex?: string;
-    multi_color_hexes?: string;
-    multi_color_direction?: FilamentMultiColorDirection;
-    external_id?: string;
-    extra?: Record<string, unknown>;
+    name?: string
+    vendor?: Vendor
+    material?: string
+    price?: number
+    weight?: number
+    spool_weight?: number
+    article_number?: string
+    comment?: string
+    settings_extruder_temp?: number
+    settings_bed_temp?: number
+    color_hex?: string
+    multi_color_hexes?: string
+    multi_color_direction?: FilamentMultiColorDirection
+    external_id?: string
+    extra?: Record<string, unknown>
   }
 
   export interface Vendor {
-    id: number;
-    registered: string;
-    name: string;
+    id: number
+    registered: string
+    name: string
 
-    comment?: string;
-    empty_spool_weight?: number;
-    external_id?: string;
-    extra?: Record<string, unknown>;
+    comment?: string
+    empty_spool_weight?: number
+    external_id?: string
+    extra?: Record<string, unknown>
   }
 }
 
 declare namespace Moonraker {
   export interface Methods {
     'server.spoolman.get_spool_id': {
-      params: undefined,
+      params: undefined
       result: Spoolman.SpoolIdResponse
-    },
+    }
     'server.spoolman.post_spool_id': {
       params: {
         spool_id?: number
-      },
+      }
       result: Spoolman.SpoolIdResponse
-    },
+    }
     'server.spoolman.proxy': {
       params: {
-        request_method: string,
-        path: string,
-        query?: string,
-        body?: unknown,
+        request_method: string
+        path: string
+        query?: string
+        body?: unknown
         use_v2_response?: boolean
-      },
+      }
       result: Spoolman.ProxyResponse<unknown>
     }
   }
 
   export interface Notifications {
-    notify_active_spool_set: [Spoolman.SpoolIdResponse],
+    notify_active_spool_set: [Spoolman.SpoolIdResponse]
     notify_spoolman_status_changed: [Spoolman.StatusChangedEvent]
   }
 }

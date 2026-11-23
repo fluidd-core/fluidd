@@ -25,14 +25,12 @@
         <app-btn
           v-if="resetValue !== undefined"
           :disabled="disabled"
-          style="margin-top: -4px;"
+          style="margin-top: -4px"
           icon
           small
           @click="handleReset"
         >
-          <v-icon small>
-            $reset
-          </v-icon>
+          <v-icon small> $reset </v-icon>
         </app-btn>
       </template>
     </app-text-field>
@@ -47,13 +45,13 @@ import StateMixin from '@/mixins/state'
   inheritAttrs: false
 })
 export default class AppNamedTextField extends Mixins(StateMixin) {
-  @VModel({ })
+  @VModel({})
   inputValue?: unknown
 
   @Prop({ type: String })
   readonly label?: string
 
-  @Prop({ })
+  @Prop({})
   readonly resetValue?: unknown
 
   @Prop({ type: Boolean })
@@ -62,7 +60,7 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly loading?: boolean
 
-  handleReset () {
+  handleReset() {
     if (this.resetValue !== undefined) {
       this.inputValue = this.resetValue
 

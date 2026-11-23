@@ -28,17 +28,15 @@ const buildPalette = (option: PaletteOption): string[] => {
 export class ColorSet {
   readonly lists: Record<string, ColorSlot[]>
 
-  constructor (palettes: Record<string, PaletteOption> = DefaultPalettes) {
+  constructor(palettes: Record<string, PaletteOption> = DefaultPalettes) {
     this.lists = Object.fromEntries(
-      Object.entries(palettes)
-        .map(([list, option]) => [
-          list,
-          buildPalette(option)
-            .map((color): ColorSlot => ({
-              color,
-              locked: false
-            }))
-        ])
+      Object.entries(palettes).map(([list, option]) => [
+        list,
+        buildPalette(option).map((color): ColorSlot => ({
+          color,
+          locked: false
+        }))
+      ])
     )
   }
 
@@ -52,7 +50,7 @@ export class ColorSet {
    * the assignment until `forceResetAll`. Falls back to `FALLBACK_COLOR` when
    * the list is unknown or fully assigned-and-locked and no override is given.
    */
-  next (list: string, name?: string, override?: string): string {
+  next(list: string, name?: string, override?: string): string {
     const slots = this.lists[list]
 
     if (!slots) {
@@ -62,8 +60,7 @@ export class ColorSet {
     const locked = !override
 
     if (name !== undefined) {
-      const existing = slots
-        .find(slot => slot.name === name)
+      const existing = slots.find(slot => slot.name === name)
 
       if (existing) {
         existing.locked = locked
@@ -72,8 +69,7 @@ export class ColorSet {
       }
     }
 
-    const slot = slots.find(slot => slot.name === undefined) ??
-      slots.find(slot => !slot.locked)
+    const slot = slots.find(slot => slot.name === undefined) ?? slots.find(slot => !slot.locked)
 
     if (!slot) {
       return override ?? FALLBACK_COLOR
@@ -88,7 +84,7 @@ export class ColorSet {
   /**
    * Clear every color assignment so all palettes start fresh.
    */
-  forceResetAll (): void {
+  forceResetAll(): void {
     for (const slots of Object.values(this.lists)) {
       for (const slot of slots) {
         slot.name = undefined
@@ -99,7 +95,7 @@ export class ColorSet {
 }
 
 export const ColorSetPlugin = {
-  install (Vue: typeof _Vue) {
+  install(Vue: typeof _Vue) {
     const colorset = new ColorSet()
     Vue.prototype.$colorset = colorset
     Vue.$colorset = colorset
@@ -108,10 +104,10 @@ export const ColorSetPlugin = {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $colorset: ColorSet;
+    $colorset: ColorSet
   }
 
   interface VueConstructor {
-    $colorset: ColorSet;
+    $colorset: ColorSet
   }
 }

@@ -240,34 +240,36 @@ type MacroWithSpoolId = Macro & {
   components: { StatusLabel }
 })
 export default class SpoolmanCard extends Mixins(StateMixin) {
-  handleSelectSpool (targetMacro?: Macro) {
+  handleSelectSpool(targetMacro?: Macro) {
     this.$typedCommit('spoolman/setDialogState', {
       show: true,
       targetMacro: targetMacro?.name
     })
   }
 
-  get selectedCardFields (): string[][] {
+  get selectedCardFields(): string[][] {
     const fields = this.$typedState.config.uiSettings.spoolman.selectedCardFields
     const columnCount = fields.length > 1 ? 2 : 1
     const elementsPerColumn = Math.ceil(fields.length / columnCount)
-    return new Array(columnCount).fill(undefined).map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
+    return new Array(columnCount)
+      .fill(undefined)
+      .map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
   }
 
-  get activeSpool (): Spool | undefined {
+  get activeSpool(): Spool | undefined {
     if (!this.isConnected) return undefined
     return this.$typedGetters['spoolman/getActiveSpool']
   }
 
-  get currency (): string | null {
+  get currency(): string | null {
     return this.$typedState.spoolman.currency
   }
 
-  get isConnected (): boolean {
+  get isConnected(): boolean {
     return this.$typedState.spoolman.connected
   }
 
-  get socketDiagnosticMessage (): string | null {
+  get socketDiagnosticMessage(): string | null {
     const diagnostic = this.$typedState.spoolman.socketDiagnostic
 
     if (!this.isConnected || !diagnostic) return null
@@ -290,27 +292,30 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     }
   }
 
-  get targetableMacros () {
+  get targetableMacros() {
     const macros: Macro[] = this.$typedGetters['macros/getMacros']
 
     return macros
-      .filter((macro): macro is MacroWithSpoolId => macro.variables != null && 'spool_id' in macro.variables)
+      .filter(
+        (macro): macro is MacroWithSpoolId =>
+          macro.variables != null && 'spool_id' in macro.variables
+      )
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
   }
 
-  get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
+  get remainingFilamentUnit(): SpoolmanRemainingFilamentUnit {
     return this.$typedState.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
-  getSpoolById (id: number): Spool | undefined {
+  getSpoolById(id: number): Spool | undefined {
     return this.$typedGetters['spoolman/getSpoolById'](id)
   }
 
-  getSpoolColor (spool?: Spool) {
+  getSpoolColor(spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 
-  getFieldLabel (field: string) {
+  getFieldLabel(field: string) {
     switch (field) {
       case 'remaining_weight':
         return this.$t('app.spoolman.label.remaining')
@@ -323,7 +328,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     }
   }
 
-  getFormattedField (field: string) {
+  getFormattedField(field: string) {
     if (!this.activeSpool) return '-'
 
     switch (field) {
@@ -337,19 +342,27 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
         return this.activeSpool.filament.material || '-'
 
       case 'first_used':
-        return this.activeSpool.first_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used) : this.$tc('app.setting.label.never')
+        return this.activeSpool.first_used
+          ? this.$filters.formatRelativeTimeToNow(this.activeSpool.first_used)
+          : this.$tc('app.setting.label.never')
 
       case 'last_used':
-        return this.activeSpool.last_used ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used) : this.$tc('app.setting.label.never')
+        return this.activeSpool.last_used
+          ? this.$filters.formatRelativeTimeToNow(this.activeSpool.last_used)
+          : this.$tc('app.setting.label.never')
 
       case 'price':
-        return this.activeSpool.price != null ? this.$filters.getReadableCurrencyString(this.activeSpool.price, this.currency ?? '') : '-'
+        return this.activeSpool.price != null
+          ? this.$filters.getReadableCurrencyString(this.activeSpool.price, this.currency ?? '')
+          : '-'
 
       case 'density':
         return this.activeSpool.filament.density || '-'
 
       case 'diameter':
-        return this.activeSpool.filament.diameter ? this.$filters.getReadableLengthString(this.activeSpool.filament.diameter) : '-'
+        return this.activeSpool.filament.diameter
+          ? this.$filters.getReadableLengthString(this.activeSpool.filament.diameter)
+          : '-'
 
       case 'extruder_temp':
         return this.activeSpool.filament.settings_extruder_temp || '-'
@@ -358,37 +371,53 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
         return this.activeSpool.filament.settings_bed_temp || '-'
 
       case 'remaining_weight':
-        return this.activeSpool.remaining_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.remaining_weight) : '-'
+        return this.activeSpool.remaining_weight != null
+          ? this.$filters.getReadableWeightString(this.activeSpool.remaining_weight)
+          : '-'
 
       case 'remaining_length':
-        return this.activeSpool.remaining_length != null ? this.$filters.getReadableLengthString(this.activeSpool.remaining_length) : '-'
+        return this.activeSpool.remaining_length != null
+          ? this.$filters.getReadableLengthString(this.activeSpool.remaining_length)
+          : '-'
 
       case 'used_weight':
-        return this.activeSpool.used_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.used_weight) : '-'
+        return this.activeSpool.used_weight != null
+          ? this.$filters.getReadableWeightString(this.activeSpool.used_weight)
+          : '-'
 
       case 'used_length':
-        return this.activeSpool.used_length != null ? this.$filters.getReadableLengthString(this.activeSpool.used_length) : '-'
+        return this.activeSpool.used_length != null
+          ? this.$filters.getReadableLengthString(this.activeSpool.used_length)
+          : '-'
 
       case 'initial_weight':
-        return this.activeSpool.initial_weight != null ? this.$filters.getReadableWeightString(this.activeSpool.initial_weight) : '-'
+        return this.activeSpool.initial_weight != null
+          ? this.$filters.getReadableWeightString(this.activeSpool.initial_weight)
+          : '-'
 
       case 'initial_length':
-        return this.activeSpool.initial_length != null ? this.$filters.getReadableLengthString(this.activeSpool.initial_length) : '-'
+        return this.activeSpool.initial_length != null
+          ? this.$filters.getReadableLengthString(this.activeSpool.initial_length)
+          : '-'
 
       default:
         return this.activeSpool[field as keyof Spool] || '-'
     }
   }
 
-  getTooltipField (field: string) {
+  getTooltipField(field: string) {
     if (!this.activeSpool) return null
 
     switch (field) {
       case 'first_used':
-        return this.activeSpool.first_used ? this.$filters.formatDateTime(this.activeSpool.first_used) : null
+        return this.activeSpool.first_used
+          ? this.$filters.formatDateTime(this.activeSpool.first_used)
+          : null
 
       case 'last_used':
-        return this.activeSpool.last_used ? this.$filters.formatDateTime(this.activeSpool.last_used) : null
+        return this.activeSpool.last_used
+          ? this.$filters.formatDateTime(this.activeSpool.last_used)
+          : null
 
       default:
         return null

@@ -33,9 +33,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon dense>
-              $cog
-            </v-icon>
+            <v-icon dense> $cog </v-icon>
           </app-btn>
         </template>
 
@@ -114,7 +112,9 @@
               {{ $t('app.general.label.total_print_time') }}
             </div>
             <div class="focus--text">
-              {{ $filters.formatCounterSeconds(rollup.total_print_time , { includeDays: timeInDays }) }}
+              {{
+                $filters.formatCounterSeconds(rollup.total_print_time, { includeDays: timeInDays })
+              }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_print_time_avg') }}
@@ -133,13 +133,21 @@
               {{ $t('app.general.label.total_filament') }}
             </div>
             <div class="focus--text">
-              {{ $filters.getReadableLengthString(rollup.total_filament_used, { showKilometers: lengthInKilometers }) }}
+              {{
+                $filters.getReadableLengthString(rollup.total_filament_used, {
+                  showKilometers: lengthInKilometers
+                })
+              }}
             </div>
             <div class="secondary--text">
               {{ $t('app.general.label.total_filament_avg') }}
             </div>
             <div class="focus--text">
-              {{ $filters.getReadableLengthString(rollup.filament_avg, { showKilometers: lengthInKilometers }) }}
+              {{
+                $filters.getReadableLengthString(rollup.filament_avg, {
+                  showKilometers: lengthInKilometers
+                })
+              }}
             </div>
           </v-card>
         </v-col>
@@ -157,11 +165,11 @@ export default class PrinterStatsCard extends Vue {
   @Prop({ type: Boolean })
   readonly narrow?: boolean
 
-  get lengthInKilometers (): boolean {
+  get lengthInKilometers(): boolean {
     return this.$typedState.config.uiSettings.history.lengthInKilometers
   }
 
-  set lengthInKilometers (value: boolean) {
+  set lengthInKilometers(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.history.lengthInKilometers',
       value,
@@ -169,11 +177,11 @@ export default class PrinterStatsCard extends Vue {
     })
   }
 
-  get timeInDays (): boolean {
+  get timeInDays(): boolean {
     return this.$typedState.config.uiSettings.history.timeInDays
   }
 
-  set timeInDays (value: boolean) {
+  set timeInDays(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.history.timeInDays',
       value,
@@ -181,19 +189,20 @@ export default class PrinterStatsCard extends Vue {
     })
   }
 
-  get rollup () {
+  get rollup() {
     return this.$typedGetters['history/getRollUp']
   }
 
-  get supportsHistoryComponent (): boolean {
+  get supportsHistoryComponent(): boolean {
     return this.$typedGetters['server/componentSupport']('history')
   }
 
-  async handleResetStats () {
-    const result = await this.$confirm(
-      this.$tc('app.history.msg.confirm_stats'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async handleResetStats() {
+    const result = await this.$confirm(this.$tc('app.history.msg.confirm_stats'), {
+      title: this.$tc('app.general.label.confirm'),
+      color: 'card-heading',
+      icon: '$error'
+    })
 
     if (result) {
       SocketActions.serverHistoryResetTotals()
@@ -203,15 +212,15 @@ export default class PrinterStatsCard extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .total-size {
-    font-size: 0.875rem;
-  }
+.total-size {
+  font-size: 0.875rem;
+}
 
-  .stat-square {
-    min-height: 110px;
+.stat-square {
+  min-height: 110px;
 
-    div:nth-child(2) {
-      margin-bottom: 6px;
-    }
+  div:nth-child(2) {
+    margin-bottom: 6px;
   }
+}
 </style>

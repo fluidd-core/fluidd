@@ -51,67 +51,69 @@ export const getters = {
   /**
    * Returns a boolean indicating if a given component has an update.
    */
-  hasUpdate: (state) => (name: string): boolean => {
-    const versionInfo = state.status?.version_info?.[name]
+  hasUpdate:
+    state =>
+    (name: string): boolean => {
+      const versionInfo = state.status?.version_info?.[name]
 
-    if (versionInfo != null) {
-      if ('package_count' in versionInfo) {
-        return versionInfo.package_count > 0
-      }
+      if (versionInfo != null) {
+        if ('package_count' in versionInfo) {
+          return versionInfo.package_count > 0
+        }
 
-      // `git describe` versions don't compare as SemVer
-      if ('commits_behind_count' in versionInfo) {
-        return (
-          versionInfo.current_hash !== versionInfo.remote_hash &&
-          versionInfo.commits_behind_count > 0
-        )
-      }
+        // `git describe` versions don't compare as SemVer
+        if ('commits_behind_count' in versionInfo) {
+          return (
+            versionInfo.current_hash !== versionInfo.remote_hash &&
+            versionInfo.commits_behind_count > 0
+          )
+        }
 
-      if ('version' in versionInfo && 'remote_version' in versionInfo) {
-        const version = valid(versionInfo.version, { loose: true })
-        const remoteVersion = valid(versionInfo.remote_version, { loose: true })
+        if ('version' in versionInfo && 'remote_version' in versionInfo) {
+          const version = valid(versionInfo.version, { loose: true })
+          const remoteVersion = valid(versionInfo.remote_version, { loose: true })
 
-        if (version && remoteVersion) {
-          return gt(remoteVersion, version, { loose: true })
+          if (version && remoteVersion) {
+            return gt(remoteVersion, version, { loose: true })
+          }
+        }
+
+        if ('current_hash' in versionInfo && 'remote_hash' in versionInfo) {
+          return versionInfo.current_hash !== versionInfo.remote_hash
         }
       }
 
-      if ('current_hash' in versionInfo && 'remote_hash' in versionInfo) {
-        return versionInfo.current_hash !== versionInfo.remote_hash
-      }
-    }
+      return false
+    },
 
-    return false
-  },
-
-  getResponses: (state) => {
+  getResponses: state => {
     return [...state.responses]
   },
 
   /**
    * Returns commit history grouped by day.
    */
-  getCommitHistory: (state) => (component: string) => {
+  getCommitHistory: state => (component: string) => {
     // This is only relevant for certain types.
     const versionInfo = state.status?.version_info?.[component]
 
     if (versionInfo && 'commits_behind' in versionInfo) {
-      const result = versionInfo.commits_behind
-        .reduce<Record<number, Moonraker.UpdateManager.GitRepoCommit[]>>((groups, commitItem) => {
-          const dayInSeconds = 24 * 60 * 60
-          const dateOnly = Math.floor(+commitItem.date / dayInSeconds) * dayInSeconds * 1000
+      const result = versionInfo.commits_behind.reduce<
+        Record<number, Moonraker.UpdateManager.GitRepoCommit[]>
+      >((groups, commitItem) => {
+        const dayInSeconds = 24 * 60 * 60
+        const dateOnly = Math.floor(+commitItem.date / dayInSeconds) * dayInSeconds * 1000
 
-          if (dateOnly in groups) {
-            groups[dateOnly].push(commitItem)
-          } else {
-            groups[dateOnly] = [commitItem]
-          }
+        if (dateOnly in groups) {
+          groups[dateOnly].push(commitItem)
+        } else {
+          groups[dateOnly] = [commitItem]
+        }
 
-          return groups
-        }, {})
+        return groups
+      }, {})
       return {
-        keys: Object
-          .keys(result)
+        keys: Object.keys(result)
           .map(key => +key)
           .sort((a, b) => b - a),
         result

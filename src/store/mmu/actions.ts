@@ -6,7 +6,7 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   }
 } satisfies ActionTree<MmuState, RootState>

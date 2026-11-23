@@ -156,8 +156,14 @@
             >
               <v-col>
                 <v-card outlined>
-                  <v-card-title>{{ device.product ?? $t("app.general.label.unknown") }} ({{ device.vendor_id }}:{{ device.product_id }})</v-card-title>
-                  <v-card-subtitle>{{ device.description ?? $t("app.general.label.unknown") }}</v-card-subtitle>
+                  <v-card-title
+                    >{{ device.product ?? $t('app.general.label.unknown') }} ({{
+                      device.vendor_id
+                    }}:{{ device.product_id }})</v-card-title
+                  >
+                  <v-card-subtitle>{{
+                    device.description ?? $t('app.general.label.unknown')
+                  }}</v-card-subtitle>
 
                   <v-divider />
 
@@ -181,7 +187,9 @@
                       </tr>
                       <tr v-if="device.class">
                         <th>class</th>
-                        <td>{{ device.subclass ? `${device.class}, ${device.subclass}` : device.class }}</td>
+                        <td>{{
+                          device.subclass ? `${device.class}, ${device.subclass}` : device.class
+                        }}</td>
                       </tr>
                     </tbody>
                   </v-simple-table>
@@ -261,7 +269,7 @@
                         :key="mode.format"
                       >
                         <th>{{ mode.format }} resolutions</th>
-                        <td>{{ mode.resolutions.join(", ") }}</td>
+                        <td>{{ mode.resolutions.join(', ') }}</td>
                       </tr>
                     </tbody>
                   </v-simple-table>
@@ -303,7 +311,7 @@
                         :key="mode.format"
                       >
                         <th>{{ mode.format }} resolutions</th>
-                        <td>{{ mode.resolutions.join(", ") }}</td>
+                        <td>{{ mode.resolutions.join(', ') }}</td>
                       </tr>
                     </tbody>
                   </v-simple-table>
@@ -360,7 +368,7 @@ import type { Peripherals } from '@/store/server/types'
 type PeripheralType = 'serial' | 'usb' | 'video' | 'can'
 
 type PeripheralGroup = {
-  type: PeripheralType,
+  type: PeripheralType
   count?: number
 }
 
@@ -371,23 +379,23 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
 
   tab: number | null = null
 
-  get peripherals (): Peripherals {
+  get peripherals(): Peripherals {
     return this.$typedState.server.peripherals
   }
 
-  get canbusUuids (): Record<string, Moonraker.Peripherals.CanbusUuid[]> | null {
+  get canbusUuids(): Record<string, Moonraker.Peripherals.CanbusUuid[]> | null {
     return this.$typedState.server.can_uuids
   }
 
-  get systemInfo (): Moonraker.Machine.SystemInfo | null {
+  get systemInfo(): Moonraker.Machine.SystemInfo | null {
     return this.$typedState.server.system_info
   }
 
-  get canbusInterfaces (): string[] {
+  get canbusInterfaces(): string[] {
     return Object.keys(this.systemInfo?.canbus ?? {})
   }
 
-  get peripheralGroups (): PeripheralGroup[] {
+  get peripheralGroups(): PeripheralGroup[] {
     const peripheralGroups: PeripheralGroup[] = [
       {
         type: 'serial',
@@ -399,11 +407,10 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
       },
       {
         type: 'video',
-        count: (
+        count:
           this.peripherals.v4l2_devices && this.peripherals.libcamera_devices
             ? this.peripherals.v4l2_devices.length + this.peripherals.libcamera_devices.length
             : undefined
-        )
       }
     ]
 
@@ -411,8 +418,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
       peripheralGroups.push({
         type: 'can',
         count: this.canbusUuids
-          ? Object.values(this.canbusUuids)
-            .reduce((a, b) => a + b.length, 0)
+          ? Object.values(this.canbusUuids).reduce((a, b) => a + b.length, 0)
           : undefined
       })
     }
@@ -420,11 +426,11 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
     return peripheralGroups
   }
 
-  get currentPeripheralGroup (): PeripheralGroup | false {
+  get currentPeripheralGroup(): PeripheralGroup | false {
     return this.tab != null && this.peripheralGroups[this.tab]
   }
 
-  hasWaitFor (peripheralGroup: PeripheralGroup) {
+  hasWaitFor(peripheralGroup: PeripheralGroup) {
     switch (peripheralGroup.type) {
       case 'serial':
         return this.hasWait(this.$waits.onMachinePeripheralsSerial)
@@ -440,7 +446,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
     }
   }
 
-  handleRefresh () {
+  handleRefresh() {
     const currentPeripheralGroup = this.currentPeripheralGroup
 
     if (currentPeripheralGroup) {
@@ -469,7 +475,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-expansion-panel::before) {
-    box-shadow: none;
-  }
+:deep(.v-expansion-panel::before) {
+  box-shadow: none;
+}
 </style>

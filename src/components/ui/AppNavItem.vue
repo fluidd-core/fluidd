@@ -26,7 +26,8 @@
       <kbd
         v-if="accelerator && enableKeyboardShortcuts"
         class="ml-2"
-      >{{ accelerator }}</kbd>
+        >{{ accelerator }}</kbd
+      >
     </span>
   </v-tooltip>
 </template>
@@ -54,21 +55,18 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: String })
   readonly icon?: string
 
-  get accelerator (): string | undefined {
+  get accelerator(): string | undefined {
     return isKeyOf(this.to, Globals.KEYBOARD_SHORTCUTS)
       ? Globals.KEYBOARD_SHORTCUTS[this.to]
       : undefined
   }
 
-  get enableKeyboardShortcuts (): boolean {
+  get enableKeyboardShortcuts(): boolean {
     return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
-  handleKeyDown (event: KeyboardEvent) {
-    if (
-      !this.enableKeyboardShortcuts ||
-      !this.accelerator
-    ) {
+  handleKeyDown(event: KeyboardEvent) {
+    if (!this.enableKeyboardShortcuts || !this.accelerator) {
       return
     }
 
@@ -85,60 +83,59 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  mounted () {
+  mounted() {
     window.addEventListener('keydown', this.handleKeyDown, false)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('keydown', this.handleKeyDown)
   }
 }
-
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  button {
-    // font-size: 0.875rem;
-    // font-family: raleway, sans-serif;
-    // font-weight: 300;
-    // text-decoration: none;
+button {
+  // font-size: 0.875rem;
+  // font-family: raleway, sans-serif;
+  // font-weight: 300;
+  // text-decoration: none;
 
-    height: inherit;
-    padding: 16px 0px;
-    width: 100%;
+  height: inherit;
+  padding: 16px 0px;
+  width: 100%;
 
-    overflow: hidden;
-    display: inline-flex;
-    flex-direction: column;
-    flex: 0 1 auto;
-    position: relative;
-    align-items: center;
-    justify-content: center;
+  overflow: hidden;
+  display: inline-flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  position: relative;
+  align-items: center;
+  justify-content: center;
 
-    cursor: pointer;
-    outline: 0;
-    user-select: none;
-    white-space: nowrap;
-  }
+  cursor: pointer;
+  outline: 0;
+  user-select: none;
+  white-space: nowrap;
+}
 
-  button:before {
-    background-color: currentColor;
-    border-radius: inherit;
-    bottom: 0;
-    color: inherit;
-    content: "";
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
+button:before {
+  background-color: currentColor;
+  border-radius: inherit;
+  bottom: 0;
+  color: inherit;
+  content: '';
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
 
-  button.active:before,
-  button:hover::before {
-    opacity: 0.08;
-  }
+button.active:before,
+button:hover::before {
+  opacity: 0.08;
+}
 </style>

@@ -15,9 +15,7 @@
         rel="noopener noreferrer"
         class="me-1"
       >
-        <v-icon left>
-          $afcHelp
-        </v-icon>
+        <v-icon left> $afcHelp </v-icon>
         {{ $t('app.afc.SettingsDialog.Help') }}
       </v-btn>
     </template>

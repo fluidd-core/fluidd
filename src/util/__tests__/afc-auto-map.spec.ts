@@ -1,15 +1,28 @@
 import { autoMap, hexToLab, type AutoMapLane, type AutoMapTool } from '../afc-auto-map'
 
-const lane = (name: string, color: string | undefined, material = 'PLA', current: number[] = [], weight = 1000): AutoMapLane => ({
+const lane = (
+  name: string,
+  color: string | undefined,
+  material = 'PLA',
+  current: number[] = [],
+  weight = 1000
+): AutoMapLane => ({
   lane: name,
   color,
   material,
   weight,
-  current: current.reduce<boolean[]>((acc, t) => { acc[t] = true; return acc }, [])
+  current: current.reduce<boolean[]>((acc, t) => {
+    acc[t] = true
+    return acc
+  }, [])
 })
 
-const tool = (t: number, color: string | undefined, material: string | undefined = 'PLA', weight = 10): AutoMapTool =>
-  ({ tool: t, color, material, weight })
+const tool = (
+  t: number,
+  color: string | undefined,
+  material: string | undefined = 'PLA',
+  weight = 10
+): AutoMapTool => ({ tool: t, color, material, weight })
 
 const result = (map: Map<number, string>) => Object.fromEntries(map)
 
@@ -33,7 +46,10 @@ describe('autoMap', () => {
   })
 
   it('prefers a material match over a closer color', () => {
-    const map = autoMap([tool(0, '#FF0000', 'PETG')], [lane('A', '#FF0000', 'PLA'), lane('B', '#00FF00', 'PETG')])
+    const map = autoMap(
+      [tool(0, '#FF0000', 'PETG')],
+      [lane('A', '#FF0000', 'PLA'), lane('B', '#00FF00', 'PETG')]
+    )
     expect(result(map)).toEqual({ 0: 'B' })
   })
 
@@ -55,7 +71,10 @@ describe('autoMap', () => {
   })
 
   it('keeps the current lane when color data is missing', () => {
-    const map = autoMap([tool(0, undefined)], [lane('A', '#FF0000'), lane('B', '#00FF00', 'PLA', [0])])
+    const map = autoMap(
+      [tool(0, undefined)],
+      [lane('A', '#FF0000'), lane('B', '#00FF00', 'PLA', [0])]
+    )
     expect(result(map)).toEqual({ 0: 'B' })
   })
 

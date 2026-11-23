@@ -7,25 +7,22 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Make a socket request to init the moonraker power component.
    */
-  async init () {
+  async init() {
     SocketActions.machineDevicePowerDevices()
   },
 
   /**
    * Inits the list of available devices. Notified by init action.
    */
-  async onInit ({ commit }, payload: Moonraker.Power.DevicesResponse) {
-    if (
-      payload.devices &&
-      payload.devices.length > 0
-    ) {
+  async onInit({ commit }, payload: Moonraker.Power.DevicesResponse) {
+    if (payload.devices && payload.devices.length > 0) {
       commit('setDevices', payload)
     }
   },
@@ -33,7 +30,7 @@ export const actions = {
   /**
    * Fires when we receive a notification of power changing
    */
-  async onStatus ({ commit }, payload: Moonraker.Power.StatusResponse) {
+  async onStatus({ commit }, payload: Moonraker.Power.StatusResponse) {
     commit('setStatus', payload)
-  },
+  }
 } satisfies ActionTree<DevicePowerState, RootState>

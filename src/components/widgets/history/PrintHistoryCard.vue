@@ -54,22 +54,23 @@ export default class PrinterHistoryCard extends Vue {
   @Prop({ type: Boolean })
   readonly narrow?: boolean
 
-  get allLoaded (): boolean {
+  get allLoaded(): boolean {
     return this.$typedState.history.allLoaded
   }
 
-  async handleRemoveAll () {
-    const result = await this.$confirm(
-      this.$tc('app.history.msg.confirm_jobs'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async handleRemoveAll() {
+    const result = await this.$confirm(this.$tc('app.history.msg.confirm_jobs'), {
+      title: this.$tc('app.general.label.confirm'),
+      color: 'card-heading',
+      icon: '$error'
+    })
 
     if (result) {
       SocketActions.serverHistoryDeleteJob('all')
     }
   }
 
-  handleLoadAll () {
+  handleLoadAll() {
     SocketActions.serverHistoryList({ limit: 0 })
   }
 }

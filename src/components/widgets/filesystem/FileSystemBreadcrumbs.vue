@@ -32,7 +32,7 @@
               {{ item.text }}
             </span>
           </template>
-          <span>{{ item.fullPath || "/" }}</span>
+          <span>{{ item.fullPath || '/' }}</span>
         </v-tooltip>
       </v-breadcrumbs-item>
     </template>
@@ -59,26 +59,23 @@ export default class FileSystemBreadcrumbs extends Vue {
   @Prop({ type: Boolean })
   readonly dense?: boolean
 
-  get breadcrumbItems (): BreadcrumbItem[] {
-    const segments = this.path
-      .split('/')
-      .filter(Boolean)
+  get breadcrumbItems(): BreadcrumbItem[] {
+    const segments = this.path.split('/').filter(Boolean)
 
     return [
       {
         fullPath: '',
         disabled: segments.length === 0
       },
-      ...segments
-        .map((segment, index) => ({
-          text: segment,
-          fullPath: `/${segments.slice(0, index + 1).join('/')}`,
-          disabled: index === segments.length - 1
-        }))
+      ...segments.map((segment, index) => ({
+        text: segment,
+        fullPath: `/${segments.slice(0, index + 1).join('/')}`,
+        disabled: index === segments.length - 1
+      }))
     ]
   }
 
-  handleBreadcrumbItemClick (item: BreadcrumbItem) {
+  handleBreadcrumbItemClick(item: BreadcrumbItem) {
     if (!item.disabled) {
       this.$emit('navigate-to', `${this.root}${item.fullPath}`)
     }

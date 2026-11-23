@@ -35,28 +35,25 @@ export default class AfcCardUnitLane extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane (): Klipper.AfcLaneState | undefined {
+  get lane(): Klipper.AfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 
-  get laneActive (): boolean {
+  get laneActive(): boolean {
     return this.name === this.afcCurrentLane?.name
   }
 
-  get laneStatusClass () {
+  get laneStatusClass() {
     return {
       'darken-3': this.$vuetify.theme.dark,
       'lighten-2': !this.$vuetify.theme.dark,
       'border-error': this.laneActive && this.afcErrorState,
-      'border-success': this.laneActive && !this.afcErrorState,
+      'border-success': this.laneActive && !this.afcErrorState
     }
   }
 
-  get laneReady (): boolean {
-    return (
-      this.lane?.load === true &&
-      this.lane.prep === true
-    )
+  get laneReady(): boolean {
+    return this.lane?.load === true && this.lane.prep === true
   }
 }
 </script>

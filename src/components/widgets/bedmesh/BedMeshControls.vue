@@ -48,7 +48,7 @@
             <td class="focus--text">
               <span>
                 {{ item.range.toFixed(4) }}
-              <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
+                <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
               </span>
             </td>
             <td
@@ -66,9 +66,7 @@
                     @click="loadProfile(item.name)"
                     v-on="on"
                   >
-                    <v-icon dense>
-                      $open
-                    </v-icon>
+                    <v-icon dense> $open </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.bedmesh.tooltip.load') }}</span>
@@ -83,9 +81,7 @@
                     @click="removeProfile(item.name)"
                     v-on="on"
                   >
-                    <v-icon dense>
-                      $delete
-                    </v-icon>
+                    <v-icon dense> $delete </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>
@@ -159,7 +155,7 @@
             class="mb-2"
             :loading="hasWait($waits.onHomeAll)"
             :disabled="printerBusy"
-            :color="(!allHomed) ? 'primary' : undefined"
+            :color="!allHomed ? 'primary' : undefined"
             @click="homeAll"
           >
             <v-icon
@@ -167,7 +163,8 @@
               class="mr-1"
             >
               $home
-            </v-icon> {{ $t('app.general.btn.all') }}
+            </v-icon>
+            {{ $t('app.general.btn.all') }}
           </app-btn>
 
           <app-btn
@@ -285,11 +282,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type {
-  MeshState,
-  MatrixType,
-  BedMeshProfileListEntry
-} from '@/store/mesh/types'
+import type { MeshState, MatrixType, BedMeshProfileListEntry } from '@/store/mesh/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({
@@ -307,101 +300,100 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     adaptive: false
   }
 
-  get matrix () {
+  get matrix() {
     return this.mesh.matrix
   }
 
-  set matrix (val: MatrixType) {
+  set matrix(val: MatrixType) {
     this.$typedDispatch('mesh/onMatrix', val)
   }
 
-  get mapScale () {
+  get mapScale() {
     return this.mesh.scale
   }
 
-  set mapScale (val: number) {
+  set mapScale(val: number) {
     this.$typedDispatch('mesh/onScale', val)
   }
 
-  get boxScale () {
+  get boxScale() {
     return this.mesh.boxScale
   }
 
-  set boxScale (val: number) {
+  set boxScale(val: number) {
     this.$typedDispatch('mesh/onBoxScale', val)
   }
 
-  get wireframe () {
+  get wireframe() {
     return this.mesh.wireframe
   }
 
-  set wireframe (val: boolean) {
+  set wireframe(val: boolean) {
     this.$typedDispatch('mesh/onWireframe', val)
   }
 
-  get flatSurface () {
+  get flatSurface() {
     return this.mesh.flatSurface
   }
 
-  set flatSurface (val: boolean) {
+  set flatSurface(val: boolean) {
     this.$typedDispatch('mesh/onFlatSurface', val)
   }
 
-  get mesh (): MeshState {
+  get mesh(): MeshState {
     return this.$typedState.mesh
   }
 
   // The available meshes.
-  get bedMeshProfiles (): BedMeshProfileListEntry[] {
+  get bedMeshProfiles(): BedMeshProfileListEntry[] {
     return this.$typedGetters['mesh/getBedMeshProfiles']
   }
 
   // The current mesh, unprocessed.
-  get currentMesh (): Klipper.BedMeshState | undefined {
+  get currentMesh(): Klipper.BedMeshState | undefined {
     return this.$typedState.printer.printer.bed_mesh
   }
 
   // If we have a mesh loaded.
-  get meshLoaded (): boolean {
+  get meshLoaded(): boolean {
     return !!this.currentMesh?.profile_name
   }
 
-  calibrate () {
+  calibrate() {
     this.sendGcode('BED_MESH_CALIBRATE', this.$waits.onMeshCalibrate)
   }
 
-  async clearMesh () {
-    const result = (
+  async clearMesh() {
+    const result =
       !this.printerPrinting ||
-      await this.$confirm(
+      (await this.$confirm(
         this.$t('app.general.simple_form.msg.confirm_load_bedmesh_profile', { name }).toString(),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-      )
-    )
+      ))
     if (result) {
       this.sendGcode('BED_MESH_CLEAR')
     }
   }
 
-  async loadProfile (name: string) {
-    const result = (
+  async loadProfile(name: string) {
+    const result =
       !this.printerPrinting ||
-      await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm_clear_mesh'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-      )
-    )
+      (await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_clear_mesh'), {
+        title: this.$tc('app.general.label.confirm'),
+        color: 'card-heading',
+        icon: '$error'
+      }))
 
     if (result) {
       this.sendGcode(`BED_MESH_PROFILE LOAD=${encodeGcodeParamValue(name)}`)
     }
   }
 
-  removeProfile (name: string) {
+  removeProfile(name: string) {
     this.sendGcode(`BED_MESH_PROFILE REMOVE=${encodeGcodeParamValue(name)}`)
   }
 
-  handleMeshSave (config: { name: string; removeDefault: boolean }) {
+  handleMeshSave(config: { name: string; removeDefault: boolean }) {
     const profileName = this.currentMesh?.profile_name
 
     if (config.name !== profileName) {
@@ -413,7 +405,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     }
   }
 
-  handleOpenSaveDialog () {
+  handleOpenSaveDialog() {
     const profileName = this.currentMesh?.profile_name
 
     if (!profileName) {
@@ -432,7 +424,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-input__slider .v-input__slot .v-label) {
-    min-width: 82px;
-  }
+:deep(.v-input__slider .v-input__slot .v-label) {
+  min-width: 82px;
+}
 </style>

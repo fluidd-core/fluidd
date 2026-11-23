@@ -6,16 +6,14 @@ import type { AppDataTableHeader } from '@/types'
 import md5 from 'md5'
 
 export const getters = {
-  getCurrentInstance: (state) => {
-    return state.instances
-      .find(instance => instance.active)
+  getCurrentInstance: state => {
+    return state.instances.find(instance => instance.active)
   },
 
-  getInstances: (state) => {
+  getInstances: state => {
     const instances = [...state.instances]
 
-    return instances
-      .sort((a, b) => +b.active - +a.active || a.name.localeCompare(b.name))
+    return instances.sort((a, b) => +b.active - +a.active || a.name.localeCompare(b.name))
   },
 
   /**
@@ -61,55 +59,58 @@ export const getters = {
     })
   },
 
-  getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
-    const files: Moonraker.Files.RootFile[] | undefined = rootGetters['files/getRootFiles']('config')
+  getCustomThemeFile:
+    (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
+      const files: Moonraker.Files.RootFile[] | undefined =
+        rootGetters['files/getRootFiles']('config')
 
-    if (files) {
-      for (const extension of extensions) {
-        const path = `.fluidd-theme/${filename}${extension}`
+      if (files) {
+        for (const extension of extensions) {
+          const path = `.fluidd-theme/${filename}${extension}`
 
-        if (files.some(f => f.path === path)) {
-          return path
+          if (files.some(f => f.path === path)) {
+            return path
+          }
         }
       }
-    }
-  },
+    },
 
-  getMergedTableHeaders: (state) => (headers: AppDataTableHeader[], key: string): AppDataTableHeader[] => {
-    const configuredHeaders = state.uiSettings.tableHeaders[key]
+  getMergedTableHeaders:
+    state =>
+    (headers: AppDataTableHeader[], key: string): AppDataTableHeader[] => {
+      const configuredHeaders = state.uiSettings.tableHeaders[key]
 
-    if (!configuredHeaders) {
-      return headers
-    }
+      if (!configuredHeaders) {
+        return headers
+      }
 
-    // if the number of configured headers is the same as the available headers,
-    // then use configured headers to keep order
-    // else go with available headers
-    return headers.length === configuredHeaders.length
-      ? configuredHeaders
-        .map((configuredHeader): AppDataTableHeader | null => {
-          const header = headers.find(p => p.value === configuredHeader.value)
+      // if the number of configured headers is the same as the available headers,
+      // then use configured headers to keep order
+      // else go with available headers
+      return headers.length === configuredHeaders.length
+        ? configuredHeaders
+            .map((configuredHeader): AppDataTableHeader | null => {
+              const header = headers.find(p => p.value === configuredHeader.value)
 
-          if (!header) {
-            return null
-          }
+              if (!header) {
+                return null
+              }
 
-          return {
+              return {
+                ...header,
+                ...configuredHeader
+              }
+            })
+            .filter(header => header != null)
+        : headers.map((header): AppDataTableHeader => ({
             ...header,
-            ...configuredHeader,
-          }
-        })
-        .filter(header => header != null)
-      : headers
-        .map((header): AppDataTableHeader => ({
-          ...header,
-          ...configuredHeaders.find(p => p.value === header.value)
-        }))
-  },
+            ...configuredHeaders.find(p => p.value === header.value)
+          }))
+    },
 
-  getTokenKeys: (state) => {
+  getTokenKeys: state => {
     const url = state.apiUrl
-    const hash = (url) ? md5(url) : ''
+    const hash = url ? md5(url) : ''
 
     const tokenKeys: TokenKeys = {
       userToken: `user-token-${hash}`,

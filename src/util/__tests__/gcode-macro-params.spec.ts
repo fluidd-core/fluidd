@@ -29,7 +29,7 @@ describe('gcodeMacroParamDefault', () => {
     ['|default("this, \\"works,\\"" , true)|trim', 'this, "works,"'],
     ['|default(\'this, "works,"\' , true)|trim', 'this, "works,"'],
     ['|default(",\\"fine,\\"",true)|trim', ',"fine,"'],
-    ['|default(",\\"\\\\fine\\\\,\\"",true)|trim', ',"\\fine\\,"'],
+    ['|default(",\\"\\\\fine\\\\,\\"",true)|trim', ',"\\fine\\,"']
   ])('Expects param default of "%s" to be %s', (param, expected) => {
     expect(gcodeMacroParamDefault(param)).toBe(expected)
   })

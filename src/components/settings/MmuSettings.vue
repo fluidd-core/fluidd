@@ -116,11 +116,11 @@ import { createState } from '@/store/config/state'
   components: {}
 })
 export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
-  get showClogDetection (): boolean {
+  get showClogDetection(): boolean {
     return this.$typedState.config.uiSettings.mmu.showClogDetection
   }
 
-  set showClogDetection (value: boolean) {
+  set showClogDetection(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showClogDetection',
       value,
@@ -128,11 +128,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get showTtgMap (): boolean {
+  get showTtgMap(): boolean {
     return this.$typedState.config.uiSettings.mmu.showTtgMap
   }
 
-  set showTtgMap (value: boolean) {
+  set showTtgMap(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showTtgMap',
       value,
@@ -140,11 +140,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get showDetails (): boolean {
+  get showDetails(): boolean {
     return this.$typedState.config.uiSettings.mmu.showDetails
   }
 
-  set showDetails (value: boolean) {
+  set showDetails(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showDetails',
       value,
@@ -152,11 +152,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get largeFilamentStatus (): boolean {
+  get largeFilamentStatus(): boolean {
     return this.$typedState.config.uiSettings.mmu.largeFilamentStatus
   }
 
-  set largeFilamentStatus (value: boolean) {
+  set largeFilamentStatus(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.largeFilamentStatus',
       value,
@@ -164,11 +164,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get showUnavailableSpoolColor (): boolean {
+  get showUnavailableSpoolColor(): boolean {
     return this.$typedState.config.uiSettings.mmu.showUnavailableSpoolColor
   }
 
-  set showUnavailableSpoolColor (value: boolean) {
+  set showUnavailableSpoolColor(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showUnavailableSpoolColor',
       value,
@@ -176,11 +176,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get showLogos (): boolean {
+  get showLogos(): boolean {
     return this.$typedState.config.uiSettings.mmu.showLogos
   }
 
-  set showLogos (value: boolean) {
+  set showLogos(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showLogos',
       value,
@@ -188,11 +188,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get showName (): boolean {
+  get showName(): boolean {
     return this.$typedState.config.uiSettings.mmu.showName
   }
 
-  set showName (value: boolean) {
+  set showName(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showName',
       value,
@@ -200,11 +200,11 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get showClimate (): boolean {
+  get showClimate(): boolean {
     return this.$typedState.config.uiSettings.mmu.showClimate
   }
 
-  set showClimate (value: boolean) {
+  set showClimate(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu.showClimate',
       value,
@@ -212,7 +212,7 @@ export default class MmuSettings extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  handleReset () {
+  handleReset() {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.mmu',
       value: createState().uiSettings.mmu,

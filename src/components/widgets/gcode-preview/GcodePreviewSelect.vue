@@ -53,8 +53,8 @@ import { Component, Prop, VModel, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 
 type GcodePreviewSelectItem = {
-  text: string,
-  value: string,
+  text: string
+  value: string
   icon?: string
 }
 
@@ -66,15 +66,14 @@ export default class GcodePreviewSelect extends Mixins(BrowserMixin) {
   @Prop({ type: Array, required: true })
   readonly items!: GcodePreviewSelectItem[]
 
-  get selectedItem (): GcodePreviewSelectItem | undefined {
-    return this.items
-      .find(item => item.value === this.inputValue)
+  get selectedItem(): GcodePreviewSelectItem | undefined {
+    return this.items.find(item => item.value === this.inputValue)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .gcode-preview-select {
-    padding: 0 4px !important;
-  }
+.gcode-preview-select {
+  padding: 0 4px !important;
+}
 </style>

@@ -30,15 +30,14 @@
               v-else
               key="1"
             >
-              {{ extruderStepper.prettyName }} <span class="secondary--text">[ {{ extruderStepper.description }} ]</span>
+              {{ extruderStepper.prettyName }}
+              <span class="secondary--text">[ {{ extruderStepper.description }} ]</span>
             </span>
           </v-fade-transition>
         </template>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
-        <extruder-stepper-sync
-          :extruder-stepper="extruderStepper"
-        />
+        <extruder-stepper-sync :extruder-stepper="extruderStepper" />
 
         <pressure-advance-adjust
           v-if="extruderStepper.pressure_advance !== undefined"
@@ -62,31 +61,31 @@ import type { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
   }
 })
 export default class ExtruderSteppers extends Vue {
-  get extruderSteppers () {
+  get extruderSteppers() {
     const extruders: KnownExtruder[] = this.$typedGetters['printer/getExtruders']
     const extruderSteppers: ExtruderStepper[] = this.$typedGetters['printer/getExtruderSteppers']
 
-    return extruderSteppers
-      .map(x => {
-        const labels = [
-          (x.motion_queue && extruders.find(y => y.key === x.motion_queue)?.name) || this.$t('app.setting.label.none')
-        ]
+    return extruderSteppers.map(x => {
+      const labels = [
+        (x.motion_queue && extruders.find(y => y.key === x.motion_queue)?.name) ||
+          this.$t('app.setting.label.none')
+      ]
 
-        if (x.enabled !== undefined) {
-          labels.push(this.$t(`app.general.label.${x.enabled ? 'on' : 'off'}`).toString())
-        }
+      if (x.enabled !== undefined) {
+        labels.push(this.$t(`app.general.label.${x.enabled ? 'on' : 'off'}`).toString())
+      }
 
-        if (x.disconnected) {
-          labels.push(this.$t('app.general.label.disconnected').toString())
-        }
+      if (x.disconnected) {
+        labels.push(this.$t('app.general.label.disconnected').toString())
+      }
 
-        const description = labels.join(', ')
+      const description = labels.join(', ')
 
-        return {
-          ...x,
-          description
-        }
-      })
+      return {
+        ...x,
+        description
+      }
+    })
   }
 }
 </script>

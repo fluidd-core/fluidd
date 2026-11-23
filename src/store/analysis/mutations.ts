@@ -6,11 +6,11 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setAnalysisStatus (state, payload: Moonraker.Analysis.StatusResponse) {
+  setAnalysisStatus(state, payload: Moonraker.Analysis.StatusResponse) {
     state.status = payload
   }
 } satisfies MutationTree<AnalysisState>

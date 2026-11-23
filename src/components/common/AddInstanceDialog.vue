@@ -20,10 +20,7 @@
         persistent-hint
         :hint="$t('app.endpoint.hint.add_printer')"
         :loading="verifying"
-        :rules="[
-          $rules.required,
-          customRules.url
-        ]"
+        :rules="[$rules.required, customRules.url]"
       >
         <template #append-outer>
           <v-icon
@@ -85,16 +82,16 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   error: string | null = null
   note: string | null = null
 
-  get customRules () {
+  get customRules() {
     return {
-      url: (v: string) => (this.validUrl(v)) || this.$t('app.general.simple_form.error.invalid_url')
+      url: (v: string) => this.validUrl(v) || this.$t('app.general.simple_form.error.invalid_url')
     }
   }
 
   /**
    * Validates a URL
    */
-  validUrl (url: string) {
+  validUrl(url: string) {
     try {
       this.$filters.getApiUrls(url)
     } catch {
@@ -110,13 +107,13 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
   // Watch for valid url changes.
   @Watch('url')
-  onUrlChange (value: string, oldVal: string) {
+  onUrlChange(value: string, oldVal: string) {
     if (value === oldVal) return
     if (this.valid) this.handleUrlChange(value)
   }
 
   @Debounce(750)
-  async handleUrlChange (value: string) {
+  async handleUrlChange(value: string) {
     if (this.valid) {
       this.verified = false
       this.error = null
@@ -152,7 +149,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     }
   }
 
-  async diagnoseError (apiUrl: string, wsMessage: string, signal: AbortSignal) {
+  async diagnoseError(apiUrl: string, wsMessage: string, signal: AbortSignal) {
     const diagnostic = await diagnoseHttpEndpoint(apiUrl, {
       timeout: 3000,
       signal
@@ -185,19 +182,19 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     }
   }
 
-  get helpTxt () {
+  get helpTxt() {
     return this.$t('app.endpoint.msg.trouble', {
       url: Globals.DOCS_MULTIPLE_INSTANCES
     })
   }
 
-  addInstance () {
+  addInstance() {
     const apiConfig = this.$filters.getApiUrls(this.url)
     this.open = false
     this.$emit('resolve', apiConfig)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.abortController?.abort()
   }
 }

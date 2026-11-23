@@ -54,11 +54,11 @@ import { createState } from '@/store/config/state'
 
 @Component({})
 export default class WarningsSettings extends Vue {
-  get warnOnCpuThrottled (): boolean {
+  get warnOnCpuThrottled(): boolean {
     return this.$typedState.config.uiSettings.warnings.warnOnCpuThrottled
   }
 
-  set warnOnCpuThrottled (value: boolean) {
+  set warnOnCpuThrottled(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.warnings.warnOnCpuThrottled',
       value,
@@ -66,11 +66,11 @@ export default class WarningsSettings extends Vue {
     })
   }
 
-  get warnOnStepperDriverOverheating (): boolean {
+  get warnOnStepperDriverOverheating(): boolean {
     return this.$typedState.config.uiSettings.warnings.warnOnStepperDriverOverheating
   }
 
-  set warnOnStepperDriverOverheating (value: boolean) {
+  set warnOnStepperDriverOverheating(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.warnings.warnOnStepperDriverOverheating',
       value,
@@ -78,7 +78,7 @@ export default class WarningsSettings extends Vue {
     })
   }
 
-  handleReset () {
+  handleReset() {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.warnings',
       value: createState().uiSettings.warnings,

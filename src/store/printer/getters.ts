@@ -1,7 +1,33 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, ExtruderStepper, Extruder, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands, TimeEstimates, KlippyApp, ExcludeObjectPart, BeaconModel, BedScrewsScrew, Probe, PrinterStatus } from './types'
+import type {
+  PrinterState,
+  Heater,
+  Fan,
+  Led,
+  OutputPin,
+  Sensor,
+  RunoutSensor,
+  KnownExtruder,
+  MCU,
+  Endstop,
+  ExtruderStepper,
+  Extruder,
+  Stepper,
+  ScrewsTiltAdjustScrew,
+  ScrewsTiltAdjust,
+  BedScrews,
+  BedSize,
+  GcodeCommands,
+  TimeEstimates,
+  KlippyApp,
+  ExcludeObjectPart,
+  BeaconModel,
+  BedScrewsScrew,
+  Probe,
+  PrinterStatus
+} from './types'
 import getKlipperType from '@/util/get-klipper-type'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import i18n from '@/plugins/i18n'
@@ -10,20 +36,19 @@ import isKeyOf from '@/util/is-key-of'
 import getFilePaths from '@/util/get-file-paths'
 import type { AppFileWithMeta } from '../files/types'
 
-const configHasDisconnectedMcu = (config: Record<string, any> | undefined, disconnectedMcuNames: Set<string>): boolean => (
-  (
-    disconnectedMcuNames.size > 0 &&
+const configHasDisconnectedMcu = (
+  config: Record<string, any> | undefined,
+  disconnectedMcuNames: Set<string>
+): boolean =>
+  (disconnectedMcuNames.size > 0 &&
     config != null &&
-    getMcusFromConfig(config)?.some(mcu => disconnectedMcuNames.has(mcu))
-  ) ||
+    getMcusFromConfig(config)?.some(mcu => disconnectedMcuNames.has(mcu))) ||
   false
-)
 
 const resolveSensorColor = (sensorColors: Record<string, string>, key: string): string =>
   Vue.$colorset.next(getKlipperType(key), key, sensorColors[key])
 
 export const getters = {
-
   /**
    * Indicates if klippy is connected or not.
    */
@@ -32,10 +57,7 @@ export const getters = {
     // ready, startup, shutdown, error
     const serverInfo = rootState.server.info
 
-    return (
-      serverInfo.klippy_state === 'ready' &&
-      serverInfo.klippy_connected
-    )
+    return serverInfo.klippy_state === 'ready' && serverInfo.klippy_connected
   },
 
   getKlippyConnected: (state, getters, rootState): boolean => {
@@ -74,9 +96,7 @@ export const getters = {
   getKlippyApp: (state): KlippyApp => {
     const app = state.info?.app?.toLowerCase()
 
-    const name = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.KLIPPER)
-      ? app
-      : 'klipper'
+    const name = app && isKeyOf(app, Globals.SUPPORTED_SERVICES.KLIPPER) ? app : 'klipper'
 
     return {
       name,
@@ -92,7 +112,10 @@ export const getters = {
     if (printerFilename) {
       const { rootPath, filename } = getFilePaths(printerFilename, 'gcodes')
 
-      const printerFile: AppFileWithMeta | undefined = rootGetters['files/getFile'](rootPath, filename)
+      const printerFile: AppFileWithMeta | undefined = rootGetters['files/getFile'](
+        rootPath,
+        filename
+      )
 
       return printerFile
     }
@@ -109,17 +132,11 @@ export const getters = {
     // Possible values are;
     // printing, busy, paused, cancelled, ready, idle, standby
     if (state1 && state2) {
-      if (
-        state2 === 'paused' ||
-        state2 === 'cancelled'
-      ) {
+      if (state2 === 'paused' || state2 === 'cancelled') {
         return state2
       }
 
-      if (
-        state1 === 'Printing' &&
-        state2 !== 'printing'
-      ) {
+      if (state1 === 'Printing' && state2 !== 'printing') {
         // The printers idle_timeout changes to printing when it's busy applying
         // some change - but not necessarily printing anything. This state hopefully
         // helps aleviate that confusion.
@@ -138,11 +155,7 @@ export const getters = {
     const { gcode_start_byte, gcode_end_byte } = printerFile ?? {}
     const { file_position, progress } = state.printer.virtual_sdcard ?? {}
 
-    if (
-      gcode_start_byte != null &&
-      gcode_end_byte != null &&
-      file_position != null
-    ) {
+    if (gcode_start_byte != null && gcode_end_byte != null && file_position != null) {
       if (file_position <= gcode_start_byte) return 0
       if (file_position >= gcode_end_byte) return 1
 
@@ -169,10 +182,7 @@ export const getters = {
     const { filament_used } = state.printer.print_stats ?? {}
     const { filament_total } = printerFile ?? {}
 
-    if (
-      filament_used != null &&
-      filament_total != null
-    ) {
+    if (filament_used != null && filament_total != null) {
       return filament_used / filament_total
     }
 
@@ -209,8 +219,9 @@ export const getters = {
       })
       .filter(result => result > 0)
 
-    const printProgress = printProgressCalculationResults
-      .reduce((a, b) => a + b, 0) / printProgressCalculationResults.length || 0
+    const printProgress =
+      printProgressCalculationResults.reduce((a, b) => a + b, 0) /
+        printProgressCalculationResults.length || 0
 
     return printProgress
   },
@@ -228,11 +239,7 @@ export const getters = {
 
     if (layer_count != null) {
       return layer_count
-    } else if (
-      first_layer_height != null &&
-      layer_height != null &&
-      object_height != null
-    ) {
+    } else if (first_layer_height != null && layer_height != null && object_height != null) {
       const lc = Math.ceil((object_height - first_layer_height) / layer_height + 1)
 
       if (lc > 0) return lc
@@ -277,9 +284,8 @@ export const getters = {
     const totalDuration = state.printer.print_stats?.total_duration ?? 0
     const printDuration = state.printer.print_stats?.print_duration ?? 0
 
-    const fileLeft = printDuration > 0 && fileProgress >= 0.01
-      ? printDuration / fileProgress - printDuration
-      : 0
+    const fileLeft =
+      printDuration > 0 && fileProgress >= 0.01 ? printDuration / fileProgress - printDuration : 0
 
     const printerFile: AppFileWithMeta | undefined = getters.getPrinterFile
 
@@ -288,13 +294,13 @@ export const getters = {
     const currentFileStatus = history?.status
     const currentFileTotalDuration = history?.total_duration ?? 0
 
-    const actualLeft = currentFileStatus === 'completed' && currentFileTotalDuration > 0
-      ? currentFileTotalDuration - printDuration
-      : 0
+    const actualLeft =
+      currentFileStatus === 'completed' && currentFileTotalDuration > 0
+        ? currentFileTotalDuration - printDuration
+        : 0
 
-    const slicerLeft = estimated_time != null && estimated_time > 0
-      ? estimated_time - printDuration
-      : 0
+    const slicerLeft =
+      estimated_time != null && estimated_time > 0 ? estimated_time - printDuration : 0
 
     const printEtaCalculation = rootState.config.uiSettings.general.printEtaCalculation
 
@@ -302,11 +308,7 @@ export const getters = {
       .map(type => {
         switch (type) {
           case 'file':
-            return (
-              actualLeft > 0
-                ? actualLeft
-                : fileLeft
-            )
+            return actualLeft > 0 ? actualLeft : fileLeft
 
           case 'slicer':
             return slicerLeft
@@ -317,8 +319,8 @@ export const getters = {
       })
       .filter(result => result > 0)
 
-    const etaLeft = printEtaCalculationResults
-      .reduce((a, b) => a + b, 0) / printEtaCalculationResults.length || 0
+    const etaLeft =
+      printEtaCalculationResults.reduce((a, b) => a + b, 0) / printEtaCalculationResults.length || 0
 
     const eta = Date.now() + etaLeft * 1000
 
@@ -340,16 +342,13 @@ export const getters = {
 
     const mcu = state.printer.mcu?.mcu_constants?.MCU
 
-    return (
-      typeof mcu === 'string' &&
-      /^atmega\d+/i.test(mcu)
-    )
+    return typeof mcu === 'string' && /^atmega\d+/i.test(mcu)
   },
 
   /**
    * Return MCU's and their state
    */
-  getMcus: (state) => {
+  getMcus: state => {
     const mcus: MCU[] = []
 
     const mcuKeys = Object.keys(state.printer)
@@ -359,16 +358,14 @@ export const getters = {
     for (const key of mcuKeys) {
       const config = state.printer.configfile.settings[key.toLowerCase()]
 
-      const name = key.length > 4
-        ? key.substring(4)
-        : 'mcu'
+      const name = key.length > 4 ? key.substring(4) : 'mcu'
 
       mcus.push({
         name,
         prettyName: Vue.$filters.prettyCase(key),
         key,
         ...state.printer[key],
-        config,
+        config
       })
     }
 
@@ -384,35 +381,29 @@ export const getters = {
 
     const mcus: MCU[] = getters.getMcus
 
-    return new Set(mcus
-      .filter(mcu => mcu.non_critical_disconnected)
-      .map(mcu => mcu.name))
+    return new Set(mcus.filter(mcu => mcu.non_critical_disconnected).map(mcu => mcu.name))
   },
 
-  getHasExtruder: (state) => {
+  getHasExtruder: state => {
     return state.printer.extruder != null
   },
 
-  getHasMultipleExtruders: (state) => {
-    return (
-      state.printer.extruder != null &&
-      state.printer.extruder1 != null
-    )
+  getHasMultipleExtruders: state => {
+    return state.printer.extruder != null && state.printer.extruder1 != null
   },
 
   /**
- * Return known extruders, giving them a friendly name.
- */
+   * Return known extruders, giving them a friendly name.
+   */
   getExtruders: (state): KnownExtruder[] => {
     const extruderKeys = Object.keys(state.printer)
       .filter((key): key is Klipper.ExtruderKey => /^extruder\d{0,2}$/.test(key))
       .sort((a, b) => +a.substring(8) - +b.substring(8))
 
-    return extruderKeys
-      .map(key => ({
-        key,
-        name: Vue.$filters.prettyCase(key),
-      }))
+    return extruderKeys.map(key => ({
+      key,
+      name: Vue.$filters.prettyCase(key)
+    }))
   },
 
   // Return the current extruder along with its configuration.
@@ -434,19 +425,16 @@ export const getters = {
 
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
 
-    const disconnected = (
+    const disconnected =
       configHasDisconnectedMcu(c, nonCriticalDisconnectedMcusSet) ||
-      (getters.getExtruderSteppers as ExtruderStepper[])
-        .some(stepper => stepper.motion_queue === key && stepper.disconnected)
-    )
+      (getters.getExtruderSteppers as ExtruderStepper[]).some(
+        stepper => stepper.motion_queue === key && stepper.disconnected
+      )
 
     // If we have other extruders, they may inherit some properties
     // from the first depending how they're defined.
-    const min_extrude_temp = (
-      c.min_extrude_temp ??
-      state.printer.configfile.settings.extruder?.min_extrude_temp ??
-      170
-    )
+    const min_extrude_temp =
+      c.min_extrude_temp ?? state.printer.configfile.settings.extruder?.min_extrude_temp ?? 170
 
     const extruder: Extruder = {
       key,
@@ -462,8 +450,9 @@ export const getters = {
   getExtruderSteppers: (state, getters): ExtruderStepper[] => {
     const steppers: Stepper[] = getters.getSteppers
 
-    return steppers
-      .filter((stepper): stepper is ExtruderStepper => stepper.key.startsWith('extruder_stepper '))
+    return steppers.filter((stepper): stepper is ExtruderStepper =>
+      stepper.key.startsWith('extruder_stepper ')
+    )
   },
 
   getSteppers: (state, getters): Stepper[] => {
@@ -500,29 +489,30 @@ export const getters = {
   getHasSteppersEnabled: (state, getters): boolean => {
     const steppers: Stepper[] = getters.getSteppers
 
-    return Object.values(steppers)
-      .some(stepper => stepper.enabled == null || stepper.enabled)
+    return Object.values(steppers).some(stepper => stepper.enabled == null || stepper.enabled)
   },
 
   /**
    * Given axes, returns a boolean indicating if the axes are homed.
    */
-  getHomedAxes: (state) => (axes?: string): boolean => {
-    return (
-      axes != null &&
-      axes.length > 0 &&
-      axes.split('')
-        .every(char => state.printer.toolhead.homed_axes.includes(char))
-    )
-  },
+  getHomedAxes:
+    state =>
+    (axes?: string): boolean => {
+      return (
+        axes != null &&
+        axes.length > 0 &&
+        axes.split('').every(char => state.printer.toolhead.homed_axes.includes(char))
+      )
+    },
 
   getRunoutSensors: (state): RunoutSensor[] => {
     return Object.keys(state.printer)
-      .filter(key => (
-        key === 'hall_filament_width_sensor' ||
-        key.startsWith('filament_switch_sensor ') ||
-        key.startsWith('filament_motion_sensor ')
-      ))
+      .filter(
+        key =>
+          key === 'hall_filament_width_sensor' ||
+          key.startsWith('filament_switch_sensor ') ||
+          key.startsWith('filament_motion_sensor ')
+      )
       .map((key): RunoutSensor | null => {
         const sensor = state.printer[key]
 
@@ -532,13 +522,10 @@ export const getters = {
 
         const name = key.trim().split(/\s+/).pop() || ''
 
-        const diameter = (
-          'is_active' in sensor &&
-          sensor.is_active &&
-          'Diameter' in sensor
-        )
-          ? sensor.Diameter
-          : undefined
+        const diameter =
+          'is_active' in sensor && sensor.is_active && 'Diameter' in sensor
+            ? sensor.Diameter
+            : undefined
 
         return {
           ...sensor,
@@ -573,17 +560,16 @@ export const getters = {
       return undefined
     }
 
-    const probeNames = [
-      'bltouch',
-      'smart_effector',
-      'probe'
-    ] as const
+    const probeNames = ['bltouch', 'smart_effector', 'probe'] as const
 
-    const name = probe.name || probeNames.find(name => {
-      const probeSettings = state.printer.configfile.settings[name]
+    const name =
+      probe.name ||
+      probeNames.find(name => {
+        const probeSettings = state.printer.configfile.settings[name]
 
-      return probeSettings?.z_offset !== undefined
-    }) || 'Probe'
+        return probeSettings?.z_offset !== undefined
+      }) ||
+      'Probe'
 
     return {
       ...probe,
@@ -633,18 +619,11 @@ export const getters = {
       }
     }
 
-    return heaters
-      .sort((a, b) => a.name.localeCompare(b.name))
+    return heaters.sort((a, b) => a.name.localeCompare(b.name))
   },
 
   getAllLeds: (_, getters) => {
-    return getters.getOutputs([
-      'led',
-      'neopixel',
-      'dotstar',
-      'pca9533',
-      'pca9632'
-    ])
+    return getters.getOutputs(['led', 'neopixel', 'dotstar', 'pca9533', 'pca9632'])
   },
 
   getAllFans: (_, getters) => {
@@ -661,11 +640,7 @@ export const getters = {
    * Return output pins
    */
   getAllPins: (_, getters) => {
-    return getters.getOutputs([
-      'output_pin',
-      'pwm_tool',
-      'pwm_cycle_time'
-    ])
+    return getters.getOutputs(['output_pin', 'pwm_tool', 'pwm_cycle_time'])
   },
 
   getPinByName: (state, getters) => (name: string) => {
@@ -675,151 +650,129 @@ export const getters = {
   },
 
   /**
-  * Return available fans and output pins
-  */
-  getOutputs: (state, getters, rootState) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
-    const sensorColors: Record<string, string> = rootState.config.uiSettings.dashboard.sensorColors
+   * Return available fans and output pins
+   */
+  getOutputs:
+    (state, getters, rootState) =>
+    (filter?: string[]): Array<Fan | Led | OutputPin> => {
+      const sensorColors: Record<string, string> =
+        rootState.config.uiSettings.dashboard.sensorColors
 
-    // Fans..
-    const fans = [
-      'temperature_fan',
-      'controller_fan',
-      'heater_fan',
-      'fan_generic',
-      'fan'
-    ]
+      // Fans..
+      const fans = ['temperature_fan', 'controller_fan', 'heater_fan', 'fan_generic', 'fan']
 
-    // Generic pins...
-    const outputPins = [
-      'output_pin',
-      'pwm_tool',
-      'pwm_cycle_time'
-    ]
+      // Generic pins...
+      const outputPins = ['output_pin', 'pwm_tool', 'pwm_cycle_time']
 
-    // LEDs...
-    const leds = [
-      'led',
-      'neopixel',
-      'dotstar',
-      'pca9533',
-      'pca9632'
-    ]
+      // LEDs...
+      const leds = ['led', 'neopixel', 'dotstar', 'pca9533', 'pca9632']
 
-    // Are they controllable?
-    const controllable = [
-      'fan',
-      'fan_generic',
-      'output_pin',
-      'pwm_tool',
-      'pwm_cycle_time',
-      'led',
-      'neopixel',
-      'dotstar',
-      'pca9533',
-      'pca9632'
-    ]
+      // Are they controllable?
+      const controllable = [
+        'fan',
+        'fan_generic',
+        'output_pin',
+        'pwm_tool',
+        'pwm_cycle_time',
+        'led',
+        'neopixel',
+        'dotstar',
+        'pca9533',
+        'pca9632'
+      ]
 
-    // Should we apply a color?
-    const applyColor = [
-      'temperature_fan'
-    ]
+      // Should we apply a color?
+      const applyColor = ['temperature_fan']
 
-    // Should we filter visiblity based on the _ prefix?
-    const filterByPrefix = [
-      'output_pin',
-      'pwm_tool',
-      'pwm_cycle_time',
-      'temperature_fan',
-      'controller_fan',
-      'heater_fan',
-      'fan_generic',
-      'led',
-      'neopixel',
-      'dotstar',
-      'pca9533',
-      'pca9632',
-      'nevermore'
-    ]
+      // Should we filter visiblity based on the _ prefix?
+      const filterByPrefix = [
+        'output_pin',
+        'pwm_tool',
+        'pwm_cycle_time',
+        'temperature_fan',
+        'controller_fan',
+        'heater_fan',
+        'fan_generic',
+        'led',
+        'neopixel',
+        'dotstar',
+        'pca9533',
+        'pca9632',
+        'nevermore'
+      ]
 
-    const supportedTypes = (filter && filter.length)
-      ? filter
-      : [...fans, ...outputPins, ...leds]
+      const supportedTypes = filter && filter.length ? filter : [...fans, ...outputPins, ...leds]
 
-    const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
+      const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
 
-    const pins: Array<Fan | Led | OutputPin> = []
+      const pins: Array<Fan | Led | OutputPin> = []
 
-    for (const key in state.printer) {
-      const [type, nameFromSplit] = key.trim().split(/\s+/, 2)
-      const name = nameFromSplit ?? key
+      for (const key in state.printer) {
+        const [type, nameFromSplit] = key.trim().split(/\s+/, 2)
+        const name = nameFromSplit ?? key
 
-      if (
-        supportedTypes.includes(type) &&
-        (!filterByPrefix.includes(type) || !name.startsWith('_'))
-      ) {
-        const prettyName = name === 'fan'
-          ? 'Part Fan' // If we know its the part fan.
-          : Vue.$filters.prettyCase(name)
+        if (
+          supportedTypes.includes(type) &&
+          (!filterByPrefix.includes(type) || !name.startsWith('_'))
+        ) {
+          const prettyName =
+            name === 'fan'
+              ? 'Part Fan' // If we know its the part fan.
+              : Vue.$filters.prettyCase(name)
 
-        const color = applyColor.includes(type)
-          ? resolveSensorColor(sensorColors, key)
-          : undefined
+          const color = applyColor.includes(type)
+            ? resolveSensorColor(sensorColors, key)
+            : undefined
 
-        const config = state.printer.configfile.settings[key.toLowerCase()]
+          const config = state.printer.configfile.settings[key.toLowerCase()]
 
-        const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
+          const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
 
-        let output: Fan | Led | OutputPin = {
-          ...state.printer[key],
-          ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
-          config: { ...config },
-          name,
-          prettyName,
-          key,
-          color,
-          type,
-          controllable: (controllable.includes(type)),
-          disconnected
-        }
-
-        if (fans.includes(type)) {
-          output = {
-            ...output,
-            minTemp: config?.min_temp,
-            maxTemp: config?.max_temp
+          let output: Fan | Led | OutputPin = {
+            ...state.printer[key],
+            ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
+            config: { ...config },
+            name,
+            prettyName,
+            key,
+            color,
+            type,
+            controllable: controllable.includes(type),
+            disconnected
           }
-        }
 
-        if (outputPins.includes(type)) {
-          output = {
-            ...output,
-            pwm: config?.pwm ?? false,
-            scale: config?.scale ?? 1,
-            resetValue: config?.value ?? 0,
-            controllable: config?.static_value ? false : controllable.includes(type)
+          if (fans.includes(type)) {
+            output = {
+              ...output,
+              minTemp: config?.min_temp,
+              maxTemp: config?.max_temp
+            }
           }
-        }
 
-        pins.push(output)
+          if (outputPins.includes(type)) {
+            output = {
+              ...output,
+              pwm: config?.pwm ?? false,
+              scale: config?.scale ?? 1,
+              resetValue: config?.value ?? 0,
+              controllable: config?.static_value ? false : controllable.includes(type)
+            }
+          }
+
+          pins.push(output)
+        }
       }
-    }
-    return pins
-      .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
-  },
+      return pins.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
+    },
 
   /**
    * Return available temperature probes / sensors.
    */
   getSensors: (state, getters, rootState): Sensor[] => {
     const keyGroups = [
-      (key: string) => (
-        key.startsWith('temperature_sensor ') ||
-        key.startsWith('temperature_probe ')
-      ),
-      (key: string) => (
-        key.startsWith('tmc2240 ') ||
-        key.startsWith('tmc5262 ')
-      ),
+      (key: string) =>
+        key.startsWith('temperature_sensor ') || key.startsWith('temperature_probe '),
+      (key: string) => key.startsWith('tmc2240 ') || key.startsWith('tmc5262 '),
       (key: string) => key === 'z_thermal_adjust'
     ]
     const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
@@ -827,56 +780,55 @@ export const getters = {
 
     const printerKeys = Object.keys(state.printer)
 
-    const sensors = keyGroups
-      .flatMap(keyCheck => {
-        const sensors = printerKeys
-          .filter(keyCheck)
-          .reduce<Record<string, Sensor>>((groups, key) => {
-            const [type, ...restSplit] = key.trim().split(/\s+/)
-            const nameFromSplit = restSplit.pop()
-            const name = nameFromSplit || key
+    const sensors = keyGroups.flatMap(keyCheck => {
+      const sensors = printerKeys.filter(keyCheck).reduce<Record<string, Sensor>>((groups, key) => {
+        const [type, ...restSplit] = key.trim().split(/\s+/)
+        const nameFromSplit = restSplit.pop()
+        const name = nameFromSplit || key
 
-            if (!name.startsWith('_')) {
-              const prettyName = /^tmc\d{4}$/.test(type)
-                ? i18n.t('app.general.label.stepper_driver',
-                  {
-                    name:
-                      name.startsWith('stepper_')
-                        ? name.substring(8).toUpperCase()
-                        : Vue.$filters.prettyCase(name)
-                  }).toString()
-                : Vue.$filters.prettyCase(name)
-              const color = resolveSensorColor(sensorColors, key)
-              const config = state.printer.configfile.settings[key.toLowerCase()]
+        if (!name.startsWith('_')) {
+          const prettyName = /^tmc\d{4}$/.test(type)
+            ? i18n
+                .t('app.general.label.stepper_driver', {
+                  name: name.startsWith('stepper_')
+                    ? name.substring(8).toUpperCase()
+                    : Vue.$filters.prettyCase(name)
+                })
+                .toString()
+            : Vue.$filters.prettyCase(name)
+          const color = resolveSensorColor(sensorColors, key)
+          const config = state.printer.configfile.settings[key.toLowerCase()]
 
-              const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
+          const disconnected = configHasDisconnectedMcu(config, nonCriticalDisconnectedMcusSet)
 
-              groups[name] = {
-                ...state.printer[key],
-                ...getters.getExtraSensorData(config && 'sensor_type' in config && config.sensor_type?.toLowerCase(), name),
-                config: { ...config },
-                minTemp: config && 'min_temp' in config ? config.min_temp ?? null : null,
-                maxTemp: config && 'max_temp' in config ? config.max_temp ?? null : null,
-                name,
-                key,
-                prettyName,
-                color,
-                type,
-                disconnected
-              }
-            }
+          groups[name] = {
+            ...state.printer[key],
+            ...getters.getExtraSensorData(
+              config && 'sensor_type' in config && config.sensor_type?.toLowerCase(),
+              name
+            ),
+            config: { ...config },
+            minTemp: config && 'min_temp' in config ? (config.min_temp ?? null) : null,
+            maxTemp: config && 'max_temp' in config ? (config.max_temp ?? null) : null,
+            name,
+            key,
+            prettyName,
+            color,
+            type,
+            disconnected
+          }
+        }
 
-            return groups
-          }, {})
+        return groups
+      }, {})
 
-        return Object.values(sensors)
-          .sort((a, b) => a.name.localeCompare(b.name))
-      })
+      return Object.values(sensors).sort((a, b) => a.name.localeCompare(b.name))
+    })
 
     return sensors
   },
 
-  getExtraSensorData: (state) => (sensorType: string, name: string) => {
+  getExtraSensorData: state => (sensorType: string, name: string) => {
     const supportedSensors = {
       aht10: 'aht10',
       aht1x: 'aht10',
@@ -890,7 +842,7 @@ export const getters = {
       si7013: 'htu21d',
       si7020: 'htu21d',
       si7021: 'htu21d',
-      temperature_combined: 'temperature_combined',
+      temperature_combined: 'temperature_combined'
     } as const
 
     if (isKeyOf(sensorType, supportedSensors)) {
@@ -912,42 +864,34 @@ export const getters = {
    * Return a list of keys that represent something we may want
    * to chart.
    */
-  getChartableSensors: (state) => {
+  getChartableSensors: state => {
     const keyGroups = [
       (key: string) => key.startsWith('temperature_fan '),
-      (key: string) => (
-        key.startsWith('temperature_sensor ') ||
-        key.startsWith('temperature_probe ')
-      ),
-      (key: string) => (
-        key.startsWith('tmc2240 ') ||
-        key.startsWith('tmc5262 ')
-      ),
+      (key: string) =>
+        key.startsWith('temperature_sensor ') || key.startsWith('temperature_probe '),
+      (key: string) => key.startsWith('tmc2240 ') || key.startsWith('tmc5262 '),
       (key: string) => key === 'z_thermal_adjust'
     ]
 
     const printerKeys = Object.keys(state.printer)
 
-    const sensors = keyGroups
-      .flatMap(keyCheck => {
-        return printerKeys
-          .filter(keyCheck)
-          .map(key => ({
-            key,
-            name: key.trim().split(/\s+/).pop() || ''
-          }))
-          .filter(entry => !entry.name.startsWith('_'))
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map(entry => entry.key)
-      })
+    const sensors = keyGroups.flatMap(keyCheck => {
+      return printerKeys
+        .filter(keyCheck)
+        .map(key => ({
+          key,
+          name: key.trim().split(/\s+/).pop() || ''
+        }))
+        .filter(entry => !entry.name.startsWith('_'))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(entry => entry.key)
+    })
 
-    const heaters = [...state.printer.heaters?.available_heaters ?? []]
-      .sort((a, b) => a.localeCompare(b))
+    const heaters = [...(state.printer.heaters?.available_heaters ?? [])].sort((a, b) =>
+      a.localeCompare(b)
+    )
 
-    return [
-      ...heaters,
-      ...sensors
-    ]
+    return [...heaters, ...sensors]
   },
 
   getBedScrews: (state): BedScrews => {
@@ -1004,9 +948,7 @@ export const getters = {
         const prettyName = name
           ? Vue.$filters.prettyCase(name)
           : i18n.t('app.general.label.screw_number', { index: index + 1 }).toString()
-        const [hours, minutes] = result.adjust
-          .split(':')
-          .map(Number)
+        const [hours, minutes] = result.adjust.split(':').map(Number)
         const adjustMinutes = hours * 60 + minutes
 
         screws.push({
@@ -1035,11 +977,11 @@ export const getters = {
     }
   },
 
-  getPrinterSettings: (state) => {
+  getPrinterSettings: state => {
     return state.printer.configfile.settings
   },
 
-  getPrinterConfig: (state) => {
+  getPrinterConfig: state => {
     return state.printer.configfile.config
   },
 
@@ -1052,7 +994,7 @@ export const getters = {
     )
   },
 
-  getPrinterWarnings: (state) => {
+  getPrinterWarnings: state => {
     const config = state.printer.configfile.config
     const warnings: string[] = []
 
@@ -1065,10 +1007,7 @@ export const getters = {
         warnings.push('[pause_resume] not found in printer configuration.')
       }
 
-      if (
-        !('display' in config) &&
-        !('display_status' in config)
-      ) {
+      if (!('display' in config) && !('display_status' in config)) {
         warnings.push('[display_status] is required if you do not have a [display] defined.')
       }
 
@@ -1080,7 +1019,7 @@ export const getters = {
     return warnings
   },
 
-  getKlipperWarnings: (state) => {
+  getKlipperWarnings: state => {
     return state.printer.configfile?.warnings || []
   },
 
@@ -1107,12 +1046,7 @@ export const getters = {
   getHasRoundBed: (state): boolean => {
     const kinematics = state.printer.configfile.settings.printer?.kinematics ?? ''
 
-    return [
-      'delta',
-      'polar',
-      'rotary_delta',
-      'winch'
-    ].includes(kinematics)
+    return ['delta', 'polar', 'rotary_delta', 'winch'].includes(kinematics)
   },
 
   getBedSize: (state): BedSize => {
@@ -1136,40 +1070,35 @@ export const getters = {
       return availableCommands
     }
 
-    const knownCommands: Moonraker.KlippyApis.GcodeHelpResponse = rootGetters['console/getAllKnownCommands']
+    const knownCommands: Moonraker.KlippyApis.GcodeHelpResponse =
+      rootGetters['console/getAllKnownCommands']
 
-    return Object.entries(knownCommands)
-      .reduce<GcodeCommands>((availableCommands, [key, help]) => {
-        availableCommands[key] = { help }
+    return Object.entries(knownCommands).reduce<GcodeCommands>((availableCommands, [key, help]) => {
+      availableCommands[key] = { help }
 
-        return availableCommands
-      }, {})
+      return availableCommands
+    }, {})
   },
 
-  getIsManualProbeActive: (state) => {
+  getIsManualProbeActive: state => {
     return state.printer.manual_probe?.is_active || false
   },
 
-  getIsBedScrewsAdjustActive: (state) => {
+  getIsBedScrewsAdjustActive: state => {
     return state.printer.bed_screws?.is_active || false
   },
 
-  getHasScrewsTiltAdjustResults: (state) => {
+  getHasScrewsTiltAdjustResults: state => {
     const { error, max_deviation, results } = state.printer.screws_tilt_adjust ?? {}
 
-    return (
-      !error &&
-      max_deviation == null &&
-      results != null &&
-      Object.keys(results).length > 0
-    )
+    return !error && max_deviation == null && results != null && Object.keys(results).length > 0
   },
 
-  getSupportsBeacon: (state) => {
+  getSupportsBeacon: state => {
     return 'beacon' in state.printer.configfile.settings
   },
 
-  getBeaconModels: (state) => {
+  getBeaconModels: state => {
     const beacon = state.printer.beacon
 
     if (beacon == null) {
@@ -1199,21 +1128,17 @@ export const getters = {
 
     const { objects, current_object, excluded_objects } = exclude_object
 
-    return objects
-      .map((obj): ExcludeObjectPart => ({
-        ...obj,
-        isExcluded: excluded_objects.includes(obj.name),
-        isCurrent: current_object === obj.name
-      }))
+    return objects.map((obj): ExcludeObjectPart => ({
+      ...obj,
+      isExcluded: excluded_objects.includes(obj.name),
+      isCurrent: current_object === obj.name
+    }))
   },
 
   getHasExcludeObjectParts: (state): boolean => {
     const exclude_object = state.printer.exclude_object
 
-    return (
-      exclude_object != null &&
-      exclude_object.objects.length > 0
-    )
+    return exclude_object != null && exclude_object.objects.length > 0
   },
 
   getSupportsAfc: (state): boolean => {

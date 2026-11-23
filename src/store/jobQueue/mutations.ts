@@ -3,15 +3,15 @@ import type { JobQueueState } from './types'
 import { createState } from './state'
 
 export const mutations = {
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setQueueState (state, payload: Moonraker.JobQueue.QueueState) {
+  setQueueState(state, payload: Moonraker.JobQueue.QueueState) {
     state.queueState = payload
   },
 
-  setQueuedJobs (state, payload: Moonraker.JobQueue.QueuedJob[]) {
+  setQueuedJobs(state, payload: Moonraker.JobQueue.QueuedJob[]) {
     state.queuedJobs = Object.freeze(payload || [])
   }
 } satisfies MutationTree<JobQueueState>

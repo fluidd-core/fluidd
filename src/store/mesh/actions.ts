@@ -6,27 +6,27 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async onMatrix ({ commit }, payload: MatrixType) {
+  async onMatrix({ commit }, payload: MatrixType) {
     commit('setMatrix', payload)
   },
 
-  async onScale ({ commit }, payload: number) {
+  async onScale({ commit }, payload: number) {
     commit('setScale', payload)
   },
 
-  async onBoxScale ({ commit }, payload: number) {
+  async onBoxScale({ commit }, payload: number) {
     commit('setBoxScale', payload)
   },
 
-  async onWireframe ({ commit }, payload: boolean) {
+  async onWireframe({ commit }, payload: boolean) {
     commit('setWireframe', payload)
   },
 
-  async onFlatSurface ({ commit }, payload: boolean) {
+  async onFlatSurface({ commit }, payload: boolean) {
     commit('setFlatSurface', payload)
   }
 } satisfies ActionTree<MeshState, RootState>

@@ -1,22 +1,31 @@
 import type { AppFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
-  jobs: Readonly<Moonraker.History.Job>[];
-  job_totals: Moonraker.History.JobTotals;
-  unresolvedJobIds: Set<string>;
-  allLoaded: boolean;
+  jobs: Readonly<Moonraker.History.Job>[]
+  job_totals: Moonraker.History.JobTotals
+  unresolvedJobIds: Set<string>
+  allLoaded: boolean
 }
 
 export interface HistoryItem extends Omit<Moonraker.History.Job, 'metadata'> {
-  metadata: Partial<AppFileMeta>;
+  metadata: Partial<AppFileMeta>
 }
 
-export type HistoryItemStatus = 'completed' | 'cancelled' | 'error' | 'printing' | 'in_progress' | 'server_exit' | 'klippy_shutdown' | 'klippy_disconnect' | 'interrupted'
+export type HistoryItemStatus =
+  | 'completed'
+  | 'cancelled'
+  | 'error'
+  | 'printing'
+  | 'in_progress'
+  | 'server_exit'
+  | 'klippy_shutdown'
+  | 'klippy_disconnect'
+  | 'interrupted'
 
 export interface HistoryItemAuxiliaryData {
-  provider: string;
-  name: string;
-  value: unknown;
-  description: string;
-  units: string | null;
+  provider: string
+  name: string
+  value: unknown
+  description: string
+  units: string | null
 }

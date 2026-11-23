@@ -1,8 +1,8 @@
 export interface MmuState {
-  dialog: MmuDialogState;
+  dialog: MmuDialogState
 }
 
 export interface MmuDialogState {
-  show: boolean;
-  filename?: string;
+  show: boolean
+  filename?: string
 }

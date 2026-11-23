@@ -3,7 +3,7 @@ import type { TimelapseState } from './types'
 import type { RootState } from '../types'
 
 export const getters = {
-  getLastFrame: (state) => {
+  getLastFrame: state => {
     const lastFrame = state.lastFrame
 
     if (lastFrame == null) {
@@ -19,7 +19,9 @@ export const getters = {
     }
   },
 
-  isBlockedSetting: (state) => (setting: string): boolean => {
-    return state.settings?.blockedsettings.includes(setting) ?? true
-  }
+  isBlockedSetting:
+    state =>
+    (setting: string): boolean => {
+      return state.settings?.blockedsettings.includes(setting) ?? true
+    }
 } satisfies GetterTree<TimelapseState, RootState>

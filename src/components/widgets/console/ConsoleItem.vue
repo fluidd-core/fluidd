@@ -32,11 +32,11 @@ export default class ConsoleItem extends Vue {
   @Prop({ type: String })
   readonly search?: string
 
-  get knownCommands (): Moonraker.KlippyApis.GcodeHelpResponse {
+  get knownCommands(): Moonraker.KlippyApis.GcodeHelpResponse {
     return this.$typedGetters['console/getAllKnownCommands']
   }
 
-  get itemMessage () {
+  get itemMessage() {
     const message = this.value.message
     const escapedMessage = escapeHtml(message)
 
@@ -50,53 +50,43 @@ export default class ConsoleItem extends Vue {
             return message
           }
 
-          return escapedMessage
-            .replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) => (
-              command in this.knownCommands
-                ? `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
-                : match
-            ))
+          return escapedMessage.replace(/([A-Z_][A-Z0-9_.]+)/g, (match, command) =>
+            command in this.knownCommands
+              ? `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
+              : match
+          )
       }
     }
 
     return escapedMessage
   }
 
-  get itemTime () {
-    return (
-      'time' in this.value &&
-      this.value.time
-    )
+  get itemTime() {
+    return 'time' in this.value && this.value.time
       ? this.$filters.formatTimeWithSeconds(this.value.time * 1000)
       : ''
   }
 
-  get itemClass () {
+  get itemClass() {
     if (this.value.message.startsWith('!!')) {
       return { 'error--text': true }
     }
 
-    if (
-      'type' in this.value &&
-      this.value.type === 'command'
-    ) {
+    if ('type' in this.value && this.value.type === 'command') {
       return { 'primary--text': true }
     }
 
     return { 'secondary--text': true }
   }
 
-  itemClick (event: Event) {
-    const target = (
-      event.target instanceof HTMLElement &&
-      event.target.tagName === 'MARK'
-    )
-      ? event.target.parentElement
-      : event.target
+  itemClick(event: Event) {
+    const target =
+      event.target instanceof HTMLElement && event.target.tagName === 'MARK'
+        ? event.target.parentElement
+        : event.target
 
     if (target instanceof HTMLAnchorElement) {
-      const command = target.innerText
-        .replace(/^\s+|\s+$/gm, '')
+      const command = target.innerText.replace(/^\s+|\s+$/gm, '')
 
       this.$emit('click', command)
     }
@@ -105,21 +95,21 @@ export default class ConsoleItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .console-item {
-    flex: 0 0 auto;
+.console-item {
+  flex: 0 0 auto;
 
-    :deep(img),
-    :deep(svg),
-    :deep(video) {
-      height: auto;
-      max-width: 90%;
-      max-height: 250px;
-      object-fit: contain;
-    }
-
-    :deep(mark) {
-      background-color: #ff0;
-      color: #000;
-    }
+  :deep(img),
+  :deep(svg),
+  :deep(video) {
+    height: auto;
+    max-width: 90%;
+    max-height: 250px;
+    object-fit: contain;
   }
+
+  :deep(mark) {
+    background-color: #ff0;
+    color: #000;
+  }
+}
 </style>

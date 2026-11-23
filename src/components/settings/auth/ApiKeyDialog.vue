@@ -49,11 +49,11 @@ export default class ApiKeyDialog extends Vue {
   @VModel({ type: Boolean })
   open?: boolean
 
-  get apiKey (): string {
+  get apiKey(): string {
     return this.$typedState.auth.apiKey
   }
 
-  handleRefreshApiKey () {
+  handleRefreshApiKey() {
     this.$typedDispatch('auth/refreshApiKey')
   }
 }

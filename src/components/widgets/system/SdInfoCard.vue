@@ -35,7 +35,7 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class SdInfoCard extends Vue {
-  get sdInfo () {
+  get sdInfo() {
     const info: Moonraker.Machine.SystemInfo | null = this.$typedState.server.system_info
 
     return info?.sd_info

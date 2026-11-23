@@ -7,7 +7,7 @@
     :crossorigin="crossorigin"
     @load="updateStatus('connected')"
     @error="updateStatus('error')"
-  >
+  />
 </template>
 
 <script lang="ts">
@@ -22,7 +22,7 @@ export default class Uv4LMjpegCamera extends Mixins(CameraMixin) {
 
   cameraImageSource = ''
 
-  startPlayback () {
+  startPlayback() {
     try {
       this.updateStatus('connecting')
 
@@ -38,7 +38,7 @@ export default class Uv4LMjpegCamera extends Mixins(CameraMixin) {
     }
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.updateStatus('disconnected')
     this.cameraImageSource = ''
     this.cameraImage.src = ''

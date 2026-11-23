@@ -16,21 +16,15 @@ const historyFields: readonly HistoryField[] = [
   ['speeds', 'speed']
 ]
 
-const roundSample = (value: number | null | undefined): number => (
-  value == null
-    ? Number.NaN
-    : decimalRound(value, 2)
-)
+const roundSample = (value: number | null | undefined): number =>
+  value == null ? Number.NaN : decimalRound(value, 2)
 
 // Moonraker reports targets for these even though they have none.
-const noTargetPrefixes = [
-  'temperature_probe',
-  'temperature_sensor'
-]
+const noTargetPrefixes = ['temperature_probe', 'temperature_sensor']
 
 interface ColumnSource {
-  column: string;
-  values: readonly (number | null)[];
+  column: string
+  values: readonly (number | null)[]
 }
 
 // Sources are right-aligned on a 1Hz timeline whose newest sample sits at
@@ -50,8 +44,7 @@ export const buildThermalHistoryBuffer = (
       continue
     }
 
-    const noTargets = noTargetPrefixes
-      .some(prefix => key.startsWith(prefix))
+    const noTargets = noTargetPrefixes.some(prefix => key.startsWith(prefix))
 
     for (const [field, sub] of historyFields) {
       if (sub === 'target' && noTargets) {
@@ -71,14 +64,12 @@ export const buildThermalHistoryBuffer = (
     }
   }
 
-  const count = sources.length > 0
-    ? retention
-    : 0
+  const count = sources.length > 0 ? retention : 0
 
   const buffer = createChartBuffer(retention)
 
   for (let index = 0; index < count; index++) {
-    buffer.time[index] = endTime - (1000 * (count - index))
+    buffer.time[index] = endTime - 1000 * (count - index)
   }
 
   for (const { column, values } of sources) {

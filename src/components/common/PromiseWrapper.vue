@@ -21,11 +21,11 @@ export default class StatusCard extends Vue {
   readonly promise?: Promise<unknown> | null
 
   @Watch('promise')
-  onPromiseChanged () {
+  onPromiseChanged() {
     this.evaluatePromise()
   }
 
-  async evaluatePromise () {
+  async evaluatePromise() {
     const promise = this.promise
 
     if (!promise) {
@@ -45,7 +45,7 @@ export default class StatusCard extends Vue {
     }
   }
 
-  setPromiseResults (promise: Promise<unknown> | null, result: unknown, error: unknown) {
+  setPromiseResults(promise: Promise<unknown> | null, result: unknown, error: unknown) {
     if (!promise || this.promise === promise) {
       this.error = error
       this.result = result
@@ -53,7 +53,7 @@ export default class StatusCard extends Vue {
     }
   }
 
-  mounted () {
+  mounted() {
     this.evaluatePromise()
   }
 }

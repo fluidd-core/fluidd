@@ -68,9 +68,7 @@
           v-on="on"
           @click="showExcludeObjectDialog = true"
         >
-          <v-icon dense>
-            $listStatus
-          </v-icon>
+          <v-icon dense> $listStatus </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.gcode.label.exclude_object') }}</span>
@@ -108,19 +106,19 @@ export default class StatusControls extends Mixins(StateMixin) {
   showExcludeObjectDialog = false
   showPauseAtLayerDialog = false
 
-  get filename (): string {
+  get filename(): string {
     return this.$typedState.printer.printer.print_stats?.filename ?? ''
   }
 
-  get supportsHistoryComponent (): boolean {
+  get supportsHistoryComponent(): boolean {
     return this.$typedGetters['server/componentSupport']('history')
   }
 
-  get hasExcludeObjectParts (): boolean {
+  get hasExcludeObjectParts(): boolean {
     return this.$typedGetters['printer/getHasExcludeObjectParts']
   }
 
-  resetFile () {
+  resetFile() {
     this.sendGcode('SDCARD_RESET_FILE')
   }
 }

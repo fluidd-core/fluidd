@@ -1,8 +1,17 @@
 import type { ActionTree } from 'vuex'
 import type { KlippyApp, PrinterState } from './types'
 import type { RootState } from '../types'
-import { handlePrintStateChange, handleCurrentFileChange, handleTrinamicDriversChange } from '../helpers'
-import { handleAddChartEntry, handleAddSensorChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
+import {
+  handlePrintStateChange,
+  handleCurrentFileChange,
+  handleTrinamicDriversChange
+} from '../helpers'
+import {
+  handleAddChartEntry,
+  handleAddSensorChartEntry,
+  handleSystemStatsChange,
+  handleMcuStatsChange
+} from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
 import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
@@ -10,9 +19,13 @@ import sandboxedEval from '@/plugins/sandboxedEval'
 import { gte, valid } from 'semver'
 import i18n from '@/plugins/i18n'
 
-const evalCollectors = async (printer: Klipper.PrinterState, collectors: string[]): Promise<Record<string, unknown>> => {
+const evalCollectors = async (
+  printer: Klipper.PrinterState,
+  collectors: string[]
+): Promise<Record<string, unknown>> => {
   try {
-    const data = await sandboxedEval(`
+    const data = (await sandboxedEval(
+      `
     const { printer, collectors } = context
     const result = {}
 
@@ -25,22 +38,21 @@ const evalCollectors = async (printer: Klipper.PrinterState, collectors: string[
     }
 
     return result
-  `, {
-      feature: 'metrics',
-      context: {
-        printer,
-        collectors
+  `,
+      {
+        feature: 'metrics',
+        context: {
+          printer,
+          collectors
+        }
       }
-    }) as Record<string, unknown>
+    )) as Record<string, unknown>
 
     return data
   } catch (e) {
     const error = String(e || 'Unknown Error')
 
-    return Object.fromEntries(
-      collectors
-        .map(collector => [collector, error])
-    )
+    return Object.fromEntries(collectors.map(collector => [collector, error]))
   }
 }
 
@@ -48,32 +60,30 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async manualProbeDialogOpen ({ commit }, payload: boolean) {
+  async manualProbeDialogOpen({ commit }, payload: boolean) {
     commit('setManualProbeDialogOpen', payload)
   },
 
-  async bedScrewsAdjustDialogOpen ({ commit }, payload: boolean) {
+  async bedScrewsAdjustDialogOpen({ commit }, payload: boolean) {
     commit('setBedScrewsAdjustDialogOpen', payload)
   },
 
-  async screwsTiltAdjustDialogOpen ({ commit }, payload: boolean) {
+  async screwsTiltAdjustDialogOpen({ commit }, payload: boolean) {
     commit('setScrewsTiltAdjustDialogOpen', payload)
   },
 
-  async forceMoveEnabled ({ commit }, payload: boolean) {
+  async forceMoveEnabled({ commit }, payload: boolean) {
     commit('setForceMoveEnabled', payload)
   },
 
-  async checkKlipperMinVersion ({ state, getters, dispatch }) {
+  async checkKlipperMinVersion({ state, getters, dispatch }) {
     const klipperVersion = state.info?.software_version ?? '?'
 
-    const fullKlipperVersion = klipperVersion.includes('-')
-      ? klipperVersion
-      : `${klipperVersion}-0`
+    const fullKlipperVersion = klipperVersion.includes('-') ? klipperVersion : `${klipperVersion}-0`
 
     const klippyApp: KlippyApp = getters['getKlippyApp']
 
@@ -82,22 +92,29 @@ export const actions = {
       valid(klippyApp.minVersion) &&
       !gte(fullKlipperVersion, klippyApp.minVersion)
     ) {
-      dispatch('notifications/pushNotification', {
-        id: `old-klipper-${klipperVersion}`,
-        title: 'Klipper',
-        description: i18n.t('app.version.label.old_component_version', { name: 'Klipper', version: klippyApp.minVersion }),
-        to: '/settings#versions',
-        btnText: i18n.t('app.version.btn.view_versions'),
-        type: 'warning',
-        merge: true
-      }, { root: true })
+      dispatch(
+        'notifications/pushNotification',
+        {
+          id: `old-klipper-${klipperVersion}`,
+          title: 'Klipper',
+          description: i18n.t('app.version.label.old_component_version', {
+            name: 'Klipper',
+            version: klippyApp.minVersion
+          }),
+          to: '/settings#versions',
+          btnText: i18n.t('app.version.btn.view_versions'),
+          type: 'warning',
+          merge: true
+        },
+        { root: true }
+      )
     }
   },
 
   /**
    * Printer Info
    */
-  async onPrinterInfo ({ commit, dispatch }, payload: Moonraker.KlippyApis.Info) {
+  async onPrinterInfo({ commit, dispatch }, payload: Moonraker.KlippyApis.Info) {
     commit('setPrinterInfo', payload)
 
     dispatch('checkKlipperMinVersion')
@@ -106,7 +123,7 @@ export const actions = {
   /**
    * Query endstops
    */
-  async onQueryEndstops ({ commit }, payload: Moonraker.KlippyApis.QueryEndstopsStatusResponse) {
+  async onQueryEndstops({ commit }, payload: Moonraker.KlippyApis.QueryEndstopsStatusResponse) {
     // printer.query_endstops state is not updating, so we use the response here to do it manually
 
     const queryEndstops: Klipper.QueryEndstopsState = {
@@ -124,7 +141,7 @@ export const actions = {
    * Print cancelled confirmation.
    * Fires as a part of a socket action.
    */
-  async onPrintCancel () {
+  async onPrintCancel() {
     consola.debug('Print Cancelled')
   },
 
@@ -132,7 +149,7 @@ export const actions = {
    * Print paused confirmation.
    * Fires as a part of a socket action.
    */
-  async onPrintPause () {
+  async onPrintPause() {
     consola.debug('Print Paused')
   },
 
@@ -140,7 +157,7 @@ export const actions = {
    * Print resumed confirmation.
    * Fires as a part of a socket action.
    */
-  async onPrintResume () {
+  async onPrintResume() {
     consola.debug('Print Resumed')
   },
 
@@ -148,7 +165,7 @@ export const actions = {
    * Print start confirmation.
    * Fires as a watch on a printer state change.
    */
-  async onPrintStart (_, payload: Partial<Klipper.PrinterState>) {
+  async onPrintStart(_, payload: Partial<Klipper.PrinterState>) {
     consola.debug('Print start detected', payload)
   },
 
@@ -156,7 +173,7 @@ export const actions = {
    * Print end confirmation.
    * Fires as a watch on a printer state change.
    */
-  async onPrintEnd (_, payload: Partial<Klipper.PrinterState>) {
+  async onPrintEnd(_, payload: Partial<Klipper.PrinterState>) {
     consola.debug('Print end detected', payload)
   },
 
@@ -169,7 +186,7 @@ export const actions = {
   /**
    * Builds the subscription map from the printer object list and subscribes to updates.
    */
-  async onPrinterObjectsList (_, payload: Moonraker.KlippyApis.ObjectsListResponse) {
+  async onPrinterObjectsList(_, payload: Moonraker.KlippyApis.ObjectsListResponse) {
     // Given our object list, subscribe to any data we'd want constant updates for
     // and prepopulate our store.
     const subscriptions: Record<string, null> = {}
@@ -185,7 +202,7 @@ export const actions = {
     SocketActions.printerObjectsSubscribe(subscriptions)
   },
 
-  async onPrinterObjectsSubscribe ({ commit, dispatch }, payload: { status: Klipper.PrinterState }) {
+  async onPrinterObjectsSubscribe({ commit, dispatch }, payload: { status: Klipper.PrinterState }) {
     // Initial printer status
     const status = payload.status
 
@@ -231,7 +248,10 @@ export const actions = {
    */
 
   /** Automated notify events via socket */
-  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch, rootGetters }, payload: Partial<Klipper.PrinterState>) {
+  async onNotifyStatusUpdate(
+    { rootState, commit, getters, dispatch, rootGetters },
+    payload: Partial<Klipper.PrinterState>
+  ) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them
@@ -261,7 +281,10 @@ export const actions = {
     }
   },
 
-  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload: Partial<Klipper.PrinterState>) {
+  async onFastNotifyStatusUpdate(
+    { rootState, commit, dispatch },
+    payload: Partial<Klipper.PrinterState>
+  ) {
     // Do NOT accept updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
@@ -271,7 +294,7 @@ export const actions = {
     }
   },
 
-  async onDiagnosticsMetricsUpdate ({ state, rootState, commit }) {
+  async onDiagnosticsMetricsUpdate({ state, rootState, commit }) {
     if (!rootState.config.uiSettings.general.enableDiagnostics) {
       return
     }
@@ -295,10 +318,14 @@ export const actions = {
       values[collector] = typeof value === 'number' ? value : Number.NaN
     }
 
-    commit('charts/setChartEntry', {
-      bucket: 'diagnostics',
-      time: Date.now(),
-      values
-    }, { root: true })
+    commit(
+      'charts/setChartEntry',
+      {
+        bucket: 'diagnostics',
+        time: Date.now(),
+        values
+      },
+      { root: true }
+    )
   }
 } satisfies ActionTree<PrinterState, RootState>

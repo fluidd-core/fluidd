@@ -27,8 +27,8 @@ type RTCIceServerWithCredentialType = RTCIceServer & {
 }
 
 type MediamtxOffer = {
-  iceUfrag: string,
-  icePwd: string,
+  iceUfrag: string
+  icePwd: string
   medias: string[]
 }
 
@@ -47,30 +47,32 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
   offerData: MediamtxOffer | null = null
   queuedCandidates: RTCIceCandidate[] = []
 
-  unquoteCredential (v: string): string {
+  unquoteCredential(v: string): string {
     return JSON.parse(`"${v}"`) as string
   }
 
-  linkToIceServers (links: string | null): RTCIceServerWithCredentialType[] {
-    return (links !== null)
-      ? links.split(', ').map((link) => {
-        const m = link.match(/^<(.+?)>; rel="ice-server"(; username="(.*?)"; credential="(.*?)"; credential-type="password")?/i)
-        const ret: RTCIceServerWithCredentialType = {
-          urls: [m![1]]
-        }
+  linkToIceServers(links: string | null): RTCIceServerWithCredentialType[] {
+    return links !== null
+      ? links.split(', ').map(link => {
+          const m = link.match(
+            /^<(.+?)>; rel="ice-server"(; username="(.*?)"; credential="(.*?)"; credential-type="password")?/i
+          )
+          const ret: RTCIceServerWithCredentialType = {
+            urls: [m![1]]
+          }
 
-        if (m![3] !== undefined) {
-          ret.username = this.unquoteCredential(m![3])
-          ret.credential = this.unquoteCredential(m![4])
-          ret.credentialType = 'password'
-        }
+          if (m![3] !== undefined) {
+            ret.username = this.unquoteCredential(m![3])
+            ret.credential = this.unquoteCredential(m![4])
+            ret.credentialType = 'password'
+          }
 
-        return ret
-      })
+          return ret
+        })
       : []
   }
 
-  parseOffer (offer: string): MediamtxOffer {
+  parseOffer(offer: string): MediamtxOffer {
     const ret: MediamtxOffer = {
       iceUfrag: '',
       icePwd: '',
@@ -90,7 +92,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     return ret
   }
 
-  generateSdpFragment (od: MediamtxOffer, candidates: RTCIceCandidate[]) {
+  generateSdpFragment(od: MediamtxOffer, candidates: RTCIceCandidate[]) {
     const candidatesByMedia: Record<number, RTCIceCandidate[]> = {}
 
     for (const candidate of candidates) {
@@ -119,7 +121,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     return frag
   }
 
-  async loadStream () {
+  async loadStream() {
     try {
       this.updateStatus('connecting')
 
@@ -163,7 +165,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
         }
       }
 
-      this.pc.ontrack = (evt) => {
+      this.pc.ontrack = evt => {
         this.cameraVideo.srcObject = evt.streams[0]
       }
 
@@ -181,7 +183,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     }
   }
 
-  onError () {
+  onError() {
     this.updateStatus('error')
 
     if (this.restartTimeout !== null) {
@@ -209,7 +211,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     this.queuedCandidates = []
   }
 
-  async sendLocalCandidates (candidates: RTCIceCandidate[]) {
+  async sendLocalCandidates(candidates: RTCIceCandidate[]) {
     try {
       const res = await fetch(this.sessionUrl, {
         method: 'PATCH',
@@ -237,15 +239,17 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     }
   }
 
-  onRemoteAnswer (sdp: string) {
+  onRemoteAnswer(sdp: string) {
     if (this.restartTimeout !== null) {
       return
     }
 
-    this.pc?.setRemoteDescription(new RTCSessionDescription({
-      type: 'answer',
-      sdp
-    }))
+    this.pc?.setRemoteDescription(
+      new RTCSessionDescription({
+        type: 'answer',
+        sdp
+      })
+    )
 
     if (this.queuedCandidates.length !== 0) {
       this.sendLocalCandidates(this.queuedCandidates)
@@ -253,7 +257,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     }
   }
 
-  async sendOffer (offer: RTCSessionDescriptionInit) {
+  async sendOffer(offer: RTCSessionDescriptionInit) {
     try {
       const res = await fetch(this.whepUrl, {
         method: 'POST',
@@ -296,7 +300,7 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     }
   }
 
-  get baseUrl () {
+  get baseUrl() {
     const baseUrl = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
     if (!baseUrl.pathname.endsWith('/')) {
@@ -306,13 +310,13 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
     return baseUrl
   }
 
-  startPlayback () {
+  startPlayback() {
     this.whepUrl = new URL('whep', this.baseUrl).toString()
 
     this.loadStream()
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.updateStatus('disconnected')
     this.sessionUrl = ''
     this.queuedCandidates = []

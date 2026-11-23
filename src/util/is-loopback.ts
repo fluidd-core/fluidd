@@ -23,9 +23,7 @@ const isLoopback = (hostname: string) => {
         return true
 
       case 'ipv4Mapped':
-        return (
-          ipAddress.toIPv4Address().range() === 'loopback'
-        )
+        return ipAddress.toIPv4Address().range() === 'loopback'
     }
   }
 

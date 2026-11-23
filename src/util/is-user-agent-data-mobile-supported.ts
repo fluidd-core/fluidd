@@ -4,7 +4,9 @@ type NavigatorWithUserAgentDataMobile = Navigator & {
   }
 }
 
-const isUserAgentDataMobileSupported = (navigator: Navigator): navigator is NavigatorWithUserAgentDataMobile => {
+const isUserAgentDataMobileSupported = (
+  navigator: Navigator
+): navigator is NavigatorWithUserAgentDataMobile => {
   return (
     navigator.userAgentData != null &&
     'mobile' in navigator.userAgentData &&

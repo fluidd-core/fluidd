@@ -3,82 +3,72 @@ import type { Filament, Spool, SpoolmanState, Vendor } from './types'
 import type { RootState } from '../types'
 import isLoopback from '@/util/is-loopback'
 
-const filamentWeightToLength = (weight: number, filament: Moonraker.Spoolman.Filament | Filament) => {
+const filamentWeightToLength = (
+  weight: number,
+  filament: Moonraker.Spoolman.Filament | Filament
+) => {
   // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
-  return weight / filament.density / (Math.PI / 4 * filament.diameter ** 2) * 1000
+  return (weight / filament.density / ((Math.PI / 4) * filament.diameter ** 2)) * 1000
 }
 
 const spoolmanSpoolAsSpool = (spool: Moonraker.Spoolman.Spool): Spool => {
   const filament = spoolmanFilamentAsFilament(spool.filament)
 
-  const filament_name = [
-    filament.vendor?.name,
-    filament.name
-  ].filter(Boolean).join(' - ') || spool.id.toString()
+  const filament_name =
+    [filament.vendor?.name, filament.name].filter(Boolean).join(' - ') || spool.id.toString()
 
   const initial_weight = spool.initial_weight ?? filament.weight
 
-  return ({
+  return {
     ...spool,
     filament_name,
     registered: new Date(spool.registered),
-    first_used: spool.first_used
-      ? new Date(spool.first_used)
-      : undefined,
-    last_used: spool.last_used
-      ? new Date(spool.last_used)
-      : undefined,
+    first_used: spool.first_used ? new Date(spool.first_used) : undefined,
+    last_used: spool.last_used ? new Date(spool.last_used) : undefined,
     price: spool.price ?? filament.price,
     initial_weight,
     spool_weight: spool.spool_weight ?? filament.spool_weight,
-    remaining_length: spool.remaining_length ?? (
-      spool.remaining_weight != null
+    remaining_length:
+      spool.remaining_length ??
+      (spool.remaining_weight != null
         ? filamentWeightToLength(spool.remaining_weight, filament)
-        : undefined
-    ),
-    used_length: spool.used_length ?? (
-      spool.used_weight != null
-        ? filamentWeightToLength(spool.used_weight, filament)
-        : undefined
-    ),
-    initial_length: initial_weight != null
-      ? filamentWeightToLength(initial_weight, filament)
-      : undefined,
-    progress: !!initial_weight && spool.used_weight != null
-      ? (initial_weight - spool.used_weight) / initial_weight * 100
-      : undefined,
-    filament,
-  })
+        : undefined),
+    used_length:
+      spool.used_length ??
+      (spool.used_weight != null ? filamentWeightToLength(spool.used_weight, filament) : undefined),
+    initial_length:
+      initial_weight != null ? filamentWeightToLength(initial_weight, filament) : undefined,
+    progress:
+      !!initial_weight && spool.used_weight != null
+        ? ((initial_weight - spool.used_weight) / initial_weight) * 100
+        : undefined,
+    filament
+  }
 }
 
 const spoolmanFilamentAsFilament = (filament: Moonraker.Spoolman.Filament): Filament => {
-  const vendor = filament.vendor != null
-    ? spoolmanVendorAsVendor(filament.vendor)
-    : undefined
+  const vendor = filament.vendor != null ? spoolmanVendorAsVendor(filament.vendor) : undefined
 
-  const color_hex = filament.color_hex
-    ? `#${filament.color_hex}`
-    : undefined
+  const color_hex = filament.color_hex ? `#${filament.color_hex}` : undefined
 
   const multi_color_hexes = filament.multi_color_hexes
-    ? filament.multi_color_hexes
-      .split(',')
-      .map(x => `#${x}`)
+    ? filament.multi_color_hexes.split(',').map(x => `#${x}`)
     : undefined
 
-  return ({
+  return {
     ...filament,
     color_hex,
     multi_color_hexes,
-    colors: multi_color_hexes != null && multi_color_hexes.length > 0
-      ? multi_color_hexes
-      : color_hex
-        ? [color_hex]
-        : undefined,
+    colors:
+      multi_color_hexes != null && multi_color_hexes.length > 0
+        ? multi_color_hexes
+        : color_hex
+          ? [color_hex]
+          : undefined,
     registered: new Date(filament.registered),
     spool_weight: filament.spool_weight ?? vendor?.empty_spool_weight,
     vendor
-  })
+  }
 }
 
 const spoolmanVendorAsVendor = (vendor: Moonraker.Spoolman.Vendor): Vendor => ({
@@ -87,33 +77,28 @@ const spoolmanVendorAsVendor = (vendor: Moonraker.Spoolman.Vendor): Vendor => ({
 })
 
 export const getters = {
-  getAvailableSpools: (state) => {
-    return state.spools
-      .map(spoolmanSpoolAsSpool)
+  getAvailableSpools: state => {
+    return state.spools.map(spoolmanSpoolAsSpool)
   },
 
   getActiveSpool: (state, getters): Spool | undefined => {
-    return state.activeSpool != null
-      ? getters.getSpoolById(state.activeSpool)
-      : undefined
+    return state.activeSpool != null ? getters.getSpoolById(state.activeSpool) : undefined
   },
 
-  getSpoolById: (state, getters) => (id: number): Spool | undefined => {
-    const spools: Spool[] = getters.getAvailableSpools
+  getSpoolById:
+    (state, getters) =>
+    (id: number): Spool | undefined => {
+      const spools: Spool[] = getters.getAvailableSpools
 
-    return spools.find(spool => spool.id === id)
-  },
+      return spools.find(spool => spool.id === id)
+    },
 
   getSpoolmanUrl: (state, getter, rootState) => {
     const server = rootState.server.config.spoolman?.server
 
     if (server) {
-      const protocol = (
-        !server.startsWith('http://') &&
-        !server.startsWith('https://')
-      )
-        ? 'http://'
-        : ''
+      const protocol =
+        !server.startsWith('http://') && !server.startsWith('https://') ? 'http://' : ''
 
       const serverUrl = new URL(protocol + server)
 
@@ -130,10 +115,7 @@ export const getters = {
     }
   },
 
-  getAvailable: (state) => {
-    return (
-      state.connected &&
-      state.spools.length > 0
-    )
+  getAvailable: state => {
+    return state.connected && state.spools.length > 0
   }
 } satisfies GetterTree<SpoolmanState, RootState>

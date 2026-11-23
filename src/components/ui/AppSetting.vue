@@ -68,77 +68,73 @@ export default class AppSetting extends Vue {
   @Prop({ type: Number, default: 6 })
   readonly rCols!: number
 
-  get cols () {
+  get cols() {
     return [12 - this.rCols, this.rCols]
   }
 
-  get hasClick () {
+  get hasClick() {
     return this.$listeners && this.$listeners.click
   }
 
-  get hasSubTitle () {
-    return (
-      this.$slots['sub-title'] ||
-      this.$scopedSlots['sub-title'] ||
-      this.subTitle
-    )
+  get hasSubTitle() {
+    return this.$slots['sub-title'] || this.$scopedSlots['sub-title'] || this.subTitle
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .app-setting-control {
-    display: flex;
-    flex: 1 1 100%;
-    min-height: 48px;
-    outline: none;
-    padding: 0 16px;
-    position: relative;
-    text-decoration: none;
+.app-setting-control {
+  display: flex;
+  flex: 1 1 100%;
+  min-height: 48px;
+  outline: none;
+  padding: 0 16px;
+  position: relative;
+  text-decoration: none;
 
-    &.sc-link {
-      cursor: pointer;
-      user-select: none;
-    }
-
-    &.sc-link:hover::before {
-      opacity: 0.08;
-    }
-
-    &.sc-link::before {
-      background-color: currentColor;
-      bottom: 0;
-      content: "";
-      left: 0;
-      opacity: 0;
-      pointer-events: none;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-    }
-
-    .sc-accent {
-      display: block;
-      position: absolute;
-      left: 0;
-      width: 3px;
-      height: 100%;
-    }
-
-    .sc-label {
-      padding: 12px 0;
-    }
-
-    .sc-content {
-      display: inline-flex;
-      align-self: center;
-      justify-content: flex-end;
-      align-items: center;
-    }
-
-    .sc-content .v-input {
-      margin: 0 !important;
-    }
+  &.sc-link {
+    cursor: pointer;
+    user-select: none;
   }
+
+  &.sc-link:hover::before {
+    opacity: 0.08;
+  }
+
+  &.sc-link::before {
+    background-color: currentColor;
+    bottom: 0;
+    content: '';
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+  }
+
+  .sc-accent {
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 3px;
+    height: 100%;
+  }
+
+  .sc-label {
+    padding: 12px 0;
+  }
+
+  .sc-content {
+    display: inline-flex;
+    align-self: center;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .sc-content .v-input {
+    margin: 0 !important;
+  }
+}
 </style>

@@ -1,3 +1,3 @@
 export interface DevicePowerState {
-  devices: Moonraker.Power.Device[];
+  devices: Moonraker.Power.Device[]
 }

@@ -28,7 +28,12 @@
             hide-details
             dense
             disabled
-            :value="$t('app.general.label.partial_of_total', {partial: currentScrewIndex + 1, total: totalScrews})"
+            :value="
+              $t('app.general.label.partial_of_total', {
+                partial: currentScrewIndex + 1,
+                total: totalScrews
+              })
+            "
           />
         </v-col>
       </v-row>
@@ -41,7 +46,12 @@
             hide-details
             dense
             disabled
-            :value="$t('app.general.label.partial_of_total', {partial: acceptedScrews, total: totalScrews})"
+            :value="
+              $t('app.general.label.partial_of_total', {
+                partial: acceptedScrews,
+                total: totalScrews
+              })
+            "
           />
         </v-col>
       </v-row>
@@ -52,7 +62,7 @@
       </v-row>
 
       <v-progress-linear
-        :value="acceptedScrews / totalScrews * 100"
+        :value="(acceptedScrews / totalScrews) * 100"
         class="mt-2"
       />
     </v-card-text>
@@ -98,54 +108,50 @@ import type { BedScrews } from '@/store/printer/types'
 
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  get bedScrews (): BedScrews {
+  get bedScrews(): BedScrews {
     return this.$typedGetters['printer/getBedScrews']
   }
 
-  get currentScrewIndex () {
+  get currentScrewIndex() {
     return this.bedScrews.current_screw ?? 0
   }
 
-  get currentScrewName () {
+  get currentScrewName() {
     return this.bedScrews.screws[this.currentScrewIndex]?.prettyName ?? ''
   }
 
-  get acceptedScrews () {
+  get acceptedScrews() {
     return this.bedScrews.accepted_screws ?? 0
   }
 
-  get totalScrews () {
+  get totalScrews() {
     return this.bedScrews.screws.length
   }
 
-  get showBedScrewsAdjustDialogAutomatically (): boolean {
+  get showBedScrewsAdjustDialogAutomatically(): boolean {
     return this.$typedState.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
   @Watch('isBedScrewsAdjustActive')
-  onBedScrewsAdjustActive (value: boolean) {
+  onBedScrewsAdjustActive(value: boolean) {
     if (
       !value ||
-      (
-        this.showBedScrewsAdjustDialogAutomatically &&
-        this.klippyReady &&
-        !this.printerPrinting
-      )
+      (this.showBedScrewsAdjustDialogAutomatically && this.klippyReady && !this.printerPrinting)
     ) {
       this.bedScrewsAdjustDialogOpen = value
     }
   }
 
-  sendAbort () {
+  sendAbort() {
     this.sendGcode('ABORT', this.$waits.onBedScrewsAdjust)
     this.bedScrewsAdjustDialogOpen = false
   }
 
-  sendAdjusted () {
+  sendAdjusted() {
     this.sendGcode('ADJUSTED', this.$waits.onBedScrewsAdjust)
   }
 
-  sendAccept () {
+  sendAccept() {
     this.sendGcode('ACCEPT', this.$waits.onBedScrewsAdjust)
   }
 }

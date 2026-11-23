@@ -23,7 +23,7 @@ export default class AppDraggable extends Vue {
   readonly target?: string
 
   @Watch('options')
-  onOptions (value: Sortable.Options) {
+  onOptions(value: Sortable.Options) {
     if (this.sortable) {
       for (const prop in value) {
         const propAsOptionsKey = prop as keyof Sortable.Options
@@ -34,26 +34,22 @@ export default class AppDraggable extends Vue {
   }
 
   @Watch('target')
-  onTarget () {
+  onTarget() {
     this.dettach()
     this.attach()
   }
 
   sortable: Sortable | null = null
 
-  handleStart (event: Sortable.SortableEvent) {
+  handleStart(event: Sortable.SortableEvent) {
     this.$emit('start', event)
   }
 
-  handleAdd (event: Sortable.SortableEvent) {
+  handleAdd(event: Sortable.SortableEvent) {
     const { oldIndex, newIndex, from } = event
     const fromInstance = instanceMap.get(from)
 
-    if (
-      oldIndex === undefined ||
-      newIndex === undefined ||
-      fromInstance === undefined
-    ) {
+    if (oldIndex === undefined || newIndex === undefined || fromInstance === undefined) {
       return
     }
 
@@ -66,7 +62,7 @@ export default class AppDraggable extends Vue {
     this.$emit('add', event)
   }
 
-  handleRemove (event: Sortable.SortableEvent) {
+  handleRemove(event: Sortable.SortableEvent) {
     const { oldIndex } = event
 
     if (oldIndex === undefined) {
@@ -82,13 +78,10 @@ export default class AppDraggable extends Vue {
     this.$emit('remove', event)
   }
 
-  handleUpdate (event: Sortable.SortableEvent) {
+  handleUpdate(event: Sortable.SortableEvent) {
     const { oldIndex, newIndex } = event
 
-    if (
-      oldIndex === undefined ||
-      newIndex === undefined
-    ) {
+    if (oldIndex === undefined || newIndex === undefined) {
       return
     }
 
@@ -102,15 +95,12 @@ export default class AppDraggable extends Vue {
     this.$emit('update', event)
   }
 
-  handleEnd (event: Sortable.SortableEvent) {
+  handleEnd(event: Sortable.SortableEvent) {
     this.$emit('end', event)
   }
 
-  attach () {
-    const targetElement = (
-      this.target &&
-      this.$el.querySelector(this.target)
-    ) || this.$el
+  attach() {
+    const targetElement = (this.target && this.$el.querySelector(this.target)) || this.$el
 
     if (targetElement instanceof HTMLElement) {
       instanceMap.set(targetElement, this)
@@ -132,7 +122,7 @@ export default class AppDraggable extends Vue {
     }
   }
 
-  dettach () {
+  dettach() {
     const targetElement = this.sortable?.el
 
     if (targetElement) {
@@ -143,11 +133,11 @@ export default class AppDraggable extends Vue {
     this.sortable = null
   }
 
-  mounted () {
+  mounted() {
     this.attach()
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.dettach()
   }
 }

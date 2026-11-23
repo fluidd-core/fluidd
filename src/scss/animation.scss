@@ -16,7 +16,8 @@
 @keyframes spin {
   from {
     transform: rotate(0deg);
-  } to {
+  }
+  to {
     transform: rotate(-360deg);
   }
 }
@@ -24,7 +25,8 @@
 @keyframes spin-alt {
   from {
     transform: rotate(-360deg);
-  } to {
+  }
+  to {
     transform: rotate(0deg);
   }
 }
@@ -38,10 +40,22 @@
 
 /* Notification wiggle */
 @keyframes wiggle {
-  0% { transform: rotate(0deg); }
-  2% { transform: rotate(-15deg); }
-  4% { transform: rotate(15deg); }
-  6% { transform: rotate(-15deg); }
-  8% { transform: rotate(0deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  2% {
+    transform: rotate(-15deg);
+  }
+  4% {
+    transform: rotate(15deg);
+  }
+  6% {
+    transform: rotate(-15deg);
+  }
+  8% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }

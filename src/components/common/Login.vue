@@ -14,9 +14,7 @@
         lg="3"
         xl="2"
       >
-        <v-form
-          @submit.prevent="handleLogin"
-        >
+        <v-form @submit.prevent="handleLogin">
           <div class="text-center">
             <p>
               <span class="text-pre-wrap">{{ $t('app.general.msg.welcome_back') }}</span>
@@ -61,7 +59,9 @@
               dense
               hide-details="auto"
               :disabled="loading"
-              :items="availableSources.map(value => ({ text: $t(`app.general.label.${value}`), value }))"
+              :items="
+                availableSources.map(value => ({ text: $t(`app.general.label.${value}`), value }))
+              "
               class="mb-4"
             />
 
@@ -122,7 +122,7 @@ export default class Login extends Mixins(StateMixin) {
   source = 'moonraker'
   availableSources = [this.source]
 
-  async mounted () {
+  async mounted() {
     try {
       this.$typedCommit('config/setLayoutMode', false)
 
@@ -139,7 +139,7 @@ export default class Login extends Mixins(StateMixin) {
     }
   }
 
-  async handleLogin () {
+  async handleLogin() {
     this.error = false
     this.loading = true
     try {

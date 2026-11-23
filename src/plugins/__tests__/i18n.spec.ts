@@ -1,7 +1,10 @@
 import { getStartingLocale } from '../i18n'
 
 describe('getStartingLocale', () => {
-  const originalLanguages = Object.getOwnPropertyDescriptor(navigator.constructor.prototype, 'languages')
+  const originalLanguages = Object.getOwnPropertyDescriptor(
+    navigator.constructor.prototype,
+    'languages'
+  )
 
   const setNavigatorLanguages = (languages: string[]) => {
     Object.defineProperty(navigator, 'languages', {
@@ -57,12 +60,12 @@ describe('getStartingLocale', () => {
     expect(getStartingLocale()).toBe('de')
   })
 
-  it.each([
-    [['xx-YY']],
-    [[]]
-  ])('falls back to english when nothing is supported (%j)', (languages) => {
-    setNavigatorLanguages(languages)
+  it.each([[['xx-YY']], [[]]])(
+    'falls back to english when nothing is supported (%j)',
+    languages => {
+      setNavigatorLanguages(languages)
 
-    expect(getStartingLocale()).toBe('en')
-  })
+      expect(getStartingLocale()).toBe('en')
+    }
+  )
 })

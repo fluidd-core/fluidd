@@ -23,9 +23,7 @@
           :header="header"
           :value="value"
         >
-          <template v-if="isEmpty(value)">
-            --
-          </template>
+          <template v-if="isEmpty(value)"> -- </template>
           <template v-else-if="Array.isArray(value) && value.length > 0">
             <slot
               :name="`item-value.${header.value}`"
@@ -64,7 +62,11 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { get } from 'lodash-es'
 import type { DataTableHeader } from 'vuetify'
 
-export type GetterFunction = (item: unknown, header: DataTableHeader, defaultGetter: DefaultGetterFunction) => unknown
+export type GetterFunction = (
+  item: unknown,
+  header: DataTableHeader,
+  defaultGetter: DefaultGetterFunction
+) => unknown
 
 const defaultGetter = (item: unknown, header: DataTableHeader): unknown => get(item, header.value)
 
@@ -86,18 +88,11 @@ export default class AppDataTableRow extends Vue {
   @Prop({ type: Function })
   readonly customGetter?: GetterFunction
 
-  isEmpty (value: unknown) {
-    return (
-      value == null ||
-      value === '' ||
-      (
-        Array.isArray(value) &&
-        value.length === 0
-      )
-    )
+  isEmpty(value: unknown) {
+    return value == null || value === '' || (Array.isArray(value) && value.length === 0)
   }
 
-  get items () {
+  get items() {
     const getter = this.customGetter ?? defaultGetter
 
     return this.headers.map(header => ({

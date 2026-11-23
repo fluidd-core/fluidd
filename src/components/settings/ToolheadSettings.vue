@@ -95,10 +95,7 @@
           <v-select
             :value="defaultToolheadMoveLength"
             :items="toolheadMoveDistances"
-            :rules="[
-              $rules.required,
-              $rules.numberValid
-            ]"
+            :rules="[$rules.required, $rules.numberValid]"
             filled
             dense
             single-line
@@ -224,11 +221,7 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
         <app-text-field
           :value="defaultToolheadXYSpeed"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(1)]"
           filled
           dense
           single-line
@@ -244,11 +237,7 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
         <app-text-field
           :value="defaultToolheadZSpeed"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(1)]"
           filled
           dense
           single-line
@@ -288,11 +277,7 @@
       <app-setting :title="$t('app.setting.label.default_extrude_length')">
         <app-text-field
           :value="defaultExtrudeLength"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(1)]"
           filled
           dense
           single-line
@@ -308,11 +293,7 @@
       <app-setting :title="$t('app.setting.label.default_extrude_speed')">
         <app-text-field
           :value="defaultExtrudeSpeed"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(1)]"
           filled
           dense
           single-line
@@ -419,11 +400,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   @Ref('zAdjustValues')
   readonly zAdjustValuesElement!: VCombobox
 
-  get defaultExtrudeSpeed (): number {
+  get defaultExtrudeSpeed(): number {
     return this.$typedState.config.uiSettings.general.defaultExtrudeSpeed
   }
 
-  setDefaultExtrudeSpeed (value: string) {
+  setDefaultExtrudeSpeed(value: string) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeSpeed',
       value: +value,
@@ -431,11 +412,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultExtrudeLength (): number {
+  get defaultExtrudeLength(): number {
     return this.$typedState.config.uiSettings.general.defaultExtrudeLength
   }
 
-  setDefaultExtrudeLength (value: number) {
+  setDefaultExtrudeLength(value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeLength',
       value: +value,
@@ -443,11 +424,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultToolheadMoveLength (): number {
+  get defaultToolheadMoveLength(): number {
     return this.$typedState.config.uiSettings.general.defaultToolheadMoveLength
   }
 
-  setDefaultToolheadMoveLength (value: number) {
+  setDefaultToolheadMoveLength(value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadMoveLength',
       value: +value,
@@ -455,11 +436,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultToolheadXYSpeed (): number {
+  get defaultToolheadXYSpeed(): number {
     return this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
-  setDefaultToolheadXYSpeed (value: number) {
+  setDefaultToolheadXYSpeed(value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadXYSpeed',
       value: +value,
@@ -467,11 +448,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get defaultToolheadZSpeed (): number {
+  get defaultToolheadZSpeed(): number {
     return this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
   }
 
-  setDefaultToolheadZSpeed (value: number) {
+  setDefaultToolheadZSpeed(value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadZSpeed',
       value: +value,
@@ -479,11 +460,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get zAdjustValues (): number[] {
+  get zAdjustValues(): number[] {
     return this.$typedState.config.uiSettings.general.zAdjustDistances
   }
 
-  set zAdjustValues (value: (number | string)[]) {
+  set zAdjustValues(value: (number | string)[]) {
     if (!this.zAdjustValuesElement.validate(true)) {
       return
     }
@@ -495,11 +476,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadCircleXYHomingEnabled (): boolean {
+  get toolheadCircleXYHomingEnabled(): boolean {
     return this.$typedState.config.uiSettings.general.toolheadCircleXYHomingEnabled
   }
 
-  set toolheadCircleXYHomingEnabled (value: boolean) {
+  set toolheadCircleXYHomingEnabled(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadCircleXYHomingEnabled',
       value,
@@ -507,11 +488,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadControlStyle (): ToolheadControlStyle {
+  get toolheadControlStyle(): ToolheadControlStyle {
     return this.$typedState.config.uiSettings.general.toolheadControlStyle
   }
 
-  set toolheadControlStyle (value: ToolheadControlStyle) {
+  set toolheadControlStyle(value: ToolheadControlStyle) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadControlStyle',
       value,
@@ -519,7 +500,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get availableToolheadControlStyles () {
+  get availableToolheadControlStyles() {
     return [
       {
         value: 'cross',
@@ -536,17 +517,16 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     ]
   }
 
-  get toolheadMoveDistances (): number[] {
+  get toolheadMoveDistances(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadMoveDistances
   }
 
-  set toolheadMoveDistances (value: (number | string)[]) {
+  set toolheadMoveDistances(value: (number | string)[]) {
     if (!this.toolheadMoveDistancesElement.validate(true)) {
       return
     }
 
-    const toolheadMoveDistances = [...new Set(value.map(Number))]
-      .sort((a, b) => a - b)
+    const toolheadMoveDistances = [...new Set(value.map(Number))].sort((a, b) => a - b)
 
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadMoveDistances',
@@ -559,11 +539,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     }
   }
 
-  get toolheadXYMoveDistances (): number[] {
+  get toolheadXYMoveDistances(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadXYMoveDistances
   }
 
-  set toolheadXYMoveDistances (value: (number | string)[]) {
+  set toolheadXYMoveDistances(value: (number | string)[]) {
     if (!this.toolheadXYMoveDistancesElement.validate(true)) {
       return
     }
@@ -575,11 +555,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadCircleXYMoveDistances (): number[] {
+  get toolheadCircleXYMoveDistances(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadCircleXYMoveDistances
   }
 
-  set toolheadCircleXYMoveDistances (value: (number | string)[]) {
+  set toolheadCircleXYMoveDistances(value: (number | string)[]) {
     if (!this.toolheadCircleXYMoveDistancesElement.validate(true)) {
       return
     }
@@ -591,11 +571,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadZMoveDistances (): number[] {
+  get toolheadZMoveDistances(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadZMoveDistances
   }
 
-  set toolheadZMoveDistances (value: (number | string)[]) {
+  set toolheadZMoveDistances(value: (number | string)[]) {
     if (!this.toolheadZMoveDistancesElement.validate(true)) {
       return
     }
@@ -607,11 +587,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get toolheadCircleZMoveDistances (): number[] {
+  get toolheadCircleZMoveDistances(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
-  set toolheadCircleZMoveDistances (value: (number | string)[]) {
+  set toolheadCircleZMoveDistances(value: (number | string)[]) {
     if (!this.toolheadCircleZMoveDistancesElement.validate(true)) {
       return
     }
@@ -623,11 +603,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get useGcodeCoords (): boolean {
+  get useGcodeCoords(): boolean {
     return this.$typedState.config.uiSettings.general.useGcodeCoords
   }
 
-  set useGcodeCoords (value: boolean) {
+  set useGcodeCoords(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.useGcodeCoords',
       value,
@@ -635,11 +615,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get invertX (): boolean {
+  get invertX(): boolean {
     return this.$typedState.config.uiSettings.general.axis.x.inverted
   }
 
-  set invertX (value: boolean) {
+  set invertX(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.x.inverted',
       value,
@@ -647,11 +627,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get invertY (): boolean {
+  get invertY(): boolean {
     return this.$typedState.config.uiSettings.general.axis.y.inverted
   }
 
-  set invertY (value: boolean) {
+  set invertY(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.y.inverted',
       value,
@@ -659,11 +639,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get invertZ (): boolean {
+  get invertZ(): boolean {
     return this.$typedState.config.uiSettings.general.axis.z.inverted
   }
 
-  set invertZ (value: boolean) {
+  set invertZ(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.z.inverted',
       value,
@@ -671,17 +651,17 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get printerSupportsForceMove (): boolean {
+  get printerSupportsForceMove(): boolean {
     const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.force_move?.enable_force_move ?? false
   }
 
-  get showManualProbeDialogAutomatically (): boolean {
+  get showManualProbeDialogAutomatically(): boolean {
     return this.$typedState.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 
-  set showManualProbeDialogAutomatically (value: boolean) {
+  set showManualProbeDialogAutomatically(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showManualProbeDialogAutomatically',
       value,
@@ -689,11 +669,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get showBedScrewsAdjustDialogAutomatically (): boolean {
+  get showBedScrewsAdjustDialogAutomatically(): boolean {
     return this.$typedState.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
-  set showBedScrewsAdjustDialogAutomatically (value: boolean) {
+  set showBedScrewsAdjustDialogAutomatically(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showBedScrewsAdjustDialogAutomatically',
       value,
@@ -701,11 +681,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get showScrewsTiltAdjustDialogAutomatically (): boolean {
+  get showScrewsTiltAdjustDialogAutomatically(): boolean {
     return this.$typedState.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
   }
 
-  set showScrewsTiltAdjustDialogAutomatically (value: boolean) {
+  set showScrewsTiltAdjustDialogAutomatically(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showScrewsTiltAdjustDialogAutomatically',
       value,
@@ -713,11 +693,11 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  get forceMoveToggleWarning (): boolean {
+  get forceMoveToggleWarning(): boolean {
     return this.$typedState.config.uiSettings.general.forceMoveToggleWarning
   }
 
-  set forceMoveToggleWarning (value: boolean) {
+  set forceMoveToggleWarning(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.forceMoveToggleWarning',
       value,
@@ -725,8 +705,9 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
     })
   }
 
-  handleReset () {
-    const { instanceName, chartVisible, chartSmoothingWindow, hideTempWaits }: GeneralConfig = this.$typedState.config.uiSettings.general
+  handleReset() {
+    const { instanceName, chartVisible, chartSmoothingWindow, hideTempWaits }: GeneralConfig =
+      this.$typedState.config.uiSettings.general
 
     const value: GeneralConfig = {
       ...createState().uiSettings.general,

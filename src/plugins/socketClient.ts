@@ -15,7 +15,7 @@ const PING_AFTER = 10_000
 const DEAD_AFTER = 10_000
 
 // Arrays are replaced, not merged index by index
-const mergeCustomizer = (dest: unknown, src: unknown) => Array.isArray(dest) ? src : undefined
+const mergeCustomizer = (dest: unknown, src: unknown) => (Array.isArray(dest) ? src : undefined)
 
 const retryDelay = (attempt: number): number => {
   const base = RETRY_MIN * 2 ** Math.min(attempt, 16)
@@ -55,11 +55,11 @@ export class WebSocketClient {
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null
   private silenceTimeout: ReturnType<typeof setTimeout> | null = null
 
-  constructor (options: SocketPluginOptions) {
+  constructor(options: SocketPluginOptions) {
     this.store = options.store
   }
 
-  close () {
+  close() {
     this.clearReconnectTimer()
 
     this.clearSilenceTimer()
@@ -74,7 +74,7 @@ export class WebSocketClient {
     }
   }
 
-  connect () {
+  connect() {
     this.clearReconnectTimer()
 
     this.retryCount = 0
@@ -82,16 +82,13 @@ export class WebSocketClient {
     this.openSocket()
   }
 
-  retryNow () {
-    if (
-      this.reconnectTimeout !== null ||
-      this.store.state.socket.retry !== null
-    ) {
+  retryNow() {
+    if (this.reconnectTimeout !== null || this.store.state.socket.retry !== null) {
       this.connect()
     }
   }
 
-  private openSocket () {
+  private openSocket() {
     this.clearCacheAndRequests()
 
     try {
@@ -116,20 +113,20 @@ export class WebSocketClient {
         this.store.typedDispatch('socket/onSetStatus', 'identifying')
       }
 
-      connection.onclose = (event) => {
+      connection.onclose = event => {
         if (this.connection !== connection) return
 
         consola.debug(`${LOG_PREFIX} Connection closed:`, event)
         this.handleClose()
       }
 
-      connection.onerror = (event) => {
+      connection.onerror = event => {
         if (this.connection !== connection) return
 
         consola.error(`${LOG_PREFIX} Connection error:`, event)
       }
 
-      connection.onmessage = (message) => {
+      connection.onmessage = message => {
         if (this.connection !== connection) return
 
         this.armPingTimer()
@@ -147,9 +144,13 @@ export class WebSocketClient {
             this.store.typedCommit('wait/setRemoveWait', request.wait)
           }
 
-          if ('error' in socketResponse) { // Is it in error?
+          if ('error' in socketResponse) {
+            // Is it in error?
             if (request) {
-              Object.defineProperty(socketResponse.error, '__request__', { enumerable: false, value: request })
+              Object.defineProperty(socketResponse.error, '__request__', {
+                enumerable: false,
+                value: request
+              })
 
               if (request.onRejected) {
                 request.onRejected(socketResponse.error)
@@ -168,9 +169,10 @@ export class WebSocketClient {
           if (request) {
             // these are specific answers to a request we've made.
             // Build the response, including a non-enumerable ref of the original request.
-            const result = typeof socketResponse.result === 'string'
-              ? { result: socketResponse.result }
-              : socketResponse.result
+            const result =
+              typeof socketResponse.result === 'string'
+                ? { result: socketResponse.result }
+                : socketResponse.result
 
             Object.defineProperty(result, '__request__', { enumerable: false, value: request })
 
@@ -192,7 +194,10 @@ export class WebSocketClient {
         // These are socket notifications (i.e., no specific request was made..)
         if (socketResponse.method !== 'notify_status_update') {
           // Normally, we let notifications through with no cache...
-          this.store.dispatch(`socket/${camelCase(socketResponse.method)}`, socketResponse.params?.[0])
+          this.store.dispatch(
+            `socket/${camelCase(socketResponse.method)}`,
+            socketResponse.params?.[0]
+          )
         } else {
           // ...However, status notifications come through thick and fast,
           // so we cache these and send them through every second.
@@ -215,7 +220,11 @@ export class WebSocketClient {
             const { motion_report, ...otherParams } = params
 
             if (motion_report != null) {
-              this.store.typedDispatch('printer/onFastNotifyStatusUpdate', { motion_report }, { root: true })
+              this.store.typedDispatch(
+                'printer/onFastNotifyStatusUpdate',
+                { motion_report },
+                { root: true }
+              )
             }
 
             mergeWith(this.cache.params, otherParams, mergeCustomizer)
@@ -228,7 +237,7 @@ export class WebSocketClient {
     }
   }
 
-  private handleClose () {
+  private handleClose() {
     // If the socket is already marked disconnected, there is nothing left to do.
     if (this.store.state.socket.status === 'disconnected') return
 
@@ -249,10 +258,7 @@ export class WebSocketClient {
     this.reconnectTimeout = setTimeout(() => {
       this.clearReconnectTimer()
 
-      if (
-        document.hidden ||
-        !navigator.onLine
-      ) {
+      if (document.hidden || !navigator.onLine) {
         this.store.typedCommit('socket/setRetry', { held: true })
       } else {
         this.openSocket()
@@ -260,7 +266,7 @@ export class WebSocketClient {
     }, delay)
   }
 
-  private clearReconnectTimer () {
+  private clearReconnectTimer() {
     if (this.reconnectTimeout !== null) {
       clearTimeout(this.reconnectTimeout)
       this.reconnectTimeout = null
@@ -271,14 +277,13 @@ export class WebSocketClient {
     }
   }
 
-  private armPingTimer () {
+  private armPingTimer() {
     this.clearSilenceTimer()
 
     this.silenceTimeout = setTimeout(() => {
       consola.debug(`${LOG_PREFIX} No message for ${PING_AFTER} ms`)
 
-      this.emit('server.info', { suppressError: true })
-        .catch(() => {})
+      this.emit('server.info', { suppressError: true }).catch(() => {})
 
       this.armDeadTimer()
 
@@ -286,7 +291,7 @@ export class WebSocketClient {
     }, PING_AFTER)
   }
 
-  private armDeadTimer () {
+  private armDeadTimer() {
     this.clearSilenceTimer()
 
     this.silenceTimeout = setTimeout(() => {
@@ -300,7 +305,7 @@ export class WebSocketClient {
     }, DEAD_AFTER)
   }
 
-  private clearSilenceTimer () {
+  private clearSilenceTimer() {
     if (this.silenceTimeout !== null) {
       clearTimeout(this.silenceTimeout)
       this.silenceTimeout = null
@@ -314,10 +319,10 @@ export class WebSocketClient {
   /**
    * Sends data TO the socket
    */
-  emit<
-    M extends Moonraker.Method,
-    R extends Moonraker.MethodResult<M> = Moonraker.MethodResult<M>
-  > (method: M, options: EmitOptions<M>) {
+  emit<M extends Moonraker.Method, R extends Moonraker.MethodResult<M> = Moonraker.MethodResult<M>>(
+    method: M,
+    options: EmitOptions<M>
+  ) {
     return new Promise<R>((resolve, reject) => {
       try {
         const { wait, params, dispatch, suppressError } = options
@@ -362,7 +367,12 @@ export class WebSocketClient {
           this.requests.set(id, request)
           this.connection.send(JSON.stringify(packet))
         } else {
-          consola.debug(`${LOG_PREFIX} Not ready, or closed.`, method, options, this.connection?.readyState)
+          consola.debug(
+            `${LOG_PREFIX} Not ready, or closed.`,
+            method,
+            options,
+            this.connection?.readyState
+          )
 
           throw new Error('Socket is not ready or closed')
         }
@@ -372,7 +382,7 @@ export class WebSocketClient {
     })
   }
 
-  clearCacheAndRequests () {
+  clearCacheAndRequests() {
     this.cache = null
 
     for (const request of this.requests.values()) {
@@ -386,7 +396,7 @@ export class WebSocketClient {
 }
 
 export const SocketPlugin = {
-  install (Vue: typeof _Vue, options?: SocketPluginOptions) {
+  install(Vue: typeof _Vue, options?: SocketPluginOptions) {
     if (options?.store == null) {
       throw new Error('options required')
     }
@@ -407,92 +417,94 @@ export const SocketPlugin = {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $socket: WebSocketClient;
+    $socket: WebSocketClient
   }
 
   interface VueConstructor {
-    $socket: WebSocketClient;
+    $socket: WebSocketClient
   }
 }
 
 interface SocketPluginOptions {
-  store: TypedStore;
+  store: TypedStore
 }
 
 export type SuppressError = boolean | ((error: SocketError) => boolean)
 
 export interface RequestOptions {
-  dispatch?: string;
-  wait?: string;
-  suppressError?: SuppressError;
+  dispatch?: string
+  wait?: string
+  suppressError?: SuppressError
 }
 
 // skipLibCheck hides .d.ts errors, so validate the Methods shape here
-type AssertMethods<T extends Record<keyof T, { params: unknown, result: unknown }>> = T
+type AssertMethods<T extends Record<keyof T, { params: unknown; result: unknown }>> = T
 export type CheckedMethods = AssertMethods<Moonraker.Methods>
 
 type AssertNotifications<T extends Record<keyof T, [unknown, ...unknown[]] | undefined>> = T
 export type CheckedNotifications = AssertNotifications<Moonraker.Notifications>
 
-type RequestParams<M extends Moonraker.Method> = object extends Moonraker.MethodParams<M>
-  ? Moonraker.MethodParams<M> | undefined
-  : Moonraker.MethodParams<M>
+type RequestParams<M extends Moonraker.Method> =
+  object extends Moonraker.MethodParams<M>
+    ? Moonraker.MethodParams<M> | undefined
+    : Moonraker.MethodParams<M>
 
-export type EmitOptions<M extends Moonraker.Method> = RequestOptions & (
-  undefined extends RequestParams<M>
+export type EmitOptions<M extends Moonraker.Method> = RequestOptions &
+  (undefined extends RequestParams<M>
     ? { params?: RequestParams<M> }
-    : { params: RequestParams<M> }
-)
+    : { params: RequestParams<M> })
 
 interface Request<P = unknown, R = unknown> {
-  id: number;
-  dispatch?: string;
-  params: P;
-  wait?: string;
-  suppressError?: SuppressError;
+  id: number
+  dispatch?: string
+  params: P
+  wait?: string
+  suppressError?: SuppressError
   // Method syntax (bivariant) so any Request<P, R> fits in `requests`
-  onFulfilled (value: R): void;
-  onRejected: (reason?: unknown) => void;
+  onFulfilled(value: R): void
+  onRejected: (reason?: unknown) => void
 }
 
 // String results are dispatched as `{ result }`
 type DispatchedResult<R> = R extends string ? { result: R } : R
 
-export type ObjectWithRequest<M extends Moonraker.Method> = DispatchedResult<Moonraker.MethodResult<M>> & {
+export type ObjectWithRequest<M extends Moonraker.Method> = DispatchedResult<
+  Moonraker.MethodResult<M>
+> & {
   __request__: Request<RequestParams<M>, Moonraker.MethodResult<M>>
 }
 
 interface SocketRequest<M extends Moonraker.Method> {
-  jsonrpc: '2.0';
-  id: number;
-  method: M;
-  params?: RequestParams<M>;
+  jsonrpc: '2.0'
+  id: number
+  method: M
+  params?: RequestParams<M>
 }
 
 interface SocketResponseBase {
-  jsonrpc: string; // always available
+  jsonrpc: string // always available
 }
 
 interface SocketApiResponse extends SocketResponseBase {
-  id: number;
-  result: string | Record<string, any>;
+  id: number
+  result: string | Record<string, any>
 }
 
 interface SocketApiErrorResponse extends SocketResponseBase {
-  id: number;
-  error: SocketError;
+  id: number
+  error: SocketError
 }
 
 type SocketNotificationResponse = {
   [N in Moonraker.Notification]: SocketResponseBase & {
-    method: N;
-    params: Moonraker.Notifications[N];
+    method: N
+    params: Moonraker.Notifications[N]
   }
 }[Moonraker.Notification]
 
 type SocketResponse = SocketApiResponse | SocketApiErrorResponse | SocketNotificationResponse
 
 interface CachedParams {
-  eventtime: number; // Klipper's eventtime, in seconds
-  params: Record<string, any>;
+  eventtime: number // Klipper's eventtime, in seconds
+  params: Record<string, any>
 }

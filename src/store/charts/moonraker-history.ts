@@ -1,9 +1,7 @@
 import decimalRound from '@/util/decimal-round'
 import type { ChartSample } from './types'
 
-const moonrakerChartSample = (
-  stat: Moonraker.ProcStats.MoonrakerStats
-): ChartSample | undefined => (
+const moonrakerChartSample = (stat: Moonraker.ProcStats.MoonrakerStats): ChartSample | undefined =>
   stat.cpu_usage > 100
     ? undefined
     : {
@@ -12,7 +10,6 @@ const moonrakerChartSample = (
           load: decimalRound(stat.cpu_usage, 2)
         }
       }
-)
 
 // `machine.proc_stats` re-runs on reconnect; re-appending would unsort `time`.
 export const moonrakerChartSamples = (

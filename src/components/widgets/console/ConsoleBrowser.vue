@@ -71,31 +71,29 @@ export default class ConsoleBrowser extends Mixins(StateMixin) {
   @Ref('consoleScroller')
   readonly consoleScrollerElement!: AppAutoScrollContainer
 
-  get currentCommand (): string {
+  get currentCommand(): string {
     return this.$typedState.console.consoleCommand
   }
 
-  set currentCommand (val: string) {
+  set currentCommand(val: string) {
     this.$typedCommit('console/setConsoleCommand', val)
   }
 
-  get flipLayout (): boolean {
+  get flipLayout(): boolean {
     return this.$typedState.config.uiSettings.general.flipConsoleLayout
   }
 
-  get orderedItems () {
+  get orderedItems() {
     const items = [...this.items]
 
-    return this.flipLayout
-      ? items.reverse()
-      : items
+    return this.flipLayout ? items.reverse() : items
   }
 
-  scrollToLatest () {
+  scrollToLatest() {
     this.consoleScrollerElement.scrollToLatest(true)
   }
 
-  sendCommand (command?: string) {
+  sendCommand(command?: string) {
     if (command) {
       // If clients detect M112 input from the console, we should invoke the emergency_stop endpoint
       if (command.trim().toLowerCase() === 'm112') {
@@ -106,34 +104,34 @@ export default class ConsoleBrowser extends Mixins(StateMixin) {
     }
   }
 
-  handleEntryClick (command: string) {
+  handleEntryClick(command: string) {
     this.currentCommand = command
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .console-item {
-    white-space: pre-wrap;
-  }
+.console-item {
+  white-space: pre-wrap;
+}
 
-  .console-wrapper {
-    font-family: monospace;
-    font-size: 1rem; // 15 px
-    font-weight: 100 !important;
-    padding-left: 4px;
-  }
+.console-wrapper {
+  font-family: monospace;
+  font-size: 1rem; // 15 px
+  font-weight: 100 !important;
+  padding-left: 4px;
+}
 
-  .console-scroller {
-    height: 300px;
-  }
+.console-scroller {
+  height: 300px;
+}
 
-  .console-scroller-fullscreen {
-    height: calc(100vh - 308px);
-    height: calc(100svh - 308px);
-  }
+.console-scroller-fullscreen {
+  height: calc(100vh - 308px);
+  height: calc(100svh - 308px);
+}
 
-  .v-input {
-    flex: 0 0 auto;
-  }
+.v-input {
+  flex: 0 0 auto;
+}
 </style>

@@ -56,7 +56,7 @@ export default class ConsoleCommand extends Vue {
   readonly autofocus?: boolean
 
   @Watch('value')
-  onValueChange (val: string) {
+  onValueChange(val: string) {
     if (val) {
       this.newValue = val
       this.input.focus()
@@ -70,18 +70,18 @@ export default class ConsoleCommand extends Vue {
   history: string[] = []
   historyIndex = -1
 
-  mounted () {
+  mounted() {
     this.newValue = this.value
     const savedHistory: string[] = this.$typedState.console.commandHistory
     this.history = [...savedHistory]
   }
 
-  emitChange (val: string) {
+  emitChange(val: string) {
     this.newValue = val
     this.$emit('input', val)
   }
 
-  emitSend (val: string) {
+  emitSend(val: string) {
     if (val && val.length > 0) {
       if (this.history.length >= this.commandHistoryCount) {
         this.history.pop()
@@ -93,7 +93,7 @@ export default class ConsoleCommand extends Vue {
     }
   }
 
-  handleKeyUp (event: KeyboardEvent) {
+  handleKeyUp(event: KeyboardEvent) {
     const el = this.input.$refs.input
 
     if (
@@ -104,10 +104,7 @@ export default class ConsoleCommand extends Vue {
 
       const historyLength = this.history.length
 
-      if (
-        historyLength >= 1 &&
-        this.historyIndex !== historyLength
-      ) {
+      if (historyLength >= 1 && this.historyIndex !== historyLength) {
         const index = ++this.historyIndex
 
         this.emitChange(this.history[index] ?? '')
@@ -115,7 +112,7 @@ export default class ConsoleCommand extends Vue {
     }
   }
 
-  handleKeyDown (event: KeyboardEvent) {
+  handleKeyDown(event: KeyboardEvent) {
     const el = this.input.$refs.input
 
     if (
@@ -126,10 +123,7 @@ export default class ConsoleCommand extends Vue {
 
       const historyLength = this.history.length
 
-      if (
-        historyLength >= 1 &&
-        this.historyIndex !== -1
-      ) {
+      if (historyLength >= 1 && this.historyIndex !== -1) {
         const index = --this.historyIndex
 
         this.emitChange(this.history[index] ?? '')
@@ -137,16 +131,17 @@ export default class ConsoleCommand extends Vue {
     }
   }
 
-  get availableCommands (): GcodeCommands {
+  get availableCommands(): GcodeCommands {
     return this.$typedGetters['printer/getAvailableCommands']
   }
 
-  autoComplete () {
+  autoComplete() {
     const availableCommands = this.availableCommands
 
     if (this.newValue.length) {
-      const commands = Object.keys(availableCommands)
-        .filter(command => command.startsWith(this.newValue.toUpperCase()))
+      const commands = Object.keys(availableCommands).filter(command =>
+        command.startsWith(this.newValue.toUpperCase())
+      )
 
       if (commands.length === 1) {
         this.emitChange(commands[0])
@@ -162,7 +157,7 @@ export default class ConsoleCommand extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .console-command {
-    font-family: monospace;
-  }
+.console-command {
+  font-family: monospace;
+}
 </style>

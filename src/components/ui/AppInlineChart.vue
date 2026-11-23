@@ -46,38 +46,38 @@ export default class AppInlineChart extends Vue {
   @Prop({ type: Array, required: true })
   readonly labels!: AppInlineChartLabel[]
 
-  get hasData (): boolean {
+  get hasData(): boolean {
     return this.data.date.length > 0
   }
 
-  get items () {
+  get items() {
     const lastIndex = this.data.date.length - 1
 
-    return this.labels
-      .map(label => {
-        const value = this.data[label.value]?.[lastIndex]
+    return this.labels.map(label => {
+      const value = this.data[label.value]?.[lastIndex]
 
-        return {
-          label,
-          value: (value == null || Number.isNaN(value))
+      return {
+        label,
+        value:
+          value == null || Number.isNaN(value)
             ? '--'
             : `${value !== 0 ? value.toFixed(2) : value}${label.suffix ?? ''}`
-        }
-      })
+      }
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .app-inline-chart {
-    .app-inline-chart__label-wrapper {
-      margin-top: 6px;
-      display: block;
-    }
-
-    .app-inline-chart__label {
-      display: flex;
-      justify-content: space-between;
-    }
+.app-inline-chart {
+  .app-inline-chart__label-wrapper {
+    margin-top: 6px;
+    display: block;
   }
+
+  .app-inline-chart__label {
+    display: flex;
+    justify-content: space-between;
+  }
+}
 </style>

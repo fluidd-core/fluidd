@@ -22,16 +22,14 @@
             v-on="on"
             @click="handleExportCsv"
           >
-            <v-icon>
-              $fileExport
-            </v-icon>
+            <v-icon> $fileExport </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.general.btn.export_csv') }}</span>
       </v-tooltip>
 
       <div
-        style="max-width: 160px;"
+        style="max-width: 160px"
         class="ms-1 my-1"
       >
         <v-text-field
@@ -64,7 +62,11 @@
             ? '–'
             : allLoaded
               ? $t('app.general.table.footer.item_range', { pageStart, pageStop, itemsLength })
-              : $t('app.general.table.footer.item_range_loaded', { pageStart, pageStop, itemsLength })
+              : $t('app.general.table.footer.item_range_loaded', {
+                  pageStart,
+                  pageStop,
+                  itemsLength
+                })
         }}
       </template>
 
@@ -107,9 +109,17 @@
                   'max-width': `${thumbnailSize}px`,
                   'max-height': `${thumbnailSize}px`
                 }"
-                :src="getThumbUrl(item.metadata, 'gcodes', getFilePaths(item.filename).path, thumbnailSize > 16, item.metadata.modified)"
+                :src="
+                  getThumbUrl(
+                    item.metadata,
+                    'gcodes',
+                    getFilePaths(item.filename).path,
+                    thumbnailSize > 16,
+                    item.metadata.modified
+                  )
+                "
                 @error="handleJobThumbnailError(item)"
-              >
+              />
             </v-layout>
           </template>
 
@@ -146,9 +156,7 @@
               icon
               @click="handleRemoveJob(item)"
             >
-              <v-icon dense>
-                $delete
-              </v-icon>
+              <v-icon dense> $delete </v-icon>
             </app-btn>
           </template>
         </app-data-table-row>
@@ -182,17 +190,16 @@ import downloadUrl from '@/util/download-url'
 export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
   search = ''
 
-  get auxiliaryDataHeaders (): AppDataTableHeader[] {
-    const auxiliaryDataHeaders = this.history
-      .reduce<Record<string, string>>((headers, item) => {
-        if (item.auxiliary_data) {
-          for (const auxiliaryDataItem of item.auxiliary_data) {
-            headers[auxiliaryDataItem.name] = auxiliaryDataItem.description
-          }
+  get auxiliaryDataHeaders(): AppDataTableHeader[] {
+    const auxiliaryDataHeaders = this.history.reduce<Record<string, string>>((headers, item) => {
+      if (item.auxiliary_data) {
+        for (const auxiliaryDataItem of item.auxiliary_data) {
+          headers[auxiliaryDataItem.name] = auxiliaryDataItem.description
         }
+      }
 
-        return headers
-      }, {})
+      return headers
+    }, {})
 
     for (const sensor of this.sensors) {
       if (sensor.history_fields) {
@@ -202,15 +209,14 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
       }
     }
 
-    return Object.entries(auxiliaryDataHeaders)
-      .map(([name, description]): AppDataTableHeader => ({
-        text: this.$filters.prettyCase(description),
-        value: `auxiliary_data.${name}`,
-        cellClass: 'text-no-wrap'
-      }))
+    return Object.entries(auxiliaryDataHeaders).map(([name, description]): AppDataTableHeader => ({
+      text: this.$filters.prettyCase(description),
+      value: `auxiliary_data.${name}`,
+      cellClass: 'text-no-wrap'
+    }))
   }
 
-  get configurableHeaders (): AppDataTableHeader[] {
+  get configurableHeaders(): AppDataTableHeader[] {
     const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.general.table.header.status'),
@@ -248,7 +254,7 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
         text: this.$tc('app.general.table.header.user'),
         value: 'user',
         visible: false,
-        cellClass: 'text-no-wrap',
+        cellClass: 'text-no-wrap'
       },
       {
         text: this.$tc('app.general.table.header.height'),
@@ -418,15 +424,17 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
         value: 'metadata.size',
         cellClass: 'text-no-wrap',
         width: '1%'
-      },
+      }
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'history')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters[
+      'config/getMergedTableHeaders'
+    ](headers, 'history')
 
     return mergedTableHeaders
   }
 
-  get headers (): DataTableHeader[] {
+  get headers(): DataTableHeader[] {
     return [
       {
         text: '',
@@ -438,8 +446,7 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
         text: this.$tc('app.general.table.header.name'),
         value: 'filename'
       },
-      ...this.configurableHeaders
-        .filter(header => header.visible !== false),
+      ...this.configurableHeaders.filter(header => header.visible !== false),
       {
         text: this.$tc('app.general.table.header.actions'),
         value: 'actions',
@@ -449,42 +456,43 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
     ]
   }
 
-  get thumbnailSize (): number {
+  get thumbnailSize(): number {
     return this.$typedState.config.uiSettings.thumbnailSizes.history ?? 32
   }
 
-  set thumbnailSize (value: number) {
+  set thumbnailSize(value: number) {
     this.$typedDispatch('config/updateThumbnailSizes', { name: 'history', size: value })
   }
 
-  get sensors (): Moonraker.Sensor.Entry[] {
+  get sensors(): Moonraker.Sensor.Entry[] {
     return this.$typedGetters['sensors/getSensors']
   }
 
-  get history (): HistoryItem[] {
+  get history(): HistoryItem[] {
     return this.$typedGetters['history/getHistory']
   }
 
-  get allLoaded (): boolean {
+  get allLoaded(): boolean {
     return this.$typedState.history.allLoaded
   }
 
-  getFilePaths (filename: string) {
+  getFilePaths(filename: string) {
     return getFilePaths(filename, 'gcodes')
   }
 
-  async handleRemoveJob (job: HistoryItem) {
-    const result = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm_delete', 1),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async handleRemoveJob(job: HistoryItem) {
+    const result = await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_delete', 1), {
+      title: this.$tc('app.general.label.confirm'),
+      color: 'card-heading',
+      icon: '$error'
+    })
 
     if (result) {
       SocketActions.serverHistoryDeleteJob(job.job_id)
     }
   }
 
-  async handleExportCsv () {
+  async handleExportCsv() {
     this.$typedDispatch('wait/addWait', this.$waits.onHistoryExport)
 
     try {
@@ -497,17 +505,12 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
           text: this.$tc('app.general.table.header.name'),
           value: 'filename'
         },
-        ...this.configurableHeaders
-          .filter(header => header.visible !== false)
+        ...this.configurableHeaders.filter(header => header.visible !== false)
       ]
 
       const csv = toCsv([
-        columns
-          .map(column => column.text),
-        ...this.history
-          .map(job => columns
-            .map(column => this.getExportValue(job, column.value))
-          )
+        columns.map(column => column.text),
+        ...this.history.map(job => columns.map(column => this.getExportValue(job, column.value)))
       ])
 
       // The BOM makes Excel read the file as UTF-8
@@ -530,7 +533,7 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
   }
 
   // Raw values in their base units (seconds, millimeters, grams, °C, bytes)
-  getExportValue (item: HistoryItem, key: string): unknown {
+  getExportValue(item: HistoryItem, key: string): unknown {
     if (key.startsWith('auxiliary_data.')) {
       const auxiliaryDataItemName = key.substring(15)
 
@@ -551,22 +554,19 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
     return value
   }
 
-  handleJobThumbnailError (job: HistoryItem) {
+  handleJobThumbnailError(job: HistoryItem) {
     this.$typedDispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
-  getItemValue (item: HistoryItem, header: DataTableHeader, defaultGetter: DefaultGetterFunction) {
+  getItemValue(item: HistoryItem, header: DataTableHeader, defaultGetter: DefaultGetterFunction) {
     if (header.value.startsWith('auxiliary_data.')) {
       const auxiliaryDataItemName = header.value.substring(15)
 
-      const { value, units } = item.auxiliary_data?.find(x => x.name === auxiliaryDataItemName) ?? {}
+      const { value, units } =
+        item.auxiliary_data?.find(x => x.name === auxiliaryDataItemName) ?? {}
 
-      if (
-        Array.isArray(value) &&
-        value.length > 0
-      ) {
-        return value
-          .map(x => this.formatValueWithUnits(x, units))
+      if (Array.isArray(value) && value.length > 0) {
+        return value.map(x => this.formatValueWithUnits(x, units))
       }
 
       return this.formatValueWithUnits(value, units)
@@ -608,32 +608,24 @@ export default class JobHistory extends Mixins(StateMixin, FilesMixin) {
     if (Array.isArray(value) && value.length > 0) {
       switch (header.value) {
         case 'metadata.filament_weights':
-          return value
-            .map(x => typeof x === 'number'
-              ? this.$filters.getReadableWeightString(x)
-              : x
-            )
+          return value.map(x =>
+            typeof x === 'number' ? this.$filters.getReadableWeightString(x) : x
+          )
 
         case 'metadata.file_processors':
         case 'metadata.referenced_tools':
-          return value
-            .map(x => typeof x === 'string'
-              ? this.$filters.prettyCase(x)
-              : x
-            )
+          return value.map(x => (typeof x === 'string' ? this.$filters.prettyCase(x) : x))
       }
     }
 
     return value
   }
 
-  formatValueWithUnits (value: unknown, units?: string | null) {
+  formatValueWithUnits(value: unknown, units?: string | null) {
     if (typeof value === 'number') {
       const roundedValue = Math.round(value * 100) / 100
 
-      return units
-        ? `${roundedValue} ${units}`
-        : roundedValue.toString()
+      return units ? `${roundedValue} ${units}` : roundedValue.toString()
     }
 
     if (typeof value === 'string' && units) {

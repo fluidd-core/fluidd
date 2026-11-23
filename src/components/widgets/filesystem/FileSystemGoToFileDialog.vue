@@ -65,11 +65,11 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   search = ''
   loaded = false
 
-  get rootFiles (): readonly Moonraker.Files.RootFile[] | undefined {
+  get rootFiles(): readonly Moonraker.Files.RootFile[] | undefined {
     return this.$typedGetters['files/getRootFiles'](this.root)
   }
 
-  get matchedFiles (): File[] {
+  get matchedFiles(): File[] {
     if (!this.loaded || !this.rootFiles) {
       return []
     }
@@ -85,33 +85,33 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
       .map(rootFile => {
         const { filename, rootPath, path: filepath } = getFilePaths(rootFile.path, this.root)
 
-        const file: File = ({
+        const file: File = {
           ...rootFile,
           filename,
           filepath,
           rootPath
-        })
+        }
 
         return file
       })
   }
 
-  get loading (): boolean {
+  get loading(): boolean {
     return this.hasWait(`${this.$waits.onFileSystem}/${this.root}/`)
   }
 
   @Watch('loading')
-  onLoading (value: boolean) {
+  onLoading(value: boolean) {
     this.loaded = !value
   }
 
-  handleFileClick (file: File) {
+  handleFileClick(file: File) {
     this.$emit('path-change', file.rootPath)
     this.open = false
   }
 
   @Watch('open')
-  onOpenChanged (value: boolean) {
+  onOpenChanged(value: boolean) {
     if (value) {
       this.search = ''
       this.loaded = false

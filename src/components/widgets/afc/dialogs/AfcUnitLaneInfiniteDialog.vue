@@ -43,15 +43,15 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane (): Klipper.AfcLaneState | undefined {
+  get lane(): Klipper.AfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 
-  get runoutLane (): string {
+  get runoutLane(): string {
     return this.lane?.runout_lane ?? 'NONE'
   }
 
-  get laneList (): string[] {
+  get laneList(): string[] {
     const laneList: string[] = []
 
     for (const laneName of this.afcLanes) {
@@ -61,22 +61,18 @@ export default class AfcUnitLaneInfiniteDialog extends Mixins(StateMixin, AfcMix
 
       const lane = this.getAfcLaneObject(laneName)
 
-      if (
-        lane?.prep === true &&
-        lane.load === true
-      ) {
+      if (lane?.prep === true && lane.load === true) {
         laneList.push(lane.name)
       }
     }
 
-    return [
-      'NONE',
-      ...laneList.sort((a, b) => a.localeCompare(b))
-    ]
+    return ['NONE', ...laneList.sort((a, b) => a.localeCompare(b))]
   }
 
-  setRunout (newLane: string) {
-    this.sendGcode(`SET_RUNOUT LANE=${encodeGcodeParamValue(this.name)} RUNOUT=${encodeGcodeParamValue(newLane)}`)
+  setRunout(newLane: string) {
+    this.sendGcode(
+      `SET_RUNOUT LANE=${encodeGcodeParamValue(this.name)} RUNOUT=${encodeGcodeParamValue(newLane)}`
+    )
 
     this.open = false
   }

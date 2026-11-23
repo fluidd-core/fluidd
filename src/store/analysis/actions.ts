@@ -5,17 +5,17 @@ import { SocketActions } from '@/api/socketActions'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
 
 export const actions = {
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async onAnalysisStatus ({ commit }, payload: Moonraker.Analysis.StatusResponse) {
+  async onAnalysisStatus({ commit }, payload: Moonraker.Analysis.StatusResponse) {
     if (payload) {
       commit('setAnalysisStatus', payload)
     }
   },
 
-  async onAnalysisProcess (_, payload: ObjectWithRequest<'server.analysis.process'>) {
+  async onAnalysisProcess(_, payload: ObjectWithRequest<'server.analysis.process'>) {
     if (payload) {
       const { filename } = payload.__request__.params
 

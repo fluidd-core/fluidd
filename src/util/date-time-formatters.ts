@@ -6,7 +6,11 @@ type GetDefaultDateTimeFormatFunction = () => string
 
 // Intl.DateTimeFormat.format throws on an invalid date, where the
 // Date.toLocale*String methods it replaces returned 'Invalid Date'.
-const formatDateTimeValue = (value: number | string | Date, locales: Intl.LocalesArgument, options: Intl.DateTimeFormatOptions): string => {
+const formatDateTimeValue = (
+  value: number | string | Date,
+  locales: Intl.LocalesArgument,
+  options: Intl.DateTimeFormatOptions
+): string => {
   const date = new Date(value)
 
   return Number.isNaN(date.getTime())
@@ -14,7 +18,10 @@ const formatDateTimeValue = (value: number | string | Date, locales: Intl.Locale
     : getDateTimeFormat(locales, options).format(date)
 }
 
-const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFunction, getDefaultTimeFormat: GetDefaultDateTimeFormatFunction) => {
+const dateTimeFormatters = (
+  getDefaultDateFormat: GetDefaultDateTimeFormatFunction,
+  getDefaultTimeFormat: GetDefaultDateTimeFormatFunction
+) => {
   const instance = {
     getDateFormat: (override?: string): DateTimeFormat => {
       return {
@@ -34,17 +41,18 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       const date = new Date(value)
       const today = new Date()
 
-      return date.getDate() === today.getDate() &&
-          date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear()
+      return (
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
+      )
     },
 
     isThisMonth: (value: number | string | Date) => {
       const date = new Date(value)
       const today = new Date()
 
-      return date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear()
+      return date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()
     },
 
     isThisYear: (value: number | string | Date) => {
@@ -68,8 +76,8 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       return {
         isNegative,
         days: Math.floor(seconds / 86400),
-        hours: Math.floor(seconds % 86400 / 3600),
-        minutes: Math.floor(seconds % 3600 / 60),
+        hours: Math.floor((seconds % 86400) / 3600),
+        minutes: Math.floor((seconds % 3600) / 60),
         seconds: Math.floor(seconds % 60)
       }
     },
@@ -132,7 +140,10 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       })
     },
 
-    formatTimeWithSeconds: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
+    formatTimeWithSeconds: (
+      value: number | string | Date,
+      options?: Intl.DateTimeFormatOptions
+    ) => {
       return instance.formatTime(value, {
         second: '2-digit',
         ...options
@@ -147,55 +158,52 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
         : instance.formatDate(date, options) + ' ' + instance.formatTime(date, options)
     },
 
-    formatRelativeTimeToNow (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
+    formatRelativeTimeToNow(
+      value: number | string | Date,
+      options?: Intl.RelativeTimeFormatOptions
+    ) {
       return instance.formatRelativeTimeToDate(value, Date.now(), options)
     },
 
-    formatRelativeTimeToDate (value: number | string | Date, value2: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
+    formatRelativeTimeToDate(
+      value: number | string | Date,
+      value2: number | string | Date,
+      options?: Intl.RelativeTimeFormatOptions
+    ) {
       const seconds = (+new Date(value) - +new Date(value2)) / 1000
       const absoluteSeconds = Math.abs(seconds)
 
-      const [unit, unitValue]: [Intl.RelativeTimeFormatUnit, number] = absoluteSeconds >= 60 * 60 * 24 * 365
-        ? [
-            'year',
-            Math.round(seconds / (60 * 60 * 24 * 365))
-          ]
-        : absoluteSeconds >= 60 * 60 * 24 * 30
-          ? [
-              'month',
-              Math.round(seconds / (60 * 60 * 24 * 30))
-            ]
-          : absoluteSeconds >= 60 * 60 * 24
-            ? [
-                'day',
-                Math.round(seconds / (60 * 60 * 24))
-              ]
-            : absoluteSeconds >= 60 * 60
-              ? [
-                  'hour',
-                  Math.round(seconds / (60 * 60))
-                ]
-              : absoluteSeconds >= 60
-                ? [
-                    'minute',
-                    Math.round(seconds / 60)
-                  ]
-                : [
-                    'second',
-                    Math.round(seconds)
-                  ]
+      const [unit, unitValue]: [Intl.RelativeTimeFormatUnit, number] =
+        absoluteSeconds >= 60 * 60 * 24 * 365
+          ? ['year', Math.round(seconds / (60 * 60 * 24 * 365))]
+          : absoluteSeconds >= 60 * 60 * 24 * 30
+            ? ['month', Math.round(seconds / (60 * 60 * 24 * 30))]
+            : absoluteSeconds >= 60 * 60 * 24
+              ? ['day', Math.round(seconds / (60 * 60 * 24))]
+              : absoluteSeconds >= 60 * 60
+                ? ['hour', Math.round(seconds / (60 * 60))]
+                : absoluteSeconds >= 60
+                  ? ['minute', Math.round(seconds / 60)]
+                  : ['second', Math.round(seconds)]
 
       return instance.formatRelativeTime(unitValue, unit, options)
     },
 
-    formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
+    formatRelativeTime(
+      value: number,
+      unit: Intl.RelativeTimeFormatUnit,
+      options?: Intl.RelativeTimeFormatOptions
+    ) {
       return getRelativeTimeFormat(getAllLocales(), {
         numeric: 'auto',
         ...options
       }).format(value, unit)
     },
 
-    formatAbsoluteDateTime: (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) => {
+    formatAbsoluteDateTime: (
+      value: number | string | Date,
+      options?: Intl.RelativeTimeFormatOptions
+    ) => {
       if (instance.isToday(value)) {
         return instance.formatTime(value, options)
       }
@@ -208,7 +216,7 @@ const dateTimeFormatters = (getDefaultDateFormat: GetDefaultDateTimeFormatFuncti
       }
 
       return instance.formatDateTime(value, options)
-    },
+    }
   }
 
   return instance

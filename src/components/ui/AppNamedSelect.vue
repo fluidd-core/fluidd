@@ -25,14 +25,12 @@
         <app-btn
           v-if="resetValue !== undefined"
           :disabled="disabled"
-          style="margin-top: -4px;"
+          style="margin-top: -4px"
           icon
           small
           @click="handleReset"
         >
-          <v-icon small>
-            $reset
-          </v-icon>
+          <v-icon small> $reset </v-icon>
         </app-btn>
       </template>
     </v-select>
@@ -46,10 +44,10 @@ import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
   inheritAttrs: false
 })
 export default class AppNamedSelect extends Vue {
-  @VModel({ })
+  @VModel({})
   inputValue?: unknown
 
-  @Prop({ })
+  @Prop({})
   readonly resetValue?: unknown
 
   @Prop({ type: String })
@@ -61,7 +59,7 @@ export default class AppNamedSelect extends Vue {
   @Prop({ type: Boolean })
   readonly loading?: boolean
 
-  handleReset () {
+  handleReset() {
     if (this.resetValue !== undefined) {
       this.$emit('change', this.resetValue)
     }

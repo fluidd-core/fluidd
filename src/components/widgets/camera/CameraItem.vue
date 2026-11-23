@@ -19,9 +19,7 @@
         @frame="$emit('frame', $event)"
       />
     </template>
-    <div v-else>
-      Camera service not supported!
-    </div>
+    <div v-else> Camera service not supported! </div>
 
     <template v-if="cameraName || camera.name">
       <v-menu
@@ -82,7 +80,9 @@
     </div>
 
     <div
-      v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
+      v-if="
+        !fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'
+      "
       class="camera-fullscreen"
     >
       <router-link
@@ -139,12 +139,12 @@ export default class CameraItem extends Vue {
   cameraName = ''
   cameraNameMenuItems: CameraNameMenuItem[] = []
 
-  cameraNameMenuItemClick (item: CameraNameMenuItem) {
+  cameraNameMenuItemClick(item: CameraNameMenuItem) {
     this.componentInstance.menuItemClick(item)
   }
 
   @Watch('camera')
-  onCamera () {
+  onCamera() {
     this.status = 'disconnected'
     this.rawCameraUrl = ''
     this.framesPerSecond = ''
@@ -152,11 +152,11 @@ export default class CameraItem extends Vue {
     this.cameraNameMenuItems = []
   }
 
-  get fullscreenMode (): CameraFullscreenAction {
+  get fullscreenMode(): CameraFullscreenAction {
     return this.$typedState.config.uiSettings.general.cameraFullscreenAction
   }
 
-  get cameraComponent () {
+  get cameraComponent() {
     const cameraService = this.camera.service
 
     if (cameraService) {
@@ -168,7 +168,7 @@ export default class CameraItem extends Vue {
     }
   }
 
-  get cameraNameAndStatus () {
+  get cameraNameAndStatus() {
     const cameraName = this.cameraName || this.camera.name
 
     if (this.status !== 'connected') {
@@ -178,72 +178,70 @@ export default class CameraItem extends Vue {
     return cameraName
   }
 
-  handleFramesPerSecond (framesPerSecond : number) {
-    this.framesPerSecond = framesPerSecond >= 0
-      ? framesPerSecond.toString().padStart(2, '0')
-      : ''
+  handleFramesPerSecond(framesPerSecond: number) {
+    this.framesPerSecond = framesPerSecond >= 0 ? framesPerSecond.toString().padStart(2, '0') : ''
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .camera-image {
-    display: block;
-    max-width: 100%;
-    max-height: calc(100vh - 130px);
-    max-height: calc(100svh - 130px);
-    white-space: nowrap;
-    margin: auto;
-    pointer-events: none;
-    user-select: none;
-  }
-  iframe.camera-image {
-    pointer-events: auto;
-    user-select: auto;
-  }
+.camera-image {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 130px);
+  max-height: calc(100svh - 130px);
+  white-space: nowrap;
+  margin: auto;
+  pointer-events: none;
+  user-select: none;
+}
+iframe.camera-image {
+  pointer-events: auto;
+  user-select: auto;
+}
 
-  .camera-container {
-    position: relative;
-    background: rgba(0, 0, 0, 1);
-    min-height: 70px;
-  }
+.camera-container {
+  position: relative;
+  background: rgba(0, 0, 0, 1);
+  min-height: 70px;
+}
 
-  .camera-name,
-  .camera-frames {
-    position: absolute;
-    bottom: 0;
-    padding: 2px 6px;
-    background: rgba(0, 0, 0, 0.75);
-    font-weight: 100;
-  }
+.camera-name,
+.camera-frames {
+  position: absolute;
+  bottom: 0;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.75);
+  font-weight: 100;
+}
 
-  .theme--light .camera-name,
-  .theme--light .camera-frames {
-    background: rgba(255, 255, 255, 0.75);
-  }
+.theme--light .camera-name,
+.theme--light .camera-frames {
+  background: rgba(255, 255, 255, 0.75);
+}
 
-  .camera-fullscreen {
-    position: absolute;
-    text-align: right;
-    top: 0;
-    right: 0;
-    padding: 2px 6px;
-    background: rgba(0, 0, 0, 0.75);
-    border-bottom-left-radius: 4px;
-  }
+.camera-fullscreen {
+  position: absolute;
+  text-align: right;
+  top: 0;
+  right: 0;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.75);
+  border-bottom-left-radius: 4px;
+}
 
-  .theme--light .camera-fullscreen {
-    background: rgba(255, 255, 255, 0.75);
-  }
+.theme--light .camera-fullscreen {
+  background: rgba(255, 255, 255, 0.75);
+}
 
-  .camera-name {
-    left: 0;
-    border-top-right-radius: 4px;
-  }
+.camera-name {
+  left: 0;
+  border-top-right-radius: 4px;
+}
 
-  .camera-frames {
-    text-align: right;
-    right: 0;
-    border-top-left-radius: 4px;
-  }
+.camera-frames {
+  text-align: right;
+  right: 0;
+  border-top-left-radius: 4px;
+}
 </style>

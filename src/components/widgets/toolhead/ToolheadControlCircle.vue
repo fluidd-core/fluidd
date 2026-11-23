@@ -12,7 +12,7 @@
           viewBox="0 0 426.5 347"
           class="app-circle-control"
           :class="{
-            [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
+            [$vuetify.theme.dark ? 'theme--dark' : 'theme--light']: true,
             'theme--text--contrast': !isPrimaryColorDark
           }"
         >
@@ -162,7 +162,9 @@
                 r="25"
                 class="cc-btn-container"
               />
-              <path d="M396.25 169.25v2.833h-25.5v-2.833zM378.593 182h9.815l-4.907-8.5-4.907 8.5Z" />
+              <path
+                d="M396.25 169.25v2.833h-25.5v-2.833zM378.593 182h9.815l-4.907-8.5-4.907 8.5Z"
+              />
             </a>
             <a
               v-else
@@ -176,7 +178,9 @@
                 r="25"
                 class="cc-btn-container"
               />
-              <path d="M374.356 160.75h19.771l2.123 2.123v19.771l-2.833-2.833v-15.764l-.463-.463H377.19l-2.833-2.833Zm15.613 15.613a7 7 0 0 0 .614-2.863 7.083 7.083 0 0 0-7.083-7.083 7 7 0 0 0-2.863.614l2.278 2.278c.193-.027.384-.059.585-.059a4.254 4.254 0 0 1 4.25 4.25c0 .2-.032.392-.059.585zm-3.81-3.81a2.82 2.82 0 0 0-1.712-1.712zm9.03 12.636 1.334 1.334-1.803 1.803-2.076-2.076h-19.771l-2.123-2.123v-19.771l-2.076-2.076 1.803-1.803 1.334 1.334 5.607 5.607 1.073 1.073 2.005 2.005 1 1 3.42 3.42 1.587 1.587 2.005 2.005 1.073 1.073 5.607 5.607ZM379.25 173.5a4.255 4.255 0 0 0 4.25 4.25c.2 0 .392-.032.585-.059l-1.532-1.532a2.82 2.82 0 0 1-1.712-1.712l-1.532-1.532c-.027.193-.059.385-.059.585m10.56 9.917-3.448-3.447a7 7 0 0 1-2.863.614 7.083 7.083 0 0 1-7.083-7.083c0-1.021.225-1.986.614-2.863l-3.447-3.447v15.764l.463.463h15.764Zm-13.394-4.25a1.417 1.417 0 1 0 0 2.834 1.417 1.417 0 0 0 0-2.834m15.583-12.75a1.417 1.417 0 1 0-2.834 0 1.417 1.417 0 0 0 2.834 0" />
+              <path
+                d="M374.356 160.75h19.771l2.123 2.123v19.771l-2.833-2.833v-15.764l-.463-.463H377.19l-2.833-2.833Zm15.613 15.613a7 7 0 0 0 .614-2.863 7.083 7.083 0 0 0-7.083-7.083 7 7 0 0 0-2.863.614l2.278 2.278c.193-.027.384-.059.585-.059a4.254 4.254 0 0 1 4.25 4.25c0 .2-.032.392-.059.585zm-3.81-3.81a2.82 2.82 0 0 0-1.712-1.712zm9.03 12.636 1.334 1.334-1.803 1.803-2.076-2.076h-19.771l-2.123-2.123v-19.771l-2.076-2.076 1.803-1.803 1.334 1.334 5.607 5.607 1.073 1.073 2.005 2.005 1 1 3.42 3.42 1.587 1.587 2.005 2.005 1.073 1.073 5.607 5.607ZM379.25 173.5a4.255 4.255 0 0 0 4.25 4.25c.2 0 .392-.032.585-.059l-1.532-1.532a2.82 2.82 0 0 1-1.712-1.712l-1.532-1.532c-.027.193-.059.385-.059.585m10.56 9.917-3.448-3.447a7 7 0 0 1-2.863.614 7.083 7.083 0 0 1-7.083-7.083c0-1.021.225-1.986.614-2.863l-3.447-3.447v15.764l.463.463h15.764Zm-13.394-4.25a1.417 1.417 0 1 0 0 2.834 1.417 1.417 0 0 0 0-2.834m15.583-12.75a1.417 1.417 0 1 0-2.834 0 1.417 1.417 0 0 0 2.834 0"
+              />
             </a>
           </g>
 
@@ -414,7 +418,9 @@
                 r="25"
                 class="cc-btn-container"
               />
-              <path d="M174.917 174.917v4.25h-2.833v-4.25h-4.25v-2.833h4.25v-4.25h2.833v4.25h4.25v2.833zm-11.333-11.333h5.667v-2.833h-5.664a2.836 2.836 0 0 0-2.836 2.836v5.664h2.833zm19.831-2.833h-5.664v2.833h5.667v5.667h2.833v-5.664a2.836 2.836 0 0 0-2.836-2.836m.002 22.667h-5.667v2.833h5.664a2.836 2.836 0 0 0 2.836-2.836v-5.664h-2.833zm-19.833-5.667h-2.833v5.664a2.836 2.836 0 0 0 2.836 2.836h5.664v-2.833h-5.667z" />
+              <path
+                d="M174.917 174.917v4.25h-2.833v-4.25h-4.25v-2.833h4.25v-4.25h2.833v4.25h4.25v2.833zm-11.333-11.333h5.667v-2.833h-5.664a2.836 2.836 0 0 0-2.836 2.836v5.664h2.833zm19.831-2.833h-5.664v2.833h5.667v5.667h2.833v-5.664a2.836 2.836 0 0 0-2.836-2.836m.002 22.667h-5.667v2.833h5.664a2.836 2.836 0 0 0 2.836-2.836v-5.664h-2.833zm-19.833-5.667h-2.833v5.664a2.836 2.836 0 0 0 2.836 2.836h5.664v-2.833h-5.667z"
+              />
             </a>
 
             <a
@@ -429,7 +435,9 @@
                 r="25"
                 class="cc-btn-container"
               />
-              <path d="M170.667 184.833v-8.5h5.667v8.5h7.083V173.5h4.25L173.5 160.75l-14.167 12.75h4.25v11.333h7.083Z" />
+              <path
+                d="M170.667 184.833v-8.5h5.667v8.5h7.083V173.5h4.25L173.5 160.75l-14.167 12.75h4.25v11.333h7.083Z"
+              />
             </a>
           </g>
 
@@ -445,7 +453,9 @@
                 d="M63.219 8.5H14.495A5.995 5.995 0 0 0 8.5 14.495v48.724c0 5.851 7.555 8.259 10.892 3.454a188.5 188.5 0 0 1 47.28-47.28c4.805-3.337 2.397-10.892-3.454-10.892Z"
                 class="cc-btn-container"
               />
-              <path d="M19.833 28.167v-5h3.333v5h4.167V21.5h2.5L21.5 14l-8.333 7.5h2.5v6.667h4.167Z" />
+              <path
+                d="M19.833 28.167v-5h3.333v5h4.167V21.5h2.5L21.5 14l-8.333 7.5h2.5v6.667h4.167Z"
+              />
               <text transform="translate(31.671 28.167)">X</text>
             </a>
 
@@ -463,7 +473,9 @@
               <text
                 text-anchor="end"
                 transform="translate(315.329 28.167)"
-              >Y</text>
+              >
+                Y
+              </text>
             </a>
 
             <!-- Home Z -->
@@ -476,11 +488,15 @@
                 d="M283.781 338.5h48.724a5.995 5.995 0 0 0 5.995-5.995v-48.724c0-5.851-7.555-8.259-10.892-3.454a188.5 188.5 0 0 1-47.28 47.28c-4.805 3.337-2.397 10.892 3.454 10.892Z"
                 class="cc-btn-container"
               />
-              <path d="M323.833 332.167v-5h3.333v5h4.167V325.5h2.5L325.5 318l-8.333 7.5h2.5v6.667z" />
+              <path
+                d="M323.833 332.167v-5h3.333v5h4.167V325.5h2.5L325.5 318l-8.333 7.5h2.5v6.667z"
+              />
               <text
                 transform="translate(315.329 332.167)"
                 text-anchor="end"
-              >Z</text>
+              >
+                Z
+              </text>
             </a>
 
             <!-- Home XY -->
@@ -494,7 +510,9 @@
                 d="M8.5 283.781v48.724a5.995 5.995 0 0 0 5.995 5.995h48.724c5.851 0 8.259-7.555 3.454-10.892a188.5 188.5 0 0 1-47.28-47.28c-3.337-4.805-10.892-2.397-10.892 3.454Z"
                 class="cc-btn-container"
               />
-              <path d="M19.833 332.167v-5h3.333v5h4.167V325.5h2.5L21.5 318l-8.333 7.5h2.5v6.667h4.167Z" />
+              <path
+                d="M19.833 332.167v-5h3.333v5h4.167V325.5h2.5L21.5 318l-8.333 7.5h2.5v6.667h4.167Z"
+              />
               <text transform="translate(31.671 332.167)">XY</text>
             </a>
 
@@ -509,7 +527,9 @@
                 d="M8.5 283.781v48.724a5.995 5.995 0 0 0 5.995 5.995h48.724c5.851 0 8.259-7.555 3.454-10.892a188.5 188.5 0 0 1-47.28-47.28c-3.337-4.805-10.892-2.397-10.892 3.454Z"
                 class="cc-btn-container"
               />
-              <path d="M23.167 330.833v-7h4.667v7h5.833V321.5h3.5L25.5 311l-11.667 10.5h3.5v9.333h5.833Z" />
+              <path
+                d="M23.167 330.833v-7h4.667v7h5.833V321.5h3.5L25.5 311l-11.667 10.5h3.5v9.333h5.833Z"
+              />
             </a>
           </g>
         </svg>
@@ -528,177 +548,145 @@ type Axis = 'X' | 'Y' | 'Z'
 
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
-  get enableXYHoming (): boolean {
+  get enableXYHoming(): boolean {
     return this.$typedState.config.uiSettings.general.toolheadCircleXYHomingEnabled
   }
 
-  get stepsXY (): number[] {
+  get stepsXY(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadCircleXYMoveDistances
   }
 
-  get stepsZ (): number[] {
+  get stepsZ(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadCircleZMoveDistances
   }
 
-  get hasSteppersEnabled (): boolean {
+  get hasSteppersEnabled(): boolean {
     return this.$typedGetters['printer/getHasSteppersEnabled']
   }
 
-  get isPrimaryColorDark (): boolean {
+  get isPrimaryColorDark(): boolean {
     return this.$filters.isColorDark(this.$typedState.config.uiSettings.theme.color)
   }
 
-  get printerSettings (): Klipper.SettingsState {
+  get printerSettings(): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  get xStepClasses () {
+  get xStepClasses() {
     return {
-      disabled: (
-        !this.klippyReady ||
-        this.printerPrinting ||
-        !this.xHomed
-      )
+      disabled: !this.klippyReady || this.printerPrinting || !this.xHomed
     }
   }
 
-  get yStepClasses () {
+  get yStepClasses() {
     return {
-      disabled: (
-        !this.klippyReady ||
-        this.printerPrinting ||
-        !this.yHomed
-      )
+      disabled: !this.klippyReady || this.printerPrinting || !this.yHomed
     }
   }
 
-  get zStepClasses () {
+  get zStepClasses() {
     return {
-      disabled: (
-        !this.klippyReady ||
-        this.printerPrinting ||
-        !this.zHomed
-      )
+      disabled: !this.klippyReady || this.printerPrinting || !this.zHomed
     }
   }
 
-  get xyStepClasses () {
+  get xyStepClasses() {
     return {
-      disabled: (
-        !this.klippyReady ||
-        this.printerPrinting ||
-        !(this.xHomed || this.yHomed)
-      )
+      disabled: !this.klippyReady || this.printerPrinting || !(this.xHomed || this.yHomed)
     }
   }
 
-  get xHomeClasses () {
+  get xHomeClasses() {
     return {
-      disabled: (
+      disabled:
         !this.klippyReady ||
         this.printerPrinting ||
-        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
-      ),
+        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll]),
       primary: !this.xHomed
     }
   }
 
-  get yHomeClasses () {
+  get yHomeClasses() {
     return {
-      disabled: (
+      disabled:
         !this.klippyReady ||
         this.printerPrinting ||
-        this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
-      ),
+        this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll]),
       primary: !this.yHomed
     }
   }
 
-  get zHomeClasses () {
+  get zHomeClasses() {
     return {
-      disabled: (
+      disabled:
         !this.klippyReady ||
         this.printerPrinting ||
-        this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
-      ),
+        this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll]),
       primary: !this.zHomed
     }
   }
 
-  get xyHomeClasses () {
+  get xyHomeClasses() {
     return {
-      disabled: (
+      disabled:
         !this.klippyReady ||
         this.printerPrinting ||
-        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
-      ),
+        this.hasWait([
+          this.$waits.onHomeX,
+          this.$waits.onHomeY,
+          this.$waits.onHomeXY,
+          this.$waits.onHomeAll
+        ]),
       primary: !this.xyHomed
     }
   }
 
-  get xyzHomeClasses () {
+  get xyzHomeClasses() {
     return {
-      disabled: (
+      disabled:
         !this.klippyReady ||
         this.printerPrinting ||
-        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeZ, this.$waits.onHomeXY, this.$waits.onHomeAll])
-      ),
+        this.hasWait([
+          this.$waits.onHomeX,
+          this.$waits.onHomeY,
+          this.$waits.onHomeZ,
+          this.$waits.onHomeXY,
+          this.$waits.onHomeAll
+        ]),
       primary: !this.allHomed
     }
   }
 
-  get centerToolheadClasses () {
+  get centerToolheadClasses() {
     const tool_pos = this.$typedState.printer.printer.toolhead.position
     const bedCenter = this.bedCenter
 
     return {
-      disabled: (
-        !this.klippyReady ||
-        this.printerPrinting ||
-        !this.xyHomed
-      ),
-      primary: !(
-        tool_pos[0] === bedCenter.x &&
-        tool_pos[1] === bedCenter.y
-      )
+      disabled: !this.klippyReady || this.printerPrinting || !this.xyHomed,
+      primary: !(tool_pos[0] === bedCenter.x && tool_pos[1] === bedCenter.y)
     }
   }
 
-  get levelingClasses () {
+  get levelingClasses() {
     const [primary, disabled] = this.printerSupportsQuadGantryLevel
-      ? [
-          !this.quadGantryLevelApplied,
-          this.hasWait(this.$waits.onQGL)
-        ]
+      ? [!this.quadGantryLevelApplied, this.hasWait(this.$waits.onQGL)]
       : this.printerSupportsZTiltAdjust
-        ? [
-            !this.zTiltApplied,
-            this.hasWait(this.$waits.onZTilt)
-          ]
+        ? [!this.zTiltApplied, this.hasWait(this.$waits.onZTilt)]
         : []
 
     return {
-      disabled: (
-        !this.klippyReady ||
-        this.printerPrinting ||
-        !this.allHomed ||
-        disabled
-      ),
+      disabled: !this.klippyReady || this.printerPrinting || !this.allHomed || disabled,
       primary
     }
   }
 
-  get motorsOffClasses () {
+  get motorsOffClasses() {
     return {
-      disabled: (
-        !this.klippyReady ||
-        this.printerPrinting ||
-        !this.hasSteppersEnabled
-      )
+      disabled: !this.klippyReady || this.printerPrinting || !this.hasSteppersEnabled
     }
   }
 
-  sendLevelingGcode () {
+  sendLevelingGcode() {
     if (this.printerSupportsQuadGantryLevel) {
       this.sendGcode('QUAD_GANTRY_LEVEL', this.$waits.onQGL)
     } else if (this.printerSupportsZTiltAdjust) {
@@ -706,34 +694,38 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  moveAxisBy (axis: Axis, distance: number, negative = false) {
-    const rate: number = axis === 'Z'
-      ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
-      : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
-    const inverted: boolean = this.$typedState.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
-    distance = negative !== inverted
-      ? -distance
-      : distance
+  moveAxisBy(axis: Axis, distance: number, negative = false) {
+    const rate: number =
+      axis === 'Z'
+        ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+        : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
+    const inverted: boolean =
+      this.$typedState.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
+    distance = negative !== inverted ? -distance : distance
 
     if (this.forceMoveEnabled) {
-      const accel: number = axis === 'Z'
-        ? this.printerSettings.printer?.max_z_accel ?? 100
-        : this.$typedState.printer.printer.toolhead.max_accel
-      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
+      const accel: number =
+        axis === 'Z'
+          ? (this.printerSettings.printer?.max_z_accel ?? 100)
+          : this.$typedState.printer.printer.toolhead.max_accel
+      this.sendGcode(
+        `FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`
+      )
     } else {
       this.sendMoveGcode(
         {
           [axis]: distance
         },
-        rate)
+        rate
+      )
     }
   }
 
-  get bedSize (): BedSize {
+  get bedSize(): BedSize {
     return this.$typedGetters['printer/getBedSize']
   }
 
-  get bedCenter () {
+  get bedCenter() {
     const bedSize = this.bedSize
 
     return {
@@ -742,7 +734,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  sendMoveCenterGcode () {
+  sendMoveCenterGcode() {
     const bedCenter = this.bedCenter
     const rate: number = this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
 
@@ -752,160 +744,167 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
         Y: bedCenter.y
       },
       rate,
-      true)
+      true
+    )
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  @include theme(app-circle-control) using ($material) {
-    $material-text-primary: map-deep-get($material, 'text', 'primary');
-    $material-buttons-disabled: map-deep-get($material, 'buttons', 'disabled');
+@include theme(app-circle-control) using ($material) {
+  $material-text-primary: map-deep-get($material, 'text', 'primary');
+  $material-buttons-disabled: map-deep-get($material, 'buttons', 'disabled');
 
-    .disabled {
-      fill: $material-buttons-disabled !important;
-      stroke: $material-buttons-disabled !important;
+  .disabled {
+    fill: $material-buttons-disabled !important;
+    stroke: $material-buttons-disabled !important;
+  }
+
+  .cc-btn,
+  .cc-lbl {
+    fill: $material-text-primary;
+    stroke: $material-text-primary;
+  }
+}
+
+@mixin cc-btn-theme($component, $text: null, $back: null, $hover: null) {
+  &#{$component} {
+    @if $text {
+      fill: $text;
+      stroke: $text;
     }
 
-    .cc-btn,
-    .cc-lbl {
-      fill: $material-text-primary;
-      stroke: $material-text-primary;
-    }
-  }
-
-  @mixin cc-btn-theme ($component, $text: null, $back: null, $hover: null) {
-    &#{$component} {
-      @if $text {
-        fill: $text;
-        stroke: $text;
-      }
-
-      @if $back {
-        .cc-btn-container {
-          fill: #{$back};
-        }
-      }
-
-      @if $hover {
-        &:hover .cc-btn-container {
-          fill: #{$hover};
-        }
-      }
-    }
-  }
-
-  .theme--light.app-circle-control .cc-btn {
-    @include cc-btn-theme('.inner', $back: 'var(--v-btncolor-lighten1)');
-    @include cc-btn-theme('.inner-mid', $back: 'var(--v-btncolor-base)');
-    @include cc-btn-theme('.outer-mid', $back: 'var(--v-btncolor-darken1)');
-    @include cc-btn-theme('.outer', $back: 'var(--v-btncolor-darken2)');
-  }
-
-  .theme--dark.app-circle-control .cc-btn {
-    @include cc-btn-theme('.inner', $back: 'var(--v-btncolor-lighten2)');
-    @include cc-btn-theme('.inner-mid', $back: 'var(--v-btncolor-lighten1)');
-    @include cc-btn-theme('.outer-mid', $back: 'var(--v-btncolor-base)');
-    @include cc-btn-theme('.outer', $back: 'var(--v-btncolor-darken1)');
-  }
-
-  .app-circle-control {
-    $material-dark-text-primary: map-deep-get($material-dark, 'text', 'primary');
-
-    font-size: 16px;
-    max-height: 350px;
-    min-height: 275px;
-    user-select: none;
-    filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.2)) drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.14)) drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.12));
-
-    .cc-btn {
-      stroke-width: 0;
-
+    @if $back {
       .cc-btn-container {
-        fill: var(--v-btncolor-base);
-        stroke: var(--v-btncolor-darken4);
-        stroke-width: 1px;
-        transition-duration: 0.28s;
-        transition-property: fill;
-        transition-timing-function: map-get($transition, 'fast-out-slow-in');
+        fill: #{$back};
       }
+    }
 
+    @if $hover {
       &:hover .cc-btn-container {
-        fill: var(--v-btncolor-lighten1);
-      }
-
-      &:not(.disabled) {
-        @include cc-btn-theme(
-          '.primary',
-          $material-dark-text-primary,
-          'var(--v-primary-base)',
-          'var(--v-primary-lighten1)');
-
-        @include cc-btn-theme(
-          '.inner',
-          $material-dark-text-primary,
-          'var(--v-primary-lighten1)',
-          'var(--v-primary-lighten2)');
-
-        @include cc-btn-theme(
-          '.inner-mid',
-          $material-dark-text-primary,
-          'var(--v-primary-base)',
-          'var(--v-primary-lighten1)');
-
-        @include cc-btn-theme(
-          '.outer-mid',
-          $material-dark-text-primary,
-          'var(--v-primary-darken1)',
-          'var(--v-primary-base)');
-
-        @include cc-btn-theme(
-          '.outer',
-          $material-dark-text-primary,
-          'var(--v-primary-darken2)',
-          'var(--v-primary-darken1)');
-      }
-    }
-
-    .cc-section:hover .cc-lbl {
-      font-weight: bold;
-    }
-
-    .cc-lbl {
-      pointer-events: none;
-      stroke-width: 0;
-
-      &:not(.disabled) {
-        fill: $material-dark-text-primary;
-      }
-    }
-
-    .large {
-      font-weight: bold;
-    }
-
-    .disabled {
-      pointer-events: none;
-    }
-  }
-
-  .theme--text--contrast.app-circle-control {
-    $material-light-text-primary: map-deep-get($material-light, 'text', 'primary');
-
-    .cc-btn {
-      &:not(.disabled) {
-        @each $cls in '.primary', '.inner', '.inner-mid', '.outer-mid', '.outer' {
-          @include cc-btn-theme($cls, $material-light-text-primary);
-        }
-      }
-    }
-
-    .cc-lbl {
-      &:not(.disabled) {
-        fill: $material-light-text-primary;
+        fill: #{$hover};
       }
     }
   }
+}
+
+.theme--light.app-circle-control .cc-btn {
+  @include cc-btn-theme('.inner', $back: 'var(--v-btncolor-lighten1)');
+  @include cc-btn-theme('.inner-mid', $back: 'var(--v-btncolor-base)');
+  @include cc-btn-theme('.outer-mid', $back: 'var(--v-btncolor-darken1)');
+  @include cc-btn-theme('.outer', $back: 'var(--v-btncolor-darken2)');
+}
+
+.theme--dark.app-circle-control .cc-btn {
+  @include cc-btn-theme('.inner', $back: 'var(--v-btncolor-lighten2)');
+  @include cc-btn-theme('.inner-mid', $back: 'var(--v-btncolor-lighten1)');
+  @include cc-btn-theme('.outer-mid', $back: 'var(--v-btncolor-base)');
+  @include cc-btn-theme('.outer', $back: 'var(--v-btncolor-darken1)');
+}
+
+.app-circle-control {
+  $material-dark-text-primary: map-deep-get($material-dark, 'text', 'primary');
+
+  font-size: 16px;
+  max-height: 350px;
+  min-height: 275px;
+  user-select: none;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.2)) drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.14))
+    drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.12));
+
+  .cc-btn {
+    stroke-width: 0;
+
+    .cc-btn-container {
+      fill: var(--v-btncolor-base);
+      stroke: var(--v-btncolor-darken4);
+      stroke-width: 1px;
+      transition-duration: 0.28s;
+      transition-property: fill;
+      transition-timing-function: map-get($transition, 'fast-out-slow-in');
+    }
+
+    &:hover .cc-btn-container {
+      fill: var(--v-btncolor-lighten1);
+    }
+
+    &:not(.disabled) {
+      @include cc-btn-theme(
+        '.primary',
+        $material-dark-text-primary,
+        'var(--v-primary-base)',
+        'var(--v-primary-lighten1)'
+      );
+
+      @include cc-btn-theme(
+        '.inner',
+        $material-dark-text-primary,
+        'var(--v-primary-lighten1)',
+        'var(--v-primary-lighten2)'
+      );
+
+      @include cc-btn-theme(
+        '.inner-mid',
+        $material-dark-text-primary,
+        'var(--v-primary-base)',
+        'var(--v-primary-lighten1)'
+      );
+
+      @include cc-btn-theme(
+        '.outer-mid',
+        $material-dark-text-primary,
+        'var(--v-primary-darken1)',
+        'var(--v-primary-base)'
+      );
+
+      @include cc-btn-theme(
+        '.outer',
+        $material-dark-text-primary,
+        'var(--v-primary-darken2)',
+        'var(--v-primary-darken1)'
+      );
+    }
+  }
+
+  .cc-section:hover .cc-lbl {
+    font-weight: bold;
+  }
+
+  .cc-lbl {
+    pointer-events: none;
+    stroke-width: 0;
+
+    &:not(.disabled) {
+      fill: $material-dark-text-primary;
+    }
+  }
+
+  .large {
+    font-weight: bold;
+  }
+
+  .disabled {
+    pointer-events: none;
+  }
+}
+
+.theme--text--contrast.app-circle-control {
+  $material-light-text-primary: map-deep-get($material-light, 'text', 'primary');
+
+  .cc-btn {
+    &:not(.disabled) {
+      @each $cls in '.primary', '.inner', '.inner-mid', '.outer-mid', '.outer' {
+        @include cc-btn-theme($cls, $material-light-text-primary);
+      }
+    }
+  }
+
+  .cc-lbl {
+    &:not(.disabled) {
+      fill: $material-light-text-primary;
+    }
+  }
+}
 </style>

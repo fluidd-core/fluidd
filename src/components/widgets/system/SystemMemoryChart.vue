@@ -15,11 +15,11 @@ import { chartBufferSource } from '@/util/chart-buffer'
 
 @Component({})
 export default class SystemMemoryChart extends Vue {
-  get chartData (): ChartDataSource {
+  get chartData(): ChartDataSource {
     return chartBufferSource(this.$typedState.charts.memory)
   }
 
-  get labels (): AppInlineChartLabel[] {
+  get labels(): AppInlineChartLabel[] {
     return [
       {
         text: this.$t('app.system_info.label.system_memory').toString(),
@@ -29,7 +29,7 @@ export default class SystemMemoryChart extends Vue {
     ]
   }
 
-  get options (): EChartsOption {
+  get options(): EChartsOption {
     return {
       ...this.$typedGetters['charts/getBaseChartOptions']({
         memused: ' %'
@@ -38,7 +38,7 @@ export default class SystemMemoryChart extends Vue {
     }
   }
 
-  get series (): LineSeriesOption {
+  get series(): LineSeriesOption {
     return {
       ...this.$typedGetters['charts/getBaseSeries'],
       name: this.$t('app.system_info.label.memory_used').toString(),

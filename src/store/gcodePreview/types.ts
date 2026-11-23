@@ -1,18 +1,18 @@
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export interface GcodePreviewState {
-  moves: Readonly<MoveStore>;
-  layers: readonly Layer[];
-  parts: readonly Part[];
-  tools: readonly number[];
-  roles: readonly ExtrusionRole[];
-  speedRange: Readonly<ValueRange> | null;
-  fanRange: Readonly<ValueRange> | null;
-  tempRange: Readonly<ValueRange> | null;
-  bounds: Readonly<BBox> | null;
-  file: AppFile | AppFileWithMeta | null;
-  parserProgress: number;
-  parserWorker: Worker | null;
+  moves: Readonly<MoveStore>
+  layers: readonly Layer[]
+  parts: readonly Part[]
+  tools: readonly number[]
+  roles: readonly ExtrusionRole[]
+  speedRange: Readonly<ValueRange> | null
+  fanRange: Readonly<ValueRange> | null
+  tempRange: Readonly<ValueRange> | null
+  bounds: Readonly<BBox> | null
+  file: AppFile | AppFileWithMeta | null
+  parserProgress: number
+  parserWorker: Worker | null
 }
 
 export const MoveFlags = {
@@ -40,7 +40,7 @@ export const ExtrusionRole = {
   Custom: 14
 } as const
 
-export type ExtrusionRole = typeof ExtrusionRole[keyof typeof ExtrusionRole]
+export type ExtrusionRole = (typeof ExtrusionRole)[keyof typeof ExtrusionRole]
 
 export type ColorMode = 'tool' | 'role' | 'speed' | 'fan' | 'temp'
 
@@ -56,56 +56,56 @@ export type ColorMode = 'tool' | 'role' | 'speed' | 'fan' | 'temp'
  * `temp` is in °C.
  */
 export interface MoveStore {
-  readonly x: Float32Array<ArrayBuffer>;
-  readonly y: Float32Array<ArrayBuffer>;
-  readonly z: Float32Array<ArrayBuffer>;
-  readonly i: Float32Array<ArrayBuffer>;
-  readonly j: Float32Array<ArrayBuffer>;
-  readonly tool: Uint8Array<ArrayBuffer>;
-  readonly flags: Uint8Array<ArrayBuffer>;
-  readonly role: Uint8Array<ArrayBuffer>;
-  readonly speed: Uint16Array<ArrayBuffer>;
-  readonly fan: Uint8Array<ArrayBuffer>;
-  readonly temp: Uint16Array<ArrayBuffer>;
-  readonly filePosition: Uint32Array<ArrayBuffer>;
-  readonly length: number;
+  readonly x: Float32Array<ArrayBuffer>
+  readonly y: Float32Array<ArrayBuffer>
+  readonly z: Float32Array<ArrayBuffer>
+  readonly i: Float32Array<ArrayBuffer>
+  readonly j: Float32Array<ArrayBuffer>
+  readonly tool: Uint8Array<ArrayBuffer>
+  readonly flags: Uint8Array<ArrayBuffer>
+  readonly role: Uint8Array<ArrayBuffer>
+  readonly speed: Uint16Array<ArrayBuffer>
+  readonly fan: Uint8Array<ArrayBuffer>
+  readonly temp: Uint16Array<ArrayBuffer>
+  readonly filePosition: Uint32Array<ArrayBuffer>
+  readonly length: number
 }
 
 export type Tool = `T${number}`
 
 export interface LayerPaths {
-  moves: string;
-  extrusions: Record<string, string>;
-  retractions: Point[];
-  unretractions: Point[];
-  toolhead: Point;
-  tool: Tool;
+  moves: string
+  extrusions: Record<string, string>
+  retractions: Point[]
+  unretractions: Point[]
+  toolhead: Point
+  tool: Tool
 }
 
 export interface BuildLayerPathsOptions {
-  includeExtrusions?: boolean;
-  includeMoves?: boolean;
-  includeRetractions?: boolean;
-  includeTools?: boolean;
-  colorBy?: ColorMode;
-  speedRange?: Readonly<MinMax> | null;
-  fanRange?: Readonly<MinMax> | null;
-  tempRange?: Readonly<MinMax> | null;
+  includeExtrusions?: boolean
+  includeMoves?: boolean
+  includeRetractions?: boolean
+  includeTools?: boolean
+  colorBy?: ColorMode
+  speedRange?: Readonly<MinMax> | null
+  fanRange?: Readonly<MinMax> | null
+  tempRange?: Readonly<MinMax> | null
 }
 
 export interface Point {
-  x: number;
-  y: number;
+  x: number
+  y: number
 }
 
 export interface Point3D extends Point {
-  z: number;
+  z: number
 }
 
 export interface Layer {
-  move: number;
-  z: number;
-  filePosition: number;
+  move: number
+  z: number
+  filePosition: number
 }
 
 export interface Part {
@@ -113,23 +113,23 @@ export interface Part {
 }
 
 export interface MinMax {
-  min: number;
-  max: number;
+  min: number
+  max: number
 }
 
 /**
  * `count` follows PrusaSlicer's range count: exact up to 2 distinct values, at least 3 otherwise.
  */
 export interface ValueRange extends MinMax {
-  count: number;
+  count: number
 }
 
 export interface ColorStop {
-  value: number;
-  color: string;
+  value: number
+  color: string
 }
 
 export interface BBox {
-  x: MinMax;
-  y: MinMax;
+  x: MinMax
+  y: MinMax
 }

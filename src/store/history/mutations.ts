@@ -7,35 +7,34 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
   /**
    * Applies currently known history totals
    */
-  setHistoryTotals (state, payload: Moonraker.History.TotalsResponse) {
+  setHistoryTotals(state, payload: Moonraker.History.TotalsResponse) {
     state.job_totals = payload.job_totals
   },
 
-  setResetHistoryTotals (state) {
+  setResetHistoryTotals(state) {
     state.job_totals = createState().job_totals
   },
 
   /**
    * Applies history list
    */
-  setHistoryList (state, payload: Moonraker.History.ListResponse) {
+  setHistoryList(state, payload: Moonraker.History.ListResponse) {
     if (payload.jobs != null) {
-      state.jobs = payload.jobs
-        .map(job => Object.freeze(job))
+      state.jobs = payload.jobs.map(job => Object.freeze(job))
     }
   },
 
   /**
    * Updates a history item.
    */
-  setUpdateHistory (state, payload: Moonraker.History.Job) {
+  setUpdateHistory(state, payload: Moonraker.History.Job) {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload.job_id)
 
@@ -52,7 +51,7 @@ export const mutations = {
   /**
    * Updates or adds many history items in a single mutation.
    */
-  setUpdateHistoryJobs (state, payload: Moonraker.History.Job[]) {
+  setUpdateHistoryJobs(state, payload: Moonraker.History.Job[]) {
     for (const job of payload) {
       const i = state.jobs.findIndex(({ job_id }) => job_id === job.job_id)
 
@@ -66,25 +65,29 @@ export const mutations = {
     }
   },
 
-  setClearHistoryThumbnails (state, payload: string) {
+  setClearHistoryThumbnails(state, payload: string) {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload)
 
       if (i >= 0) {
         const job = state.jobs[i]
 
-        Vue.set(state.jobs, i, Object.freeze({
-          ...job,
-          metadata: {
-            ...job.metadata,
-            thumbnails: []
-          }
-        }))
+        Vue.set(
+          state.jobs,
+          i,
+          Object.freeze({
+            ...job,
+            metadata: {
+              ...job.metadata,
+              thumbnails: []
+            }
+          })
+        )
       }
     }
   },
 
-  setDeleteJobs (state, payload: string[]) {
+  setDeleteJobs(state, payload: string[]) {
     if (payload) {
       for (const jobId of payload) {
         const i = state.jobs.findIndex(job => job.job_id === jobId)
@@ -98,19 +101,19 @@ export const mutations = {
     }
   },
 
-  setAddUnresolvedJobIds (state, payload: string[]) {
+  setAddUnresolvedJobIds(state, payload: string[]) {
     for (const jobId of payload) {
       state.unresolvedJobIds.add(jobId)
     }
   },
 
-  setRemoveUnresolvedJobIds (state, payload: string[]) {
+  setRemoveUnresolvedJobIds(state, payload: string[]) {
     for (const jobId of payload) {
       state.unresolvedJobIds.delete(jobId)
     }
   },
 
-  setAllLoaded (state, payload: boolean) {
+  setAllLoaded(state, payload: boolean) {
     state.allLoaded = payload
   }
 } satisfies MutationTree<HistoryState>

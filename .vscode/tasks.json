@@ -5,9 +5,7 @@
       "label": "Serve",
       "type": "shell",
       "command": "pnpm run dev",
-      "problemMatcher": [
-        "$vite"
-      ],
+      "problemMatcher": ["$vite"],
       "isBackground": true
     },
     {

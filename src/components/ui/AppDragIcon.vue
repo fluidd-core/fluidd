@@ -1,8 +1,6 @@
 <template>
   <div class="handle-container">
-    <v-icon :disabled="disabled">
-      $drag
-    </v-icon>
+    <v-icon :disabled="disabled"> $drag </v-icon>
     <div
       v-if="!disabled"
       class="handle"
@@ -21,27 +19,27 @@ export default class AppDraggable extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .handle-container {
-    display: inline-flex;
-    position: relative;
-    width: 24px;
-    height: 24px;
-    align-items: center;
-    vertical-align: middle;
-  }
+.handle-container {
+  display: inline-flex;
+  position: relative;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  vertical-align: middle;
+}
 
-  .handle {
-    position: absolute;
-    width: 34px;
-    height: 34px;
-    left: -12px;
-    top: calc(50% - 24px);
-    margin: 7px;
-    border-radius: 50%;
-    cursor: grab;
-  }
+.handle {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  left: -12px;
+  top: calc(50% - 24px);
+  margin: 7px;
+  border-radius: 50%;
+  cursor: grab;
+}
 
-  .app-draggable__chosen .handle {
-    cursor: grabbing;
-  }
+.app-draggable__chosen .handle {
+  cursor: grabbing;
+}
 </style>

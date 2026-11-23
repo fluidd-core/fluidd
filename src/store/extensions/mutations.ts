@@ -7,17 +7,16 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setAgents (state, payload: Moonraker.Extensions.AgentInfo[]) {
+  setAgents(state, payload: Moonraker.Extensions.AgentInfo[]) {
     state.agents = payload
   },
 
-  setAgentConnected (state, payload: Moonraker.Extensions.AgentInfo) {
-    const index = state.agents
-      .findIndex(agent => agent.name === payload.name)
+  setAgentConnected(state, payload: Moonraker.Extensions.AgentInfo) {
+    const index = state.agents.findIndex(agent => agent.name === payload.name)
 
     if (index >= 0) {
       Vue.set(state.agents, index, payload)
@@ -26,9 +25,8 @@ export const mutations = {
     }
   },
 
-  setAgentDisconnected (state, payload: string) {
-    const index = state.agents
-      .findIndex(agent => agent.name === payload)
+  setAgentDisconnected(state, payload: string) {
+    const index = state.agents.findIndex(agent => agent.name === payload)
 
     if (index >= 0) {
       state.agents.splice(index, 1)

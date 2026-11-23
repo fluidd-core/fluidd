@@ -9,8 +9,8 @@
         min-width="40"
         :color="color"
         class="app-btn-toolhead-move px-2"
-        v-bind="{...$attrs, ...attrs}"
-        v-on="{...$listeners, ...on}"
+        v-bind="{ ...$attrs, ...attrs }"
+        v-on="{ ...$listeners, ...on }"
       >
         <v-icon
           v-if="icon"
@@ -46,7 +46,7 @@ export default class AppBtnToolheadMove extends Vue {
   @Prop({ type: Boolean })
   readonly smallIcon?: boolean
 
-  get hasDefaultSlot () {
+  get hasDefaultSlot() {
     return !!this.$slots.default || !!this.$scopedSlots.default
   }
 }

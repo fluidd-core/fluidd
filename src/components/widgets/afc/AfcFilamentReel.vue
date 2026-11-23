@@ -72,7 +72,7 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
   spoolTubeColor = '#594226'
   spoolRimColor = '#9b7242'
 
-  get styleReel () {
+  get styleReel() {
     const minScale = 0.37 // 37% is the minimum visible size
     const centerX = 128 // Center X of the SVG
     const centerY = 250 // Center Y of the SVG
@@ -82,7 +82,7 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
       stroke: 'black',
       strokeWidth: '0',
       transformOrigin: `${centerX}px ${centerY}px`,
-      transform: `scale(1, ${minScale})`,
+      transform: `scale(1, ${minScale})`
     }
 
     // If percent greater than 0, set fill to color and apply scaling
@@ -99,7 +99,7 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
     return style
   }
 
-  clickSpool () {
+  clickSpool() {
     this.$emit('click-spool')
   }
 }

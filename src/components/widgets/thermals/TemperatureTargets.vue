@@ -10,9 +10,7 @@
           <th>
             {{ $t('app.chart.label.power') }}
           </th>
-          <th
-            v-if="showRateOfChange"
-          >
+          <th v-if="showRateOfChange">
             {{ $t('app.chart.label.rate_of_change') }}
           </th>
           <th>
@@ -46,7 +44,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': isLegendSelected(item) }"
+              :class="{ active: isLegendSelected(item) }"
               class="legend-item toggle"
               @click="legendClick(item)"
             >
@@ -55,13 +53,13 @@
           </td>
           <td class="temp-power">
             <span
-              :class="{ 'active': isLegendSelected(item, 'power') }"
+              :class="{ active: isLegendSelected(item, 'power') }"
               class="legend-item toggle"
               @click="legendClick(item, 'power')"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
-                {{ (item.power) ? (item.power * 100).toFixed() : 0 }}<small>%</small>
+                {{ item.power ? (item.power * 100).toFixed() : 0 }}<small>%</small>
               </span>
             </span>
           </td>
@@ -70,7 +68,7 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': isLegendSelected(item, 'power') }"
+              :class="{ active: isLegendSelected(item, 'power') }"
               class="legend-item toggle"
               @click="legendClick(item, 'power')"
             >
@@ -81,9 +79,7 @@
             <span v-if="item.temperature != null && !item.disconnected">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
             </span>
-            <span v-else>
-              -
-            </span>
+            <span v-else> - </span>
           </td>
           <td>/</td>
           <td @contextmenu.stop>
@@ -120,7 +116,7 @@
               resettable
               small
               icon="$fan"
-              :icon-class="{ 'spin': item.speed > 0 && item.target > 0 }"
+              :icon-class="{ spin: item.speed > 0 && item.target > 0 }"
               :title="$t('app.setting.label.sensor_color')"
               :value="item.color"
               @input="setSensorColor(item.key, $event)"
@@ -129,7 +125,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': isLegendSelected(item) }"
+              :class="{ active: isLegendSelected(item) }"
               class="legend-item toggle"
               @click="legendClick(item)"
             >
@@ -139,7 +135,7 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              :class="{ 'active':isLegendSelected(item, 'speed') }"
+              :class="{ active: isLegendSelected(item, 'speed') }"
               class="legend-item toggle"
               @click="legendClick(item, 'speed')"
             >
@@ -149,7 +145,9 @@
               <span v-if="item.speed <= 0 && item.target && item.target > 0">
                 {{ $t('app.printer.state.standby') }}
               </span>
-              <span v-if="item.speed <=0 && ((item.target && item.target <= 0) || !item.target)">off</span>
+              <span v-if="item.speed <= 0 && ((item.target && item.target <= 0) || !item.target)"
+                >off</span
+              >
             </span>
           </td>
           <td
@@ -157,7 +155,7 @@
             class="text-no-wrap"
           >
             <span
-              :class="{ 'active': isLegendSelected(item, 'power') }"
+              :class="{ active: isLegendSelected(item, 'power') }"
               class="legend-item toggle"
               @click="legendClick(item, 'power')"
             >
@@ -167,13 +165,17 @@
           <td class="temp-actual">
             <span v-if="item.temperature != null && !item.disconnected">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
-              <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
-              <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
-              <small v-if="item.gas != null && showGasResistance"><br>{{ $filters.getReadableResistanceString(item.gas) }}</small>
+              <small v-if="item.humidity != null && showRelativeHumidity"
+                ><br />{{ item.humidity.toFixed(1) }} %</small
+              >
+              <small v-if="item.pressure != null && showBarometricPressure"
+                ><br />{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small
+              >
+              <small v-if="item.gas != null && showGasResistance"
+                ><br />{{ $filters.getReadableResistanceString(item.gas) }}</small
+              >
             </span>
-            <span v-else>
-              -
-            </span>
+            <span v-else> - </span>
           </td>
           <td>/</td>
           <td @contextmenu.stop>
@@ -218,23 +220,19 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': isLegendSelected(item) }"
+              :class="{ active: isLegendSelected(item) }"
               class="legend-item toggle"
               @click="legendClick(item)"
             >
               {{ item.prettyName }}
             </span>
           </td>
-          <td class="temp-power">
-            &nbsp;
-          </td>
+          <td class="temp-power"> &nbsp; </td>
           <td
             v-if="showRateOfChange"
             class="text-no-wrap"
           >
-            <span class="legend-item">
-              {{ getRateOfChange(item) }}<small>&deg;C/s</small>
-            </span>
+            <span class="legend-item"> {{ getRateOfChange(item) }}<small>&deg;C/s</small> </span>
           </td>
           <td class="temp-actual">
             <v-tooltip
@@ -248,18 +246,31 @@
                 >
                   <span v-if="item.temperature != null && !item.disconnected">
                     {{ item.temperature.toFixed(1) }}<small>°C</small>
-                    <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
-                    <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
-                    <small v-if="item.gas != null && showGasResistance"><br>{{ $filters.getReadableResistanceString(item.gas) }}</small>
-                    <small v-if="item.current_z_adjust != null"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, { showMicrons: true }) }}</small>
+                    <small v-if="item.humidity != null && showRelativeHumidity"
+                      ><br />{{ item.humidity.toFixed(1) }} %</small
+                    >
+                    <small v-if="item.pressure != null && showBarometricPressure"
+                      ><br />{{
+                        $filters.getReadableAtmosphericPressureString(item.pressure)
+                      }}</small
+                    >
+                    <small v-if="item.gas != null && showGasResistance"
+                      ><br />{{ $filters.getReadableResistanceString(item.gas) }}</small
+                    >
+                    <small v-if="item.current_z_adjust != null"
+                      ><br />{{
+                        $filters.getReadableLengthString(item.current_z_adjust, {
+                          showMicrons: true
+                        })
+                      }}</small
+                    >
                   </span>
-                  <span v-else>
-                    -
-                  </span>
+                  <span v-else> - </span>
                 </div>
               </template>
               <span>
-                {{ $t('app.general.label.high') }}: {{ item.measured_max_temp?.toFixed(1) ?? '-' }}°C<br>
+                {{ $t('app.general.label.high') }}:
+                {{ item.measured_max_temp?.toFixed(1) ?? '-' }}°C<br />
                 {{ $t('app.general.label.low') }}: {{ item.measured_min_temp?.toFixed(1) ?? '-' }}°C
               </span>
             </v-tooltip>
@@ -301,13 +312,16 @@
                       v-on="on"
                     >
                       <component :is="sensor.small ? 'small' : 'span'">
-                        {{ sensor.intake ?? '-' }} &rarr; {{ sensor.exhaust ?? '-' }}{{ sensor.unit }}
+                        {{ sensor.intake ?? '-' }} &rarr; {{ sensor.exhaust ?? '-'
+                        }}{{ sensor.unit }}
                       </component>
                     </div>
                   </template>
                   <span>
-                    {{ $t('app.general.label.high') }}: {{ sensor.intake_max ?? '-' }} &rarr; {{ sensor.exhaust_max ?? '-' }}{{ sensor.unit }}<br>
-                    {{ $t('app.general.label.low') }}: {{ sensor.intake_min ?? '-' }} &rarr; {{ sensor.exhaust_min ?? '-' }}{{ sensor.unit }}
+                    {{ $t('app.general.label.high') }}: {{ sensor.intake_max ?? '-' }} &rarr;
+                    {{ sensor.exhaust_max ?? '-' }}{{ sensor.unit }}<br />
+                    {{ $t('app.general.label.low') }}: {{ sensor.intake_min ?? '-' }} &rarr;
+                    {{ sensor.exhaust_min ?? '-' }}{{ sensor.unit }}
                   </span>
                 </v-tooltip>
               </template>
@@ -388,73 +402,77 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     open: false
   }
 
-  get heaters (): Heater[] {
+  get heaters(): Heater[] {
     return this.$typedGetters['printer/getHeaters']
   }
 
-  get fans () {
+  get fans() {
     return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
-  get nevermore () {
+  get nevermore() {
     return this.$store.getters['printer/getOutputs'](['nevermore'])
   }
 
-  get sensors (): Sensor[] {
+  get sensors(): Sensor[] {
     return this.$typedGetters['printer/getSensors']
   }
 
-  get chartSelectedLegends (): ChartSelectedLegends {
+  get chartSelectedLegends(): ChartSelectedLegends {
     return this.$typedState.charts.selectedLegends
   }
 
-  get thermalChartBuffer (): ChartBuffer {
+  get thermalChartBuffer(): ChartBuffer {
     return this.$typedState.charts.thermal
   }
 
-  get showRateOfChange (): boolean {
+  get showRateOfChange(): boolean {
     return this.$typedState.config.uiSettings.general.showRateOfChange
   }
 
-  get showRelativeHumidity (): boolean {
+  get showRelativeHumidity(): boolean {
     return this.$typedState.config.uiSettings.general.showRelativeHumidity
   }
 
-  get showBarometricPressure (): boolean {
+  get showBarometricPressure(): boolean {
     return this.$typedState.config.uiSettings.general.showBarometricPressure
   }
 
-  get showGasResistance (): boolean {
+  get showGasResistance(): boolean {
     return this.$typedState.config.uiSettings.general.showGasResistance
   }
 
-  setSensorColor (key: string, color: string) {
+  setSensorColor(key: string, color: string) {
     this.$typedDispatch('config/updateSensorColor', { key, color })
   }
 
-  resetSensorColor (key: string) {
+  resetSensorColor(key: string) {
     this.$typedDispatch('config/removeSensorColor', { key })
   }
 
-  setHeaterTargetTemp (heater: string, target: number) {
-    this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${encodeGcodeParamValue(heater)} TARGET=${target}`)
+  setHeaterTargetTemp(heater: string, target: number) {
+    this.sendGcode(
+      `SET_HEATER_TEMPERATURE HEATER=${encodeGcodeParamValue(heater)} TARGET=${target}`
+    )
   }
 
-  setFanTargetTemp (fan: string, target: number) {
-    this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${encodeGcodeParamValue(fan)} TARGET=${target}`)
+  setFanTargetTemp(fan: string, target: number) {
+    this.sendGcode(
+      `SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${encodeGcodeParamValue(fan)} TARGET=${target}`
+    )
   }
 
-  getRateOfChange (item: Heater | Sensor) {
+  getRateOfChange(item: Heater | Sensor) {
     const rateOfChange = chartBufferRateOfChange(this.thermalChartBuffer, item.key)
 
     return `${rateOfChange < 0 ? '' : '+'}${rateOfChange.toFixed(1)}`
   }
 
-  isLegendSelected (item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
+  isLegendSelected(item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
     return isThermalLegendSelected(this.chartSelectedLegends, item.key, subKey)
   }
 
-  legendClick (item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
+  legendClick(item: Heater | Fan | Sensor, subKey?: ThermalSubKey) {
     const value = !this.isLegendSelected(item, subKey)
 
     const chartSelectedLegends: ChartSelectedLegends = {
@@ -462,25 +480,22 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     }
 
     // If this has a target, toggle that too.
-    if (
-      !subKey &&
-      'target' in item
-    ) {
+    if (!subKey && 'target' in item) {
       chartSelectedLegends[thermalColumn(item.key, 'target')] = value
     }
 
     this.$emit('updateChartSelectedLegends', chartSelectedLegends)
   }
 
-  handleHeaterMouseEnter (item: Heater | Fan | Sensor) {
+  handleHeaterMouseEnter(item: Heater | Fan | Sensor) {
     this.$emit('highlightChartSeries', item.key)
   }
 
-  handleHeaterMouseLeave () {
+  handleHeaterMouseLeave() {
     this.$emit('downplayChartSeries')
   }
 
-  getNevermoreSensors (item: Record<string, number | undefined>) {
+  getNevermoreSensors(item: Record<string, number | undefined>) {
     const sensors = [
       {
         key: 'gas',
@@ -514,34 +529,29 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
       })
     }
 
-    return sensors
-      .map(sensor => {
-        const intake = item[`intake_${sensor.key}`]?.toFixed(sensor.digits)
-        const intake_min = item[`intake_${sensor.key}_min`]?.toFixed(sensor.digits)
-        const intake_max = item[`intake_${sensor.key}_max`]?.toFixed(sensor.digits)
-        const exhaust = item[`exhaust_${sensor.key}`]?.toFixed(sensor.digits)
-        const exhaust_min = item[`exhaust_${sensor.key}_min`]?.toFixed(sensor.digits)
-        const exhaust_max = item[`exhaust_${sensor.key}_max`]?.toFixed(sensor.digits)
+    return sensors.map(sensor => {
+      const intake = item[`intake_${sensor.key}`]?.toFixed(sensor.digits)
+      const intake_min = item[`intake_${sensor.key}_min`]?.toFixed(sensor.digits)
+      const intake_max = item[`intake_${sensor.key}_max`]?.toFixed(sensor.digits)
+      const exhaust = item[`exhaust_${sensor.key}`]?.toFixed(sensor.digits)
+      const exhaust_min = item[`exhaust_${sensor.key}_min`]?.toFixed(sensor.digits)
+      const exhaust_max = item[`exhaust_${sensor.key}_max`]?.toFixed(sensor.digits)
 
-        return {
-          ...sensor,
-          intake,
-          intake_min,
-          intake_max,
-          exhaust,
-          exhaust_min,
-          exhaust_max,
-          disableTooltip: (
-            intake_min == null &&
-            intake_max == null &&
-            exhaust_min == null &&
-            exhaust_max == null
-          )
-        }
-      })
+      return {
+        ...sensor,
+        intake,
+        intake_min,
+        intake_max,
+        exhaust,
+        exhaust_min,
+        exhaust_max,
+        disableTooltip:
+          intake_min == null && intake_max == null && exhaust_min == null && exhaust_max == null
+      }
+    })
   }
 
-  handleHeaterRowClick (item: Heater, event: MouseEvent) {
+  handleHeaterRowClick(item: Heater, event: MouseEvent) {
     if (this.contextMenuState.open) {
       this.contextMenuState.open = false
 
@@ -559,112 +569,119 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     })
   }
 
-  handleTurnOff (heater: Heater) {
+  handleTurnOff(heater: Heater) {
     this.setHeaterTargetTemp(heater.name, 0)
   }
 
-  handlePidCalibrateDialog (heater: Heater) {
+  handlePidCalibrateDialog(heater: Heater) {
     this.heaterPidCalibrateDialog = {
       heater,
       open: true
     }
   }
 
-  handlePidCalibrate (heater: Heater, targetTemperature: number) {
-    this.sendGcode(`PID_CALIBRATE HEATER=${encodeGcodeParamValue(heater.name)} TARGET=${targetTemperature}`)
+  handlePidCalibrate(heater: Heater, targetTemperature: number) {
+    this.sendGcode(
+      `PID_CALIBRATE HEATER=${encodeGcodeParamValue(heater.name)} TARGET=${targetTemperature}`
+    )
   }
 
-  handleMpcCalibrateDialog (heater: Heater) {
+  handleMpcCalibrateDialog(heater: Heater) {
     this.heaterMpcCalibrateDialog = {
       heater,
       open: true
     }
   }
 
-  handleMpcCalibrate (heater: Heater, targetTemperature: number, fanBreakpoints: NullableOrEmpty<number>) {
-    this.sendGcode(`MPC_CALIBRATE HEATER=${encodeGcodeParamValue(heater.name)} TARGET=${targetTemperature}${!isNullOrEmpty(fanBreakpoints) ? ` FAN_BREAKPOINTS=${fanBreakpoints}` : ''}`)
+  handleMpcCalibrate(
+    heater: Heater,
+    targetTemperature: number,
+    fanBreakpoints: NullableOrEmpty<number>
+  ) {
+    this.sendGcode(
+      `MPC_CALIBRATE HEATER=${encodeGcodeParamValue(heater.name)} TARGET=${targetTemperature}${!isNullOrEmpty(fanBreakpoints) ? ` FAN_BREAKPOINTS=${fanBreakpoints}` : ''}`
+    )
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  .theme--light :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
+.theme--light :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
+  color: rgba(map-get($material-light, 'text-color'), 1);
+  .temp-actual {
     color: rgba(map-get($material-light, 'text-color'), 1);
-    .temp-actual {
-      color: rgba(map-get($material-light, 'text-color'), 1);
-    }
   }
+}
 
-  .theme--dark :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
+.theme--dark :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
+  color: rgba(map-get($material-dark, 'text-color'), 1);
+  .temp-actual {
     color: rgba(map-get($material-dark, 'text-color'), 1);
-    .temp-actual {
-      color: rgba(map-get($material-dark, 'text-color'), 1);
-    }
+  }
+}
+
+:deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
+  .temp-name,
+  .temp-power {
+    font-size: 1rem;
   }
 
-  :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
-
-    .temp-name,
-    .temp-power {
-      font-size: 1rem;
-    }
-
-    .temp-actual {
-      font-weight: 300;
-      font-size: 1.125rem;
-      white-space: nowrap;
-      text-align: right;
-    }
-
-    > thead > tr > th {
-      height: 40px;
-    }
-
-    // The icon
-    > thead > tr > th:first-child,
-    > tbody > tr > td:first-child {
-      padding-right: 0px;
-    }
-
-    // The name
-    > thead > tr > th:nth-child(2),
-    > tbody > tr > td:nth-child(2) {
-      padding-left: 8px;
-    }
-
-    // The power
-    > thead > tr > th:nth-last-child(3),
-    > tbody > tr > td:nth-last-child(3) {
-      padding-right: 0px;
-    }
-
-    // The /
-    > thead > tr > th:nth-last-child(2),
-    > tbody > tr > td:nth-last-child(2) {
-      font-size: 1rem;
-      padding-left: 12px;
-      padding-right: 16px;
-    }
-
-    // The temp entry
-    > thead > tr > th:last-child,
-    > tbody > tr > td:last-child {
-      padding-left: 0px;
-    }
+  .temp-actual {
+    font-weight: 300;
+    font-size: 1.125rem;
+    white-space: nowrap;
+    text-align: right;
   }
 
-  .legend-item {
-    display: inline-block;
-    opacity: 0.45
+  > thead > tr > th {
+    height: 40px;
   }
 
-  .legend-item.toggle {
-    cursor: pointer;
+  // The icon
+  > thead > tr > th:first-child,
+  > tbody > tr > td:first-child {
+    padding-right: 0px;
   }
 
-  .legend-item.active {
-    opacity: 1
+  // The name
+  > thead > tr > th:nth-child(2),
+  > tbody > tr > td:nth-child(2) {
+    padding-left: 8px;
   }
+
+  // The power
+  > thead > tr > th:nth-last-child(3),
+  > tbody > tr > td:nth-last-child(3) {
+    padding-right: 0px;
+  }
+
+  // The /
+  > thead > tr > th:nth-last-child(2),
+  > tbody > tr > td:nth-last-child(2) {
+    font-size: 1rem;
+    padding-left: 12px;
+    padding-right: 16px;
+  }
+
+  // The temp entry
+  > thead > tr > th:last-child,
+  > tbody > tr > td:last-child {
+    padding-left: 0px;
+  }
+}
+
+.legend-item {
+  display: inline-block;
+  opacity: 0.45;
+}
+
+.legend-item.toggle {
+  cursor: pointer;
+}
+
+.legend-item.active {
+  opacity: 1;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-container style="height: 400px;">
+  <v-container style="height: 400px">
     <v-row
       class="fill-height"
       align-content="center"
@@ -14,7 +14,9 @@
         </div>
         <span v-if="socketDisconnected">{{ $t('app.socket.msg.no_connection') }}</span>
         <span v-else-if="retryHeld">{{ $t('app.socket.msg.unable_to_connect') }}</span>
-        <span v-else-if="retrySeconds !== null">{{ $t('app.socket.msg.retrying_in', { seconds: retrySeconds }) }}</span>
+        <span v-else-if="retrySeconds !== null">{{
+          $t('app.socket.msg.retrying_in', { seconds: retrySeconds })
+        }}</span>
         <span v-else>{{ $t('app.socket.msg.connecting') }}</span>
       </v-col>
       <v-col
@@ -77,34 +79,32 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
   now = Date.now()
   nowInterval: ReturnType<typeof setInterval> | null = null
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.stopNowInterval()
   }
 
-  reload () {
+  reload() {
     window.location.reload()
   }
 
-  get activeInstance (): InstanceConfig | undefined {
+  get activeInstance(): InstanceConfig | undefined {
     return this.$typedGetters['config/getCurrentInstance']
   }
 
-  get retry (): SocketRetry | null {
+  get retry(): SocketRetry | null {
     return this.$typedState.socket.retry
   }
 
-  get retryAt (): number | null {
-    return this.retry !== null && 'at' in this.retry
-      ? this.retry.at
-      : null
+  get retryAt(): number | null {
+    return this.retry !== null && 'at' in this.retry ? this.retry.at : null
   }
 
-  get retryHeld (): boolean {
+  get retryHeld(): boolean {
     return this.retry !== null && 'held' in this.retry
   }
 
   @Watch('retryAt', { immediate: true })
-  onRetryAtChanged (retryAt: number | null) {
+  onRetryAtChanged(retryAt: number | null) {
     this.stopNowInterval()
     this.now = Date.now()
 
@@ -115,30 +115,28 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
     }
   }
 
-  stopNowInterval () {
+  stopNowInterval() {
     if (this.nowInterval !== null) {
       clearInterval(this.nowInterval)
       this.nowInterval = null
     }
   }
 
-  get retrySeconds (): number | null {
+  get retrySeconds(): number | null {
     const retryAt = this.retryAt
 
-    return retryAt !== null
-      ? Math.max(0, Math.ceil((retryAt - this.now) / 1000))
-      : null
+    return retryAt !== null ? Math.max(0, Math.ceil((retryAt - this.now) / 1000)) : null
   }
 
-  get waitingToRetry (): boolean {
+  get waitingToRetry(): boolean {
     return this.retry !== null
   }
 
-  get apiUrl (): string {
+  get apiUrl(): string {
     return this.$typedState.config.apiUrl
   }
 
-  async reconnect () {
+  async reconnect() {
     await appInit(this.activeInstance, this.$typedState.config.hostConfig)
   }
 }

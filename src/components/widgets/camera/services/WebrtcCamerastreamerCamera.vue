@@ -25,9 +25,7 @@ type RTCConfigurationWithSdpSemantics = RTCConfiguration & {
 
 const iceServers = [
   {
-    urls: [
-      'stun:stun.l.google.com:19302'
-    ]
+    urls: ['stun:stun.l.google.com:19302']
   }
 ]
 
@@ -44,7 +42,7 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
 
   // adapted from https://github.com/ayufan/camera-streamer/blob/2d3a4884378f384346680a55196bf9244b99b6b6/html/webrtc.html
 
-  async loadStream () {
+  async loadStream() {
     this.pc?.close()
 
     const abortControllerSignal = this.playbackAbortController?.signal
@@ -62,19 +60,23 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
     try {
       const rtcSessionDescriptionInit = await this.sendInitialRequest(url, abortControllerSignal)
 
-      this.remoteId = ('id' in rtcSessionDescriptionInit && typeof rtcSessionDescriptionInit.id === 'string')
-        ? rtcSessionDescriptionInit.id
-        : null
+      this.remoteId =
+        'id' in rtcSessionDescriptionInit && typeof rtcSessionDescriptionInit.id === 'string'
+          ? rtcSessionDescriptionInit.id
+          : null
 
       const config: RTCConfigurationWithSdpSemantics = {
         sdpSemantics: 'unified-plan'
       }
 
-      if ('iceServers' in rtcSessionDescriptionInit && Array.isArray(rtcSessionDescriptionInit.iceServers)) {
+      if (
+        'iceServers' in rtcSessionDescriptionInit &&
+        Array.isArray(rtcSessionDescriptionInit.iceServers)
+      ) {
         config.iceServers = rtcSessionDescriptionInit.iceServers
       }
 
-      const pc = this.pc = markRaw(new RTCPeerConnection(config))
+      const pc = (this.pc = markRaw(new RTCPeerConnection(config)))
 
       pc.ondatachannel = (event: RTCDataChannelEvent) => {
         const dc = event.channel
@@ -118,13 +120,16 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
         await this.sendOfferRequest(url, pc.localDescription, abortControllerSignal)
       }
     } catch (e) {
-      consola.error(`[WebrtcCamerastreamerCamera] failed to start playback "${this.camera.name}"`, e)
+      consola.error(
+        `[WebrtcCamerastreamerCamera] failed to start playback "${this.camera.name}"`,
+        e
+      )
 
       this.onError()
     }
   }
 
-  async onError () {
+  async onError() {
     this.updateStatus('error')
     this.pc?.close()
     this.pc = null
@@ -137,13 +142,10 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
 
     this.sleepAbortController?.abort()
 
-    const sleepAbortController = this.sleepAbortController = new AbortController()
+    const sleepAbortController = (this.sleepAbortController = new AbortController())
 
     try {
-      const signals = [
-        playbackAbortSignal,
-        sleepAbortController.signal,
-      ]
+      const signals = [playbackAbortSignal, sleepAbortController.signal]
 
       await sleep(2000, AbortSignal.any(signals))
 
@@ -151,20 +153,21 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
     } catch {}
   }
 
-  async startPlayback () {
+  async startPlayback() {
     this.playbackAbortController = new AbortController()
 
     await this.loadStream()
   }
 
-  async sendInitialRequest (url: string | URL | Request, abortControllerSignal: AbortSignal): Promise<RTCSessionDescriptionInit> {
+  async sendInitialRequest(
+    url: string | URL | Request,
+    abortControllerSignal: AbortSignal
+  ): Promise<RTCSessionDescriptionInit> {
     try {
       const response = await fetch(url, {
         body: JSON.stringify({
           type: 'request',
-          ...this.sendIceServers
-            ? { iceServers }
-            : undefined,
+          ...(this.sendIceServers ? { iceServers } : undefined),
           keepAlive: true
         }),
         headers: {
@@ -176,17 +179,12 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
 
       await this.ensureResponseOk(response, 'application/json')
 
-      const data = await response.json() as RTCSessionDescriptionInit
+      const data = (await response.json()) as RTCSessionDescriptionInit
 
       return data
     } catch (e) {
-      const aborted = (
-        abortControllerSignal.aborted ||
-        (
-          e instanceof Error &&
-          e.name === 'AbortError'
-        )
-      )
+      const aborted =
+        abortControllerSignal.aborted || (e instanceof Error && e.name === 'AbortError')
 
       if (!aborted) {
         // Switch whether to send iceServers next time
@@ -197,7 +195,11 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
     }
   }
 
-  async sendRemoteCandidatesRequest (url: string | URL | Request, candidates: RTCIceCandidateInit[], abortControllerSignal: AbortSignal): Promise<void> {
+  async sendRemoteCandidatesRequest(
+    url: string | URL | Request,
+    candidates: RTCIceCandidateInit[],
+    abortControllerSignal: AbortSignal
+  ): Promise<void> {
     const response = await fetch(url, {
       body: JSON.stringify({
         type: 'remote_candidate',
@@ -214,7 +216,11 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
     await this.ensureResponseOk(response)
   }
 
-  async sendOfferRequest (url: string | URL | Request, offer: RTCSessionDescriptionInit, abortControllerSignal: AbortSignal): Promise<void> {
+  async sendOfferRequest(
+    url: string | URL | Request,
+    offer: RTCSessionDescriptionInit,
+    abortControllerSignal: AbortSignal
+  ): Promise<void> {
     const response = await fetch(url, {
       body: JSON.stringify({
         type: offer.type,
@@ -231,25 +237,22 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
     await this.ensureResponseOk(response)
   }
 
-  async ensureResponseOk (response: Response, expectedContentType?: string): Promise<void> {
+  async ensureResponseOk(response: Response, expectedContentType?: string): Promise<void> {
     const contentType = response.headers.get('Content-Type')
 
-    const responseOk = (
-      response.ok &&
-      (
-        !expectedContentType ||
-        contentType?.includes(expectedContentType)
-      )
-    )
+    const responseOk =
+      response.ok && (!expectedContentType || contentType?.includes(expectedContentType))
 
     if (!responseOk) {
       const body = await response.text()
 
-      throw new Error(`Invalid response! Status: ${response.status}, Content-Type: ${contentType}, Body: ${body}`)
+      throw new Error(
+        `Invalid response! Status: ${response.status}, Content-Type: ${contentType}, Body: ${body}`
+      )
     }
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.updateStatus('disconnected')
     this.playbackAbortController?.abort()
     this.playbackAbortController = null

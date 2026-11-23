@@ -18,6 +18,5 @@ import Macros from '@/components/widgets/macros/Macros.vue'
     Macros
   }
 })
-export default class MacrosCard extends Vue {
-}
+export default class MacrosCard extends Vue {}
 </script>

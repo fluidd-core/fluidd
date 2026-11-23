@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-chip
-      v-if="!hasUpdate && (!dirty && valid)"
+      v-if="!hasUpdate && !dirty && valid"
       small
       outlined
-      :color="(disabled) ? 'grey darken-2' : 'success'"
+      :color="disabled ? 'grey darken-2' : 'success'"
       class="ml-1"
     >
       {{ $t('app.version.label.up_to_date') }}
@@ -19,7 +19,7 @@
           small
           outlined
           :disabled="disabled"
-          :color="(disabled) ? 'grey darken-2' : 'error'"
+          :color="disabled ? 'grey darken-2' : 'error'"
           class="ml-1"
           v-on="on"
         >
@@ -38,7 +38,7 @@
           v-bind="attrs"
           small
           outlined
-          :color="(disabled) ? 'grey darken-2' : 'error'"
+          :color="disabled ? 'grey darken-2' : 'error'"
           class="ml-1"
           v-on="on"
         >

@@ -55,14 +55,14 @@ import type { MCU } from '@/store/printer/types'
   }
 })
 export default class Configure extends Mixins(StateMixin) {
-  get breakpoint () {
+  get breakpoint() {
     if (this.$vuetify.breakpoint.mdAndDown) {
       return 12
     }
     return 6
   }
 
-  get mcus (): MCU[] {
+  get mcus(): MCU[] {
     return this.$typedGetters['printer/getMcus']
   }
 }

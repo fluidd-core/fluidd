@@ -3,13 +3,7 @@
  * I.e., temperature_fans and heater_fans are both fans.
  */
 export default (name: string) => {
-  const fans = [
-    'temperature_fan',
-    'controller_fan',
-    'heater_fan',
-    'fan_generic',
-    'fan'
-  ]
+  const fans = ['temperature_fan', 'controller_fan', 'heater_fan', 'fan_generic', 'fan']
 
   const sensors = [
     'temperature_sensor',
@@ -19,14 +13,9 @@ export default (name: string) => {
     'z_thermal_adjust'
   ]
 
-  const heaters = [
-    'heater_generic',
-    'extruder'
-  ]
+  const heaters = ['heater_generic', 'extruder']
 
-  const beds = [
-    'heater_bed'
-  ]
+  const beds = ['heater_bed']
 
   if (fans.some(s => name.startsWith(s))) return 'fan'
   if (sensors.some(s => name.startsWith(s))) return 'sensor'

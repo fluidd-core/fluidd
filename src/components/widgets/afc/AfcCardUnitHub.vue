@@ -28,24 +28,24 @@ export default class AfcCardUnitHub extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get hub () {
+  get hub() {
     return this.getAfcHubObject(this.name)
   }
 
-  get sensorStatus (): boolean {
+  get sensorStatus(): boolean {
     return this.hub?.state === true
   }
 
-  get sensorOutput (): string {
+  get sensorOutput(): string {
     const status = this.sensorStatus ? this.$t('app.afc.Detected') : this.$t('app.afc.Empty')
 
     return `${this.$filters.prettyCase(this.name)} ${this.$t('app.afc.HubLoad')} - ${status}`
   }
 
-  get sensorClass () {
+  get sensorClass() {
     return {
       success: this.sensorStatus,
-      error: !this.sensorStatus,
+      error: !this.sensorStatus
     }
   }
 }

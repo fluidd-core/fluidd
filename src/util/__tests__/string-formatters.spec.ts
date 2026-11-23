@@ -7,7 +7,7 @@ describe('prettyCase', () => {
     ['_  hello   _ _world_ ', 'Hello World'],
     ['raspberry pi 3b+', 'Raspberry Pi 3b+'],
     ['Raspberry Pi 3B+', 'Raspberry Pi 3B+'],
-    ['active (running)', 'Active (Running)'],
+    ['active (running)', 'Active (Running)']
   ])('Expects pretty case of "%s" to be "%s"', (input, expected) => {
     expect(sf.prettyCase(input)).toBe(expected)
   })
@@ -23,7 +23,7 @@ describe('getReadableLengthString', () => {
     [1234567, { showKilometers: true }, '1.23 km'],
     [1234567, undefined, '1234.57 m'],
     [0.05, { showMicrons: true }, '50 μm'],
-    [0.05, undefined, '0.1 mm'],
+    [0.05, undefined, '0.1 mm']
   ])('formats %d (options: %o) as "%s"', (length, options, expected) => {
     expect(sf.getReadableLengthString(length, options)).toBe(expected)
   })

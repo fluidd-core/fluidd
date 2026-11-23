@@ -25,13 +25,13 @@ export default class AppColorPicker extends Vue {
   colorPicker: IroColorPicker | null = null
 
   @Watch('value')
-  onValue (value: string) {
+  onValue(value: string) {
     if (value && this.colorPicker) {
       this.colorPicker.color.set(value)
     }
   }
 
-  mounted () {
+  mounted() {
     const options: Partial<ColorPickerProps> = {
       ...this.options,
       color: this.inputValue,
@@ -43,13 +43,13 @@ export default class AppColorPicker extends Vue {
     this.colorPicker.on('input:end', this.handleColorChange)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     if (this.colorPicker) {
       this.colorPicker.off('input:end', this.handleColorChange)
     }
   }
 
-  handleColorChange (color: IroColor) {
+  handleColorChange(color: IroColor) {
     this.inputValue = color.hexString
   }
 }

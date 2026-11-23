@@ -4,83 +4,91 @@ import type { HistoryItem } from '@/store/history/types'
 export type { AppFileMeta }
 
 export interface FilesState {
-  uploads: FileUpload[];
-  download: FileDownload | null;
-  roots: readonly Moonraker.Files.RootInfoWithPath[] | null;
-  currentPaths: Record<string, string | undefined>;
-  diskUsage: Record<string, Readonly<Moonraker.Files.DiskUsage> | undefined>;
-  rootFiles: Record<string, readonly Moonraker.Files.RootFile[] | undefined>;
-  pathContent: Record<string, MoonrakerPathContent | undefined>;
+  uploads: FileUpload[]
+  download: FileDownload | null
+  roots: readonly Moonraker.Files.RootInfoWithPath[] | null
+  currentPaths: Record<string, string | undefined>
+  diskUsage: Record<string, Readonly<Moonraker.Files.DiskUsage> | undefined>
+  rootFiles: Record<string, readonly Moonraker.Files.RootFile[] | undefined>
+  pathContent: Record<string, MoonrakerPathContent | undefined>
 }
 
 export interface AppDiskUsage extends Moonraker.Files.DiskUsage {
-  usedPercent: number;
-  lowOnSpace: boolean;
+  usedPercent: number
+  lowOnSpace: boolean
 }
 
 export interface MoonrakerPathContent {
-  partial?: boolean;
-  files: (Readonly<Moonraker.Files.File> | Readonly<Moonraker.Files.FileWithMeta>)[];
-  dirs: Readonly<Moonraker.Files.Dir>[];
+  partial?: boolean
+  files: (Readonly<Moonraker.Files.File> | Readonly<Moonraker.Files.FileWithMeta>)[]
+  dirs: Readonly<Moonraker.Files.Dir>[]
 }
 
-export interface AppFile extends Moonraker.Files.File, Pick<Moonraker.Files.Metadata, 'thumbnails'> {
-  type: 'file';
-  name: string;
-  extension: string;
-  path: string;
+export interface AppFile
+  extends Moonraker.Files.File, Pick<Moonraker.Files.Metadata, 'thumbnails'> {
+  type: 'file'
+  name: string
+  extension: string
+  path: string
 }
 
 export interface AppFileWithMeta extends AppFile, AppFileMeta {
-  print_start_time?: number | null;
-  job_id?: string | null;
-  history?: HistoryItem;
+  print_start_time?: number | null
+  job_id?: string | null
+  history?: HistoryItem
 }
 
 export interface AppFileThumbnail extends Moonraker.Files.MetadataThumbnail {
-  url: string;
+  url: string
 }
 
 export interface AppDirectory extends Moonraker.Files.Dir {
-  type: 'directory';
-  name: string;
+  type: 'directory'
+  name: string
 }
 
 export interface FilePaths {
-  root: string;
-  rootPath: string;
-  rootPathFilename: string;
-  path: string;
-  pathFilename: string;
-  filename: string;
-  extension: string;
-  filtered: boolean;
+  root: string
+  rootPath: string
+  rootPathFilename: string
+  path: string
+  pathFilename: string
+  filename: string
+  extension: string
+  filtered: boolean
 }
 
 export interface FileDownload {
-  uid: string;
-  filepath: string;
-  size: number;
-  loaded: number;
-  percent: number;
-  speed: number;
-  abortController: AbortController;
+  uid: string
+  filepath: string
+  size: number
+  loaded: number
+  percent: number
+  speed: number
+  abortController: AbortController
 }
 
 export interface FileUpload extends Omit<FileDownload, 'abortController'> {
-  complete: boolean; // indicates moonraker is finished with the file.
-  cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
-  abortController?: AbortController; // not set until the upload of this entry starts.
+  complete: boolean // indicates moonraker is finished with the file.
+  cancelled: boolean // in a cancelled state, don't show - nor try to upload.
+  abortController?: AbortController // not set until the upload of this entry starts.
 }
 
-export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files' | 'rolled_log_files' | 'moonraker_backup_files' | 'moonraker_temporary_upload_files' | 'crowsnest_backup_files'
+export type FileFilterType =
+  | 'print_start_time'
+  | 'hidden_files'
+  | 'klipper_backup_files'
+  | 'rolled_log_files'
+  | 'moonraker_backup_files'
+  | 'moonraker_temporary_upload_files'
+  | 'crowsnest_backup_files'
 
 export type FileBrowserEntry = AppFile | AppFileWithMeta | AppDirectory
 
 export interface RootProperties {
-  readonly: boolean;
-  accepts: string[];
-  canView: string[];
-  canConfigure: boolean;
+  readonly: boolean
+  accepts: string[]
+  canView: string[]
+  canConfigure: boolean
   filterTypes: FileFilterType[]
 }

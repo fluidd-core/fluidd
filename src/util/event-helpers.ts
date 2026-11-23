@@ -8,27 +8,21 @@ export const eventTargetIsContentEditable = (event: Event): boolean => {
       return true
     }
 
-    const type = target instanceof HTMLInputElement
-      ? target.type
-      : ''
-    const readOnly = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
-      ? target.readOnly
-      : false
+    const type = target instanceof HTMLInputElement ? target.type : ''
+    const readOnly =
+      target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
+        ? target.readOnly
+        : false
 
     return (
       !readOnly &&
-      (
-        tagName === 'TEXTAREA' ||
+      (tagName === 'TEXTAREA' ||
         tagName === 'SELECT' ||
-        (
-          tagName === 'INPUT' &&
-          !['checkbox', 'radio', 'range', 'button', 'file', 'reset', 'submit', 'color'].includes(type)
-        ) ||
-        (
-          role === 'textbox' &&
-          ariaRoleDescription === 'editor'
-        )
-      )
+        (tagName === 'INPUT' &&
+          !['checkbox', 'radio', 'range', 'button', 'file', 'reset', 'submit', 'color'].includes(
+            type
+          )) ||
+        (role === 'textbox' && ariaRoleDescription === 'editor'))
     )
   }
 

@@ -39,7 +39,7 @@ export const createState = (): ConfigState => {
         toolheadCircleZMoveDistances: [0.1, 1, 10, 50],
         toolheadCircleXYHomingEnabled: false,
         useGcodeCoords: false,
-        zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
+        zAdjustDistances: [0.005, 0.01, 0.025, 0.05],
         enableVersionNotifications: true,
         enableFirmwareNotifications: false,
         confirmOnEstop: false,
@@ -81,7 +81,7 @@ export const createState = (): ConfigState => {
       },
       warnings: {
         warnOnCpuThrottled: true,
-        warnOnStepperDriverOverheating: true,
+        warnOnStepperDriverOverheating: true
       },
       editor: {
         confirmDirtyEditorClose: true,
@@ -144,7 +144,16 @@ export const createState = (): ConfigState => {
           desc: false
         },
         remainingFilamentUnit: 'weight',
-        selectedCardFields: ['vendor', 'filament_name', 'remaining_weight', 'location', 'material', 'lot_nr', 'first_used', 'comment']
+        selectedCardFields: [
+          'vendor',
+          'filament_name',
+          'remaining_weight',
+          'location',
+          'material',
+          'lot_nr',
+          'first_used',
+          'comment'
+        ]
       },
       history: {
         timeInDays: false,
@@ -166,7 +175,7 @@ export const createState = (): ConfigState => {
         showFilamentName: false,
         showLaneInfinite: true,
         showUnitIcons: true,
-        showTd1Color: true,
+        showTd1Color: true
       }
     }
   }

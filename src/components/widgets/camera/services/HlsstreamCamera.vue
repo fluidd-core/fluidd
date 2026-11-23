@@ -26,7 +26,7 @@ export default class HlsstreamCamera extends Mixins(CameraMixin) {
 
   hls: Hls | null = null
 
-  startPlayback () {
+  startPlayback() {
     try {
       this.updateStatus('connecting')
 
@@ -35,14 +35,16 @@ export default class HlsstreamCamera extends Mixins(CameraMixin) {
       if (Hls.isSupported()) {
         this.hls?.destroy()
 
-        this.hls = markRaw(new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          maxLiveSyncPlaybackRate: 2,
-          liveSyncDuration: 0.5,
-          liveMaxLatencyDuration: 2,
-          backBufferLength: 5
-        }))
+        this.hls = markRaw(
+          new Hls({
+            enableWorker: true,
+            lowLatencyMode: true,
+            maxLiveSyncPlaybackRate: 2,
+            liveSyncDuration: 0.5,
+            liveMaxLatencyDuration: 2,
+            backBufferLength: 5
+          })
+        )
         this.hls.loadSource(url)
         this.hls.attachMedia(this.cameraVideo)
         this.hls.on(Hls.Events.MEDIA_ATTACHED, () => {
@@ -63,7 +65,7 @@ export default class HlsstreamCamera extends Mixins(CameraMixin) {
     }
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.updateStatus('disconnected')
     this.hls?.destroy()
     this.hls = null

@@ -20,6 +20,5 @@ export const createState = (): NotificationsState => {
     // mcu awake time graphing
 
     // If it was me, I'd probably just start with displaying everything on a single graph with 100% being one core usage.  So, just graph sysload outright (sysload * 100), cputime change ((cputime - last_cputime) * 100), mcu_awake (formula above), mcu load (formula above).
-
   }
 }

@@ -1,10 +1,6 @@
 {
-  "blacklist": [
-    "fluidd.xyz",
-    "fluidd.net"
-  ],
-  "endpoints": [
-  ],
+  "blacklist": ["fluidd.xyz", "fluidd.net"],
+  "endpoints": [],
   "hosted": false,
   "themePresets": [
     {

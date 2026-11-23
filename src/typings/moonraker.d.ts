@@ -11,7 +11,10 @@ declare namespace Moonraker {
 
   export type Notification = keyof Notifications
 
-  export type NotificationPayload<N extends Notification> = Notifications[N] extends [infer P, ...unknown[]]
+  export type NotificationPayload<N extends Notification> = Notifications[N] extends [
+    infer P,
+    ...unknown[]
+  ]
     ? P
     : undefined
 

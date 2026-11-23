@@ -13,5 +13,5 @@ export const getters = {
         file: rootGetters['files/getFile'](rootPath, filename)
       }
     })
-  },
+  }
 } satisfies GetterTree<JobQueueState, RootState>

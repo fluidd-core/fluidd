@@ -4,18 +4,24 @@ import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
 // a trailing newline is required; the reader only emits complete lines
 const encode = (lines: readonly string[]) => new TextEncoder().encode(`${lines.join('\n')}\n`)
 
-const parse = async (lines: readonly string[], onProgress: (filePosition: number) => void = () => {}) => {
+const parse = async (
+  lines: readonly string[],
+  onProgress: (filePosition: number) => void = () => {}
+) => {
   const encoded = encode(lines)
 
-  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-    ok: true,
-    body: new ReadableStream<Uint8Array>({
-      start (controller) {
-        controller.enqueue(encoded)
-        controller.close()
-      }
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue({
+      ok: true,
+      body: new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(encoded)
+          controller.close()
+        }
+      })
     })
-  }))
+  )
 
   return parseGcode('test.gcode', encoded.length, onProgress)
 }
@@ -26,16 +32,22 @@ describe('parseGcode', () => {
   })
 
   it('parses moves into a columnar store', async () => {
-    const { moves } = await parse([
-      'G28',
-      'G1 Z0.2',
-      'G1 X5 Y5',
-      'G1 X10 E1'
-    ])
+    const { moves } = await parse(['G28', 'G1 Z0.2', 'G1 X5 Y5', 'G1 X10 E1'])
 
     expect(moves.length).toBe(4)
 
-    for (const column of [moves.x, moves.y, moves.z, moves.tool, moves.flags, moves.role, moves.speed, moves.fan, moves.temp, moves.filePosition]) {
+    for (const column of [
+      moves.x,
+      moves.y,
+      moves.z,
+      moves.tool,
+      moves.flags,
+      moves.role,
+      moves.speed,
+      moves.fan,
+      moves.temp,
+      moves.filePosition
+    ]) {
       expect(column).toHaveLength(moves.length)
     }
 
@@ -45,24 +57,14 @@ describe('parseGcode', () => {
   })
 
   it('forward fills positions across moves', async () => {
-    const { moves } = await parse([
-      'G1 X5 Y5',
-      'G1 X10',
-      'G1 Y20'
-    ])
+    const { moves } = await parse(['G1 X5 Y5', 'G1 X10', 'G1 Y20'])
 
     expect([...moves.x]).toEqual([5, 10, 10])
     expect([...moves.y]).toEqual([5, 5, 20])
   })
 
   it('packs move flags', async () => {
-    const { moves } = await parse([
-      'G17',
-      'G1 X10 Y10 E1',
-      'G10',
-      'G11',
-      'G2 X20 Y10 I5 J0 E2'
-    ])
+    const { moves } = await parse(['G17', 'G1 X10 Y10 E1', 'G10', 'G11', 'G2 X20 Y10 I5 J0 E2'])
 
     expect(moves.length).toBe(4)
     expect(moves.flags[0]).toBe(MoveFlags.Extruding)
@@ -75,12 +77,7 @@ describe('parseGcode', () => {
   })
 
   it('records strictly increasing file positions', async () => {
-    const { moves } = await parse([
-      'G1 X1',
-      'G1 X2',
-      'G1 X3',
-      'G1 X4'
-    ])
+    const { moves } = await parse(['G1 X1', 'G1 X2', 'G1 X3', 'G1 X4'])
 
     for (let index = 1; index < moves.length; index++) {
       expect(moves.filePosition[index]).toBeGreaterThan(moves.filePosition[index - 1])
@@ -123,12 +120,7 @@ describe('parseGcode', () => {
   })
 
   it('collects tools in sorted order', async () => {
-    const { moves, tools } = await parse([
-      'T1',
-      'G1 X10 E1',
-      'T0',
-      'G1 X20 E2'
-    ])
+    const { moves, tools } = await parse(['T1', 'G1 X10 E1', 'T0', 'G1 X20 E2'])
 
     expect(tools).toEqual([0, 1])
     expect([...moves.tool]).toEqual([1, 0])
@@ -139,10 +131,7 @@ describe('parseGcode', () => {
     ['G18', false],
     ['G19', false]
   ])('records an arc only on the xy plane (%s)', async (planeCommand, isArc) => {
-    const { moves } = await parse([
-      planeCommand,
-      'G2 X20 Y10 I5 J0 E1'
-    ])
+    const { moves } = await parse([planeCommand, 'G2 X20 Y10 I5 J0 E1'])
 
     expect((moves.flags[0] & MoveFlags.Arc) !== 0).toBe(isArc)
   })
@@ -162,11 +151,7 @@ describe('parseGcode', () => {
   })
 
   it('returns an empty result for a file with no moves', async () => {
-    const result = await parse([
-      '; a comment',
-      '',
-      'M117 hello'
-    ])
+    const result = await parse(['; a comment', '', 'M117 hello'])
 
     expect(result.moves.length).toBe(0)
     expect(result.layers).toHaveLength(0)
@@ -195,25 +180,14 @@ describe('parseGcode', () => {
     ['@AreaBegin "Skirt" 1', ExtrusionRole.Skirt],
     ['TYPE:Something new', ExtrusionRole.None]
   ])('records the role set by ;%s', async (comment, role) => {
-    const { moves, roles } = await parse([
-      `;${comment}`,
-      'G1 X10 E1',
-      'G1 X20 E2'
-    ])
+    const { moves, roles } = await parse([`;${comment}`, 'G1 X10 E1', 'G1 X20 E2'])
 
     expect([...moves.role]).toEqual([role, role])
     expect(roles).toEqual([role])
   })
 
-  it.each([
-    'LAYER_CHANGE',
-    '\'quoted text\''
-  ])('keeps the current role on ;%s', async (comment) => {
-    const { moves } = await parse([
-      ';TYPE:Solid infill',
-      `;${comment}`,
-      'G1 X10 E1'
-    ])
+  it.each(['LAYER_CHANGE', "'quoted text'"])('keeps the current role on ;%s', async comment => {
+    const { moves } = await parse([';TYPE:Solid infill', `;${comment}`, 'G1 X10 E1'])
 
     expect([...moves.role]).toEqual([ExtrusionRole.SolidInfill])
   })
@@ -240,11 +214,7 @@ describe('parseGcode', () => {
   })
 
   it('ignores role comments trailing a command', async () => {
-    const { moves } = await parse([
-      ';TYPE:Solid infill',
-      'G1 X10 E1 ;TYPE:Perimeter',
-      'G1 X20 E2'
-    ])
+    const { moves } = await parse([';TYPE:Solid infill', 'G1 X10 E1 ;TYPE:Perimeter', 'G1 X20 E2'])
 
     expect([...moves.role]).toEqual([ExtrusionRole.SolidInfill, ExtrusionRole.SolidInfill])
   })
@@ -381,12 +351,7 @@ describe('parseGcode', () => {
   })
 
   it('keeps the temperature across an M600 colour change', async () => {
-    const { moves } = await parse([
-      'M104 S200',
-      'G1 X10 E1',
-      'M600',
-      'G1 X20 E2'
-    ])
+    const { moves } = await parse(['M104 S200', 'G1 X10 E1', 'M600', 'G1 X20 E2'])
 
     expect([...moves.tool]).toEqual([0, 1])
     expect([...moves.temp]).toEqual([200, 200])

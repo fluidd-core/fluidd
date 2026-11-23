@@ -7,9 +7,7 @@
     menu-breakpoint="lg"
   >
     <template #title>
-      <v-icon left>
-        $printer3dNozzle
-      </v-icon>
+      <v-icon left> $printer3dNozzle </v-icon>
       <span class="font-weight-light">{{ $t('app.general.title.tool') }}</span>
 
       <template v-if="klippyReady && hasExtruder">
@@ -45,7 +43,11 @@
               $snowflakeAlert
             </v-icon>
           </template>
-          <span v-safe-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder?.min_extrude_temp })" />
+          <span
+            v-safe-html="
+              $t('app.tool.tooltip.extruder_disabled', { min: activeExtruder?.min_extrude_temp })
+            "
+          />
         </v-tooltip>
 
         <v-tooltip
@@ -62,7 +64,11 @@
               {{ extruderMovementDirection < 0 ? '$retract' : '$extrude' }}
             </v-icon>
           </template>
-          <span>{{ extruderMovementDirection < 0 ? $t('app.tool.tooltip.retracting') : $t('app.tool.tooltip.extruding') }}</span>
+          <span>{{
+            extruderMovementDirection < 0
+              ? $t('app.tool.tooltip.retracting')
+              : $t('app.tool.tooltip.extruding')
+          }}</span>
         </v-tooltip>
       </template>
     </template>
@@ -181,11 +187,11 @@ import Toolhead from './Toolhead.vue'
 import type { Macro } from '@/store/macros/types'
 
 type Tool = {
-  name: string,
-  label?: string,
-  disabled?: boolean,
-  wait?: string,
-  icon?: string,
+  name: string
+  label?: string
+  disabled?: boolean
+  wait?: string
+  icon?: string
 }
 
 @Component({
@@ -197,87 +203,76 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean })
   readonly narrow?: boolean
 
-  get liveExtruderVelocity (): number {
+  get liveExtruderVelocity(): number {
     return this.$typedState.printer.printer.motion_report?.live_extruder_velocity ?? 0
   }
 
-  get extruderMovementDirection (): number {
+  get extruderMovementDirection(): number {
     return Math.sign(this.liveExtruderVelocity)
   }
 
-  get printerSettings (): Klipper.SettingsState {
+  get printerSettings(): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  get printerSupportsBedScrewsAdjust (): boolean {
+  get printerSupportsBedScrewsAdjust(): boolean {
     return this.printerSettings.bed_screws != null
   }
 
-  get printerSupportsBedScrewsCalculate (): boolean {
+  get printerSupportsBedScrewsCalculate(): boolean {
     return this.printerSettings.screws_tilt_adjust != null
   }
 
-  get printerSupportsBedTiltCalibrate (): boolean {
+  get printerSupportsBedTiltCalibrate(): boolean {
     return this.printerSettings.bed_tilt != null
   }
 
-  get printerSupportsDeltaCalibrate (): boolean {
+  get printerSupportsDeltaCalibrate(): boolean {
     return this.printerSettings.delta_calibrate != null
   }
 
-  get printerSupportsProbeCalibrate (): boolean {
+  get printerSupportsProbeCalibrate(): boolean {
     return (
       this.printerSettings.probe != null ||
       this.printerSettings.bltouch != null ||
       this.printerSettings.smart_effector != null ||
       this.printerSettings.cartographer != null ||
-      Object.keys(this.printerSettings)
-        .some(x => x.startsWith('probe_eddy_current '))
+      Object.keys(this.printerSettings).some(x => x.startsWith('probe_eddy_current '))
     )
   }
 
-  get printerSupportsAxisTwistCompensationCalibrate (): boolean {
+  get printerSupportsAxisTwistCompensationCalibrate(): boolean {
     return this.printerSettings.axis_twist_compensation != null
   }
 
-  get printerSupportsBeaconCalibrate (): boolean {
+  get printerSupportsBeaconCalibrate(): boolean {
     return this.printerSettings.beacon != null
   }
 
-  get printerSupportsCartographerCalibrate (): boolean {
+  get printerSupportsCartographerCalibrate(): boolean {
     return this.printerSettings.cartographer != null
   }
 
-  get printerSupportsCartographerAxisTwistCompensation (): boolean {
+  get printerSupportsCartographerAxisTwistCompensation(): boolean {
     return (
       this.printerSettings.cartographer != null &&
       this.printerSettings.axis_twist_compensation != null
     )
   }
 
-  get printerSupportsZEndstopCalibrate (): boolean {
-    return (
-      this.printerSettings.stepper_z?.position_endstop != null
-    )
+  get printerSupportsZEndstopCalibrate(): boolean {
+    return this.printerSettings.stepper_z?.position_endstop != null
   }
 
-  get loadFilamentMacro (): Macro | undefined {
-    return this.$typedGetters['macros/getMacroByName'](
-      'LOAD_FILAMENT',
-      'FILAMENT_LOAD',
-      'M701'
-    )
+  get loadFilamentMacro(): Macro | undefined {
+    return this.$typedGetters['macros/getMacroByName']('LOAD_FILAMENT', 'FILAMENT_LOAD', 'M701')
   }
 
-  get unloadFilamentMacro (): Macro | undefined {
-    return this.$typedGetters['macros/getMacroByName'](
-      'UNLOAD_FILAMENT',
-      'FILAMENT_UNLOAD',
-      'M702'
-    )
+  get unloadFilamentMacro(): Macro | undefined {
+    return this.$typedGetters['macros/getMacroByName']('UNLOAD_FILAMENT', 'FILAMENT_UNLOAD', 'M702')
   }
 
-  get cleanNozzleMacro (): Macro | undefined {
+  get cleanNozzleMacro(): Macro | undefined {
     return this.$typedGetters['macros/getMacroByName'](
       'CLEAN_NOZZLE',
       'NOZZLE_CLEAN',
@@ -287,15 +282,11 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
-  get parkToolheadMacro (): Macro | undefined {
-    return this.$typedGetters['macros/getMacroByName'](
-      'PARK_TOOLHEAD',
-      'TOOLHEAD_PARK',
-      'G27'
-    )
+  get parkToolheadMacro(): Macro | undefined {
+    return this.$typedGetters['macros/getMacroByName']('PARK_TOOLHEAD', 'TOOLHEAD_PARK', 'G27')
   }
 
-  get availableTools () {
+  get availableTools() {
     const tools: Tool[] = []
 
     const loadFilamentMacro = this.loadFilamentMacro
@@ -305,7 +296,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
       tools.push({
         name: loadFilamentMacro.name.toUpperCase(),
-        label: loadFilamentMacro.name.toLowerCase() === 'm701' ? `M701 (${loadFilamentMacro.description || this.$t('app.general.label.load_filament')})` : undefined,
+        label:
+          loadFilamentMacro.name.toLowerCase() === 'm701'
+            ? `M701 (${loadFilamentMacro.description || this.$t('app.general.label.load_filament')})`
+            : undefined,
         icon: '$loadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady) || this.extruderDisconnected
       })
@@ -318,7 +312,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
       tools.push({
         name: unloadFilamentMacro.name.toUpperCase(),
-        label: unloadFilamentMacro.name.toLowerCase() === 'm702' ? `M702 (${unloadFilamentMacro.description || this.$t('app.general.label.unload_filament')})` : undefined,
+        label:
+          unloadFilamentMacro.name.toLowerCase() === 'm702'
+            ? `M702 (${unloadFilamentMacro.description || this.$t('app.general.label.unload_filament')})`
+            : undefined,
         icon: '$unloadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady) || this.extruderDisconnected
       })
@@ -329,7 +326,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (cleanNozzleMacro) {
       tools.push({
         name: cleanNozzleMacro.name.toUpperCase(),
-        label: cleanNozzleMacro.name.toLowerCase() === 'g12' ? `G12 (${cleanNozzleMacro.description || this.$t('app.general.label.clean_nozzle')})` : undefined,
+        label:
+          cleanNozzleMacro.name.toLowerCase() === 'g12'
+            ? `G12 (${cleanNozzleMacro.description || this.$t('app.general.label.clean_nozzle')})`
+            : undefined,
         icon: '$cleanNozzle'
       })
     }
@@ -339,7 +339,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (parkToolheadMacro) {
       tools.push({
         name: parkToolheadMacro.name.toUpperCase(),
-        label: parkToolheadMacro.name.toLowerCase() === 'g27' ? `G27 (${parkToolheadMacro.description || this.$t('app.general.label.park_toolhead')})` : undefined,
+        label:
+          parkToolheadMacro.name.toLowerCase() === 'g27'
+            ? `G27 (${parkToolheadMacro.description || this.$t('app.general.label.park_toolhead')})`
+            : undefined,
         icon: '$parkToolhead',
         disabled: !this.allHomed
       })
@@ -467,30 +470,27 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return tools
   }
 
-  get printerSupportsForceMove (): boolean {
-    return (
-      (this.printerSettings.force_move?.enable_force_move ?? false) &&
-      !this.hasRoundBed
-    )
+  get printerSupportsForceMove(): boolean {
+    return (this.printerSettings.force_move?.enable_force_move ?? false) && !this.hasRoundBed
   }
 
-  get hasSteppersEnabled (): boolean {
+  get hasSteppersEnabled(): boolean {
     return this.$typedGetters['printer/getHasSteppersEnabled']
   }
 
-  get hasRoundBed (): boolean {
+  get hasRoundBed(): boolean {
     return this.$typedGetters['printer/getHasRoundBed']
   }
 
-  async toggleForceMove () {
-    const result = (
+  async toggleForceMove() {
+    const result =
       this.forceMoveEnabled ||
       !this.$typedState.config.uiSettings.general.forceMoveToggleWarning ||
-      await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-      )
-    )
+      (await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'), {
+        title: this.$tc('app.general.label.confirm'),
+        color: 'card-heading',
+        icon: '$warning'
+      }))
 
     if (result) {
       this.$typedDispatch('printer/forceMoveEnabled', !this.forceMoveEnabled)

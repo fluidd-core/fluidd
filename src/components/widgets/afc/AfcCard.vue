@@ -48,14 +48,12 @@ import AfcCardSettings from '@/components/widgets/afc/AfcCardSettings.vue'
   }
 })
 export default class AfcCard extends Mixins(AfcMixin) {
-  get filteredExtruders (): string[] {
-    return this.afcExtruders
-      .filter(extruder => !this.afcHiddenExtruders.includes(extruder))
+  get filteredExtruders(): string[] {
+    return this.afcExtruders.filter(extruder => !this.afcHiddenExtruders.includes(extruder))
   }
 
-  get filteredUnits (): string[] {
-    return this.afcUnits
-      .filter(unit => !this.afcHiddenUnits.includes(unit))
+  get filteredUnits(): string[] {
+    return this.afcUnits.filter(unit => !this.afcHiddenUnits.includes(unit))
   }
 }
 </script>

@@ -2,7 +2,7 @@ import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
 
 type FileSystemEntryWithPath = {
-  entry: FileSystemEntry,
+  entry: FileSystemEntry
   path: string
 }
 
@@ -20,7 +20,9 @@ const getFileAsync = async (fileEntry: FileSystemFileEntry) => {
 
 const readEntriesAsync = async (directoryReader: FileSystemDirectoryReader) => {
   try {
-    return new Promise<FileSystemEntry[]>((resolve, reject) => directoryReader.readEntries(resolve, reject))
+    return new Promise<FileSystemEntry[]>((resolve, reject) =>
+      directoryReader.readEntries(resolve, reject)
+    )
   } catch (e) {
     consola.error('[FileSystemDirectoryReader] readEntries', e)
   }
@@ -28,8 +30,7 @@ const readEntriesAsync = async (directoryReader: FileSystemDirectoryReader) => {
 
 export const hasFilesInDataTransfer = (dataTransfer: DataTransfer) => {
   if (dataTransfer.items.length) {
-    return [...dataTransfer.items]
-      .every(x => x.kind === 'file')
+    return [...dataTransfer.items].every(x => x.kind === 'file')
   } else {
     return dataTransfer.files.length > 0
   }
@@ -37,9 +38,7 @@ export const hasFilesInDataTransfer = (dataTransfer: DataTransfer) => {
 
 export const getFilesFromDataTransfer = async (dataTransfer: DataTransfer) => {
   if (dataTransfer.items.length) {
-    const entries = [...dataTransfer.items]
-      .map(x => x.webkitGetAsEntry())
-      .filter(Boolean)
+    const entries = [...dataTransfer.items].map(x => x.webkitGetAsEntry()).filter(Boolean)
 
     return await getFilesFromFileSystemEntries(entries)
   } else if (dataTransfer.files.length) {
@@ -56,22 +55,21 @@ export const getFilesWithPathFromHTMLInputElement = async (input: HTMLInputEleme
 }
 
 export const convertFilesToFilesWithPath = (files: File[] | FileList) => {
-  return [...files]
-    .map((file): FileWithPath => ({
-      file,
-      path: file.webkitRelativePath === file.name
+  return [...files].map((file): FileWithPath => ({
+    file,
+    path:
+      file.webkitRelativePath === file.name
         ? ''
         : file.webkitRelativePath.slice(0, -file.name.length - 1)
-    }))
+  }))
 }
 
 export const getFilesFromFileSystemEntries = async (entries: readonly FileSystemEntry[]) => {
   const files: FileWithPath[] = []
-  const items = entries
-    .map((entry): FileSystemEntryWithPath => ({
-      entry,
-      path: ''
-    }))
+  const items = entries.map((entry): FileSystemEntryWithPath => ({
+    entry,
+    path: ''
+  }))
 
   let item = items.pop()
   while (item) {
@@ -91,9 +89,7 @@ export const getFilesFromFileSystemEntries = async (entries: readonly FileSystem
         for (const entry of subEntries) {
           items.push({
             entry,
-            path: item.path
-              ? `${item.path}/${item.entry.name}`
-              : item.entry.name
+            path: item.path ? `${item.path}/${item.entry.name}` : item.entry.name
           })
         }
       }
@@ -116,7 +112,7 @@ export const readFileAsTextAsync = (file: File) => {
         reject(new Error('Unexpected FileReader result type'))
       }
     }
-    reader.onerror = (event) => reject(event)
+    reader.onerror = event => reject(event)
 
     reader.readAsText(file, 'UTF8')
   })

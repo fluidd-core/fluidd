@@ -48,38 +48,37 @@ export default class AfcCardUnit extends Mixins(StateMixin, AfcMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get unitType (): string {
-    return this.name.substring(0, this.name.indexOf(' '))
-      .replace(/_/g, '')
+  get unitType(): string {
+    return this.name.substring(0, this.name.indexOf(' ')).replace(/_/g, '')
   }
 
-  get unitName (): string {
+  get unitName(): string {
     return this.name.substring(this.name.indexOf(' ') + 1)
   }
 
-  get unit (): Klipper.AfcUnitState | undefined {
+  get unit(): Klipper.AfcUnitState | undefined {
     const printer: Klipper.PrinterState = this.$typedState.printer.printer
 
-    const unitObjectName = `AFC_${this.unitType} ${this.unitName}`
-      .toLowerCase()
+    const unitObjectName = `AFC_${this.unitType} ${this.unitName}`.toLowerCase()
 
-    const unitObjectKey = Object.keys(printer)
-      .find((key): key is Klipper.AfcUnitKey => key.toLowerCase() === unitObjectName)
+    const unitObjectKey = Object.keys(printer).find(
+      (key): key is Klipper.AfcUnitKey => key.toLowerCase() === unitObjectName
+    )
 
     if (unitObjectKey != null) {
       return printer[unitObjectKey]
     }
   }
 
-  get hubs (): string[] {
+  get hubs(): string[] {
     return this.unit?.hubs ?? []
   }
 
-  get lanes (): string[] {
+  get lanes(): string[] {
     return this.unit?.lanes ?? []
   }
 
-  get unitIcon (): string | null {
+  get unitIcon(): string | null {
     if (!this.afcShowUnitIcons) {
       return null
     }

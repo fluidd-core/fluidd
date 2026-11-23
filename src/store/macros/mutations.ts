@@ -19,12 +19,12 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
   // Sets macro state from db
-  initMacros (state, payload: Partial<MacrosState>) {
+  initMacros(state, payload: Partial<MacrosState>) {
     if (payload && payload.categories) {
       if (typeof payload.categories[0] === 'string') payload.categories = []
     }
@@ -32,7 +32,7 @@ export const mutations = {
   },
 
   // Updates a singular macro
-  setUpdateMacro (state, macro: Macro) {
+  setUpdateMacro(state, macro: Macro) {
     const lowerCaseName = macro.name.toLowerCase()
     const i = state.stored.findIndex(m => m.name.toLowerCase() === lowerCaseName)
     const processed = sanitizeMacroForStorage({
@@ -45,7 +45,7 @@ export const mutations = {
     }
   },
 
-  setUpdateAllVisible (state, payload: { macros: Macro[]; visible: boolean }) {
+  setUpdateAllVisible(state, payload: { macros: Macro[]; visible: boolean }) {
     payload.macros.forEach((macro: Macro) => {
       const lowerCaseName = macro.name.toLowerCase()
       const i = state.stored.findIndex(m => m.name.toLowerCase() === lowerCaseName)
@@ -61,11 +61,11 @@ export const mutations = {
     })
   },
 
-  setAddCategory (state, name: string) {
+  setAddCategory(state, name: string) {
     state.categories.push({ id: uuidv4(), name })
   },
 
-  setEditCategory (state, payload: MacroCategory) {
+  setEditCategory(state, payload: MacroCategory) {
     // Edit the category in the category list, and then update all macros.
     const i = state.categories.findIndex(category => category.id === payload.id)
     Vue.set(state.categories, i, {
@@ -74,7 +74,7 @@ export const mutations = {
     })
   },
 
-  setRemoveCategory (state, payload: MacroCategory) {
+  setRemoveCategory(state, payload: MacroCategory) {
     const i = state.categories.findIndex(category => category.id === payload.id)
     if (i >= 0) {
       state.categories.splice(i, 1)
@@ -88,11 +88,11 @@ export const mutations = {
     }
   },
 
-  setUpdateCategories (state, payload: MacroCategory[]) {
+  setUpdateCategories(state, payload: MacroCategory[]) {
     state.categories = payload
   },
 
-  setExpanded (state, expanded: number[]) {
+  setExpanded(state, expanded: number[]) {
     state.expanded = expanded
   }
 } satisfies MutationTree<MacrosState>

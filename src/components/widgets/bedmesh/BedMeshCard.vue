@@ -28,9 +28,7 @@
             v-on="on"
             @click="downloadImage()"
           >
-            <v-icon dense>
-              $screenshot
-            </v-icon>
+            <v-icon dense> $screenshot </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.bedmesh.tooltip.download_image') }}</span>
@@ -41,9 +39,7 @@
         icon
         @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon dense>
-          $fullScreen
-        </v-icon>
+        <v-icon dense> $fullScreen </v-icon>
       </app-btn>
     </template>
 
@@ -54,7 +50,7 @@
         :options="options"
         :data="series"
         :graphics="graphics"
-        :height="(isMobileViewport) ? 225 : 525"
+        :height="isMobileViewport ? 225 : 525"
       />
 
       <span v-else>{{ $t('app.bedmesh.msg.not_loaded') }}</span>
@@ -82,14 +78,14 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   @Ref('chart')
   readonly bedMeshChart!: BedMeshChart
 
-  get hasMeshLoaded () {
+  get hasMeshLoaded() {
     const mesh = this.mesh
     const matrix = this.matrix
 
     return mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0
   }
 
-  get options () {
+  get options() {
     const map_scale = this.scale / 2
     const box_scale = this.boxScale / 2
 
@@ -107,18 +103,11 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     const zBoxMax = this.mesh[this.matrix].mid + box_scale
 
     const legends = this.series.reduce((obj, series) => {
-      return Object.assign(
-        obj,
-        {
-          [series.name]: (
-            !series.name.endsWith('_flat') ||
-            (
-              this.flatSurface &&
-              series.name.startsWith(this.matrix)
-            )
-          )
-        }
-      )
+      return Object.assign(obj, {
+        [series.name]:
+          !series.name.endsWith('_flat') ||
+          (this.flatSurface && series.name.startsWith(this.matrix))
+      })
     }, Object.assign({}))
 
     const opts = {
@@ -140,7 +129,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     return opts
   }
 
-  get series () {
+  get series() {
     const matrix = this.matrix
     const wireframe = this.wireframe
     const series = [
@@ -160,22 +149,24 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     return series
   }
 
-  get graphics () {
+  get graphics() {
     const { range } = this.mesh[this.matrix]
 
-    return [{
-      type: 'text',
-      right: 10,
-      top: 0,
-      z: 100,
-      silent: true,
-      style: {
-        text: `${this.$t('app.general.label.range')}: ${range.toFixed(4)}`
+    return [
+      {
+        type: 'text',
+        right: 10,
+        top: 0,
+        z: 100,
+        silent: true,
+        style: {
+          text: `${this.$t('app.general.label.range')}: ${range.toFixed(4)}`
+        }
       }
-    }]
+    ]
   }
 
-  createFlatSeries (matrix: string) {
+  createFlatSeries(matrix: string) {
     const wireframe = this.wireframe
     return {
       type: 'surface',
@@ -196,36 +187,36 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     }
   }
 
-  calibrate () {
+  calibrate() {
     this.sendGcode('BED_MESH_CALIBRATE', this.$waits.onMeshCalibrate)
   }
 
-  get matrix (): MatrixType {
+  get matrix(): MatrixType {
     return this.$typedState.mesh.matrix
   }
 
-  get scale (): number {
+  get scale(): number {
     return this.$typedState.mesh.scale
   }
 
-  get boxScale (): number {
+  get boxScale(): number {
     return this.$typedState.mesh.boxScale
   }
 
-  get wireframe (): boolean {
+  get wireframe(): boolean {
     return this.$typedState.mesh.wireframe
   }
 
-  get flatSurface (): boolean {
+  get flatSurface(): boolean {
     return this.$typedState.mesh.flatSurface
   }
 
   // The current processed mesh data, if any.
-  get mesh (): AppMeshes {
+  get mesh(): AppMeshes {
     return this.$typedGetters['mesh/getCurrentMeshData']
   }
 
-  downloadImage () {
+  downloadImage() {
     this.bedMeshChart.downloadImage()
   }
 }

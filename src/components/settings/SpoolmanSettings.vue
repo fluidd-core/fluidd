@@ -8,9 +8,7 @@
       dense
       class="mb-4"
     >
-      <app-setting
-        :title="$t('app.spoolman.setting.show_spool_selection_dialog_on_print_start')"
-      >
+      <app-setting :title="$t('app.spoolman.setting.show_spool_selection_dialog_on_print_start')">
         <v-switch
           v-model="autoSpoolSelectionDialog"
           hide-details
@@ -19,9 +17,7 @@
       </app-setting>
 
       <v-divider />
-      <app-setting
-        :title="$tc('app.spoolman.setting.auto_open_qr_camera')"
-      >
+      <app-setting :title="$tc('app.spoolman.setting.auto_open_qr_camera')">
         <v-select
           v-model="autoOpenQRDetectionCameraId"
           filled
@@ -33,9 +29,7 @@
       </app-setting>
 
       <v-divider />
-      <app-setting
-        :title="$t('app.spoolman.setting.prefer_device_camera')"
-      >
+      <app-setting :title="$t('app.spoolman.setting.prefer_device_camera')">
         <v-switch
           v-model="preferDeviceCamera"
           hide-details
@@ -44,9 +38,7 @@
       </app-setting>
 
       <v-divider />
-      <app-setting
-        :title="$t('app.spoolman.setting.auto_select_spool_on_match')"
-      >
+      <app-setting :title="$t('app.spoolman.setting.auto_select_spool_on_match')">
         <v-switch
           v-model="autoSelectSpoolOnMatch"
           hide-details
@@ -55,9 +47,7 @@
       </app-setting>
 
       <v-divider />
-      <app-setting
-        :title="$t('app.spoolman.setting.warn_on_not_enough_filament')"
-      >
+      <app-setting :title="$t('app.spoolman.setting.warn_on_not_enough_filament')">
         <v-switch
           v-model="warnOnNotEnoughFilament"
           hide-details
@@ -66,9 +56,7 @@
       </app-setting>
 
       <v-divider />
-      <app-setting
-        :title="$t('app.spoolman.setting.warn_on_filament_type_mismatch')"
-      >
+      <app-setting :title="$t('app.spoolman.setting.warn_on_filament_type_mismatch')">
         <v-switch
           v-model="warnOnFilamentTypeMismatch"
           hide-details
@@ -77,9 +65,7 @@
       </app-setting>
 
       <v-divider />
-      <app-setting
-        :title="$tc('app.spoolman.setting.remaining_filament_unit')"
-      >
+      <app-setting :title="$tc('app.spoolman.setting.remaining_filament_unit')">
         <v-select
           v-model="remainingFilamentUnit"
           filled
@@ -87,25 +73,21 @@
           single-line
           hide-details="auto"
           :items="[
-            {text: $tc('app.spoolman.label.weight'), value: 'weight'},
-            {text: $tc('app.spoolman.label.length'), value: 'length'}
+            { text: $tc('app.spoolman.label.weight'), value: 'weight' },
+            { text: $tc('app.spoolman.label.length'), value: 'length' }
           ]"
         />
       </app-setting>
 
       <v-divider />
-      <app-setting
-        :title="$t('app.spoolman.setting.card_fields')"
-      >
+      <app-setting :title="$t('app.spoolman.setting.card_fields')">
         <v-select
           v-model="fieldsToShowInSpoolmanCard"
           multiple
           filled
           dense
           hide-details="auto"
-          :rules="[
-            $rules.lengthGreaterThanOrEqual(1),
-          ]"
+          :rules="[$rules.lengthGreaterThanOrEqual(1)]"
           :items="availableFieldsToShowInSpoolmanCard"
         />
       </app-setting>
@@ -135,11 +117,11 @@ import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
   components: {}
 })
 export default class SpoolmanSettings extends Mixins(StateMixin) {
-  get autoSpoolSelectionDialog (): boolean {
+  get autoSpoolSelectionDialog(): boolean {
     return this.$typedState.config.uiSettings.spoolman.autoSpoolSelectionDialog
   }
 
-  set autoSpoolSelectionDialog (value: boolean) {
+  set autoSpoolSelectionDialog(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoSpoolSelectionDialog',
       value,
@@ -147,30 +129,29 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get enabledWebcams (): Moonraker.Webcam.Entry[] {
+  get enabledWebcams(): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
 
-  get supportedCameras (): Array<{ text?: string, value: string | null, disabled?: boolean }> {
+  get supportedCameras(): Array<{ text?: string; value: string | null; disabled?: boolean }> {
     return [
       {
         text: this.$tc('app.setting.label.none'),
         value: null
       },
-      ...this.enabledWebcams
-        .map(camera => ({
-          text: camera.name,
-          value: camera.uid,
-          disabled: camera.service === 'iframe'
-        }))
+      ...this.enabledWebcams.map(camera => ({
+        text: camera.name,
+        value: camera.uid,
+        disabled: camera.service === 'iframe'
+      }))
     ]
   }
 
-  get autoOpenQRDetectionCameraId (): string | null {
+  get autoOpenQRDetectionCameraId(): string | null {
     return this.$typedState.config.uiSettings.spoolman.autoOpenQRDetectionCamera
   }
 
-  set autoOpenQRDetectionCameraId (value: string) {
+  set autoOpenQRDetectionCameraId(value: string) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoOpenQRDetectionCamera',
       value,
@@ -178,11 +159,11 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get preferDeviceCamera (): boolean {
+  get preferDeviceCamera(): boolean {
     return this.$typedState.config.uiSettings.spoolman.preferDeviceCamera
   }
 
-  set preferDeviceCamera (value: boolean) {
+  set preferDeviceCamera(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.preferDeviceCamera',
       value,
@@ -190,11 +171,11 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get autoSelectSpoolOnMatch (): boolean {
+  get autoSelectSpoolOnMatch(): boolean {
     return this.$typedState.config.uiSettings.spoolman.autoSelectSpoolOnMatch
   }
 
-  set autoSelectSpoolOnMatch (value: boolean) {
+  set autoSelectSpoolOnMatch(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoSelectSpoolOnMatch',
       value,
@@ -202,11 +183,11 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get warnOnNotEnoughFilament (): boolean {
+  get warnOnNotEnoughFilament(): boolean {
     return this.$typedState.config.uiSettings.spoolman.warnOnNotEnoughFilament
   }
 
-  set warnOnNotEnoughFilament (value: boolean) {
+  set warnOnNotEnoughFilament(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.warnOnNotEnoughFilament',
       value,
@@ -214,11 +195,11 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get warnOnFilamentTypeMismatch (): boolean {
+  get warnOnFilamentTypeMismatch(): boolean {
     return this.$typedState.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
   }
 
-  set warnOnFilamentTypeMismatch (value: boolean) {
+  set warnOnFilamentTypeMismatch(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.warnOnFilamentTypeMismatch',
       value,
@@ -226,11 +207,11 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
+  get remainingFilamentUnit(): SpoolmanRemainingFilamentUnit {
     return this.$typedState.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
-  set remainingFilamentUnit (value: SpoolmanRemainingFilamentUnit) {
+  set remainingFilamentUnit(value: SpoolmanRemainingFilamentUnit) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.remainingFilamentUnit',
       value,
@@ -238,7 +219,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  get availableFieldsToShowInSpoolmanCard () {
+  get availableFieldsToShowInSpoolmanCard() {
     return [
       'id',
       'vendor',
@@ -258,19 +239,20 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
       'comment'
     ].map(field => ({
       value: field,
-      text: field === 'remaining_weight'
-        ? this.$t('app.spoolman.label.remaining')
-        : field === 'used_weight'
-          ? this.$t('app.spoolman.label.used')
-          : this.$t(`app.spoolman.label.${field}`)
+      text:
+        field === 'remaining_weight'
+          ? this.$t('app.spoolman.label.remaining')
+          : field === 'used_weight'
+            ? this.$t('app.spoolman.label.used')
+            : this.$t(`app.spoolman.label.${field}`)
     }))
   }
 
-  get fieldsToShowInSpoolmanCard (): string[] {
+  get fieldsToShowInSpoolmanCard(): string[] {
     return this.$typedState.config.uiSettings.spoolman.selectedCardFields
   }
 
-  set fieldsToShowInSpoolmanCard (value: string[]) {
+  set fieldsToShowInSpoolmanCard(value: string[]) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectedCardFields',
       value,
@@ -278,7 +260,7 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
     })
   }
 
-  handleReset () {
+  handleReset() {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman',
       value: createState().uiSettings.spoolman,

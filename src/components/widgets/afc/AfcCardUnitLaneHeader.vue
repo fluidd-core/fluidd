@@ -33,11 +33,11 @@ export default class AfcCardUnitLaneHeader extends Mixins(StateMixin, AfcMixin) 
 
   showDialog = false
 
-  get lane (): Klipper.AfcLaneState | undefined {
+  get lane(): Klipper.AfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 
-  get mappedTool (): string {
+  get mappedTool(): string {
     const map = this.lane?.map
     if (map == null || map.length === 0) return 'NONE'
     return Array.isArray(map) ? map.join(', ') : map

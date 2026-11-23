@@ -10,7 +10,7 @@
     <template #menu>
       <app-btn-collapse-group :collapsed="narrow">
         <app-btn
-          v-if="['ready','loading','starting'].includes(queueState)"
+          v-if="['ready', 'loading', 'starting'].includes(queueState)"
           small
           class="me-1 my-1"
           @click="handlePause"
@@ -47,9 +47,7 @@
         icon
         @click="$filters.routeTo({ name: 'jobs' })"
       >
-        <v-icon dense>
-          $fullScreen
-        </v-icon>
+        <v-icon dense> $fullScreen </v-icon>
       </app-btn>
     </template>
 
@@ -81,27 +79,27 @@ export default class JobQueueCard extends Vue {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  get queueState (): Moonraker.JobQueue.QueueState {
+  get queueState(): Moonraker.JobQueue.QueueState {
     return this.$typedState.jobQueue.queueState
   }
 
-  handlePause () {
+  handlePause() {
     SocketActions.serverJobQueuePause()
   }
 
-  handleResume () {
+  handleResume() {
     SocketActions.serverJobQueueStart()
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .full-screen {
-    max-height: calc(100vh - 190px);
-    max-height: calc(100svh - 190px);
-  }
+.full-screen {
+  max-height: calc(100vh - 190px);
+  max-height: calc(100svh - 190px);
+}
 
-  .partial-screen {
-    max-height: 400px;
-  }
+.partial-screen {
+  max-height: 400px;
+}
 </style>

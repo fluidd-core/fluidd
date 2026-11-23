@@ -27,17 +27,15 @@ export default class SensorChart extends Vue {
   @Prop({ type: String })
   readonly units?: string
 
-  get chartData (): ChartDataSource {
+  get chartData(): ChartDataSource {
     return chartBufferSource(this.$typedState.charts.sensors[this.sensorId])
   }
 
-  get suffix (): string {
-    return this.units
-      ? ` ${this.units}`
-      : ''
+  get suffix(): string {
+    return this.units ? ` ${this.units}` : ''
   }
 
-  get labels (): AppInlineChartLabel[] {
+  get labels(): AppInlineChartLabel[] {
     return [
       {
         text: this.label,
@@ -47,7 +45,7 @@ export default class SensorChart extends Vue {
     ]
   }
 
-  get options (): EChartsOption {
+  get options(): EChartsOption {
     const options: EChartsOption = {
       ...this.$typedGetters['charts/getBaseChartOptions']({
         [this.field]: this.suffix
@@ -55,18 +53,15 @@ export default class SensorChart extends Vue {
       series: this.series
     }
 
-    if (
-      options.yAxis &&
-      !Array.isArray(options.yAxis)
-    ) {
-      options.yAxis.min = (value) => Math.min(0, value.min)
-      options.yAxis.max = (value) => Math.max(1, value.max * 1.1)
+    if (options.yAxis && !Array.isArray(options.yAxis)) {
+      options.yAxis.min = value => Math.min(0, value.min)
+      options.yAxis.max = value => Math.max(1, value.max * 1.1)
     }
 
     return options
   }
 
-  get series (): LineSeriesOption {
+  get series(): LineSeriesOption {
     return {
       ...this.$typedGetters['charts/getBaseSeries'],
       name: this.label,

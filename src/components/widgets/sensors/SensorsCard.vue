@@ -18,6 +18,5 @@ import Sensors from './Sensors.vue'
     Sensors
   }
 })
-export default class SensorsCard extends Vue {
-}
+export default class SensorsCard extends Vue {}
 </script>

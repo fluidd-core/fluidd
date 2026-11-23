@@ -12,9 +12,7 @@
         filled
         required
         class="mb-4"
-        :rules="[
-          $rules.required
-        ]"
+        :rules="[$rules.required]"
         hide-details="auto"
         :label="$t('app.bedmesh.label.profile_name')"
       />
@@ -56,14 +54,14 @@ export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   removeDefault = false
 
   @Watch('open')
-  onOpenChanged (value: boolean) {
+  onOpenChanged(value: boolean) {
     if (value) {
       this.name = 'default'
       this.removeDefault = false
     }
   }
 
-  handleSubmit () {
+  handleSubmit() {
     this.$emit('save', { name: this.name, removeDefault: this.removeDefault })
     this.open = false
   }

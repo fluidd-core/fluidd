@@ -5,31 +5,34 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 
 export const actions = {
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async init () {
+  async init() {
     SocketActions.serverSensorsList()
   },
 
-  initSensors ({ commit }, payload: Partial<MoonrakerSensorsState>) {
+  initSensors({ commit }, payload: Partial<MoonrakerSensorsState>) {
     commit('setInitSensors', payload)
   },
 
-  saveExpanded ({ commit, state }, expanded: string[]) {
+  saveExpanded({ commit, state }, expanded: string[]) {
     commit('setExpanded', expanded)
 
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.sensors.name + '.expanded', state.expanded)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.sensors.name + '.expanded',
+      state.expanded
+    )
   },
 
-  async onSensorsList ({ commit }, payload: Moonraker.Sensor.ListResponse) {
+  async onSensorsList({ commit }, payload: Moonraker.Sensor.ListResponse) {
     if (payload) {
       commit('setSensorsList', payload)
     }
   },
 
-  async onSensorUpdate ({ commit }, payload: Record<string, Moonraker.Sensor.Values>) {
+  async onSensorUpdate({ commit }, payload: Record<string, Moonraker.Sensor.Values>) {
     if (payload) {
       commit('setSensorUpdate', payload)
     }

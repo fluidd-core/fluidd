@@ -10,27 +10,27 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Make a socket request to init the timelapse component.
    */
-  async init () {
+  async init() {
     SocketActions.machineTimelapseGetSettings()
     SocketActions.machineTimelapseLastFrameInfo()
   },
 
-  async onSettings ({ commit }, payload: Moonraker.Timelapse.SettingsResponse) {
+  async onSettings({ commit }, payload: Moonraker.Timelapse.SettingsResponse) {
     commit('setSettings', payload)
   },
 
-  async onLastFrame ({ commit }, payload: Moonraker.Timelapse.LastFrameInfoResponse) {
+  async onLastFrame({ commit }, payload: Moonraker.Timelapse.LastFrameInfoResponse) {
     commit('setLastFrame', payload)
   },
 
-  async onEvent ({ commit }, payload: Moonraker.Timelapse.Event) {
+  async onEvent({ commit }, payload: Moonraker.Timelapse.Event) {
     switch (payload.action) {
       case 'newframe': {
         if (payload.status === 'error') {

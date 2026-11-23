@@ -22,7 +22,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
   @Ref('streamingElement')
   readonly cameraVideo!: HTMLVideoElement
 
-  async startPlayback () {
+  async startPlayback() {
     this.updateStatus('connecting')
 
     try {
@@ -30,15 +30,18 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
 
       this.cameraVideo.srcObject = stream
 
-      this.updateCameraName(await this.getDeviceLabel() ?? '')
+      this.updateCameraName((await this.getDeviceLabel()) ?? '')
     } catch (e) {
-      consola.error(`[DeviceCamera] failed to start playback "${this.getSelectedDeviceCamera()}"`, e)
+      consola.error(
+        `[DeviceCamera] failed to start playback "${this.getSelectedDeviceCamera()}"`,
+        e
+      )
 
       this.updateStatus('error')
     }
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.updateStatus('disconnected')
 
     try {
@@ -57,11 +60,13 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
     this.cameraVideo.srcObject = null
   }
 
-  async getUserMedia () {
+  async getUserMedia() {
     const selectedDeviceCamera = this.getSelectedDeviceCamera()
 
     try {
-      const key: keyof MediaTrackConstraints = ['environment', 'user'].includes(selectedDeviceCamera)
+      const key: keyof MediaTrackConstraints = ['environment', 'user'].includes(
+        selectedDeviceCamera
+      )
         ? 'facingMode'
         : 'deviceId'
 
@@ -83,12 +88,11 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
     }
   }
 
-  async enumerateDevices () {
+  async enumerateDevices() {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices()
 
-      return devices
-        .filter(device => device.kind === 'videoinput')
+      return devices.filter(device => device.kind === 'videoinput')
     } catch (e) {
       consola.error('[DeviceCamera] failed to enumerate devices', e)
 
@@ -96,7 +100,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
     }
   }
 
-  async getDeviceLabel () {
+  async getDeviceLabel() {
     if (this.cameraNameMenuItems.length === 0) {
       const devices = await this.enumerateDevices()
 
@@ -111,12 +115,11 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
           text: this.$tc('app.general.label.user_facing'),
           value: 'user'
         },
-        ...devices
-          .map(device => ({
-            icon: '$camera',
-            text: device.label,
-            value: device.deviceId
-          }))
+        ...devices.map(device => ({
+          icon: '$camera',
+          text: device.label,
+          value: device.deviceId
+        }))
       ]
 
       this.updateCameraNameMenuItems(cameraNameMenuItems)
@@ -124,15 +127,14 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
 
     const selectedDeviceCamera = this.getSelectedDeviceCamera()
 
-    return this.cameraNameMenuItems
-      .find(item => item.value === selectedDeviceCamera)?.text
+    return this.cameraNameMenuItems.find(item => item.value === selectedDeviceCamera)?.text
   }
 
-  getSelectedDeviceCamera () {
+  getSelectedDeviceCamera() {
     return localStorage.getItem('deviceCamera.selectedCamera') ?? 'environment'
   }
 
-  setSelectedDeviceCamera (value?: string | null) {
+  setSelectedDeviceCamera(value?: string | null) {
     if (value) {
       localStorage.setItem('deviceCamera.selectedCamera', value)
     } else {
@@ -140,7 +142,7 @@ export default class DeviceCamera extends Mixins(CameraMixin) {
     }
   }
 
-  menuItemClick (item: CameraNameMenuItem) {
+  menuItemClick(item: CameraNameMenuItem) {
     if (this.getSelectedDeviceCamera() !== item.value) {
       this.setSelectedDeviceCamera(item.value)
 

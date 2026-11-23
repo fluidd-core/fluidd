@@ -27,11 +27,7 @@
       >
         <app-text-field
           :value="outputFramerate"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(0)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
           :disabled="outputFramerateBlocked"
           hide-details="auto"
           filled
@@ -50,11 +46,7 @@
         >
           <app-text-field
             :value="targetLength"
-            :rules="[
-              $rules.required,
-              $rules.numberValid,
-              $rules.numberGreaterThanOrEqual(0)
-            ]"
+            :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
             :disabled="targetLengthBlocked"
             hide-details="auto"
             filled
@@ -74,11 +66,7 @@
         >
           <app-text-field
             :value="minFps"
-            :rules="[
-              $rules.required,
-              $rules.numberValid,
-              $rules.numberGreaterThanOrEqual(0)
-            ]"
+            :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
             :disabled="minFpsBlocked"
             hide-details="auto"
             filled
@@ -98,11 +86,7 @@
         >
           <app-text-field
             :value="maxFps"
-            :rules="[
-              $rules.required,
-              $rules.numberValid,
-              $rules.numberGreaterThanOrEqual(0)
-            ]"
+            :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
             :disabled="maxFpsBlocked"
             hide-details="auto"
             filled
@@ -137,11 +121,7 @@
       >
         <app-text-field
           :value="duplicateFrames"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(0)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
           :disabled="duplicateFramesBlocked"
           hide-details="auto"
           filled
@@ -218,16 +198,14 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   readonly renderable!: boolean
 
-  get lengthEstimate () {
+  get lengthEstimate() {
     const totalFrames = this.frameCount + this.duplicateLastFrameCount
 
     let framerate
     if (this.settings.variable_fps) {
       framerate = Math.min(
         this.settings.variable_fps_max,
-        Math.max(
-          this.settings.variable_fps_min,
-          totalFrames / this.settings.targetlength)
+        Math.max(this.settings.variable_fps_min, totalFrames / this.settings.targetlength)
       )
     } else {
       framerate = this.settings.output_framerate
@@ -236,143 +214,143 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     const seconds = (totalFrames || 0) / framerate
     const minutes = Math.floor(seconds / 60)
 
-    return `${minutes ? (minutes + 'm') : ''} ${Math.floor(seconds % 60)}s`.trim()
+    return `${minutes ? minutes + 'm' : ''} ${Math.floor(seconds % 60)}s`.trim()
   }
 
-  get outputFramerateBlocked (): boolean {
+  get outputFramerateBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('output_framerate')
   }
 
-  get outputFramerate (): number {
+  get outputFramerate(): number {
     return this.settings.output_framerate
   }
 
-  setOutputFramerate (value: number) {
+  setOutputFramerate(value: number) {
     SocketActions.machineTimelapsePostSettings({ output_framerate: value })
   }
 
-  get variableFpsBlocked (): boolean {
+  get variableFpsBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('variable_fps')
   }
 
-  get variableFps (): boolean {
+  get variableFps(): boolean {
     return this.settings.variable_fps
   }
 
-  set variableFps (value: boolean) {
+  set variableFps(value: boolean) {
     SocketActions.machineTimelapsePostSettings({ variable_fps: value })
   }
 
-  get targetLengthBlocked (): boolean {
+  get targetLengthBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('targetlength')
   }
 
-  get targetLength (): number {
+  get targetLength(): number {
     return this.settings.targetlength
   }
 
-  setTargetLength (value: number) {
+  setTargetLength(value: number) {
     SocketActions.machineTimelapsePostSettings({ targetlength: value })
   }
 
-  get minFpsBlocked (): boolean {
+  get minFpsBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('variable_fps_min')
   }
 
-  get minFps (): number {
+  get minFps(): number {
     return this.settings.variable_fps_min
   }
 
-  setMinFps (value: number) {
+  setMinFps(value: number) {
     SocketActions.machineTimelapsePostSettings({ variable_fps_min: value })
   }
 
-  get maxFpsBlocked (): boolean {
+  get maxFpsBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('variable_fps_max')
   }
 
-  get maxFps (): number {
+  get maxFps(): number {
     return this.settings.variable_fps_max
   }
 
-  setMaxFps (value: number) {
+  setMaxFps(value: number) {
     SocketActions.machineTimelapsePostSettings({ variable_fps_max: value })
   }
 
-  get duplicateFramesBlocked (): boolean {
+  get duplicateFramesBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('duplicatelastframe')
   }
 
-  get duplicateFrames (): number {
+  get duplicateFrames(): number {
     return this.settings.duplicatelastframe
   }
 
-  setDuplicateFrames (value: number) {
+  setDuplicateFrames(value: number) {
     SocketActions.machineTimelapsePostSettings({ duplicatelastframe: value })
   }
 
-  get saveFramesBlocked (): boolean {
+  get saveFramesBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('saveframes')
   }
 
-  get saveFrames (): boolean {
+  get saveFrames(): boolean {
     return this.settings.saveframes
   }
 
-  set saveFrames (value: boolean) {
+  set saveFrames(value: boolean) {
     SocketActions.machineTimelapsePostSettings({ saveframes: value })
   }
 
-  get previewImageBlocked (): boolean {
+  get previewImageBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('previewimage')
   }
 
-  get previewImage (): boolean {
+  get previewImage(): boolean {
     return this.settings.previewimage
   }
 
-  set previewImage (value: boolean) {
+  set previewImage(value: boolean) {
     SocketActions.machineTimelapsePostSettings({ previewimage: value })
   }
 
-  renderTimelapse () {
+  renderTimelapse() {
     SocketActions.machineTimelapseRender()
     this.open = false
   }
 
-  get frameCount () {
+  get frameCount() {
     return this.lastFrame?.count ?? 0
   }
 
-  get duplicateLastFrameCount () {
+  get duplicateLastFrameCount() {
     return this.settings.duplicatelastframe ?? 0
   }
 
-  get crfBlocked (): boolean {
+  get crfBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('constant_rate_factor')
   }
 
-  get crf (): number {
+  get crf(): number {
     return this.settings.constant_rate_factor
   }
 
-  setCRF (value: number) {
+  setCRF(value: number) {
     SocketActions.machineTimelapsePostSettings({ constant_rate_factor: value })
   }
 
-  get defaultCRF (): number {
+  get defaultCRF(): number {
     return defaultWritableSettings.constant_rate_factor
   }
 
-  get settings (): Moonraker.Timelapse.WriteableSettings {
+  get settings(): Moonraker.Timelapse.WriteableSettings {
     return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  get lastFrame (): TimelapseLastFrame | null {
+  get lastFrame(): TimelapseLastFrame | null {
     return this.$typedGetters['timelapse/getLastFrame']
   }
 
-  subtitleIfBlocked (blocked: boolean): string {
+  subtitleIfBlocked(blocked: boolean): string {
     return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }

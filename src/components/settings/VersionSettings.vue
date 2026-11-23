@@ -18,9 +18,7 @@
           :disabled="!hasUpdates || hasInvalidComponent || isRefreshing || printerPrinting"
           @click="handleUpdateComponent('all')"
         >
-          <v-icon left>
-            $download
-          </v-icon>
+          <v-icon left> $download </v-icon>
           {{ $t('app.version.btn.update_all') }}
         </app-btn>
 
@@ -43,9 +41,7 @@
 
       <v-divider />
 
-      <app-setting
-        :title="$t('app.setting.label.enable_notifications')"
-      >
+      <app-setting :title="$t('app.setting.label.enable_notifications')">
         <v-switch
           v-model="enableNotifications"
           hide-details
@@ -112,14 +108,18 @@
                 @click="handleInformationDialog(component)"
                 v-on="on"
               >
-                <v-icon small>
-                  $info
-                </v-icon>
+                <v-icon small> $info </v-icon>
               </app-btn>
             </template>
-            <span v-if="'name' in component && component.name !== 'system'">{{ $t('app.version.tooltip.release_notes') }}</span>
-            <span v-else-if="'commits_behind' in component">{{ $t('app.version.tooltip.commit_history') }}</span>
-            <span v-else-if="'package_list' in component">{{ $t('app.version.tooltip.packages') }}</span>
+            <span v-if="'name' in component && component.name !== 'system'">{{
+              $t('app.version.tooltip.release_notes')
+            }}</span>
+            <span v-else-if="'commits_behind' in component">{{
+              $t('app.version.tooltip.commit_history')
+            }}</span>
+            <span v-else-if="'package_list' in component">{{
+              $t('app.version.tooltip.packages')
+            }}</span>
           </v-tooltip>
 
           <version-status
@@ -189,28 +189,27 @@ export default class VersionSettings extends Mixins(StateMixin) {
     component: null
   }
 
-  get components (): VersionInfo[] {
+  get components(): VersionInfo[] {
     return this.$typedGetters['version/getVisibleComponents']
   }
 
-  get isRefreshing (): boolean {
+  get isRefreshing(): boolean {
     return this.hasWait(this.$waits.onVersionRefresh)
   }
 
-  get hasUpdates (): boolean {
+  get hasUpdates(): boolean {
     return this.$typedGetters['version/hasUpdates']
   }
 
-  get hasInvalidComponent (): boolean {
-    return this.components
-      .some(component => !this.isValid(component))
+  get hasInvalidComponent(): boolean {
+    return this.components.some(component => !this.isValid(component))
   }
 
-  get enableNotifications (): boolean {
+  get enableNotifications(): boolean {
     return this.$typedState.config.uiSettings.general.enableVersionNotifications
   }
 
-  set enableNotifications (value: boolean) {
+  set enableNotifications(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.enableVersionNotifications',
       value,
@@ -218,7 +217,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
     })
   }
 
-  packageTitle (component: VersionInfo) {
+  packageTitle(component: VersionInfo) {
     if (component.name === 'system') {
       return this.$t('app.version.label.os_packages')
     }
@@ -226,26 +225,20 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return component.name
   }
 
-  hasUpdate (component: string): boolean {
+  hasUpdate(component: string): boolean {
     return this.$typedGetters['version/hasUpdate'](component)
   }
 
-  isDirty (component: VersionInfo): boolean {
-    return (
-      'is_dirty' in component &&
-      component.is_dirty
-    )
+  isDirty(component: VersionInfo): boolean {
+    return 'is_dirty' in component && component.is_dirty
   }
 
-  isValid (component: VersionInfo): boolean {
-    return (
-      !('is_valid' in component) ||
-      component.is_valid
-    )
+  isValid(component: VersionInfo): boolean {
+    return !('is_valid' in component) || component.is_valid
   }
 
   // Will attempt to update the requirec component based on its type.
-  handleUpdateComponent (key: string) {
+  handleUpdateComponent(key: string) {
     this.$typedDispatch('version/onUpdateStatus', { busy: true })
 
     switch (key) {
@@ -268,7 +261,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   // Will attempt to recover a component based on its type and current status.
-  handleRecoverComponent (component: VersionInfo) {
+  handleRecoverComponent(component: VersionInfo) {
     this.$typedDispatch('version/onUpdateStatus', { busy: true })
 
     if (this.isDirty(component)) {
@@ -278,7 +271,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
     }
   }
 
-  forceCheck () {
+  forceCheck() {
     if (this.$typedGetters['server/getIsMinApiVersion']('1.2.0')) {
       SocketActions.machineUpdateRefresh()
     } else {
@@ -286,26 +279,19 @@ export default class VersionSettings extends Mixins(StateMixin) {
     }
   }
 
-  getBaseUrl (component: VersionInfo) {
-    if (
-      'remote_url' in component &&
-      /^https?:\/\//i.test(component.remote_url)
-    ) {
+  getBaseUrl(component: VersionInfo) {
+    if ('remote_url' in component && /^https?:\/\//i.test(component.remote_url)) {
       return component.remote_url
     }
 
-    if (
-      'owner' in component &&
-      component.owner !== '?' &&
-      component.repo_name !== '?'
-    ) {
+    if ('owner' in component && component.owner !== '?' && component.repo_name !== '?') {
       return `https://github.com/${component.owner}/${component.repo_name || component.name}`
     }
 
     return ''
   }
 
-  getInformationUrl (component: VersionInfo) {
+  getInformationUrl(component: VersionInfo) {
     switch (component.configured_type) {
       case 'git_repo':
       case 'system':
@@ -329,7 +315,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
       : `${baseUrl}/releases`
   }
 
-  hasInformation (component: VersionInfo) {
+  hasInformation(component: VersionInfo) {
     return (
       component.configured_type === 'git_repo' ||
       component.configured_type === 'system' ||
@@ -337,7 +323,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
     )
   }
 
-  handleInformationDialog (component: VersionInfo) {
+  handleInformationDialog(component: VersionInfo) {
     switch (component.configured_type) {
       case 'git_repo':
       case 'system':

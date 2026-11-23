@@ -8,13 +8,14 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setResetRoot (state, root: string) {
-    const keysToDelete = Object.keys(state.pathContent)
-      .filter(key => key === root || key.startsWith(`${root}/`))
+  setResetRoot(state, root: string) {
+    const keysToDelete = Object.keys(state.pathContent).filter(
+      key => key === root || key.startsWith(`${root}/`)
+    )
 
     for (const key of keysToDelete) {
       Vue.delete(state.pathContent, key)
@@ -25,37 +26,37 @@ export const mutations = {
     }
   },
 
-  setServerFilesGetDirectory (state, payload: { path: string, content: MoonrakerPathContent }) {
+  setServerFilesGetDirectory(state, payload: { path: string; content: MoonrakerPathContent }) {
     const { path, content } = payload
 
     const pathContent: MoonrakerPathContent = {
       ...content,
-      files: content.files
-        .map(file => Object.freeze(file)),
-      dirs: content.dirs
-        .map(dir => Object.freeze(dir))
+      files: content.files.map(file => Object.freeze(file)),
+      dirs: content.dirs.map(dir => Object.freeze(dir))
     }
 
     Vue.set(state.pathContent, path, pathContent)
   },
 
-  setServerFilesRoots (state, payload: Moonraker.Files.RootInfoWithPath[]) {
+  setServerFilesRoots(state, payload: Moonraker.Files.RootInfoWithPath[]) {
     state.roots = Object.freeze(payload)
   },
 
-  setServerFilesListRoot (state, payload: { root: string, files: Moonraker.Files.RootFile[] }) {
+  setServerFilesListRoot(state, payload: { root: string; files: Moonraker.Files.RootFile[] }) {
     const { root, files } = payload
 
     Vue.set(state.rootFiles, root, Object.freeze(files))
   },
 
-  setFileUpdate (state, payload: { paths: FilePaths, file: Moonraker.Files.File | Moonraker.Files.FileWithMeta }) {
+  setFileUpdate(
+    state,
+    payload: { paths: FilePaths; file: Moonraker.Files.File | Moonraker.Files.FileWithMeta }
+  ) {
     const { paths, file } = payload
 
-    const isFiltered = (
+    const isFiltered =
       Globals.FILTERED_FILES_PREFIX.some(e => paths.filename.startsWith(e)) ||
       Globals.FILTERED_FILES_EXTENSION.some(e => paths.filename.endsWith(e))
-    )
 
     if (!isFiltered) {
       // Find relevant directory.
@@ -81,13 +82,12 @@ export const mutations = {
     }
   },
 
-  setDirUpdate (state, payload: { paths: FilePaths, dir: Moonraker.Files.Dir }) {
+  setDirUpdate(state, payload: { paths: FilePaths; dir: Moonraker.Files.Dir }) {
     const { paths, dir } = payload
 
-    const isFiltered = (
+    const isFiltered =
       Globals.FILTERED_FILES_PREFIX.some(e => paths.filename.startsWith(e)) ||
       Globals.FILTERED_FILES_EXTENSION.some(e => paths.filename.endsWith(e))
-    )
 
     if (!isFiltered) {
       // Find relevant directory.
@@ -105,7 +105,7 @@ export const mutations = {
     }
   },
 
-  setFileDelete (state, payload: FilePaths) {
+  setFileDelete(state, payload: FilePaths) {
     // Find relevant directory.
     const directory = state.pathContent[payload.rootPath]
 
@@ -118,7 +118,7 @@ export const mutations = {
     }
   },
 
-  setDirDelete (state, payload: FilePaths) {
+  setDirDelete(state, payload: FilePaths) {
     // Find relevant directory.
     const directory = state.pathContent[payload.rootPath]
 
@@ -131,17 +131,18 @@ export const mutations = {
     }
   },
 
-  setPathDelete (state, payload: string) {
+  setPathDelete(state, payload: string) {
     // Find relevant directories.
-    const keysToDelete = Object.keys(state.pathContent)
-      .filter(key => key === payload || key.startsWith(`${payload}/`))
+    const keysToDelete = Object.keys(state.pathContent).filter(
+      key => key === payload || key.startsWith(`${payload}/`)
+    )
 
     for (const key of keysToDelete) {
       Vue.delete(state.pathContent, key)
     }
   },
 
-  setUpdateFileUpload (state, payload: Partial<FileUpload> & { uid: string }) {
+  setUpdateFileUpload(state, payload: Partial<FileUpload> & { uid: string }) {
     const uploadIndex = state.uploads.findIndex(upload => upload.uid === payload.uid)
 
     if (uploadIndex >= 0) {
@@ -156,18 +157,15 @@ export const mutations = {
     }
   },
 
-  setRemoveFileUpload (state, payload: string) {
-    const i = state.uploads.findIndex((u) => u.uid === payload)
+  setRemoveFileUpload(state, payload: string) {
+    const i = state.uploads.findIndex(u => u.uid === payload)
     if (i >= 0) {
       state.uploads.splice(i, 1)
     }
   },
 
-  setUpdateFileDownload (state, payload: Partial<FileDownload> & { uid: string }) {
-    if (
-      state.download == null ||
-      state.download.uid === payload.uid
-    ) {
+  setUpdateFileDownload(state, payload: Partial<FileDownload> & { uid: string }) {
+    if (state.download == null || state.download.uid === payload.uid) {
       // The first update for a given uid always carries the full FileDownload shape.
       state.download = {
         ...state.download,
@@ -176,17 +174,17 @@ export const mutations = {
     }
   },
 
-  setRemoveFileDownload (state, payload: string) {
+  setRemoveFileDownload(state, payload: string) {
     if (state.download?.uid === payload) {
       state.download = null
     }
   },
 
-  setCurrentPath (state, payload: { root: string, path: string }) {
+  setCurrentPath(state, payload: { root: string; path: string }) {
     Vue.set(state.currentPaths, payload.root, payload.path)
   },
 
-  setDiskUsage (state, payload: { root: string, disk_usage: Moonraker.Files.DiskUsage }) {
+  setDiskUsage(state, payload: { root: string; disk_usage: Moonraker.Files.DiskUsage }) {
     Vue.set(state.diskUsage, payload.root, Object.freeze(payload.disk_usage))
   }
 } satisfies MutationTree<FilesState>

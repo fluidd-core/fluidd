@@ -8,14 +8,14 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Adds a new notification.
    */
-  async pushNotification ({ commit, state }, payload: AppPushNotification) {
+  async pushNotification({ commit, state }, payload: AppPushNotification) {
     // When adding;
     // 1. Define if it should be merged with the same type if re-adding.
     // 2. Define if it should also provide a popover.
@@ -54,7 +54,7 @@ export const actions = {
   /**
    * Clear a notification.
    */
-  async clearNotification ({ commit, dispatch }, n: AppNotification | string) {
+  async clearNotification({ commit, dispatch }, n: AppNotification | string) {
     if (typeof n === 'object' && n.type === 'announcement') {
       dispatch('announcements/dismiss', { entry_id: n.id }, { root: true })
       return
@@ -66,7 +66,7 @@ export const actions = {
   /**
    * Clear all notifications.
    */
-  async clearAll ({ commit, dispatch }) {
+  async clearAll({ commit, dispatch }) {
     commit('setClearAllNotifications')
 
     dispatch('announcements/dismissAll', {}, { root: true })

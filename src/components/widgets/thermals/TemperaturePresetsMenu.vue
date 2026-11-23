@@ -33,9 +33,7 @@
     <v-list dense>
       <v-list-item @click="$emit('applyOff')">
         <v-list-item-icon>
-          <v-icon color="info">
-            $snowflake
-          </v-icon>
+          <v-icon color="info"> $snowflake </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -50,9 +48,7 @@
           @click="$emit('applyPreset', preset)"
         >
           <v-list-item-icon>
-            <v-icon color="error">
-              $fire
-            </v-icon>
+            <v-icon color="error"> $fire </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>
@@ -72,7 +68,7 @@ import type { TemperaturePreset } from '@/store/config/types'
 
 @Component({})
 export default class TemperaturePresetsMenu extends Mixins(StateMixin) {
-  get presets (): TemperaturePreset[] {
+  get presets(): TemperaturePreset[] {
     return this.$typedGetters['config/getTempPresets']
   }
 }

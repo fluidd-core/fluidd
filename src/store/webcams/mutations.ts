@@ -4,19 +4,19 @@ import type { WebcamsState } from './types'
 import { createState } from './state'
 
 export const mutations = {
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setInitWebcams (state, payload: { activeWebcam?: string }) {
+  setInitWebcams(state, payload: { activeWebcam?: string }) {
     state.activeWebcam = payload.activeWebcam || 'all'
   },
 
-  setWebcamsList (state, payload: Moonraker.Webcam.ListResponse) {
+  setWebcamsList(state, payload: Moonraker.Webcam.ListResponse) {
     state.webcams = payload.webcams || []
   },
 
-  setUpdateWebcam (state, payload: Moonraker.Webcam.Entry) {
+  setUpdateWebcam(state, payload: Moonraker.Webcam.Entry) {
     const index = state.webcams.findIndex(webcam => webcam.uid === payload.uid)
 
     if (index >= 0) {
@@ -26,7 +26,7 @@ export const mutations = {
     }
   },
 
-  setRemoveWebcam (state, payload: string) {
+  setRemoveWebcam(state, payload: string) {
     const index = state.webcams.findIndex(webcam => webcam.uid === payload)
 
     if (index >= 0) {
@@ -36,7 +36,7 @@ export const mutations = {
     if (state.activeWebcam === payload) state.activeWebcam = 'all'
   },
 
-  setActiveWebcam (state, payload: string) {
+  setActiveWebcam(state, payload: string) {
     state.activeWebcam = payload
   }
 } satisfies MutationTree<WebcamsState>

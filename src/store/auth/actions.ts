@@ -9,30 +9,27 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Inits moonraker component
    */
-  async init ({ commit }) {
+  async init({ commit }) {
     await Promise.all([
       // Load current user.
-      SocketActions.accessGetUser()
-        .then(response => commit('setCurrentUser', response)),
+      SocketActions.accessGetUser().then(response => commit('setCurrentUser', response)),
 
       // Load user list.
-      SocketActions.accessUsersList()
-        .then(response => commit('setUsers', response.users)),
+      SocketActions.accessUsersList().then(response => commit('setUsers', response.users)),
 
       // Load our current API key.
-      SocketActions.accessGetApiKey()
-        .then(response => commit('setApiKey', response)),
+      SocketActions.accessGetApiKey().then(response => commit('setApiKey', response))
     ])
   },
 
-  async login ({ commit, dispatch, rootGetters }, { username, password, source }) {
+  async login({ commit, dispatch, rootGetters }, { username, password, source }) {
     const user = await SocketActions.accessLogin(username, password, source)
 
     // Successful login. Moonraker has authenticated the current socket as
@@ -58,7 +55,10 @@ export const actions = {
    * App.vue renders the login overlay. The websocket connection is intentionally
    * kept open so the login overlay can call access.info / access.login over it.
    */
-  async logout ({ commit, dispatch, rootGetters, rootState }, payload: { invalidate?: boolean; partial?: boolean } = {}) {
+  async logout(
+    { commit, dispatch, rootGetters, rootState },
+    payload: { invalidate?: boolean; partial?: boolean } = {}
+  ) {
     const { invalidate = false, partial = false } = payload
 
     // Invalidate all sessions (server-side). The current socket session becomes
@@ -94,7 +94,7 @@ export const actions = {
    * shows the login overlay. login_required overrides trusted_clients whenever
    * force_logins is enabled with at least one user configured.
    */
-  async checkTrust ({ dispatch, commit }) {
+  async checkTrust({ dispatch, commit }) {
     try {
       const info = await SocketActions.accessInfo({ suppressError: true })
 
@@ -120,23 +120,23 @@ export const actions = {
   /**
    * Broadcast to every client, but only that user's connections are de-authenticated
    */
-  async onUserLoggedOut ({ dispatch, state }, user: Moonraker.Authorization.UserEvent) {
+  async onUserLoggedOut({ dispatch, state }, user: Moonraker.Authorization.UserEvent) {
     if (user.username === state.currentUser?.username) {
       await dispatch('logout')
     }
   },
 
-  async onUserCreated ({ commit }, user: Moonraker.Authorization.UserEvent) {
+  async onUserCreated({ commit }, user: Moonraker.Authorization.UserEvent) {
     commit('setAddUser', user)
   },
 
-  async onUserDeleted ({ commit, dispatch }, user: Moonraker.Authorization.UserEvent) {
+  async onUserDeleted({ commit, dispatch }, user: Moonraker.Authorization.UserEvent) {
     commit('setRemoveUser', user)
 
     await dispatch('onUserLoggedOut', user)
   },
 
-  async refreshApiKey ({ commit }) {
+  async refreshApiKey({ commit }) {
     const key = await SocketActions.accessPostApiKey()
 
     commit('setApiKey', key)

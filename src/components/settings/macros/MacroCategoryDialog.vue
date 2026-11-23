@@ -11,10 +11,7 @@
         autofocus
         outlined
         :label="label"
-        :rules="[
-          $rules.required,
-          customRules.uniqueName
-        ]"
+        :rules="[$rules.required, customRules.uniqueName]"
         required
       />
     </v-card-text>
@@ -41,29 +38,27 @@ export default class MacroCategoryDialog extends Vue {
 
   newName = ''
 
-  get customRules () {
+  get customRules() {
     return {
       uniqueName: (v: string) => {
         return (
-          (
-            v.toLowerCase() === this.name.toLowerCase() ||
-            !this.categories.some(c => c.name.toLowerCase() === v.toLowerCase())
-          ) ||
+          v.toLowerCase() === this.name.toLowerCase() ||
+          !this.categories.some(c => c.name.toLowerCase() === v.toLowerCase()) ||
           this.$t('app.general.simple_form.error.exists')
         )
       }
     }
   }
 
-  mounted () {
+  mounted() {
     this.newName = this.name
   }
 
-  get categories (): MacroCategory[] {
+  get categories(): MacroCategory[] {
     return this.$typedGetters['macros/getCategories']
   }
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.newName)
     this.open = false
   }

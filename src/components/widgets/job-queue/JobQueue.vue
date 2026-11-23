@@ -66,7 +66,10 @@ import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
 import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
 import type { AppDataTableHeader } from '@/types'
-import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
+import {
+  getFileDataTransferDataFromDataTransfer,
+  hasFileDataTransferTypeInDataTransfer
+} from '@/util/file-data-transfer'
 import type { DataTableHeader } from 'vuetify'
 
 @Component({
@@ -100,13 +103,13 @@ export default class JobQueue extends Vue {
   @Prop({ type: Boolean })
   readonly bulkActions?: boolean
 
-  get jobs (): QueuedJobWithAppFile[] {
+  get jobs(): QueuedJobWithAppFile[] {
     this.selected = []
 
     return this.$typedGetters['jobQueue/getQueuedJobsWithFiles']
   }
 
-  get configurableHeaders (): AppDataTableHeader[] {
+  get configurableHeaders(): AppDataTableHeader[] {
     const headers: AppDataTableHeader[] = [
       {
         text: this.$tc('app.general.table.header.time_added'),
@@ -123,12 +126,14 @@ export default class JobQueue extends Vue {
       }
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'job_queue')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters[
+      'config/getMergedTableHeaders'
+    ](headers, 'job_queue')
 
     return mergedTableHeaders
   }
 
-  get headers (): DataTableHeader[] {
+  get headers(): DataTableHeader[] {
     return [
       {
         text: '',
@@ -147,12 +152,11 @@ export default class JobQueue extends Vue {
         value: 'filename',
         sortable: false
       },
-      ...this.configurableHeaders
-        .filter(header => header.visible !== false)
+      ...this.configurableHeaders.filter(header => header.visible !== false)
     ]
   }
 
-  handleRowClick (item: QueuedJobWithAppFile, event: MouseEvent) {
+  handleRowClick(item: QueuedJobWithAppFile, event: MouseEvent) {
     if (this.contextMenuState.open) {
       this.contextMenuState.open = false
 
@@ -161,70 +165,58 @@ export default class JobQueue extends Vue {
       }
     }
 
-    if (
-      this.selected.length !== 0 &&
-      !this.selected.some(x => x.filename === item.filename)
-    ) {
+    if (this.selected.length !== 0 && !this.selected.some(x => x.filename === item.filename)) {
       return
     }
 
     // Open the context menu
     this.contextMenuState.x = event.clientX
     this.contextMenuState.y = event.clientY
-    this.contextMenuState.job = this.selected.length > 1
-      ? this.selected
-      : item
+    this.contextMenuState.job = this.selected.length > 1 ? this.selected : item
     this.$nextTick(() => {
       this.contextMenuState.open = true
     })
   }
 
-  async handleRemoveAll () {
-    const result = await this.$confirm(
-      this.$tc('app.job_queue.msg.confirm'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async handleRemoveAll() {
+    const result = await this.$confirm(this.$tc('app.job_queue.msg.confirm'), {
+      title: this.$tc('app.general.label.confirm'),
+      color: 'card-heading',
+      icon: '$error'
+    })
 
     if (result) {
       SocketActions.serverJobQueueDeleteJobs(['all'])
     }
   }
 
-  handleRefresh () {
+  handleRefresh() {
     SocketActions.serverJobQueueStatus()
   }
 
-  handleRemove (jobs: QueuedJobWithAppFile | QueuedJobWithAppFile[]) {
-    const jobIds = Array.isArray(jobs)
-      ? jobs.map(job => job.job_id)
-      : [jobs.job_id]
+  handleRemove(jobs: QueuedJobWithAppFile | QueuedJobWithAppFile[]) {
+    const jobIds = Array.isArray(jobs) ? jobs.map(job => job.job_id) : [jobs.job_id]
 
     SocketActions.serverJobQueueDeleteJobs(jobIds)
   }
 
-  handleMultiplyDialog (jobs: QueuedJobWithAppFile | QueuedJobWithAppFile[]) {
+  handleMultiplyDialog(jobs: QueuedJobWithAppFile | QueuedJobWithAppFile[]) {
     this.multiplyJobDialogState = {
       open: true,
       job: jobs
     }
   }
 
-  handleMultiply (jobs: QueuedJobWithAppFile | QueuedJobWithAppFile[], copies: number) {
-    const filenames = Array.isArray(jobs)
-      ? jobs.map(job => job.filename)
-      : [jobs.filename]
+  handleMultiply(jobs: QueuedJobWithAppFile | QueuedJobWithAppFile[], copies: number) {
+    const filenames = Array.isArray(jobs) ? jobs.map(job => job.filename) : [jobs.filename]
 
-    const multipliedFilenames = Array.from({ length: copies })
-      .flatMap(() => filenames)
+    const multipliedFilenames = Array.from({ length: copies }).flatMap(() => filenames)
 
     SocketActions.serverJobQueuePostJob(multipliedFilenames)
   }
 
-  handleDragOver (event: DragEvent) {
-    if (
-      event.dataTransfer &&
-      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
-    ) {
+  handleDragOver(event: DragEvent) {
+    if (event.dataTransfer && hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')) {
       event.preventDefault()
 
       event.dataTransfer.dropEffect = 'link'
@@ -233,23 +225,19 @@ export default class JobQueue extends Vue {
     }
   }
 
-  handleDragLeave () {
+  handleDragLeave() {
     this.overlay = false
   }
 
-  handleDrop (event: DragEvent) {
+  handleDrop(event: DragEvent) {
     this.overlay = false
 
-    if (
-      event.dataTransfer &&
-      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
-    ) {
+    if (event.dataTransfer && hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')) {
       const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
 
       if (files) {
         const filePath = files.path ? `${files.path}/` : ''
-        const filenames = files.items
-          .map(file => `${filePath}${file}`)
+        const filenames = files.items.map(file => `${filePath}${file}`)
 
         SocketActions.serverJobQueuePostJob(filenames)
       }
@@ -259,13 +247,13 @@ export default class JobQueue extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .filesystem-wrapper,
-  .file-system,
-  .file-system :deep(.app-draggable),
-  .file-system :deep(.v-data-table) {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    height: 100%;
-  }
+.filesystem-wrapper,
+.file-system,
+.file-system :deep(.app-draggable),
+.file-system :deep(.v-data-table) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
 </style>

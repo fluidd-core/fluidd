@@ -72,8 +72,16 @@
                     'max-width': `${thumbnailSize}px`,
                     'max-height': `${thumbnailSize}px`
                   }"
-                  :src="getThumbUrl(item.file, 'gcodes', getFilePaths(item.filename).path, thumbnailSize > 16, item.file.modified)"
-                >
+                  :src="
+                    getThumbUrl(
+                      item.file,
+                      'gcodes',
+                      getFilePaths(item.filename).path,
+                      thumbnailSize > 16,
+                      item.file.modified
+                    )
+                  "
+                />
               </v-layout>
             </template>
 
@@ -106,13 +114,16 @@
               small
               class="ma-1"
             >
-              {{ $t('app.job_queue.label.filament') }}: {{ $filters.getReadableLengthString(jobTotals.filamentLength) }} / {{ $filters.getReadableWeightString(jobTotals.filamentWeight) }}
+              {{ $t('app.job_queue.label.filament') }}:
+              {{ $filters.getReadableLengthString(jobTotals.filamentLength) }} /
+              {{ $filters.getReadableWeightString(jobTotals.filamentWeight) }}
             </v-chip>
             <v-chip
               small
               class="ma-1"
             >
-              {{ $t('app.job_queue.label.print_time') }}: {{ $filters.formatCounterSeconds(jobTotals.time) }}
+              {{ $t('app.job_queue.label.print_time') }}:
+              {{ $filters.formatCounterSeconds(jobTotals.time) }}
             </v-chip>
 
             <v-chip
@@ -140,9 +151,9 @@ import type { TimeEstimates } from '@/store/printer/types'
 import type Sortable from 'sortablejs'
 
 type JobTotals = {
-  filamentLength: number,
-  filamentWeight: number,
-  time: number,
+  filamentLength: number
+  filamentWeight: number
+  time: number
   withoutFile: number
 }
 
@@ -171,19 +182,17 @@ export default class JobQueueBrowser extends Mixins(StateMixin, FilesMixin) {
     group: 'jobQueue'
   })
 
-  get jobsWithKey (): QueueJobWithKey[] {
+  get jobsWithKey(): QueueJobWithKey[] {
     const refresh = Date.now()
 
-    return this.jobs
-      .map(job => ({
-        ...job,
-        key: `${job.job_id}-${refresh}`
-      }))
+    return this.jobs.map(job => ({
+      ...job,
+      key: `${job.job_id}-${refresh}`
+    }))
   }
 
-  set jobsWithKey (value: QueueJobWithKey[]) {
-    const filenames = value
-      .map(job => job.filename)
+  set jobsWithKey(value: QueueJobWithKey[]) {
+    const filenames = value.map(job => job.filename)
 
     if (this.$typedGetters['server/getIsMinApiVersion']('1.1.0')) {
       SocketActions.serverJobQueuePostJob(filenames, true)
@@ -193,57 +202,58 @@ export default class JobQueueBrowser extends Mixins(StateMixin, FilesMixin) {
     }
   }
 
-  get jobTotals (): JobTotals {
-    return this.jobs.reduce<JobTotals>((totals, job) => {
-      if (job.file) {
-        if ('filament_total' in job.file) {
-          totals.filamentLength += job.file.filament_total ?? 0
+  get jobTotals(): JobTotals {
+    return this.jobs.reduce<JobTotals>(
+      (totals, job) => {
+        if (job.file) {
+          if ('filament_total' in job.file) {
+            totals.filamentLength += job.file.filament_total ?? 0
+          }
+
+          if ('filament_weight_total' in job.file) {
+            totals.filamentWeight += job.file.filament_weight_total ?? 0
+          }
+
+          if ('estimated_time' in job.file) {
+            totals.time += job.file.estimated_time ?? 0
+          }
+        } else {
+          totals.withoutFile++
         }
 
-        if ('filament_weight_total' in job.file) {
-          totals.filamentWeight += job.file.filament_weight_total ?? 0
-        }
-
-        if ('estimated_time' in job.file) {
-          totals.time += job.file.estimated_time ?? 0
-        }
-      } else {
-        totals.withoutFile++
-      }
-
-      return totals
-    }, { filamentLength: 0, filamentWeight: 0, time: 0, withoutFile: 0 })
+        return totals
+      },
+      { filamentLength: 0, filamentWeight: 0, time: 0, withoutFile: 0 }
+    )
   }
 
-  get thumbnailSize () {
+  get thumbnailSize() {
     const thumbnailSize: number = this.$typedState.config.uiSettings.thumbnailSizes.jobQueue ?? 32
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
-  get estimates (): TimeEstimates {
+  get estimates(): TimeEstimates {
     return this.$typedGetters['printer/getTimeEstimates']
   }
 
-  get eta () {
-    const base = this.printerPrinting || this.printerPaused
-      ? this.estimates.eta
-      : Date.now()
+  get eta() {
+    const base = this.printerPrinting || this.printerPaused ? this.estimates.eta : Date.now()
 
     return base + this.jobTotals.time * 1000
   }
 
-  getFilePaths (filename: string) {
+  getFilePaths(filename: string) {
     return getFilePaths(filename, 'gcodes')
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  // Lighten up dark mode checkboxes.
-  .theme--dark :deep(.v-simple-checkbox .v-icon) {
-    color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
-  }
+// Lighten up dark mode checkboxes.
+.theme--dark :deep(.v-simple-checkbox .v-icon) {
+  color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
+}
 </style>

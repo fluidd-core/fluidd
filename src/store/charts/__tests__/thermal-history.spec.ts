@@ -22,7 +22,7 @@ describe('buildThermalHistoryBuffer', () => {
     expect(Array.from(source.extruder)).toEqual([10, 20, 30])
   })
 
-  it('fills the lead-in with each sensor\'s oldest reading', () => {
+  it("fills the lead-in with each sensor's oldest reading", () => {
     const buffer = buildThermalHistoryBuffer(
       {
         extruder: { temperatures: [10, 20, 30, 40] },
@@ -60,8 +60,13 @@ describe('buildThermalHistoryBuffer', () => {
       END
     )
 
-    expect(Array.from(chartBufferSource(buffer).extruder))
-      .toEqual([30, 30, Number.NaN, Number.NaN, 30])
+    expect(Array.from(chartBufferSource(buffer).extruder)).toEqual([
+      30,
+      30,
+      Number.NaN,
+      Number.NaN,
+      30
+    ])
   })
 
   it('leaves the lead-in as a gap when every sample is null', () => {
@@ -203,12 +208,7 @@ describe('buildThermalHistoryBuffer', () => {
   })
 
   it('yields an empty buffer when there are no chartable sensors', () => {
-    const buffer = buildThermalHistoryBuffer(
-      { extruder: { temperatures: [10, 20] } },
-      [],
-      600,
-      END
-    )
+    const buffer = buildThermalHistoryBuffer({ extruder: { temperatures: [10, 20] } }, [], 600, END)
 
     expect(buffer.count).toBe(0)
   })

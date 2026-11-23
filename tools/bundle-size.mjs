@@ -19,11 +19,11 @@ import { join, relative, sep } from 'node:path'
 // merely end in enough letters, e.g. `editor.worker-D9zwrD0f.js`'s `.worker` part.
 const HASH_RE = /-[\w-]{8}(\.[a-z0-9]+)$/
 
-function stripHash (filename) {
+function stripHash(filename) {
   return filename.replace(HASH_RE, '-*$1')
 }
 
-function walk (distDir) {
+function walk(distDir) {
   const entries = {}
 
   for (const entry of readdirSync(distDir, { recursive: true, withFileTypes: true })) {
@@ -42,7 +42,7 @@ function walk (distDir) {
   return entries
 }
 
-function generate (distDir, outFile) {
+function generate(distDir, outFile) {
   const entries = walk(distDir)
   const manifest = { generatedAt: new Date().toISOString(), entries }
 
@@ -52,7 +52,7 @@ function generate (distDir, outFile) {
   console.error(`Wrote ${count} entries to ${outFile}`)
 }
 
-function formatBytes (bytes) {
+function formatBytes(bytes) {
   if (bytes === 0) return '0 B'
 
   const units = ['B', 'kB', 'MB']
@@ -69,7 +69,7 @@ function formatBytes (bytes) {
   return `${bytes < 0 ? '-' : ''}${formatted} ${units[unit]}`
 }
 
-function formatDelta (bytes) {
+function formatDelta(bytes) {
   if (bytes === 0) return '±0 B'
 
   return `${bytes > 0 ? '+' : ''}${formatBytes(bytes)}`
@@ -77,7 +77,7 @@ function formatDelta (bytes) {
 
 // A malformed (or older-format) manifest would flow through as NaN and publish a
 // table of `NaN B` cells on a green check. Fail instead.
-function readManifest (file) {
+function readManifest(file) {
   const { entries } = JSON.parse(readFileSync(file, 'utf8'))
 
   if (entries === null || typeof entries !== 'object' || Array.isArray(entries)) {
@@ -86,14 +86,16 @@ function readManifest (file) {
 
   for (const [key, value] of Object.entries(entries)) {
     if (!Number.isFinite(value)) {
-      throw new Error(`${file}: entry "${key}" is not a byte count (got ${JSON.stringify(value)}) — manifest is malformed, or was written by an incompatible version of this tool`)
+      throw new Error(
+        `${file}: entry "${key}" is not a byte count (got ${JSON.stringify(value)}) — manifest is malformed, or was written by an incompatible version of this tool`
+      )
     }
   }
 
   return entries
 }
 
-function compare (baseFile, headFile) {
+function compare(baseFile, headFile) {
   const base = readManifest(baseFile)
   const head = readManifest(headFile)
 
@@ -128,20 +130,27 @@ function compare (baseFile, headFile) {
     lines.push('|---|---|---|---|')
 
     for (const row of changed) {
-      const chunk = row.status === 'added'
-        ? `${row.key} 🆕`
-        : row.status === 'removed'
-          ? `${row.key} 🗑️`
-          : row.key
+      const chunk =
+        row.status === 'added'
+          ? `${row.key} 🆕`
+          : row.status === 'removed'
+            ? `${row.key} 🗑️`
+            : row.key
 
-      lines.push(`| \`${chunk}\` | ${row.baseGzip == null ? '—' : formatBytes(row.baseGzip)} | ${row.headGzip == null ? '—' : formatBytes(row.headGzip)} | ${formatDelta(row.delta)} |`)
+      lines.push(
+        `| \`${chunk}\` | ${row.baseGzip == null ? '—' : formatBytes(row.baseGzip)} | ${row.headGzip == null ? '—' : formatBytes(row.headGzip)} | ${formatDelta(row.delta)} |`
+      )
     }
 
-    lines.push(`| **Total** | **${formatBytes(totalBase)}** | **${formatBytes(totalHead)}** | **${formatDelta(totalDelta)}** |`)
+    lines.push(
+      `| **Total** | **${formatBytes(totalBase)}** | **${formatBytes(totalHead)}** | **${formatDelta(totalDelta)}** |`
+    )
   }
 
   lines.push('')
-  lines.push(`<sub>${rows.length} chunks compared, ${changed.length} changed. Sizes are gzip, matching what nginx serves.</sub>`)
+  lines.push(
+    `<sub>${rows.length} chunks compared, ${changed.length} changed. Sizes are gzip, matching what nginx serves.</sub>`
+  )
 
   console.log(lines.join('\n'))
 }

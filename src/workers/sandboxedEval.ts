@@ -4,29 +4,32 @@
 // self-contained and this file import-free.
 
 export type SandboxedEvalWorkerRequestMessage = {
-  code: string,
-  context?: unknown,
+  code: string
+  context?: unknown
   id: number
 }
 
-export type SandboxedEvalWorkerResponseMessage = ({
-  action: 'result',
-  result: unknown
-} | {
-  action: 'error',
-  error?: unknown
-}) & {
+export type SandboxedEvalWorkerResponseMessage = (
+  | {
+      action: 'result'
+      result: unknown
+    }
+  | {
+      action: 'error'
+      error?: unknown
+    }
+) & {
   id: number
 }
 
 // a 'create' message transfers the worker's MessagePort
 export type SandboxedEvalFrameMessage = {
-  action: 'create' | 'terminate',
+  action: 'create' | 'terminate'
   worker: string
 }
 
 type SandboxedEvalWorkerPort = {
-  onmessage: ((event: { data: SandboxedEvalWorkerRequestMessage }) => void) | null,
+  onmessage: ((event: { data: SandboxedEvalWorkerRequestMessage }) => void) | null
   postMessage: (message: SandboxedEvalWorkerResponseMessage) => void
 }
 

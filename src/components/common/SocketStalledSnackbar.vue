@@ -22,7 +22,7 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class SocketStalledSnackbar extends Vue {
-  get stalled (): boolean {
+  get stalled(): boolean {
     return this.$typedState.socket.stalled
   }
 }

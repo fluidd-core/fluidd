@@ -43,17 +43,17 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane () {
+  get lane() {
     return this.getAfcLaneObject(this.name)
   }
 
-  get mappedTools (): string[] {
+  get mappedTools(): string[] {
     const map = this.lane?.map
     if (map == null) return []
     return Array.isArray(map) ? map.map(t => t.toLowerCase()) : [map.toLowerCase()]
   }
 
-  get mapList (): string[] {
+  get mapList(): string[] {
     const seen = new Set<string>()
 
     for (const laneName of this.afcLanes) {
@@ -69,8 +69,10 @@ export default class AfcUnitLaneMappingToolDialog extends Mixins(StateMixin, Afc
     return [...seen].sort((a, b) => a.localeCompare(b))
   }
 
-  mapTool (newTool: string) {
-    this.sendGcode(`SET_MAP LANE=${encodeGcodeParamValue(this.name)} MAP=${encodeGcodeParamValue(newTool)}`)
+  mapTool(newTool: string) {
+    this.sendGcode(
+      `SET_MAP LANE=${encodeGcodeParamValue(this.name)} MAP=${encodeGcodeParamValue(newTool)}`
+    )
 
     this.open = false
   }

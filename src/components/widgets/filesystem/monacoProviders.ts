@@ -3,7 +3,10 @@ import getVueApp from '@/util/get-vue-app'
 import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
 
 import * as monaco from 'monaco-editor/editor/editor.api'
-import type { MonacoLanguageWorkerRequestMessage, MonacoLanguageWorkerResponseMessage } from '@/workers/monacoWorkerHelpers'
+import type {
+  MonacoLanguageWorkerRequestMessage,
+  MonacoLanguageWorkerResponseMessage
+} from '@/workers/monacoWorkerHelpers'
 
 import type { MonacoDocumentSymbolsWorkerResponseMessage } from '@/workers/monacoDocumentSymbolsWorker'
 import MonacoDocumentSymbolsWorker from '@/workers/monacoDocumentSymbolsWorker?worker'
@@ -14,7 +17,11 @@ import MonacoFoldingRangeWorker from '@/workers/monacoFoldingRangesWorker?worker
 import type { MonacoCodeLensWorkerResponseMessage } from '@/workers/monacoCodeLensWorker'
 import MonacoCodeLensWorker from '@/workers/monacoCodeLensWorker?worker'
 
-export type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot' | 'crowsnest'
+export type CodeLensSupportedService =
+  | 'klipper'
+  | 'moonraker'
+  | 'moonraker-telegram-bot'
+  | 'crowsnest'
 
 export type DocsSectionService = CodeLensSupportedService | SupportedKlipperServices
 
@@ -22,7 +29,15 @@ abstract class MonacoProviderBase<T> {
   protected _lastCacheKey: string | null = null
   protected _lastResult: T[] = []
 
-  protected _workerWrapper<T extends MonacoLanguageWorkerResponseMessage<U>, U = Extract<T, { action: 'result' }>['result']>(WorkerConstructor: new () => Worker, language: string, lines: string[], token: monaco.CancellationToken): Promise<U | undefined> {
+  protected _workerWrapper<
+    T extends MonacoLanguageWorkerResponseMessage<U>,
+    U = Extract<T, { action: 'result' }>['result']
+  >(
+    WorkerConstructor: new () => Worker,
+    language: string,
+    lines: string[],
+    token: monaco.CancellationToken
+  ): Promise<U | undefined> {
     return new Promise<U | undefined>((resolve, reject) => {
       if (token.isCancellationRequested) {
         resolve(undefined)
@@ -71,7 +86,7 @@ abstract class MonacoProviderBase<T> {
         }
       }
 
-      worker.onerror = (event) => {
+      worker.onerror = event => {
         safeReject(new Error(event.message || 'Worker error'))
       }
 
@@ -90,17 +105,28 @@ abstract class MonacoProviderBase<T> {
     })
   }
 
-  protected _createCacheKey (model: monaco.editor.ITextModel): string {
+  protected _createCacheKey(model: monaco.editor.ITextModel): string {
     return `${model.id}@${model.getVersionId()}@${model.getLanguageId()}`
   }
 }
 
-export class MonacoDocumentSymbolProvider extends MonacoProviderBase<monaco.languages.DocumentSymbol> implements monaco.languages.DocumentSymbolProvider {
-  public async provideDocumentSymbols (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.DocumentSymbol[]> {
+export class MonacoDocumentSymbolProvider
+  extends MonacoProviderBase<monaco.languages.DocumentSymbol>
+  implements monaco.languages.DocumentSymbolProvider
+{
+  public async provideDocumentSymbols(
+    model: monaco.editor.ITextModel,
+    token: monaco.CancellationToken
+  ): Promise<monaco.languages.DocumentSymbol[]> {
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(MonacoDocumentSymbolsWorker, model.getLanguageId(), model.getLinesContent(), token)
+      const result = await this._workerWrapper<MonacoDocumentSymbolsWorkerResponseMessage>(
+        MonacoDocumentSymbolsWorker,
+        model.getLanguageId(),
+        model.getLinesContent(),
+        token
+      )
 
       if (result == null) {
         return []
@@ -129,41 +155,54 @@ export class MonacoDocumentSymbolProvider extends MonacoProviderBase<monaco.lang
   }
 }
 
-export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.CodeLens> implements monaco.languages.CodeLensProvider {
+export class MonacoCodeLensProvider
+  extends MonacoProviderBase<monaco.languages.CodeLens>
+  implements monaco.languages.CodeLensProvider
+{
   private _app: Vue
   private _klippyApp: KlippyApp
 
-  constructor () {
+  constructor() {
     super()
     this._app = getVueApp()
     this._klippyApp = this._app.$typedGetters['printer/getKlippyApp']
   }
 
-  public async provideCodeLenses (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.CodeLensList> {
+  public async provideCodeLenses(
+    model: monaco.editor.ITextModel,
+    token: monaco.CancellationToken
+  ): Promise<monaco.languages.CodeLensList> {
     return {
       lenses: await this._getCodeLens(model, token),
       dispose: () => undefined
     }
   }
 
-  private async _getCodeLens (model: monaco.editor.ITextModel, token: monaco.CancellationToken): Promise<monaco.languages.CodeLens[]> {
+  private async _getCodeLens(
+    model: monaco.editor.ITextModel,
+    token: monaco.CancellationToken
+  ): Promise<monaco.languages.CodeLens[]> {
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const { service } = this._app.$typedGetters['server/getConfigMapByFilename'](model.uri.path.split('/').pop()!) ?? {}
+      const { service } =
+        this._app.$typedGetters['server/getConfigMapByFilename'](
+          model.uri.path.split('/').pop()!
+        ) ?? {}
 
-      if (
-        !service ||
-        !this._isCodeLensSupportedService(service)
-      ) {
+      if (!service || !this._isCodeLensSupportedService(service)) {
         return []
       }
 
-      const docsSectionService: DocsSectionService = service === 'klipper'
-        ? this._klippyApp.name
-        : service
+      const docsSectionService: DocsSectionService =
+        service === 'klipper' ? this._klippyApp.name : service
 
-      const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(MonacoCodeLensWorker, model.getLanguageId(), model.getLinesContent(), token)
+      const result = await this._workerWrapper<MonacoCodeLensWorkerResponseMessage>(
+        MonacoCodeLensWorker,
+        model.getLanguageId(),
+        model.getLinesContent(),
+        token
+      )
 
       if (result == null) {
         return []
@@ -177,7 +216,11 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
           id: `docs${index}`,
           command: {
             id: 'fluidd_open_docs',
-            title: this._app.$t('app.file_system.label.view_section_documentation', { section: section.sectionName }).toString(),
+            title: this._app
+              .$t('app.file_system.label.view_section_documentation', {
+                section: section.sectionName
+              })
+              .toString(),
             arguments: [service, hash]
           }
         }
@@ -188,16 +231,11 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
     return this._lastResult
   }
 
-  private _isCodeLensSupportedService (service: string): service is CodeLensSupportedService {
-    return [
-      'klipper',
-      'moonraker',
-      'moonraker-telegram-bot',
-      'crowsnest'
-    ].includes(service)
+  private _isCodeLensSupportedService(service: string): service is CodeLensSupportedService {
+    return ['klipper', 'moonraker', 'moonraker-telegram-bot', 'crowsnest'].includes(service)
   }
 
-  private _getDocsSectionHash (service: DocsSectionService, sectionName: string): string {
+  private _getDocsSectionHash(service: DocsSectionService, sectionName: string): string {
     switch (service) {
       case 'klipper':
         if (sectionName.startsWith('stepper_')) {
@@ -240,21 +278,34 @@ export class MonacoCodeLensProvider extends MonacoProviderBase<monaco.languages.
   }
 }
 
-export class MonacoFoldingRangeProvider extends MonacoProviderBase<monaco.languages.FoldingRange> implements monaco.languages.FoldingRangeProvider {
-  public async provideFoldingRanges (model: monaco.editor.ITextModel, _context: monaco.languages.FoldingContext, token: monaco.CancellationToken): Promise<monaco.languages.FoldingRange[]> {
+export class MonacoFoldingRangeProvider
+  extends MonacoProviderBase<monaco.languages.FoldingRange>
+  implements monaco.languages.FoldingRangeProvider
+{
+  public async provideFoldingRanges(
+    model: monaco.editor.ITextModel,
+    _context: monaco.languages.FoldingContext,
+    token: monaco.CancellationToken
+  ): Promise<monaco.languages.FoldingRange[]> {
     const cacheKey = this._createCacheKey(model)
 
     if (this._lastCacheKey !== cacheKey) {
-      const result = await this._workerWrapper<MonacoFoldingRangesWorkerResponseMessage>(MonacoFoldingRangeWorker, model.getLanguageId(), model.getLinesContent(), token)
+      const result = await this._workerWrapper<MonacoFoldingRangesWorkerResponseMessage>(
+        MonacoFoldingRangeWorker,
+        model.getLanguageId(),
+        model.getLinesContent(),
+        token
+      )
 
       if (result == null) {
         return []
       }
 
       this._lastResult = result.map((range): monaco.languages.FoldingRange => {
-        const kind = range.kind === 'comment'
-          ? monaco.languages.FoldingRangeKind.Comment
-          : monaco.languages.FoldingRangeKind.Region
+        const kind =
+          range.kind === 'comment'
+            ? monaco.languages.FoldingRangeKind.Comment
+            : monaco.languages.FoldingRangeKind.Region
 
         return {
           start: range.start,

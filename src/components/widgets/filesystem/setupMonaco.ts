@@ -21,10 +21,15 @@ import * as gcodeMonarchLanguage from '@/monaco/language/gcode.monarch'
 import * as klipperConfigMonarchLanguage from '@/monaco/language/klipper-config.monarch'
 import * as moonrakerConfigMonarchLanguage from '@/monaco/language/moonraker-config.monarch'
 import logMonarchLanguage from '@/monaco/language/log.monarch'
-import { type CodeLensSupportedService, MonacoCodeLensProvider, MonacoDocumentSymbolProvider, MonacoFoldingRangeProvider } from './monacoProviders'
+import {
+  type CodeLensSupportedService,
+  MonacoCodeLensProvider,
+  MonacoDocumentSymbolProvider,
+  MonacoFoldingRangeProvider
+} from './monacoProviders'
 
 self.MonacoEnvironment = {
-  getWorker (_: string, label: string) {
+  getWorker(_: string, label: string) {
     switch (label) {
       case 'json':
         return new JsonWorker()
@@ -38,7 +43,7 @@ self.MonacoEnvironment = {
   }
 }
 
-async function setupMonaco () {
+async function setupMonaco() {
   monaco.languages.register({ id: 'gcode', extensions: ['gcode', 'g', 'gc', 'gco', 'ufp', 'nc'] })
   monaco.languages.register({ id: 'klipper-config', extensions: ['cfg'] })
   monaco.languages.register({ id: 'moonraker-config', extensions: ['conf'] })
@@ -50,28 +55,45 @@ async function setupMonaco () {
 
   monaco.languages.setMonarchTokensProvider('gcode', gcodeMonarchLanguage.language)
   monaco.languages.setMonarchTokensProvider('klipper-config', klipperConfigMonarchLanguage.language)
-  monaco.languages.setMonarchTokensProvider('moonraker-config', moonrakerConfigMonarchLanguage.language)
+  monaco.languages.setMonarchTokensProvider(
+    'moonraker-config',
+    moonrakerConfigMonarchLanguage.language
+  )
   monaco.languages.setMonarchTokensProvider('log', logMonarchLanguage)
 
   const app = getVueApp()
   const klippyApp: KlippyApp = app.$typedGetters['printer/getKlippyApp']
 
-  monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
-    const serviceKey = service.replace(/-/g, '_')
+  monaco.editor.registerCommand(
+    'fluidd_open_docs',
+    (_, service: CodeLensSupportedService, hash: string) => {
+      const serviceKey = service.replace(/-/g, '_')
 
-    const url = app.$t(`app.file_system.url.${serviceKey}_config`, {
-      hash,
-      klipperDomain: klippyApp.domain
-    }).toString()
+      const url = app
+        .$t(`app.file_system.url.${serviceKey}_config`, {
+          hash,
+          klipperDomain: klippyApp.domain
+        })
+        .toString()
 
-    window.open(url)
-  })
+      window.open(url)
+    }
+  )
 
-  monaco.languages.registerDocumentSymbolProvider(['klipper-config', 'moonraker-config'], new MonacoDocumentSymbolProvider())
+  monaco.languages.registerDocumentSymbolProvider(
+    ['klipper-config', 'moonraker-config'],
+    new MonacoDocumentSymbolProvider()
+  )
 
-  monaco.languages.registerCodeLensProvider(['klipper-config', 'moonraker-config'], new MonacoCodeLensProvider())
+  monaco.languages.registerCodeLensProvider(
+    ['klipper-config', 'moonraker-config'],
+    new MonacoCodeLensProvider()
+  )
 
-  monaco.languages.registerFoldingRangeProvider(['klipper-config', 'moonraker-config', 'gcode'], new MonacoFoldingRangeProvider())
+  monaco.languages.registerFoldingRangeProvider(
+    ['klipper-config', 'moonraker-config', 'gcode'],
+    new MonacoFoldingRangeProvider()
+  )
 
   monaco.editor.defineTheme('light-converted', {
     base: 'vs',
@@ -109,7 +131,7 @@ async function setupMonaco () {
       { token: 'variable.jinja', foreground: '001080' },
       { token: 'number.jinja', foreground: '098658' }
     ],
-    colors: {},
+    colors: {}
   })
   monaco.editor.defineTheme('dark-converted', {
     base: 'vs-dark',
@@ -151,7 +173,7 @@ async function setupMonaco () {
       'editor.background': '#28282b',
       'editor.lineHighlightBackground': '#3a3a3e',
       'minimap.background': '#28282b'
-    },
+    }
   })
 
   return monaco

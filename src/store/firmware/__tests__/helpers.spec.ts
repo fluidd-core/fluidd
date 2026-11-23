@@ -32,17 +32,45 @@ const result: Aldis.RunResult = {
 
 const final = event({ mcu: null, phase: 'done', message: '1 updated', complete: true, result })
 
-const running: Aldis.Run = { run_id: 'r1', state: 'running', messages: [event(), event({ message: 'wrote 49152 bytes' })], result: null }
+const running: Aldis.Run = {
+  run_id: 'r1',
+  state: 'running',
+  messages: [event(), event({ message: 'wrote 49152 bytes' })],
+  result: null
+}
 
-const finished: Aldis.Run = { run_id: 'r1', state: 'finished', messages: [...running.messages, final], result }
+const finished: Aldis.Run = {
+  run_id: 'r1',
+  state: 'finished',
+  messages: [...running.messages, final],
+  result
+}
 
 const status = (overrides: Partial<Aldis.StatusResponse> = {}): Aldis.StatusResponse => ({
   api_version: 1,
-  host: { klippy_state: 'ready', klippy_message: 'Printer is ready', software_version: 'v0.13.0-770' },
+  host: {
+    klippy_state: 'ready',
+    klippy_message: 'Printer is ready',
+    software_version: 'v0.13.0-770'
+  },
   blocker: null,
   mcus: [
-    { name: 'mcu', transport: null, running_version: 'v0.13.0-770', state: 'current', message: '', actions: [] },
-    { name: 'can', transport: { type: 'can', interface: 'can0', uuid: 'abc' }, running_version: 'v0.13.0-753', state: 'update_available', message: '', actions: ['update'] }
+    {
+      name: 'mcu',
+      transport: null,
+      running_version: 'v0.13.0-770',
+      state: 'current',
+      message: '',
+      actions: []
+    },
+    {
+      name: 'can',
+      transport: { type: 'can', interface: 'can0', uuid: 'abc' },
+      running_version: 'v0.13.0-753',
+      state: 'update_available',
+      message: '',
+      actions: ['update']
+    }
   ],
   run: null,
   ...overrides
@@ -54,14 +82,21 @@ describe('formatResponse', () => {
   })
 
   it('leaves host-level lines bare', () => {
-    expect(formatResponse(event({ mcu: null, phase: 'stop-klipper', message: 'stopping Klipper' }), 0).message)
-      .toBe('stopping Klipper')
+    expect(
+      formatResponse(event({ mcu: null, phase: 'stop-klipper', message: 'stopping Klipper' }), 0)
+        .message
+    ).toBe('stopping Klipper')
   })
 })
 
 describe('applyEvent', () => {
   it('starts a run from its first event', () => {
-    expect(applyEvent(null, event())).toEqual({ run_id: 'r1', state: 'running', messages: [event()], result: null })
+    expect(applyEvent(null, event())).toEqual({
+      run_id: 'r1',
+      state: 'running',
+      messages: [event()],
+      result: null
+    })
   })
 
   it('appends to the same run', () => {
@@ -85,7 +120,12 @@ describe('applyEvent', () => {
   it('replaces the run when another one starts', () => {
     const done = applyEvent(applyEvent(null, event()), final)
 
-    expect(applyEvent(done, event({ run_id: 'r2' }))).toEqual({ run_id: 'r2', state: 'running', messages: [event({ run_id: 'r2' })], result: null })
+    expect(applyEvent(done, event({ run_id: 'r2' }))).toEqual({
+      run_id: 'r2',
+      state: 'running',
+      messages: [event({ run_id: 'r2' })],
+      result: null
+    })
   })
 })
 
@@ -103,7 +143,11 @@ describe('endLostRun', () => {
 
     expect(next.state).toBe('finished')
     expect(next.result).toBeNull()
-    expect(next.messages.map(m => m.message)).toEqual(['flashing firmware', 'wrote 49152 bytes', 'lost'])
+    expect(next.messages.map(m => m.message)).toEqual([
+      'flashing firmware',
+      'wrote 49152 bytes',
+      'lost'
+    ])
   })
 })
 
@@ -138,7 +182,7 @@ describe('reconcileRun', () => {
     expect(reconcileRun(applyEvent(null, event()), finished)).toBe(finished)
   })
 
-  it('takes the agent\'s outcome for a lost run', () => {
+  it("takes the agent's outcome for a lost run", () => {
     expect(reconcileRun(endLostRun(running, 'lost'), finished, true)).toBe(finished)
   })
 
@@ -203,7 +247,18 @@ describe('updatableMcus', () => {
   })
 
   it('excludes unknown states even when they carry the update action', () => {
-    const s = status({ mcus: [{ name: 'x', transport: null, running_version: null, state: 'future_state', message: '', actions: ['update'] }] })
+    const s = status({
+      mcus: [
+        {
+          name: 'x',
+          transport: null,
+          running_version: null,
+          state: 'future_state',
+          message: '',
+          actions: ['update']
+        }
+      ]
+    })
 
     expect(updatableMcus(s)).toEqual([])
   })
@@ -217,7 +272,18 @@ describe('updatableMcus', () => {
   })
 
   it('excludes update_available without the update action', () => {
-    const s = status({ mcus: [{ name: 'x', transport: null, running_version: null, state: 'update_available', message: '', actions: [] }] })
+    const s = status({
+      mcus: [
+        {
+          name: 'x',
+          transport: null,
+          running_version: null,
+          state: 'update_available',
+          message: '',
+          actions: []
+        }
+      ]
+    })
 
     expect(updatableMcus(s)).toEqual([])
   })
@@ -238,8 +304,22 @@ describe('isUpdateResponse', () => {
     { run_id: 1, mcu: 'can', phase: 'flash', message: 'x', complete: false },
     { run_id: 'r1', mcu: 'can', phase: 'flash', message: 'x', complete: 'no' },
     { run_id: 'r1', mcu: null, phase: 'done', message: 'x', complete: true, result: 'bad' },
-    { run_id: 'r1', mcu: null, phase: 'done', message: 'x', complete: true, result: { outcome: 'success' } },
-    { run_id: 'r1', mcu: null, phase: 'done', message: 'x', complete: true, result: { outcome: 'anything', klippy_state: 'ready', klipper_left_stopped: false, mcus: [] } },
+    {
+      run_id: 'r1',
+      mcu: null,
+      phase: 'done',
+      message: 'x',
+      complete: true,
+      result: { outcome: 'success' }
+    },
+    {
+      run_id: 'r1',
+      mcu: null,
+      phase: 'done',
+      message: 'x',
+      complete: true,
+      result: { outcome: 'anything', klippy_state: 'ready', klipper_left_stopped: false, mcus: [] }
+    },
     { run_id: 'r1', mcu: 'can', phase: 5, message: 'x', complete: false }
   ])('rejects %o', value => {
     expect(isUpdateResponse(value)).toBe(false)
@@ -263,11 +343,24 @@ describe('isStatusResponse', () => {
   })
 
   it('accepts a blocker', () => {
-    expect(isStatusResponse(status({ blocker: { reason: 'printing', message: 'busy' } }))).toBe(true)
+    expect(isStatusResponse(status({ blocker: { reason: 'printing', message: 'busy' } }))).toBe(
+      true
+    )
   })
 
   it('accepts an MCU with a null running_version', () => {
-    const s = status({ mcus: [{ name: 'x', transport: null, running_version: null, state: 'current', message: '', actions: [] }] })
+    const s = status({
+      mcus: [
+        {
+          name: 'x',
+          transport: null,
+          running_version: null,
+          state: 'current',
+          message: '',
+          actions: []
+        }
+      ]
+    })
 
     expect(isStatusResponse(s)).toBe(true)
   })
@@ -276,13 +369,36 @@ describe('isStatusResponse', () => {
     null,
     {},
     { ...status(), mcus: 'x' },
-    { ...status(), mcus: [{ name: 'x', transport: null, running_version: null, state: 'current', message: '' }] },
+    {
+      ...status(),
+      mcus: [{ name: 'x', transport: null, running_version: null, state: 'current', message: '' }]
+    },
     { ...status(), blocker: 'printing' },
     { ...status(), blocker: { reason: 'printing' } },
     { ...status(), run: 'bad' },
     { ...status(), run: { run_id: 'r1', state: 'running', messages: 'x', result: null } },
-    { ...status(), run: { run_id: 'r1', state: 'running', messages: [{ ...event(), message: null }], result: null } },
-    { ...status(), mcus: [{ name: 'x', transport: null, running_version: null, state: 'current', message: 5, actions: [] }] }
+    {
+      ...status(),
+      run: {
+        run_id: 'r1',
+        state: 'running',
+        messages: [{ ...event(), message: null }],
+        result: null
+      }
+    },
+    {
+      ...status(),
+      mcus: [
+        {
+          name: 'x',
+          transport: null,
+          running_version: null,
+          state: 'current',
+          message: 5,
+          actions: []
+        }
+      ]
+    }
   ])('rejects %o', value => {
     expect(isStatusResponse(value)).toBe(false)
   })
@@ -293,11 +409,7 @@ describe('apiVersionOf', () => {
     expect(apiVersionOf(status())).toBe(1)
   })
 
-  it.each([
-    {},
-    null,
-    'v1'
-  ])('returns null for %o', value => {
+  it.each([{}, null, 'v1'])('returns null for %o', value => {
     expect(apiVersionOf(value)).toBeNull()
   })
 })
@@ -314,7 +426,11 @@ describe('unsupportedStatus', () => {
 
 describe('agentErrorMessage', () => {
   it('unwraps a Moonraker-relayed agent error', () => {
-    const error = { code: 424, message: 'Agent aldis RPC error', data: { code: -32000, message: 'update already running', data: { reason: 'busy' } } }
+    const error = {
+      code: 424,
+      message: 'Agent aldis RPC error',
+      data: { code: -32000, message: 'update already running', data: { reason: 'busy' } }
+    }
 
     expect(agentErrorMessage(error)).toBe('update already running')
   })

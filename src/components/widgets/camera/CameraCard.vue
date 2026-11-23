@@ -8,9 +8,7 @@
     @collapsed="collapsed = $event"
   >
     <template #menu>
-      <camera-menu
-        @select="handleCameraSelect"
-      />
+      <camera-menu @select="handleCameraSelect" />
     </template>
 
     <v-row
@@ -25,9 +23,7 @@
           cols="12"
           :sm="cols"
         >
-          <camera-item
-            :camera="camera"
-          />
+          <camera-item :camera="camera" />
         </v-col>
       </template>
     </v-row>
@@ -54,17 +50,17 @@ import StateMixin from '@/mixins/state'
 export default class CameraCard extends Mixins(StateMixin) {
   collapsed = false
 
-  get cols () {
+  get cols() {
     if (this.cameras.length === 1) return 12
     if (this.cameras.length <= 2) return 6
     if (this.cameras.length > 2) return 4
   }
 
-  get cameras (): Moonraker.Webcam.Entry[] {
+  get cameras(): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getVisibleWebcams']
   }
 
-  handleCameraSelect (id: string) {
+  handleCameraSelect(id: string) {
     this.$typedDispatch('webcams/updateActiveWebcam', id)
   }
 }

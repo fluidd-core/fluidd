@@ -29,32 +29,34 @@ export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {
   @Prop({ type: Object })
   readonly stepper!: Stepper
 
-  get values (): number[] {
+  get values(): number[] {
     return [1, 10, 50]
   }
 
-  get rate (): number {
+  get rate(): number {
     return this.isStepperZ
       ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
       : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
-  get printerSettings (): Klipper.SettingsState {
+  get printerSettings(): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  get accel (): number {
+  get accel(): number {
     return this.isStepperZ
-      ? this.printerSettings.printer?.max_z_accel ?? 100
+      ? (this.printerSettings.printer?.max_z_accel ?? 100)
       : this.$typedState.printer.printer.toolhead.max_accel
   }
 
-  get isStepperZ (): boolean {
+  get isStepperZ(): boolean {
     return this.stepper.key.startsWith('stepper_z')
   }
 
-  sendForceMoveGcode (distance: number) {
-    this.sendGcode(`FORCE_MOVE STEPPER=${encodeGcodeParamValue(this.stepper.key)} DISTANCE=${distance} VELOCITY=${this.rate} ACCEL=${this.accel}`)
+  sendForceMoveGcode(distance: number) {
+    this.sendGcode(
+      `FORCE_MOVE STEPPER=${encodeGcodeParamValue(this.stepper.key)} DISTANCE=${distance} VELOCITY=${this.rate} ACCEL=${this.accel}`
+    )
   }
 }
 </script>

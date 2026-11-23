@@ -31,10 +31,13 @@
         <app-setting
           :key="`camera-${camera.uid}`"
           :r-cols="2"
-          :sub-title="camera.source === 'config' ? $t('app.general.tooltip.managed_by_moonraker') : undefined"
+          :sub-title="
+            camera.source === 'config' ? $t('app.general.tooltip.managed_by_moonraker') : undefined
+          "
         >
           <template #title>
-            {{ camera.name }} <v-icon
+            {{ camera.name }}
+            <v-icon
               v-if="!camera.enabled"
               right
               small
@@ -48,9 +51,7 @@
             icon
             @click.stop="handleEditDialog(camera)"
           >
-            <v-icon dense>
-              $edit
-            </v-icon>
+            <v-icon dense> $edit </v-icon>
           </app-btn>
 
           <app-btn
@@ -58,9 +59,7 @@
             icon
             @click.stop="handleRemoveCamera(camera)"
           >
-            <v-icon dense>
-              $delete
-            </v-icon>
+            <v-icon dense> $delete </v-icon>
           </app-btn>
         </app-setting>
       </template>
@@ -76,10 +75,11 @@
           :items="[
             {
               text: $t('app.setting.label.camera_fullscreen_action.embed'),
-              value: 'embed',
-            },{
+              value: 'embed'
+            },
+            {
               text: $t('app.setting.label.camera_fullscreen_action.rawstream'),
-              value: 'rawstream',
+              value: 'rawstream'
             }
           ]"
         />
@@ -111,18 +111,18 @@ export default class CameraSettings extends Vue {
     camera: null
   }
 
-  get cameras (): Moonraker.Webcam.Entry[] {
+  get cameras(): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getWebcams']
   }
 
-  handleEditDialog (camera: Moonraker.Webcam.Entry) {
+  handleEditDialog(camera: Moonraker.Webcam.Entry) {
     this.dialogState = {
       active: true,
       camera: { ...camera }
     }
   }
 
-  handleAddDialog () {
+  handleAddDialog() {
     const camera: Omit<Moonraker.Webcam.Entry, 'uid' | 'source'> = {
       enabled: true,
       flip_horizontal: false,
@@ -142,13 +142,15 @@ export default class CameraSettings extends Vue {
     }
   }
 
-  handleSaveCamera (camera: Moonraker.Webcam.Entry) {
+  handleSaveCamera(camera: Moonraker.Webcam.Entry) {
     this.$typedDispatch('webcams/updateWebcam', camera)
   }
 
-  async handleRemoveCamera (camera: Moonraker.Webcam.Entry) {
+  async handleRemoveCamera(camera: Moonraker.Webcam.Entry) {
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_remove_camera', { name: camera.name }).toString(),
+      this.$t('app.general.simple_form.msg.confirm_remove_camera', {
+        name: camera.name
+      }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
@@ -157,11 +159,11 @@ export default class CameraSettings extends Vue {
     }
   }
 
-  get defaultFullscreenAction (): string {
+  get defaultFullscreenAction(): string {
     return this.$typedState.config.uiSettings.general.cameraFullscreenAction
   }
 
-  set defaultFullscreenAction (value: string) {
+  set defaultFullscreenAction(value: string) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.cameraFullscreenAction',
       value,

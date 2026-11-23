@@ -21,11 +21,7 @@
       >
         <app-text-field
           :value="parkTime"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(0)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
           :disabled="parkTimeBlocked"
           hide-details="auto"
           filled
@@ -44,11 +40,7 @@
       >
         <app-text-field
           :value="parkTravelSpeed"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(0)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
           :disabled="parkTravelSpeedBlocked"
           hide-details="auto"
           filled
@@ -84,11 +76,7 @@
       >
         <app-text-field
           :value="parkPosZ"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(0)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
           :disabled="parkPosZBlocked"
           hide-details="auto"
           filled
@@ -133,93 +121,101 @@ import { defaultWritableSettings } from '@/store/timelapse/state'
   }
 })
 export default class ToolheadParkingSettings extends Mixins(StateMixin) {
-  get parkPositions (): { text: string, value: Moonraker.Timelapse.ParkPosition }[] {
-    const values: Moonraker.Timelapse.ParkPosition[] = ['front_left', 'front_right', 'center', 'back_left', 'back_right', 'x_only', 'y_only', 'custom']
+  get parkPositions(): { text: string; value: Moonraker.Timelapse.ParkPosition }[] {
+    const values: Moonraker.Timelapse.ParkPosition[] = [
+      'front_left',
+      'front_right',
+      'center',
+      'back_left',
+      'back_right',
+      'x_only',
+      'y_only',
+      'custom'
+    ]
 
-    return values
-      .map(value => ({
-        text: this.$tc(`app.timelapse.setting.parkpos.${value}`),
-        value
-      }))
+    return values.map(value => ({
+      text: this.$tc(`app.timelapse.setting.parkpos.${value}`),
+      value
+    }))
   }
 
-  get parkheadBlocked (): boolean {
+  get parkheadBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('parkhead')
   }
 
-  get parkhead (): boolean {
+  get parkhead(): boolean {
     return this.settings.parkhead
   }
 
-  set parkhead (value: boolean) {
+  set parkhead(value: boolean) {
     SocketActions.machineTimelapsePostSettings({ parkhead: value })
   }
 
-  get parkposBlocked (): boolean {
+  get parkposBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('parkpos')
   }
 
-  get parkpos (): Moonraker.Timelapse.ParkPosition {
+  get parkpos(): Moonraker.Timelapse.ParkPosition {
     return this.settings.parkpos
   }
 
-  set parkpos (value: Moonraker.Timelapse.ParkPosition) {
+  set parkpos(value: Moonraker.Timelapse.ParkPosition) {
     SocketActions.machineTimelapsePostSettings({ parkpos: value })
   }
 
-  get parkTimeBlocked (): boolean {
+  get parkTimeBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_time')
   }
 
-  get parkTime (): number {
+  get parkTime(): number {
     return this.settings.park_time * 1000
   }
 
-  setParkTime (value: number) {
+  setParkTime(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_time: value / 1000 })
   }
 
-  get parkTravelSpeedBlocked (): boolean {
+  get parkTravelSpeedBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_travel_speed')
   }
 
-  get parkTravelSpeed (): number {
+  get parkTravelSpeed(): number {
     return this.settings.park_travel_speed
   }
 
-  setParkTravelSpeed (value: number) {
+  setParkTravelSpeed(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_travel_speed: value })
   }
 
-  get parkPosZBlocked (): boolean {
+  get parkPosZBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_custom_pos_dz')
   }
 
-  get parkPosZ (): number {
+  get parkPosZ(): number {
     return this.settings.park_custom_pos_dz
   }
 
-  setParkPosZ (value: number) {
+  setParkPosZ(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_custom_pos_dz: value })
   }
 
-  get firmwareRetractBlocked (): boolean {
+  get firmwareRetractBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('fw_retract')
   }
 
-  get firmwareRetract (): boolean {
+  get firmwareRetract(): boolean {
     return this.settings.fw_retract
   }
 
-  set firmwareRetract (value: boolean) {
+  set firmwareRetract(value: boolean) {
     SocketActions.machineTimelapsePostSettings({ fw_retract: value })
   }
 
-  get settings (): Moonraker.Timelapse.WriteableSettings {
+  get settings(): Moonraker.Timelapse.WriteableSettings {
     return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  subtitleIfBlocked (blocked: boolean): string {
+  subtitleIfBlocked(blocked: boolean): string {
     return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }

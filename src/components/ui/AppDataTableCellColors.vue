@@ -11,8 +11,8 @@
           :class="{
             'ms-1': index > 0
           }"
-          v-bind="{...$attrs, ...attrs}"
-          v-on="{...$listeners, ...on }"
+          v-bind="{ ...$attrs, ...attrs }"
+          v-on="{ ...$listeners, ...on }"
         />
       </template>
       <span>{{ color }}</span>

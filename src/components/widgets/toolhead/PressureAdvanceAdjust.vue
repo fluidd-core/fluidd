@@ -53,22 +53,25 @@ export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMi
   @Prop({ type: Object })
   readonly extruderStepper?: ExtruderStepper
 
-  get selectedExtruderStepper () {
+  get selectedExtruderStepper() {
     return this.extruderStepper ?? this.activeExtruder
   }
 
-  handleSetPressureAdvance (val: number) {
+  handleSetPressureAdvance(val: number) {
     this.sendSetPressureAdvance('ADVANCE', val)
   }
 
-  handleSetSmoothTime (val: number) {
+  handleSetSmoothTime(val: number) {
     this.sendSetPressureAdvance('SMOOTH_TIME', val)
   }
 
-  sendSetPressureAdvance (arg: string, val: number) {
+  sendSetPressureAdvance(arg: string, val: number) {
     if (this.extruderStepper) {
       const { name } = this.extruderStepper
-      this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val} EXTRUDER=${encodeGcodeParamValue(name)}`, `${this.$waits.onSetPressureAdvance}${name}`)
+      this.sendGcode(
+        `SET_PRESSURE_ADVANCE ${arg}=${val} EXTRUDER=${encodeGcodeParamValue(name)}`,
+        `${this.$waits.onSetPressureAdvance}${name}`
+      )
     } else {
       this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val}`, this.$waits.onSetPressureAdvance)
     }

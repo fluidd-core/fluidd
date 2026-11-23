@@ -24,10 +24,7 @@ beforeAll(() => {
 describe('klipper-config Monarch tokenizer', () => {
   describe('section headers', () => {
     it.each<[string, TokenLine[][]]>([
-      [
-        '[extruder]',
-        [t(['bracket', '['], ['type.identifier', 'extruder'], ['bracket', ']'])]
-      ],
+      ['[extruder]', [t(['bracket', '['], ['type.identifier', 'extruder'], ['bracket', ']'])]],
       [
         '[heater_bed nozzle]',
         [t(['bracket', '['], ['type.identifier', 'heater_bed nozzle'], ['bracket', ']'])]
@@ -50,14 +47,8 @@ describe('klipper-config Monarch tokenizer', () => {
       // configparser's SECTCRE strips bracket-internal whitespace before
       // matching; the tokenizer keeps it verbatim. `[ ]` matches because
       // `[^\]]+` requires only one char, and a space qualifies.
-      [
-        '[ section ]',
-        [t(['bracket', '['], ['type.identifier', ' section '], ['bracket', ']'])]
-      ],
-      [
-        '[ ]',
-        [t(['bracket', '['], ['type.identifier', ' '], ['bracket', ']'])]
-      ],
+      ['[ section ]', [t(['bracket', '['], ['type.identifier', ' section '], ['bracket', ']'])]],
+      ['[ ]', [t(['bracket', '['], ['type.identifier', ' '], ['bracket', ']'])]],
       // Indented section header — the rule's `^([ \t]*)` prefix captures
       // leading whitespace as `white`. configparser's SECTCRE allows the
       // same: section headers do not need to start at column 0.
@@ -79,7 +70,15 @@ describe('klipper-config Monarch tokenizer', () => {
       ],
       [
         '[extruder] #x',
-        [t(['bracket', '['], ['type.identifier', 'extruder'], ['bracket', ']'], ['white', ' '], ['comment', '#x'])]
+        [
+          t(
+            ['bracket', '['],
+            ['type.identifier', 'extruder'],
+            ['bracket', ']'],
+            ['white', ' '],
+            ['comment', '#x']
+          )
+        ]
       ],
       [
         '[extruder];x',
@@ -87,7 +86,15 @@ describe('klipper-config Monarch tokenizer', () => {
       ],
       [
         '[extruder] ;x',
-        [t(['bracket', '['], ['type.identifier', 'extruder'], ['bracket', ']'], ['white', ' '], ['comment', ';x'])]
+        [
+          t(
+            ['bracket', '['],
+            ['type.identifier', 'extruder'],
+            ['bracket', ']'],
+            ['white', ' '],
+            ['comment', ';x']
+          )
+        ]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
@@ -105,27 +112,58 @@ describe('klipper-config Monarch tokenizer', () => {
     it.each<[string, TokenLine[][]]>([
       [
         'key = value',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value']
+          )
+        ]
       ],
-      [
-        'key=value',
-        [t(['keyword', 'key'], ['separator', '='], ['string', 'value'])]
-      ],
+      ['key=value', [t(['keyword', 'key'], ['separator', '='], ['string', 'value'])]],
       [
         'key: value',
         [t(['keyword', 'key'], ['separator', ':'], ['white', ' '], ['string', 'value'])]
       ],
       [
         'my key with spaces = value',
-        [t(['keyword', 'my key with spaces'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])]
+        [
+          t(
+            ['keyword', 'my key with spaces'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value']
+          )
+        ]
       ],
       [
         '  key = value',
-        [t(['white', '  '], ['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])]
+        [
+          t(
+            ['white', '  '],
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value']
+          )
+        ]
       ],
       [
         '\tkey = val',
-        [t(['white', '\t'], ['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'val'])]
+        [
+          t(
+            ['white', '\t'],
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'val']
+          )
+        ]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenizeInSection(input)).toEqual(expected)
@@ -144,35 +182,96 @@ describe('klipper-config Monarch tokenizer', () => {
       // No whitespace before sigil → part of the value.
       [
         'key = value;not-a-comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value;not-a-comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value;not-a-comment']
+          )
+        ]
       ],
       [
         'key = value#not-a-comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value#not-a-comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value#not-a-comment']
+          )
+        ]
       ],
       // Whitespace before sigil → comment is stripped.
       [
         'key = value ;comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', ' '], ['comment', ';comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value'],
+            ['white', ' '],
+            ['comment', ';comment']
+          )
+        ]
       ],
       [
         'key = value #comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', ' '], ['comment', '#comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value'],
+            ['white', ' '],
+            ['comment', '#comment']
+          )
+        ]
       ],
       [
         'key = value\t;comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '\t'], ['comment', ';comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value'],
+            ['white', '\t'],
+            ['comment', ';comment']
+          )
+        ]
       ],
       // Values containing `:` or `=` — the value rule's `[^ \t]+` greedily
       // consumes both, so URLs and key-like fragments stay in one string
       // token.
       [
         'mqtt_address: mqtt://broker:1883/topic',
-        [t(['keyword', 'mqtt_address'], ['separator', ':'], ['white', ' '], ['string', 'mqtt://broker:1883/topic'])]
+        [
+          t(
+            ['keyword', 'mqtt_address'],
+            ['separator', ':'],
+            ['white', ' '],
+            ['string', 'mqtt://broker:1883/topic']
+          )
+        ]
       ],
       [
         'cmd = foo=bar',
-        [t(['keyword', 'cmd'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'foo=bar'])]
+        [
+          t(
+            ['keyword', 'cmd'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'foo=bar']
+          )
+        ]
       ],
       [
         'cmd: a=b c=d',
@@ -183,7 +282,14 @@ describe('klipper-config Monarch tokenizer', () => {
       // sub-state — quotes are kept inside the single `string` token.
       [
         'variable_msg: "hello world"',
-        [t(['keyword', 'variable_msg'], ['separator', ':'], ['white', ' '], ['string', '"hello world"'])]
+        [
+          t(
+            ['keyword', 'variable_msg'],
+            ['separator', ':'],
+            ['white', ' '],
+            ['string', '"hello world"']
+          )
+        ]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenizeInSection(input)).toEqual(expected)
@@ -195,7 +301,14 @@ describe('klipper-config Monarch tokenizer', () => {
     // can still follow on the next line.
     it('emits trailing whitespace after a value as a white token', () => {
       expect(tokenizeInSection('key = value   ')).toEqual([
-        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '   '])
+        t(
+          ['keyword', 'key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'value'],
+          ['white', '   ']
+        )
       ])
     })
 
@@ -229,7 +342,14 @@ describe('klipper-config Monarch tokenizer', () => {
 
     it('continues into deeper-indented lines (indented key, $S2 capture)', () => {
       expect(tokenizeInSection('  parent = v\n    child')).toEqual([
-        t(['white', '  '], ['keyword', 'parent'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v']),
+        t(
+          ['white', '  '],
+          ['keyword', 'parent'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'v']
+        ),
         t(['white', '    '], ['string', 'child'])
       ])
     })
@@ -238,14 +358,34 @@ describe('klipper-config Monarch tokenizer', () => {
       expect(tokenizeInSection('description:\n  G28\nother_key = 1')).toEqual([
         t(['keyword', 'description'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
-        t(['keyword', 'other_key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+        t(
+          ['keyword', 'other_key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', '1']
+        )
       ])
     })
 
     it('treats equal-indent next line as a sibling, not a continuation', () => {
       expect(tokenizeInSection('  parent = v\n  sibling = w')).toEqual([
-        t(['white', '  '], ['keyword', 'parent'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v']),
-        t(['white', '  '], ['keyword', 'sibling'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'w'])
+        t(
+          ['white', '  '],
+          ['keyword', 'parent'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'v']
+        ),
+        t(
+          ['white', '  '],
+          ['keyword', 'sibling'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'w']
+        )
       ])
     })
 
@@ -383,11 +523,25 @@ describe('klipper-config Monarch tokenizer', () => {
       ],
       [
         'activate_gcode: G28',
-        [t(['keyword', 'activate_gcode'], ['separator', ':'], ['white', ' '], ['keyword.command.g', 'G28'])]
+        [
+          t(
+            ['keyword', 'activate_gcode'],
+            ['separator', ':'],
+            ['white', ' '],
+            ['keyword.command.g', 'G28']
+          )
+        ]
       ],
       [
         'pre_unload_gcode: G28',
-        [t(['keyword', 'pre_unload_gcode'], ['separator', ':'], ['white', ' '], ['keyword.command.g', 'G28'])]
+        [
+          t(
+            ['keyword', 'pre_unload_gcode'],
+            ['separator', ':'],
+            ['white', ' '],
+            ['keyword.command.g', 'G28']
+          )
+        ]
       ],
       // RawConfigParser lower-cases option names.
       [
@@ -405,7 +559,14 @@ describe('klipper-config Monarch tokenizer', () => {
       ],
       [
         'gcode_load_sequence: manual',
-        [t(['keyword', 'gcode_load_sequence'], ['separator', ':'], ['white', ' '], ['string', 'manual'])]
+        [
+          t(
+            ['keyword', 'gcode_load_sequence'],
+            ['separator', ':'],
+            ['white', ' '],
+            ['string', 'manual']
+          )
+        ]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenizeInSection(input)).toEqual(expected)
@@ -416,9 +577,12 @@ describe('klipper-config Monarch tokenizer', () => {
         t(['keyword', 'gcode'], ['separator', ':']),
         t(
           ['white', '  '],
-          ['keyword.command.g', 'G1'], ['white', ' '],
-          ['keyword.param.x', 'X10'], ['white', ' '],
-          ['keyword.param.y', 'Y20'], ['white', ' '],
+          ['keyword.command.g', 'G1'],
+          ['white', ' '],
+          ['keyword.param.x', 'X10'],
+          ['white', ' '],
+          ['keyword.param.y', 'Y20'],
+          ['white', ' '],
           ['keyword.param.f', 'F6000']
         )
       ])
@@ -429,9 +593,15 @@ describe('klipper-config Monarch tokenizer', () => {
         t(['keyword', 'gcode'], ['separator', ':']),
         t(
           ['white', '  '],
-          ['keyword.macro', 'SET_PIN'], ['white', ' '],
-          ['keyword.param', 'PIN'], ['operator', '='], ['string', 'my_led'], ['white', ' '],
-          ['keyword.param', 'VALUE'], ['operator', '='], ['string', '1']
+          ['keyword.macro', 'SET_PIN'],
+          ['white', ' '],
+          ['keyword.param', 'PIN'],
+          ['operator', '='],
+          ['string', 'my_led'],
+          ['white', ' '],
+          ['keyword.param', 'VALUE'],
+          ['operator', '='],
+          ['string', '1']
         )
       ])
     })
@@ -460,12 +630,18 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['delimiter.jinja', '{%'], ['white', ' '],
-            ['keyword.control.jinja', 'set'], ['white', ' '],
-            ['variable.jinja', 'x'], ['white', ' '],
-            ['operator', '='], ['white', ' '],
-            ['number.jinja', '1'], ['white', ' '],
-            ['delimiter.jinja', '%}'], ['white', ' '],
+            ['delimiter.jinja', '{%'],
+            ['white', ' '],
+            ['keyword.control.jinja', 'set'],
+            ['white', ' '],
+            ['variable.jinja', 'x'],
+            ['white', ' '],
+            ['operator', '='],
+            ['white', ' '],
+            ['number.jinja', '1'],
+            ['white', ' '],
+            ['delimiter.jinja', '%}'],
+            ['white', ' '],
             ['comment', '; note']
           )
         ]
@@ -492,8 +668,10 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.command.m', 'M117'], ['string', ' Hello;World'],
-            ['white', ' '], ['comment', ';tail']
+            ['keyword.command.m', 'M117'],
+            ['string', ' Hello;World'],
+            ['white', ' '],
+            ['comment', ';tail']
           )
         ]
       ],
@@ -503,8 +681,10 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.command.m', 'M117'], ['string', ' test'],
-            ['white', ' '], ['comment', '#test']
+            ['keyword.command.m', 'M117'],
+            ['string', ' test'],
+            ['white', ' '],
+            ['comment', '#test']
           )
         ]
       ],
@@ -514,8 +694,10 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.command.m', 'M118'], ['string', ' test'],
-            ['white', ' '], ['comment', ';test']
+            ['keyword.command.m', 'M118'],
+            ['string', ' test'],
+            ['white', ' '],
+            ['comment', ';test']
           )
         ]
       ]
@@ -529,7 +711,14 @@ describe('klipper-config Monarch tokenizer', () => {
       expect(tokenizeInSection('  gcode:\n    MY_MACRO ; note\n  other = 1')).toEqual([
         t(['white', '  '], ['keyword', 'gcode'], ['separator', ':']),
         t(['white', '    '], ['keyword.macro', 'MY_MACRO'], ['white', ' '], ['comment', '; note']),
-        t(['white', '  '], ['keyword', 'other'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+        t(
+          ['white', '  '],
+          ['keyword', 'other'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', '1']
+        )
       ])
     })
 
@@ -540,12 +729,22 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['delimiter.jinja', '{%'], ['white', ' '],
-            ['keyword.control.jinja', 'set'], ['white', ' '],
-            ['variable.jinja', 'x'], ['white', ' '],
-            ['operator', '='], ['white', ' '],
-            ['variable.jinja', 'params'], ['operator', '.'], ['variable.jinja', 'X'],
-            ['operator', '|'], ['variable.jinja', 'default'], ['operator', '('], ['number.jinja', '10'], ['operator', ')'],
+            ['delimiter.jinja', '{%'],
+            ['white', ' '],
+            ['keyword.control.jinja', 'set'],
+            ['white', ' '],
+            ['variable.jinja', 'x'],
+            ['white', ' '],
+            ['operator', '='],
+            ['white', ' '],
+            ['variable.jinja', 'params'],
+            ['operator', '.'],
+            ['variable.jinja', 'X'],
+            ['operator', '|'],
+            ['variable.jinja', 'default'],
+            ['operator', '('],
+            ['number.jinja', '10'],
+            ['operator', ')'],
             ['white', ' '],
             ['delimiter.jinja', '%}']
           )
@@ -554,20 +753,36 @@ describe('klipper-config Monarch tokenizer', () => {
 
       // `MACRO` and `.call` are variables, not keywords.
       it('does not treat upper-case names or attributes as keywords', () => {
-        expect(tokenizeInSection('gcode:\n  {% set MACRO = params.MACRO | default(layer.call, True) %}')).toEqual([
+        expect(
+          tokenizeInSection('gcode:\n  {% set MACRO = params.MACRO | default(layer.call, True) %}')
+        ).toEqual([
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['delimiter.jinja', '{%'], ['white', ' '],
-            ['keyword.control.jinja', 'set'], ['white', ' '],
-            ['variable.jinja', 'MACRO'], ['white', ' '],
-            ['operator', '='], ['white', ' '],
-            ['variable.jinja', 'params'], ['operator', '.'], ['variable.jinja', 'MACRO'], ['white', ' '],
-            ['operator', '|'], ['white', ' '],
-            ['variable.jinja', 'default'], ['operator', '('],
-            ['variable.jinja', 'layer'], ['operator', '.'], ['variable.jinja', 'call'],
-            ['operator', ','], ['white', ' '],
-            ['constant.language.jinja', 'True'], ['operator', ')'], ['white', ' '],
+            ['delimiter.jinja', '{%'],
+            ['white', ' '],
+            ['keyword.control.jinja', 'set'],
+            ['white', ' '],
+            ['variable.jinja', 'MACRO'],
+            ['white', ' '],
+            ['operator', '='],
+            ['white', ' '],
+            ['variable.jinja', 'params'],
+            ['operator', '.'],
+            ['variable.jinja', 'MACRO'],
+            ['white', ' '],
+            ['operator', '|'],
+            ['white', ' '],
+            ['variable.jinja', 'default'],
+            ['operator', '('],
+            ['variable.jinja', 'layer'],
+            ['operator', '.'],
+            ['variable.jinja', 'call'],
+            ['operator', ','],
+            ['white', ' '],
+            ['constant.language.jinja', 'True'],
+            ['operator', ')'],
+            ['white', ' '],
             ['delimiter.jinja', '%}']
           )
         ])
@@ -579,13 +794,21 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.macro', 'SET_GCODE_OFFSET'], ['white', ' '],
-            ['keyword.param', 'Z'], ['operator', '='],
+            ['keyword.macro', 'SET_GCODE_OFFSET'],
+            ['white', ' '],
+            ['keyword.param', 'Z'],
+            ['operator', '='],
             ['delimiter.jinja', '{'],
-            ['variable.jinja', 'params'], ['operator', '.'], ['variable.jinja', 'Z'],
-            ['operator', '|'], ['variable.jinja', 'float'],
-            ['delimiter.jinja', '}'], ['white', ' '],
-            ['keyword.param', 'MOVE'], ['operator', '='], ['string', '1']
+            ['variable.jinja', 'params'],
+            ['operator', '.'],
+            ['variable.jinja', 'Z'],
+            ['operator', '|'],
+            ['variable.jinja', 'float'],
+            ['delimiter.jinja', '}'],
+            ['white', ' '],
+            ['keyword.param', 'MOVE'],
+            ['operator', '='],
+            ['string', '1']
           )
         ])
       })
@@ -596,16 +819,27 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.macro', 'SET_X'], ['white', ' '],
-            ['keyword.param', 'V'], ['operator', '='],
-            ['delimiter.jinja', '{%'], ['white', ' '],
-            ['keyword.control.jinja', 'if'], ['white', ' '],
-            ['number.jinja', '1'], ['white', ' '], ['delimiter.jinja', '%}'],
-            ['string', '1'],
-            ['delimiter.jinja', '{%'], ['white', ' '],
-            ['keyword.control.jinja', 'endif'], ['white', ' '], ['delimiter.jinja', '%}'],
+            ['keyword.macro', 'SET_X'],
             ['white', ' '],
-            ['keyword.param', 'MOVE'], ['operator', '='], ['string', '1']
+            ['keyword.param', 'V'],
+            ['operator', '='],
+            ['delimiter.jinja', '{%'],
+            ['white', ' '],
+            ['keyword.control.jinja', 'if'],
+            ['white', ' '],
+            ['number.jinja', '1'],
+            ['white', ' '],
+            ['delimiter.jinja', '%}'],
+            ['string', '1'],
+            ['delimiter.jinja', '{%'],
+            ['white', ' '],
+            ['keyword.control.jinja', 'endif'],
+            ['white', ' '],
+            ['delimiter.jinja', '%}'],
+            ['white', ' '],
+            ['keyword.param', 'MOVE'],
+            ['operator', '='],
+            ['string', '1']
           )
         ])
       })
@@ -616,9 +850,12 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.command.g', 'G1'], ['white', ' '],
+            ['keyword.command.g', 'G1'],
+            ['white', ' '],
             ['keyword.param.x', 'X'],
-            ['delimiter.jinja', '{'], ['variable.jinja', 'x'], ['delimiter.jinja', '}'],
+            ['delimiter.jinja', '{'],
+            ['variable.jinja', 'x'],
+            ['delimiter.jinja', '}'],
             ['white', ' '],
             ['keyword.param.y', 'Y10']
           )
@@ -627,22 +864,41 @@ describe('klipper-config Monarch tokenizer', () => {
 
       // An open `{% if %}` stays open across a continuation line.
       it('keeps a Jinja statement open across a wrapped continuation line', () => {
-        expect(tokenizeInSection('gcode:\n  {% if printer.toolhead.homed_axes\n      != "xyz" %}\n    G28\n  {% endif %}')).toEqual([
+        expect(
+          tokenizeInSection(
+            'gcode:\n  {% if printer.toolhead.homed_axes\n      != "xyz" %}\n    G28\n  {% endif %}'
+          )
+        ).toEqual([
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['delimiter.jinja', '{%'], ['white', ' '],
-            ['keyword.control.jinja', 'if'], ['white', ' '],
-            ['variable.jinja', 'printer'], ['operator', '.'], ['variable.jinja', 'toolhead'], ['operator', '.'], ['variable.jinja', 'homed_axes']
+            ['delimiter.jinja', '{%'],
+            ['white', ' '],
+            ['keyword.control.jinja', 'if'],
+            ['white', ' '],
+            ['variable.jinja', 'printer'],
+            ['operator', '.'],
+            ['variable.jinja', 'toolhead'],
+            ['operator', '.'],
+            ['variable.jinja', 'homed_axes']
           ),
           t(
             ['white', '      '],
-            ['operator', '!='], ['white', ' '],
-            ['string.jinja', '"xyz"'], ['white', ' '],
+            ['operator', '!='],
+            ['white', ' '],
+            ['string.jinja', '"xyz"'],
+            ['white', ' '],
             ['delimiter.jinja', '%}']
           ),
           t(['white', '    '], ['keyword.command.g', 'G28']),
-          t(['white', '  '], ['delimiter.jinja', '{%'], ['white', ' '], ['keyword.control.jinja', 'endif'], ['white', ' '], ['delimiter.jinja', '%}'])
+          t(
+            ['white', '  '],
+            ['delimiter.jinja', '{%'],
+            ['white', ' '],
+            ['keyword.control.jinja', 'endif'],
+            ['white', ' '],
+            ['delimiter.jinja', '%}']
+          )
         ])
       })
     })
@@ -667,10 +923,19 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.macro', 'SET_PIN'], ['white', ' '],
-            ['keyword.param', 'PIN'], ['operator', '='], ['string', 'x']
+            ['keyword.macro', 'SET_PIN'],
+            ['white', ' '],
+            ['keyword.param', 'PIN'],
+            ['operator', '='],
+            ['string', 'x']
           ),
-          t(['keyword', 'other'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+          t(
+            ['keyword', 'other'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', '1']
+          )
         ]
       ],
       // Unterminated quote recovery must not strand the sub-machine either.
@@ -680,11 +945,20 @@ describe('klipper-config Monarch tokenizer', () => {
           t(['keyword', 'gcode'], ['separator', ':']),
           t(
             ['white', '  '],
-            ['keyword.macro', 'SET_PIN'], ['white', ' '],
-            ['keyword.param', 'PIN'], ['operator', '='],
-            ['string.quote', '"'], ['invalid', 'a']
+            ['keyword.macro', 'SET_PIN'],
+            ['white', ' '],
+            ['keyword.param', 'PIN'],
+            ['operator', '='],
+            ['string.quote', '"'],
+            ['invalid', 'a']
           ),
-          t(['keyword', 'other'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+          t(
+            ['keyword', 'other'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', '1']
+          )
         ]
       ]
     ])('ends the value when a line ends inside a macro call: %j', (input, expected) => {
@@ -695,7 +969,13 @@ describe('klipper-config Monarch tokenizer', () => {
       expect(tokenizeInSection('gcode:\n  G28\nother_key = 1')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['keyword.command.g', 'G28']),
-        t(['keyword', 'other_key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+        t(
+          ['keyword', 'other_key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', '1']
+        )
       ])
     })
 
@@ -736,7 +1016,10 @@ describe('klipper-config Monarch tokenizer', () => {
     // a single save-config token. Pinning this catches a regression where
     // the rule's right side is tightened or split.
     it.each<[string, TokenLine[][]]>([
-      ['#*# position_endstop = 224.000', [t(['comment.control.save-config', '#*# position_endstop = 224.000'])]],
+      [
+        '#*# position_endstop = 224.000',
+        [t(['comment.control.save-config', '#*# position_endstop = 224.000'])]
+      ],
       ['#*# foo: bar', [t(['comment.control.save-config', '#*# foo: bar'])]],
       ['#*#', [t(['comment.control.save-config', '#*#'])]]
     ])('greedily captures %j as a single save-config token', (input, expected) => {
@@ -766,7 +1049,13 @@ describe('klipper-config Monarch tokenizer', () => {
     it('transitions to @content after a [section] header', () => {
       expect(tokenize('[server]\nkey = value')).toEqual([
         t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']']),
-        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])
+        t(
+          ['keyword', 'key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'value']
+        )
       ])
     })
 
@@ -834,8 +1123,14 @@ describe('klipper-config Monarch tokenizer', () => {
         t(['bracket', '['], ['type.identifier', 'stepper_x'], ['bracket', ']']),
         t(['keyword', 'step_pin'], ['separator', ':'], ['white', ' '], ['string', 'PE2']),
         t(),
-        t(['comment.control.save-config', '#*# <---------------------- SAVE_CONFIG ---------------------->']),
-        t(['comment.control.save-config', '#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.']),
+        t([
+          'comment.control.save-config',
+          '#*# <---------------------- SAVE_CONFIG ---------------------->'
+        ]),
+        t([
+          'comment.control.save-config',
+          '#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.'
+        ]),
         t(['comment.control.save-config', '#*#']),
         t(['comment.control.save-config', '#*# [stepper_x]']),
         t(['comment.control.save-config', '#*# position_endstop = 224.000'])

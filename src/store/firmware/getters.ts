@@ -7,11 +7,17 @@ import { SUPPORTED_API_VERSION, finishedRunOf, formatResponse, updatableMcus } f
 
 export const getters = {
   isSupported: (_, __, rootState): boolean => {
-    return rootState.extensions.agents.some(agent => agent.name === Globals.MOONRAKER_AGENTS.aldis.name)
+    return rootState.extensions.agents.some(
+      agent => agent.name === Globals.MOONRAKER_AGENTS.aldis.name
+    )
   },
 
   isRegistered: (_, __, rootState): boolean => {
-    return rootState.server.system_info?.available_services?.includes(Globals.MOONRAKER_AGENTS.aldis.name) ?? false
+    return (
+      rootState.server.system_info?.available_services?.includes(
+        Globals.MOONRAKER_AGENTS.aldis.name
+      ) ?? false
+    )
   },
 
   isAvailable: (_, getters): boolean => {
@@ -39,7 +45,7 @@ export const getters = {
   },
 
   getHost: (state, getters): Aldis.Host | null => {
-    return getters.isApiSupported ? state.status?.host ?? null : null
+    return getters.isApiSupported ? (state.status?.host ?? null) : null
   },
 
   getUpdatableMcus: (state): string[] => {
@@ -57,12 +63,7 @@ export const getters = {
   getResponses: (state): ConsoleLogEntry[] => {
     const run = state.run
 
-    return (
-      run != null &&
-      run.run_id === state.logRunId
-    )
-      ? run.messages.map(formatResponse)
-      : []
+    return run != null && run.run_id === state.logRunId ? run.messages.map(formatResponse) : []
   },
 
   getFinishedRun: (state): Aldis.Run | null => {
@@ -77,5 +78,5 @@ export const getters = {
     const messages = getters.getFinishedRun?.messages ?? []
 
     return messages[messages.length - 1]?.message ?? null
-  },
+  }
 } satisfies GetterTree<FirmwareState, RootState>

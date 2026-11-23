@@ -19,15 +19,16 @@
       />
       <table>
         <tr>
-          <td class="pr-2">
-            {{ $t('app.file_system.label.downloaded') }}:
-          </td>
-          <td>{{ currentDownload.percent }}% ({{ $filters.getReadableFileSizeString(currentDownload.loaded) }} / {{ $filters.getReadableFileSizeString(currentDownload.size) }})</td>
+          <td class="pr-2"> {{ $t('app.file_system.label.downloaded') }}: </td>
+          <td
+            >{{ currentDownload.percent }}% ({{
+              $filters.getReadableFileSizeString(currentDownload.loaded)
+            }}
+            / {{ $filters.getReadableFileSizeString(currentDownload.size) }})</td
+          >
         </tr>
         <tr>
-          <td class="pr-2">
-            {{ $t('app.file_system.label.transfer_rate') }}:
-          </td>
+          <td class="pr-2"> {{ $t('app.file_system.label.transfer_rate') }}: </td>
           <td>{{ $filters.getReadableDataRateString(currentDownload.speed) }}</td>
         </tr>
       </table>
@@ -50,15 +51,15 @@ import type { FileDownload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
-  get open () {
+  get open() {
     return this.currentDownload != null
   }
 
-  get currentDownload (): FileDownload | null {
+  get currentDownload(): FileDownload | null {
     return this.$typedState.files.download
   }
 
-  handleCancelDownload () {
+  handleCancelDownload() {
     this.currentDownload?.abortController.abort()
   }
 }

@@ -22,16 +22,20 @@
           <source
             :src="src"
             :type="type"
-          >
+          />
         </video>
 
         <img
           v-else-if="isImage"
           :src="src"
-        >
+        />
 
         <div v-else>
-          {{ $t('app.general.simple_form.msg.no_file_preview', { name: (extension ? `${extension} files` : filename) }) }}
+          {{
+            $t('app.general.simple_form.msg.no_file_preview', {
+              name: extension ? `${extension} files` : filename
+            })
+          }}
         </div>
       </v-layout>
 
@@ -109,28 +113,28 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
   abortController: AbortController | null = null
 
-  get calculatedWidth () {
+  get calculatedWidth() {
     const defaultWidth = window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.75)
     return Math.min(window.innerWidth * 0.9, Math.max(this.width ?? defaultWidth, defaultWidth / 2))
   }
 
-  get isVideo () {
+  get isVideo() {
     return this.type.startsWith('video/')
   }
 
-  get isImage () {
+  get isImage() {
     return this.type.startsWith('image/')
   }
 
-  get isMarkdown () {
+  get isMarkdown() {
     return this.type.startsWith('text/markdown')
   }
 
-  get apiUrl (): string {
+  get apiUrl(): string {
     return this.$typedState.config.apiUrl
   }
 
-  async LoadMarkdown (signal: AbortSignal) {
+  async LoadMarkdown(signal: AbortSignal) {
     if (!this.path) {
       // refuse rendering markdown if no base path has been supplied
       consola.error('[FilePreviewDialog] missing path property in markdown viewer')
@@ -148,7 +152,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
       const customExtension: MarkedExtension = {
         renderer: {
-          link (args: Tokens.Link) {
+          link(args: Tokens.Link) {
             const html = this.constructor.prototype.link.call(this, args)
 
             return html.replace(/^<a /, '<a target="_blank" rel="noopener noreferrer" ')
@@ -173,9 +177,9 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   }
 
   @Watch('open')
-  onOpenChanged (value: boolean) {
+  onOpenChanged(value: boolean) {
     if (value && this.isMarkdown) {
-      const controller = this.abortController = new AbortController()
+      const controller = (this.abortController = new AbortController())
 
       this.LoadMarkdown(controller.signal)
     } else {
@@ -186,14 +190,15 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
     }
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.abortController?.abort()
   }
 }
 </script>
 
 <style lang="scss" scoped>
-video, img {
+video,
+img {
   max-width: 100%;
   max-height: calc(90vh - 144px);
 }
@@ -206,7 +211,8 @@ video, img {
   table {
     border-collapse: collapse;
 
-    th, td {
+    th,
+    td {
       border: 1px solid;
       padding: 2px 6px;
     }

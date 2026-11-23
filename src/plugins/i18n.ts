@@ -12,10 +12,7 @@ export const getNavigatorLocales = () => {
 }
 
 export const getAllLocales = (): Intl.LocalesArgument => {
-  return [
-    i18n.locale,
-    ...getNavigatorLocales()
-  ]
+  return [i18n.locale, ...getNavigatorLocales()]
 }
 
 /**
@@ -26,10 +23,9 @@ export const getStartingLocale = () => {
     const code = navigatorLocale.replace('_', '-')
     const [language] = code.split('-')
 
-    const supported = (
+    const supported =
       SupportedLocales.find(locale => locale.code.toLowerCase() === code.toLowerCase()) ??
       SupportedLocales.find(locale => locale.code.toLowerCase() === language.toLowerCase())
-    )
 
     if (supported) {
       return supported.code

@@ -5,16 +5,26 @@ import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { isAgentConnectedEvent, isAgentDisconnectedEvent } from '@/util/is-agent-event'
-import { SUPPORTED_API_VERSION, agentErrorMessage, apiVersionOf, applyEvent, isStatusResponse, isUpdateResponse, needsRetry, reconcileRun, unsupportedStatus } from './helpers'
+import {
+  SUPPORTED_API_VERSION,
+  agentErrorMessage,
+  apiVersionOf,
+  applyEvent,
+  isStatusResponse,
+  isUpdateResponse,
+  needsRetry,
+  reconcileRun,
+  unsupportedStatus
+} from './helpers'
 
 const NOTIFICATION_ID = 'firmware-updates-available'
 
 export const actions = {
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async init ({ state, commit, dispatch }) {
+  async init({ state, commit, dispatch }) {
     if (state.initialised) {
       return
     }
@@ -24,7 +34,7 @@ export const actions = {
     await dispatch('refresh')
   },
 
-  async refresh ({ state, commit, dispatch }) {
+  async refresh({ state, commit, dispatch }) {
     if (state.refreshing) {
       return
     }
@@ -39,7 +49,7 @@ export const actions = {
   },
 
   // Bypasses the refresh guard: an in-flight refresh may predate the run finishing
-  async fetchStatus ({ commit }) {
+  async fetchStatus({ commit }) {
     commit('setStatusError', null)
 
     try {
@@ -49,13 +59,10 @@ export const actions = {
     }
   },
 
-  async onStatus ({ state, commit, dispatch }, payload: Aldis.StatusResponse) {
+  async onStatus({ state, commit, dispatch }, payload: Aldis.StatusResponse) {
     const apiVersion = apiVersionOf(payload)
 
-    if (
-      apiVersion !== null &&
-      apiVersion !== SUPPORTED_API_VERSION
-    ) {
+    if (apiVersion !== null && apiVersion !== SUPPORTED_API_VERSION) {
       commit('setStatus', unsupportedStatus(apiVersion))
       commit('setStatusError', null)
 
@@ -77,35 +84,33 @@ export const actions = {
 
     if (payload.run?.state === 'finished') {
       commit('setRetried', false)
-    } else if (
-      needsRetry(state.run, payload.run) &&
-      !state.retried
-    ) {
+    } else if (needsRetry(state.run, payload.run) && !state.retried) {
       commit('setRetried', true)
 
       await dispatch('fetchStatus')
     }
   },
 
-  async updateNotification ({ getters, rootState, dispatch }) {
-    if (
-      rootState.config.uiSettings.general.enableFirmwareNotifications &&
-      getters.hasUpdates
-    ) {
-      dispatch('notifications/pushNotification', {
-        id: NOTIFICATION_ID,
-        title: i18n.t('app.firmware.label.updates_available'),
-        to: '/settings#firmware',
-        btnText: i18n.t('app.firmware.btn.view'),
-        type: 'info',
-        merge: true
-      }, { root: true })
+  async updateNotification({ getters, rootState, dispatch }) {
+    if (rootState.config.uiSettings.general.enableFirmwareNotifications && getters.hasUpdates) {
+      dispatch(
+        'notifications/pushNotification',
+        {
+          id: NOTIFICATION_ID,
+          title: i18n.t('app.firmware.label.updates_available'),
+          to: '/settings#firmware',
+          btnText: i18n.t('app.firmware.btn.view'),
+          type: 'info',
+          merge: true
+        },
+        { root: true }
+      )
     } else {
       dispatch('notifications/clearNotification', NOTIFICATION_ID, { root: true })
     }
   },
 
-  async update ({ commit, dispatch }, args: Aldis.UpdateArguments) {
+  async update({ commit, dispatch }, args: Aldis.UpdateArguments) {
     commit('setUpdateStarted')
 
     try {
@@ -123,15 +128,12 @@ export const actions = {
     }
   },
 
-  async onAgentEvent ({ state, commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
+  async onAgentEvent({ state, commit, dispatch }, payload: Moonraker.Extensions.AgentEvent) {
     if (isAgentConnectedEvent(payload)) {
       await dispatch('init')
     } else if (isAgentDisconnectedEvent(payload)) {
       await dispatch('onAgentDisconnected')
-    } else if (
-      payload.event === 'update_response' &&
-      isUpdateResponse(payload.data)
-    ) {
+    } else if (payload.event === 'update_response' && isUpdateResponse(payload.data)) {
       commit('setRun', applyEvent(state.run, payload.data))
 
       if (payload.data.complete) {
@@ -140,13 +142,13 @@ export const actions = {
     }
   },
 
-  async onKlippyStateChanged ({ state, dispatch }) {
+  async onKlippyStateChanged({ state, dispatch }) {
     if (state.initialised) {
       await dispatch('fetchStatus')
     }
   },
 
-  async onAgentDisconnected ({ state, commit, dispatch }) {
+  async onAgentDisconnected({ state, commit, dispatch }) {
     commit('setInitialised', false)
     commit('setStatus', null)
     commit('setStatusError', null)

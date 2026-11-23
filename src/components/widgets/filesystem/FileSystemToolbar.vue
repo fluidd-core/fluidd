@@ -1,7 +1,5 @@
 <template>
-  <v-toolbar
-    dense
-  >
+  <v-toolbar dense>
     <v-toolbar-title class="d-none d-sm-block">
       <file-system-breadcrumbs
         :root="root"
@@ -25,9 +23,7 @@
           color="warning"
           v-on="on"
         >
-          <v-icon color="warning">
-            $error
-          </v-icon>
+          <v-icon color="warning"> $error </v-icon>
         </app-btn>
       </template>
       <slot>
@@ -47,9 +43,7 @@
           color="error"
           v-on="on"
         >
-          <v-icon color="error">
-            $warning
-          </v-icon>
+          <v-icon color="error"> $warning </v-icon>
         </app-btn>
       </template>
       <slot>
@@ -121,7 +115,7 @@
     </div>
 
     <div
-      style="max-width: 160px;"
+      style="max-width: 160px"
       class="ml-1"
     >
       <v-text-field
@@ -205,36 +199,36 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   @PropSync('search', { type: String, default: '' })
   searchModel!: string
 
-  get readonly () {
+  get readonly() {
     return this.rootProperties.readonly
   }
 
-  get canConfigure () {
+  get canConfigure() {
     return this.rootProperties.canConfigure
   }
 
-  get hasFilterTypes () {
+  get hasFilterTypes() {
     return this.rootProperties.filterTypes.length > 0
   }
 
-  get lowOnSpace (): boolean {
+  get lowOnSpace(): boolean {
     return this.$typedGetters['files/getDiskUsage'](this.root)?.lowOnSpace ?? false
   }
 
   // Properties of the current root.
-  get rootProperties (): RootProperties {
+  get rootProperties(): RootProperties {
     return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
-  get thumbnailSize (): number {
+  get thumbnailSize(): number {
     return this.$typedState.config.uiSettings.thumbnailSizes[this.root] ?? 32
   }
 
-  set thumbnailSize (value: number) {
+  set thumbnailSize(value: number) {
     this.$typedDispatch('config/updateThumbnailSizes', { name: this.root, size: value })
   }
 
-  handleUpload (files: FileList | File[], print: boolean) {
+  handleUpload(files: FileList | File[], print: boolean) {
     this.$emit('upload', files, print)
   }
 }

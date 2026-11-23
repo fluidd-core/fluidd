@@ -33,15 +33,14 @@
             </div>
             <table v-if="file.percent > 0 && file.percent !== 100">
               <tr>
-                <td class="pr-2">
-                  {{ $t('app.file_system.label.uploaded') }}:
-                </td>
-                <td>{{ file.percent }}% ({{ $filters.getReadableFileSizeString(file.loaded) }} / {{ $filters.getReadableFileSizeString(file.size) }})</td>
+                <td class="pr-2"> {{ $t('app.file_system.label.uploaded') }}: </td>
+                <td
+                  >{{ file.percent }}% ({{ $filters.getReadableFileSizeString(file.loaded) }} /
+                  {{ $filters.getReadableFileSizeString(file.size) }})</td
+                >
               </tr>
               <tr>
-                <td class="pr-2">
-                  {{ $t('app.file_system.label.transfer_rate') }}:
-                </td>
+                <td class="pr-2"> {{ $t('app.file_system.label.transfer_rate') }}: </td>
                 <td>{{ $filters.getReadableDataRateString(file.speed) }}</td>
               </tr>
             </table>
@@ -74,18 +73,17 @@ import type { FileUpload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
-  get open () {
+  get open() {
     return this.uploads.length > 0
   }
 
-  get uploads (): FileUpload[] {
+  get uploads(): FileUpload[] {
     const uploads: FileUpload[] = this.$typedState.files.uploads
 
-    return uploads
-      .filter(file => !file.cancelled && (file.percent !== 100 || !file.complete))
+    return uploads.filter(file => !file.cancelled && (file.percent !== 100 || !file.complete))
   }
 
-  handleCancelUpload (file: FileUpload) {
+  handleCancelUpload(file: FileUpload) {
     if (!file.complete) {
       // Hasn't started uploading...
       if (file.loaded === 0) {
@@ -105,7 +103,7 @@ export default class FileSystemUploadDialog extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .filename {
-    word-break: break-all;
-  }
+.filename {
+  word-break: break-all;
+}
 </style>

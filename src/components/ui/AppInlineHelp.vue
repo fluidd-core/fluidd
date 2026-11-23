@@ -9,10 +9,10 @@
       <v-icon
         :color="type"
         class="app-inline-help ml-2"
-        v-bind="{...$attrs, ...attrs}"
-        v-on="{...$listeners, ...on}"
+        v-bind="{ ...$attrs, ...attrs }"
+        v-on="{ ...$listeners, ...on }"
       >
-        {{ (type === 'error' || type === 'warning') ? '$warning' : '$help' }}
+        {{ type === 'error' || type === 'warning' ? '$warning' : '$help' }}
       </v-icon>
     </template>
     <slot>

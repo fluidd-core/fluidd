@@ -13,14 +13,16 @@
               block
               small
               :class="btnClass"
-              :disabled="!klippyReady || !canSend || [GATE_AVAILABLE, GATE_AVAILABLE_FROM_BUFFER].includes(currentGateStatus)"
+              :disabled="
+                !klippyReady ||
+                !canSend ||
+                [GATE_AVAILABLE, GATE_AVAILABLE_FROM_BUFFER].includes(currentGateStatus)
+              "
               :loading="hasWait($waits.onMmuPreload)"
               v-on="on"
               @click="sendGcode('MMU_PRELOAD', $waits.onMmuPreload)"
             >
-              <v-icon left>
-                $mmuPreload
-              </v-icon>
+              <v-icon left> $mmuPreload </v-icon>
               {{ $t('app.mmu.btn.preload') }}
             </v-btn>
           </template>
@@ -43,9 +45,7 @@
               v-on="on"
               @click="sendGcode('MMU_EJECT', $waits.onMmuEject)"
             >
-              <v-icon left>
-                $mmuEject
-              </v-icon>
+              <v-icon left> $mmuEject </v-icon>
               {{ $t('app.mmu.btn.eject') }}
             </v-btn>
           </template>
@@ -70,9 +70,7 @@
               v-on="on"
               @click="sendGcode('MMU_CHECK_GATE', $waits.onMmuCheckGate)"
             >
-              <v-icon left>
-                $mmuCheckGate
-              </v-icon>
+              <v-icon left> $mmuCheckGate </v-icon>
               {{ $t('app.mmu.btn.check_gate') }}
             </v-btn>
           </template>
@@ -95,9 +93,7 @@
               v-on="on"
               @click="sendGcode('MMU_RECOVER', $waits.onMmuRecover)"
             >
-              <v-icon left>
-                $mmuRecover
-              </v-icon>
+              <v-icon left> $mmuRecover </v-icon>
               {{ $t('app.mmu.btn.recover') }}
             </v-btn>
           </template>
@@ -123,9 +119,7 @@
               v-on="on"
               @click="sendGcode('MMU_UNLOCK', $waits.onMmuUnload)"
             >
-              <v-icon left>
-                $mmuUnlock
-              </v-icon>
+              <v-icon left> $mmuUnlock </v-icon>
               {{ $t('app.mmu.btn.unlock') }}
             </v-btn>
           </template>
@@ -152,9 +146,7 @@
               v-on="on"
               @click="sendGcode('MMU_UNLOAD', $waits.onMmuUnload)"
             >
-              <v-icon left>
-                $mmuUnload
-              </v-icon>
+              <v-icon left> $mmuUnload </v-icon>
               {{ unloadButtonText }}
             </v-btn>
           </template>
@@ -178,9 +170,7 @@
               v-on="on"
               @click="sendGcode('MMU_LOAD', $waits.onMmuLoad)"
             >
-              <v-icon left>
-                $mmuLoad
-              </v-icon>
+              <v-icon left> $mmuLoad </v-icon>
               {{ loadButtonText }}
             </v-btn>
           </template>
@@ -205,18 +195,18 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
   @Ref('refBtn')
   readonly refBtn?: VBtn
 
-  get unloadButtonText () {
+  get unloadButtonText() {
     if (this.gate === this.TOOL_GATE_BYPASS) return this.$t('app.mmu.btn.unload_ext')
     return this.$t('app.mmu.btn.unload')
   }
 
-  get loadButtonText () {
+  get loadButtonText() {
     if (this.gate === this.TOOL_GATE_BYPASS) return this.$t('app.mmu.btn.load_ext')
     return this.$t('app.mmu.btn.load')
   }
 
   @Debounce(500)
-  checkButtonWidth () {
+  checkButtonWidth() {
     this.$nextTick(() => {
       if (this.refBtn) {
         const width = this.refBtn.$el.offsetWidth ?? 0
@@ -233,7 +223,7 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
     })
   }
 
-  get btnClass (): string[] {
+  get btnClass(): string[] {
     const classes = ['base-btn']
     if (this.btnSize === 0) {
       classes.push('btn-no-text')
@@ -243,25 +233,25 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
     return classes
   }
 
-  get showTooltip (): boolean {
+  get showTooltip(): boolean {
     return this.btnSize === 0
   }
 
-  get currentGateStatus (): number {
+  get currentGateStatus(): number {
     return this.$typedState.printer.printer.mmu?.gate_status?.[this.gate] ?? -1
   }
 
   @Watch('$typedState.gui.view.mmu.largeFilamentStatus')
-  onFilamentStatusSizeChange (): void {
+  onFilamentStatusSizeChange(): void {
     this.checkButtonWidth()
   }
 
-  mounted () {
+  mounted() {
     this.checkButtonWidth()
     window.addEventListener('resize', this.checkButtonWidth)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.checkButtonWidth)
   }
 }
@@ -269,29 +259,29 @@ export default class MmuControls extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .base-btn {
-    max-width: 100%;
-    overflow: hidden;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .wrap-text-btn {
-    min-height: 3em;
-    display: inline-block;
-    white-space: normal;
+  min-height: 3em;
+  display: inline-block;
+  white-space: normal;
 }
 
 .btn-small-text {
-    font-size: 0.6em;
+  font-size: 0.6em;
 }
 
 .btn-small-text .v-icon {
-    margin-right: 2px;
+  margin-right: 2px;
 }
 
 .btn-no-text {
-    font-size: 0;
+  font-size: 0;
 }
 
 .btn-no-text .v-icon {
-    margin-right: 0;
+  margin-right: 0;
 }
 </style>

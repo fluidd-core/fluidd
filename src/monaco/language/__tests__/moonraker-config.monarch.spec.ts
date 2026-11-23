@@ -24,10 +24,7 @@ beforeAll(() => {
 describe('moonraker-config Monarch tokenizer', () => {
   describe('section headers', () => {
     it.each<[string, TokenLine[][]]>([
-      [
-        '[server]',
-        [t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']'])]
-      ],
+      ['[server]', [t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']'])]],
       [
         '[machine name]',
         [t(['bracket', '['], ['type.identifier', 'machine name'], ['bracket', ']'])]
@@ -55,14 +52,8 @@ describe('moonraker-config Monarch tokenizer', () => {
       // bracket-internal whitespace; configparser's section lookup also
       // keeps it. `[ ]` matches because `[^\]]+` requires only one char,
       // and a space qualifies.
-      [
-        '[ section ]',
-        [t(['bracket', '['], ['type.identifier', ' section '], ['bracket', ']'])]
-      ],
-      [
-        '[ ]',
-        [t(['bracket', '['], ['type.identifier', ' '], ['bracket', ']'])]
-      ],
+      ['[ section ]', [t(['bracket', '['], ['type.identifier', ' section '], ['bracket', ']'])]],
+      ['[ ]', [t(['bracket', '['], ['type.identifier', ' '], ['bracket', ']'])]],
       // Indented section header — Moonraker's `section_r` (`\s*\[…`) and
       // configparser's SECTCRE both allow leading whitespace. The
       // tokenizer rule's `^([ \t]*)` prefix captures it as `white`.
@@ -83,7 +74,15 @@ describe('moonraker-config Monarch tokenizer', () => {
       ],
       [
         '[server] #x',
-        [t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']'], ['white', ' '], ['comment', '#x'])]
+        [
+          t(
+            ['bracket', '['],
+            ['type.identifier', 'server'],
+            ['bracket', ']'],
+            ['white', ' '],
+            ['comment', '#x']
+          )
+        ]
       ],
       [
         '[server];x',
@@ -91,7 +90,15 @@ describe('moonraker-config Monarch tokenizer', () => {
       ],
       [
         '[server] ;x',
-        [t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']'], ['white', ' '], ['comment', ';x'])]
+        [
+          t(
+            ['bracket', '['],
+            ['type.identifier', 'server'],
+            ['bracket', ']'],
+            ['white', ' '],
+            ['comment', ';x']
+          )
+        ]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenize(input)).toEqual(expected)
@@ -109,27 +116,58 @@ describe('moonraker-config Monarch tokenizer', () => {
     it.each<[string, TokenLine[][]]>([
       [
         'key = value',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value']
+          )
+        ]
       ],
-      [
-        'key=value',
-        [t(['keyword', 'key'], ['separator', '='], ['string', 'value'])]
-      ],
+      ['key=value', [t(['keyword', 'key'], ['separator', '='], ['string', 'value'])]],
       [
         'key: value',
         [t(['keyword', 'key'], ['separator', ':'], ['white', ' '], ['string', 'value'])]
       ],
       [
         'my key with spaces = value',
-        [t(['keyword', 'my key with spaces'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])]
+        [
+          t(
+            ['keyword', 'my key with spaces'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value']
+          )
+        ]
       ],
       [
         '  key = value',
-        [t(['white', '  '], ['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])]
+        [
+          t(
+            ['white', '  '],
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value']
+          )
+        ]
       ],
       [
         '\tkey = val',
-        [t(['white', '\t'], ['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'val'])]
+        [
+          t(
+            ['white', '\t'],
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'val']
+          )
+        ]
       ]
     ])('tokenizes %j', (input, expected) => {
       expect(tokenizeInSection(input)).toEqual(expected)
@@ -147,34 +185,95 @@ describe('moonraker-config Monarch tokenizer', () => {
     it.each<[string, TokenLine[][]]>([
       [
         'key = value;not-a-comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value;not-a-comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value;not-a-comment']
+          )
+        ]
       ],
       [
         'key = value#not-a-comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value#not-a-comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value#not-a-comment']
+          )
+        ]
       ],
       [
         'key = value ;comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', ' '], ['comment', ';comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value'],
+            ['white', ' '],
+            ['comment', ';comment']
+          )
+        ]
       ],
       [
         'key = value #comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', ' '], ['comment', '#comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value'],
+            ['white', ' '],
+            ['comment', '#comment']
+          )
+        ]
       ],
       [
         'key = value\t;comment',
-        [t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '\t'], ['comment', ';comment'])]
+        [
+          t(
+            ['keyword', 'key'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'value'],
+            ['white', '\t'],
+            ['comment', ';comment']
+          )
+        ]
       ],
       // Values containing `:` or `=` — the value rule's `[^ \t]+` greedily
       // consumes both, so URLs and key-like fragments stay in one string
       // token.
       [
         'mqtt_address: mqtt://broker:1883/topic',
-        [t(['keyword', 'mqtt_address'], ['separator', ':'], ['white', ' '], ['string', 'mqtt://broker:1883/topic'])]
+        [
+          t(
+            ['keyword', 'mqtt_address'],
+            ['separator', ':'],
+            ['white', ' '],
+            ['string', 'mqtt://broker:1883/topic']
+          )
+        ]
       ],
       [
         'cmd = foo=bar',
-        [t(['keyword', 'cmd'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'foo=bar'])]
+        [
+          t(
+            ['keyword', 'cmd'],
+            ['white', ' '],
+            ['separator', '='],
+            ['white', ' '],
+            ['string', 'foo=bar']
+          )
+        ]
       ],
       [
         'cmd: a=b c=d',
@@ -197,7 +296,14 @@ describe('moonraker-config Monarch tokenizer', () => {
     // can still follow on the next line.
     it('emits trailing whitespace after a value as a white token', () => {
       expect(tokenizeInSection('key = value   ')).toEqual([
-        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'], ['white', '   '])
+        t(
+          ['keyword', 'key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'value'],
+          ['white', '   ']
+        )
       ])
     })
 
@@ -225,7 +331,13 @@ describe('moonraker-config Monarch tokenizer', () => {
     // swallowed into a single string token. Pin the current behaviour.
     it('does not implement the backslash escape (whole tail becomes one string)', () => {
       expect(tokenizeInSection('key = value \\;literal')).toEqual([
-        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value \\;literal'])
+        t(
+          ['keyword', 'key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'value \\;literal']
+        )
       ])
     })
   })
@@ -241,7 +353,14 @@ describe('moonraker-config Monarch tokenizer', () => {
 
     it('continues into deeper-indented lines (indented key, $S2 capture)', () => {
       expect(tokenizeInSection('  parent = v\n    child')).toEqual([
-        t(['white', '  '], ['keyword', 'parent'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v']),
+        t(
+          ['white', '  '],
+          ['keyword', 'parent'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'v']
+        ),
         t(['white', '    '], ['string', 'child'])
       ])
     })
@@ -250,14 +369,34 @@ describe('moonraker-config Monarch tokenizer', () => {
       expect(tokenizeInSection('gcode:\n  G28\nother_key = 1')).toEqual([
         t(['keyword', 'gcode'], ['separator', ':']),
         t(['white', '  '], ['string', 'G28']),
-        t(['keyword', 'other_key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', '1'])
+        t(
+          ['keyword', 'other_key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', '1']
+        )
       ])
     })
 
     it('treats equal-indent next line as a sibling, not a continuation', () => {
       expect(tokenizeInSection('  parent = v\n  sibling = w')).toEqual([
-        t(['white', '  '], ['keyword', 'parent'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'v']),
-        t(['white', '  '], ['keyword', 'sibling'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'w'])
+        t(
+          ['white', '  '],
+          ['keyword', 'parent'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'v']
+        ),
+        t(
+          ['white', '  '],
+          ['keyword', 'sibling'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'w']
+        )
       ])
     })
 
@@ -395,7 +534,13 @@ describe('moonraker-config Monarch tokenizer', () => {
     it('transitions to @content after a [section] header', () => {
       expect(tokenize('[server]\nkey = value')).toEqual([
         t(['bracket', '['], ['type.identifier', 'server'], ['bracket', ']']),
-        t(['keyword', 'key'], ['white', ' '], ['separator', '='], ['white', ' '], ['string', 'value'])
+        t(
+          ['keyword', 'key'],
+          ['white', ' '],
+          ['separator', '='],
+          ['white', ' '],
+          ['string', 'value']
+        )
       ])
     })
 

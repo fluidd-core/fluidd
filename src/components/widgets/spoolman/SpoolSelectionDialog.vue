@@ -3,7 +3,11 @@
     v-model="open"
     scrollable
     :max-width="$vuetify.breakpoint.mdAndDown ? '90vw' : '75vw'"
-    :title="$tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, { macro: targetMacro?.toUpperCase() })"
+    :title="
+      $tc('app.spoolman.title.spool_selection', targetMacro ? 2 : 1, {
+        macro: targetMacro?.toUpperCase()
+      })
+    "
     title-shadow
   >
     <template #menu>
@@ -43,9 +47,7 @@
             @click="cameraScanSource = camera.uid"
           >
             <v-list-item-icon>
-              <v-icon>
-                $camera
-              </v-icon>
+              <v-icon> $camera </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -127,7 +129,7 @@
                   :rotate="-90"
                   :size="44"
                   :width="3"
-                  :value="item.remaining_weight / item.initial_weight * 100"
+                  :value="(item.remaining_weight / item.initial_weight) * 100"
                   color="primary"
                   class="mr-4 flex-column"
                 >
@@ -196,13 +198,9 @@
               {{ $filters.getReadableCurrencyString(value, currency ?? '') }}
             </template>
 
-            <template #[`item-value.filament.density`]="{ value }">
-              {{ value }} g/cm³
-            </template>
+            <template #[`item-value.filament.density`]="{ value }"> {{ value }} g/cm³ </template>
 
-            <template #[`item-value.filament.diameter`]="{ value }">
-              {{ value }} mm
-            </template>
+            <template #[`item-value.filament.diameter`]="{ value }"> {{ value }} mm </template>
 
             <template #[`item-value.filament.settings_extruder_temp`]="{ value }">
               {{ value }}<small>°C</small>
@@ -348,21 +346,20 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   hasDeviceCamera = false
 
-  async mounted () {
+  async mounted() {
     this.hasDeviceCamera = await QrScanner.hasCamera()
   }
 
   @Watch('open')
-  onOpen () {
+  onOpen() {
     if (this.open) {
       if (this.spoolSelectionOnly) {
         this.selectedSpoolId = this.$typedState.spoolman.dialog.selectedSpoolId ?? null
       } else if (this.targetMacro) {
         const macro = this.$typedGetters['macros/getMacroByName'](this.targetMacro)
 
-        this.selectedSpoolId = typeof macro?.variables?.spool_id === 'number'
-          ? macro.variables.spool_id
-          : null
+        this.selectedSpoolId =
+          typeof macro?.variables?.spool_id === 'number' ? macro.variables.spool_id : null
       } else {
         this.selectedSpoolId = this.$typedState.spoolman.activeSpool
       }
@@ -382,46 +379,48 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
   }
 
-  get open (): boolean {
+  get open(): boolean {
     return this.$typedState.spoolman.dialog.show
   }
 
-  set open (val: boolean) {
+  set open(val: boolean) {
     this.$typedCommit('spoolman/setDialogState', {
       ...this.$typedState.spoolman.dialog,
       show: val
     })
   }
 
-  get availableSpools (): SpoolWithAfcLoadedLane[] {
+  get availableSpools(): SpoolWithAfcLoadedLane[] {
     const availableSpools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
 
-    const afcLoadedSpools = this.afc != null
-      ? this.afcLoadedSpools
-      : {}
+    const afcLoadedSpools = this.afc != null ? this.afcLoadedSpools : {}
 
     return availableSpools
       .filter(x => !x.archived)
-      .map(spool => ({
-        ...spool,
-        afc_loaded_lane: afcLoadedSpools[spool.id]
-      } satisfies SpoolWithAfcLoadedLane))
+      .map(
+        spool =>
+          ({
+            ...spool,
+            afc_loaded_lane: afcLoadedSpools[spool.id]
+          }) satisfies SpoolWithAfcLoadedLane
+      )
   }
 
-  get currency (): string | null {
+  get currency(): string | null {
     return this.$typedState.spoolman.currency
   }
 
-  get configurableHeaders (): AppDataTableHeader[] {
-    const afcHeaders: AppDataTableHeader[] = this.afc != null
-      ? [
-          {
-            text: this.$tc('app.afc.LaneLoaded'),
-            value: 'afc_loaded_lane',
-            cellClass: 'text-no-wrap'
-          }
-        ]
-      : []
+  get configurableHeaders(): AppDataTableHeader[] {
+    const afcHeaders: AppDataTableHeader[] =
+      this.afc != null
+        ? [
+            {
+              text: this.$tc('app.afc.LaneLoaded'),
+              value: 'afc_loaded_lane',
+              cellClass: 'text-no-wrap'
+            }
+          ]
+        : []
 
     const headers: AppDataTableHeader[] = [
       {
@@ -535,23 +534,24 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     ]
 
-    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters['config/getMergedTableHeaders'](headers, 'spoolman')
+    const mergedTableHeaders: AppDataTableHeader[] = this.$typedGetters[
+      'config/getMergedTableHeaders'
+    ](headers, 'spoolman')
 
     return mergedTableHeaders
   }
 
-  get headers (): DataTableHeader[] {
+  get headers(): DataTableHeader[] {
     return [
       {
         text: this.$tc('app.spoolman.label.filament_name'),
         value: 'filament_name'
       },
-      ...this.configurableHeaders
-        .filter(header => header.visible !== false)
+      ...this.configurableHeaders.filter(header => header.visible !== false)
     ]
   }
 
-  get filename (): string | undefined {
+  get filename(): string | undefined {
     const filename: string | undefined = this.$typedState.spoolman.dialog.filename
 
     if (filename && filename.startsWith('/')) {
@@ -561,35 +561,36 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return filename
   }
 
-  get currentFileName (): string {
+  get currentFileName(): string {
     return this.filename || this.$typedState.printer.printer.print_stats?.filename || ''
   }
 
-  get currentFile (): AppFileWithMeta | undefined {
+  get currentFile(): AppFileWithMeta | undefined {
     const { filename, rootPath } = getFilePaths(this.currentFileName, 'gcodes')
 
     return this.$typedGetters['files/getFile'](rootPath, filename)
   }
 
-  get spoolSelectionOnly (): boolean {
+  get spoolSelectionOnly(): boolean {
     return this.$typedState.spoolman.dialog.spoolSelectionOnly ?? false
   }
 
-  get allowManualEntry (): boolean {
+  get allowManualEntry(): boolean {
     return this.$typedState.spoolman.dialog.allowManualEntry ?? false
   }
 
-  get targetMacro (): string | undefined {
+  get targetMacro(): string | undefined {
     return this.$typedState.spoolman.dialog.targetMacro
   }
 
-  get enabledWebcams (): Moonraker.Webcam.Entry[] {
+  get enabledWebcams(): Moonraker.Webcam.Entry[] {
     return this.$typedGetters['webcams/getEnabledWebcams']
   }
 
-  get availableCameras (): Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] {
-    const cameras: Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] = this.enabledWebcams
-      .filter(camera => camera.service !== 'iframe')
+  get availableCameras(): Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] {
+    const cameras: Pick<Moonraker.Webcam.Entry, 'uid' | 'name'>[] = this.enabledWebcams.filter(
+      camera => camera.service !== 'iframe'
+    )
 
     if (this.hasDeviceCamera) {
       // always show device camera first
@@ -602,11 +603,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return cameras
   }
 
-  get remainingFilamentUnit (): SpoolmanRemainingFilamentUnit {
+  get remainingFilamentUnit(): SpoolmanRemainingFilamentUnit {
     return this.$typedState.config.uiSettings.spoolman.remainingFilamentUnit
   }
 
-  handleQRCodeDetected (id: number) {
+  handleQRCodeDetected(id: number) {
     this.cameraScanSource = null
     this.selectedSpoolId = id
     if (
@@ -623,7 +624,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
   }
 
-  async handleSelectSpool () {
+  async handleSelectSpool() {
     if (this.spoolSelectionOnly) {
       // save selection for parent dialog
       this.$typedCommit('spoolman/setDialogState', {
@@ -636,10 +637,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     if (!this.selectedSpoolId) {
       // no spool selected
 
-      const confirmation = await this.$confirm(
-        this.$tc('app.spoolman.msg.no_spool'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-      )
+      const confirmation = await this.$confirm(this.$tc('app.spoolman.msg.no_spool'), {
+        title: this.$tc('app.general.label.confirm'),
+        color: 'card-heading',
+        icon: '$warning'
+      })
 
       if (!confirmation) {
         return
@@ -658,7 +660,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       const supportsSaveVariables = printerConfig.save_variables
       if (supportsSaveVariables) {
         // persist selected spool across restarts
-        commands.push(`SAVE_VARIABLE VARIABLE=${this.targetMacro.toLowerCase()}__spool_id VALUE=${this.selectedSpoolId ?? 'None'}`)
+        commands.push(
+          `SAVE_VARIABLE VARIABLE=${this.targetMacro.toLowerCase()}__spool_id VALUE=${this.selectedSpoolId ?? 'None'}`
+        )
       }
 
       this.sendGcode(commands.join('\n'))
@@ -674,11 +678,18 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     const spool = this.availableSpools.find(spool => spool.id === this.selectedSpoolId)
-    if (spool && this.currentFileName && (this.warnOnFilamentTypeMismatch || this.warnOnNotEnoughFilament)) {
+    if (
+      spool &&
+      this.currentFileName &&
+      (this.warnOnFilamentTypeMismatch || this.warnOnNotEnoughFilament)
+    ) {
       // trigger sanity checks when we have an active file
       // (current print or new print) and sanity checks are enabled.
 
-      if (this.currentFile && (this.filename || !['complete', 'cancelled'].includes(this.printerState))) {
+      if (
+        this.currentFile &&
+        (this.filename || !['complete', 'cancelled'].includes(this.printerState))
+      ) {
         // if we're tracking a file and starting a new print or the current one hasn't ended yet
 
         if (this.warnOnFilamentTypeMismatch) {
@@ -690,7 +701,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
             const confirmation = await this.$confirm(
               this.$tc('app.spoolman.msg.mismatched_filament'),
-              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+              {
+                title: this.$tc('app.general.label.confirm'),
+                color: 'card-heading',
+                icon: '$warning'
+              }
             )
 
             if (!confirmation) {
@@ -711,7 +726,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
           const confirmation = await this.$confirm(
             this.$tc('app.spoolman.msg.no_required_length'),
-            { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+            {
+              title: this.$tc('app.general.label.confirm'),
+              color: 'card-heading',
+              icon: '$warning'
+            }
           )
 
           if (!confirmation) {
@@ -721,10 +740,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
           if (spool.remaining_length != null && requiredLength >= spool.remaining_length) {
             // not enough filament
 
-            const confirmation = await this.$confirm(
-              this.$tc('app.spoolman.msg.no_filament'),
-              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-            )
+            const confirmation = await this.$confirm(this.$tc('app.spoolman.msg.no_filament'), {
+              title: this.$tc('app.general.label.confirm'),
+              color: 'card-heading',
+              icon: '$warning'
+            })
 
             if (!confirmation) {
               return
@@ -747,41 +767,46 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     this.open = false
   }
 
-  filterResults (value: string, query: string, item: Spool): boolean {
+  filterResults(value: string, query: string, item: Spool): boolean {
     query = query.toLowerCase()
-    return [item.id, item.comment, item.filament.name, item.filament.material, item.filament.vendor?.name]
-      .some(val => val?.toString().toLowerCase().includes(query))
+    return [
+      item.id,
+      item.comment,
+      item.filament.name,
+      item.filament.material,
+      item.filament.vendor?.name
+    ].some(val => val?.toString().toLowerCase().includes(query))
   }
 
-  get spoolmanURL (): string | undefined {
+  get spoolmanURL(): string | undefined {
     return this.$typedGetters['spoolman/getSpoolmanUrl']
   }
 
-  get preferDeviceCamera () {
+  get preferDeviceCamera() {
     return this.$typedState.config.uiSettings.spoolman.preferDeviceCamera
   }
 
-  get autoOpenQRDetectionCamera (): string | null {
+  get autoOpenQRDetectionCamera(): string | null {
     return this.$typedState.config.uiSettings.spoolman.autoOpenQRDetectionCamera
   }
 
-  get autoSelectSpoolOnMatch (): boolean {
+  get autoSelectSpoolOnMatch(): boolean {
     return this.$typedState.config.uiSettings.spoolman.autoSelectSpoolOnMatch
   }
 
-  get warnOnNotEnoughFilament (): boolean {
+  get warnOnNotEnoughFilament(): boolean {
     return this.$typedState.config.uiSettings.spoolman.warnOnNotEnoughFilament
   }
 
-  get warnOnFilamentTypeMismatch (): boolean {
+  get warnOnFilamentTypeMismatch(): boolean {
     return this.$typedState.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
   }
 
-  get sortOrder () {
+  get sortOrder() {
     return this.$typedState.config.uiSettings.spoolman.selectionDialogSortOrder
   }
 
-  handleSortOrderKeyChange (value?: string) {
+  handleSortOrderKeyChange(value?: string) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectionDialogSortOrder.key',
       value: value ?? null,
@@ -789,7 +814,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     })
   }
 
-  handleSortOrderDescChange (value?: boolean) {
+  handleSortOrderDescChange(value?: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.selectionDialogSortOrder.desc',
       value: value ?? null,
@@ -797,25 +822,25 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     })
   }
 
-  handleSwitchToManualEntry () {
+  handleSwitchToManualEntry() {
     this.$typedCommit('spoolman/setDialogState', {
       show: false,
       switchToManualEntry: true
     })
   }
 
-  getSpoolColor (spool?: Spool) {
+  getSpoolColor(spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .file-system,
-  .file-system :deep(.v-data-table) {
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    height: 100%;
-  }
+.file-system,
+.file-system :deep(.v-data-table) {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 100%;
+}
 </style>

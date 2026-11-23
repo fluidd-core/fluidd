@@ -61,6 +61,5 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class KlippyStatusCard extends Mixins(StateMixin) {
-}
+export default class KlippyStatusCard extends Mixins(StateMixin) {}
 </script>

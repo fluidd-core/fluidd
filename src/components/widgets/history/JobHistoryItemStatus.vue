@@ -4,7 +4,7 @@
       <v-icon
         v-bind="attrs"
         small
-        :color="(job.exists) ? state : 'secondary'"
+        :color="job.exists ? state : 'secondary'"
         class="mr-1"
         v-on="on"
       >
@@ -27,7 +27,7 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   @Prop({ type: Object, required: true })
   readonly job!: HistoryItem
 
-  get icon () {
+  get icon() {
     switch (this.job.status) {
       case 'completed':
         return '$checkedCircle'
@@ -45,7 +45,7 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
     }
   }
 
-  get state (): JobHistoryItemState {
+  get state(): JobHistoryItemState {
     switch (this.job.status) {
       case 'cancelled':
       case 'error':

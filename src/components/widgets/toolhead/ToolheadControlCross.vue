@@ -27,11 +27,9 @@
           @click="moveAxisBy('Z', toolheadMoveLength)"
         />
       </v-col>
-      <v-col
-        class="ml-2"
-      >
+      <v-col class="ml-2">
         <app-btn-toolhead-move
-          :color="(!allHomed) ? 'primary' : undefined"
+          :color="!allHomed ? 'primary' : undefined"
           :loading="hasWait($waits.onHomeAll)"
           :disabled="!klippyReady || printerPrinting"
           icon="$home"
@@ -50,7 +48,7 @@
       <v-col
         cols="auto"
         :class="{
-          'mr-12': !canHomeXY,
+          'mr-12': !canHomeXY
         }"
       >
         <app-btn-toolhead-move
@@ -66,7 +64,7 @@
         class="ml-2"
       >
         <app-btn-toolhead-move
-          :color="(!xyHomed) ? 'primary' : undefined"
+          :color="!xyHomed ? 'primary' : undefined"
           :loading="hasWait($waits.onHomeXY)"
           :disabled="!klippyReady || printerPrinting"
           :tooltip="$t('app.tool.tooltip.home_xy')"
@@ -92,7 +90,7 @@
         class="ml-2"
       >
         <app-btn-toolhead-move
-          :color="(!zHomed) ? 'primary' : undefined"
+          :color="!zHomed ? 'primary' : undefined"
           :loading="hasWait($waits.onHomeZ)"
           :disabled="!klippyReady || printerPrinting"
           :tooltip="$t('app.tool.tooltip.home_z')"
@@ -105,7 +103,7 @@
         class="ml-2"
       >
         <app-btn-toolhead-move
-          :color="(!xHomed) ? 'primary' : undefined"
+          :color="!xHomed ? 'primary' : undefined"
           :loading="hasWait($waits.onHomeX)"
           :disabled="!klippyReady || printerPrinting"
           icon="$home"
@@ -148,7 +146,7 @@
         class="ml-2"
       >
         <app-btn-toolhead-move
-          :color="(!yHomed) ? 'primary' : undefined"
+          :color="!yHomed ? 'primary' : undefined"
           :loading="hasWait($waits.onHomeY)"
           :disabled="!klippyReady || printerPrinting"
           icon="$home"
@@ -198,25 +196,26 @@ type Axis = 'X' | 'Y' | 'Z'
 export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
   moveLength: number | null = null
 
-  get printerSettings (): Klipper.SettingsState {
+  get printerSettings(): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  get hasRoundBed (): boolean {
+  get hasRoundBed(): boolean {
     return this.$typedGetters['printer/getHasRoundBed']
   }
 
-  get canHomeXY (): boolean {
+  get canHomeXY(): boolean {
     return !this.hasRoundBed
   }
 
-  get toolheadMoveDistances (): number[] {
+  get toolheadMoveDistances(): number[] {
     return this.$typedState.config.uiSettings.general.toolheadMoveDistances
   }
 
-  get toolheadMoveLength (): number {
+  get toolheadMoveLength(): number {
     if (this.moveLength == null) {
-      const defaultToolheadMoveLength: number = this.$typedState.config.uiSettings.general.defaultToolheadMoveLength
+      const defaultToolheadMoveLength: number =
+        this.$typedState.config.uiSettings.general.defaultToolheadMoveLength
 
       this.moveLength = this.toolheadMoveDistances.includes(defaultToolheadMoveLength)
         ? defaultToolheadMoveLength
@@ -226,50 +225,54 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
     return this.moveLength
   }
 
-  set toolheadMoveLength (val: number) {
+  set toolheadMoveLength(val: number) {
     this.moveLength = val
   }
 
-  axisButtonColor (axisHomed: boolean): string | undefined {
+  axisButtonColor(axisHomed: boolean): string | undefined {
     if (this.forceMoveEnabled) return 'error'
 
     return axisHomed ? 'primary' : undefined
   }
 
-  axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean): boolean {
+  axisButtonDisabled(axisHomed: boolean, axisMultipleSteppers: boolean): boolean {
     return !this.klippyReady || (!axisHomed && !(this.forceMoveEnabled && !axisMultipleSteppers))
   }
 
   /**
    * Send a move gcode script.
    */
-  moveAxisBy (axis: Axis, distance: number, negative = false) {
-    const rate: number = axis === 'Z'
-      ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
-      : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
-    const inverted: boolean = this.$typedState.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
-    distance = negative !== inverted
-      ? -distance
-      : distance
+  moveAxisBy(axis: Axis, distance: number, negative = false) {
+    const rate: number =
+      axis === 'Z'
+        ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+        : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
+    const inverted: boolean =
+      this.$typedState.config.uiSettings.general.axis[axis.toLowerCase()].inverted || false
+    distance = negative !== inverted ? -distance : distance
 
     if (this.forceMoveEnabled) {
-      const accel: number = axis === 'Z'
-        ? this.printerSettings.printer?.max_z_accel ?? 100
-        : this.$typedState.printer.printer.toolhead.max_accel
-      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
+      const accel: number =
+        axis === 'Z'
+          ? (this.printerSettings.printer?.max_z_accel ?? 100)
+          : this.$typedState.printer.printer.toolhead.max_accel
+      this.sendGcode(
+        `FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`
+      )
     } else {
       this.sendMoveGcode(
         {
           [axis]: distance
         },
-        rate)
+        rate
+      )
     }
   }
 }
 </script>
 
 <style type="scss" scoped>
-  :deep(.v-speed-dial__list) {
-    flex-direction: column !important;
-  }
+:deep(.v-speed-dial__list) {
+  flex-direction: column !important;
+}
 </style>

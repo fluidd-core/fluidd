@@ -14,11 +14,7 @@
           dense
           single-line
           hide-details="auto"
-          :rules="[
-            $rules.required,
-            $rules.numberValid,
-            $rules.numberGreaterThan(0)
-          ]"
+          :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThan(0)]"
           suffix="°C"
         />
       </app-setting>
@@ -33,10 +29,7 @@
           dense
           single-line
           hide-details="auto"
-          :rules="[
-            $rules.numberValid,
-            $rules.numberGreaterThan(0)
-          ]"
+          :rules="[$rules.numberValid, $rules.numberGreaterThan(0)]"
         />
       </app-setting>
     </v-card-text>
@@ -59,7 +52,7 @@ export default class HeaterMpcCalibrateDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly heater!: Heater
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.heater, this.targetTemperature, this.fanBreakpoints)
     this.open = false
   }

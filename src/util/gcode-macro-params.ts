@@ -11,7 +11,8 @@ export const gcodeMacroParamDefault = (param: string) => {
   const [, value, quoteChar] = parsedValue
 
   if (quoteChar) {
-    return value.substring(1, value.length - 1)
+    return value
+      .substring(1, value.length - 1)
       .replace(new RegExp(`\\\\${quoteChar}`, 'g'), quoteChar)
       .replace(/\\\\/g, '\\')
   }
@@ -20,11 +21,10 @@ export const gcodeMacroParamDefault = (param: string) => {
 }
 
 const gcodeMacroParams = (gcode: string) => {
-  return [...gcode.matchAll(paramRegExp)]
-    .map(([, name, rest]) => ({
-      name,
-      value: gcodeMacroParamDefault(rest)
-    }))
+  return [...gcode.matchAll(paramRegExp)].map(([, name, rest]) => ({
+    name,
+    value: gcodeMacroParamDefault(rest)
+  }))
 }
 
 export default gcodeMacroParams

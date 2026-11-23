@@ -2,13 +2,10 @@ import type { FunctionDirective } from 'vue'
 import { markTextNodes } from '@/util/mark-text-nodes'
 import { sanitizeHtml } from '@/util/sanitize-html'
 
-export type SafeHtmlValue = string | { html: string, search?: string | null } | null | undefined
+export type SafeHtmlValue = string | { html: string; search?: string | null } | null | undefined
 
-const normalize = (value: SafeHtmlValue) => (
-  (
-    value != null &&
-    typeof value === 'object'
-  )
+const normalize = (value: SafeHtmlValue) =>
+  value != null && typeof value === 'object'
     ? {
         html: value.html,
         search: value.search || null
@@ -17,7 +14,6 @@ const normalize = (value: SafeHtmlValue) => (
         html: value ?? '',
         search: null
       }
-)
 
 const safeHtml: FunctionDirective<HTMLElement, SafeHtmlValue> = (el, binding) => {
   const { html, search } = normalize(binding.value)
@@ -25,10 +21,7 @@ const safeHtml: FunctionDirective<HTMLElement, SafeHtmlValue> = (el, binding) =>
   if (binding.oldValue !== undefined) {
     const old = normalize(binding.oldValue)
 
-    if (
-      html === old.html &&
-      search === old.search
-    ) {
+    if (html === old.html && search === old.search) {
       return
     }
   }

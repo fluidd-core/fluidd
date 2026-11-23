@@ -12,9 +12,7 @@
         icon
         @click="$filters.routeTo({ name: 'tune' })"
       >
-        <v-icon dense>
-          $fullScreen
-        </v-icon>
+        <v-icon dense> $fullScreen </v-icon>
       </app-btn>
     </template>
 
@@ -59,9 +57,7 @@
                     @click="loadModel(item.name)"
                     v-on="on"
                   >
-                    <v-icon dense>
-                      $open
-                    </v-icon>
+                    <v-icon dense> $open </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.beacon.tooltip.load') }}</span>
@@ -75,9 +71,7 @@
                     @click="removeModel(item.name)"
                     v-on="on"
                   >
-                    <v-icon dense>
-                      $close
-                    </v-icon>
+                    <v-icon dense> $close </v-icon>
                   </app-btn>
                 </template>
                 <span>{{ $t('app.beacon.tooltip.delete') }}</span>
@@ -153,33 +147,33 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 
-  get beaconModels (): BeaconModel[] {
+  get beaconModels(): BeaconModel[] {
     return this.$typedGetters['printer/getBeaconModels']
   }
 
-  async loadModel (name: string) {
-    const result = (
+  async loadModel(name: string) {
+    const result =
       !this.printerPrinting ||
-      await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm_change_beacon_model'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-      )
-    )
+      (await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_change_beacon_model'), {
+        title: this.$tc('app.general.label.confirm'),
+        color: 'card-heading',
+        icon: '$error'
+      }))
 
     if (result) {
       this.sendGcode(`BEACON_MODEL_SELECT NAME=${encodeGcodeParamValue(name)}`)
     }
   }
 
-  removeModel (name: string) {
+  removeModel(name: string) {
     this.sendGcode(`BEACON_MODEL_REMOVE NAME=${encodeGcodeParamValue(name)}`)
   }
 
-  calibrate () {
+  calibrate() {
     this.sendGcode('BEACON_CALIBRATE', this.$waits.onBeaconCalibrate)
   }
 
-  handleOpenSaveDialog () {
+  handleOpenSaveDialog() {
     const existingName: string = this.$typedState.printer.printer.beacon?.model ?? ''
 
     this.saveDialogState = {
@@ -188,7 +182,7 @@ export default class BeaconCard extends Mixins(StateMixin, ToolheadMixin) {
     }
   }
 
-  handleModelSave (config: { name: string; removeDefault: boolean }) {
+  handleModelSave(config: { name: string; removeDefault: boolean }) {
     const modelName: string | null | undefined = this.$typedState.printer.printer.beacon?.model
 
     if (config.name !== modelName) {

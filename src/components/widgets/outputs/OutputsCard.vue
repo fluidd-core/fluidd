@@ -19,6 +19,5 @@ import Outputs from '@/components/widgets/outputs/Outputs.vue'
     Outputs
   }
 })
-export default class OutputsCard extends Vue {
-}
+export default class OutputsCard extends Vue {}
 </script>

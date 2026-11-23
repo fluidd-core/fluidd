@@ -1,4 +1,4 @@
 export interface MoonrakerSensorsState {
-  sensors: Record<string, Moonraker.Sensor.Entry>;
-  expanded: string[];
+  sensors: Record<string, Moonraker.Sensor.Entry>
+  expanded: string[]
 }

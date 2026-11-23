@@ -190,19 +190,19 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
   Y1_ZERO = 70 + 59 * Math.sin((270 * Math.PI) / 180)
   DANGER = 0.8
 
-  get flowguardEnabled (): boolean {
+  get flowguardEnabled(): boolean {
     return this.mmuState?.flowguard?.enabled ?? false
   }
 
-  get flowguardActive (): boolean {
+  get flowguardActive(): boolean {
     return this.mmuState?.flowguard?.active ?? false
   }
 
-  get flowguardTrigger (): string {
+  get flowguardTrigger(): string {
     return (this.mmuState?.flowguard?.trigger ?? '').toUpperCase()
   }
 
-  get flowrateText (): string {
+  get flowrateText(): string {
     if ('filament_proportional' in this.sensors) {
       const flowRate = this.mmuState?.sync_feedback_flow_rate ?? 100.0
       return `${Math.round(flowRate)}%`
@@ -210,103 +210,103 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
     return this.$t('app.mmu.label.active').toString()
   }
 
-  get flowrateTextSize (): string {
+  get flowrateTextSize(): string {
     if ('filament_proportional' in this.sensors) {
       return '18px'
     }
     return '14px'
   }
 
-  get maxClog (): number {
+  get maxClog(): number {
     return Math.abs(this.mmuState?.flowguard?.max_clog ?? 0.0)
   }
 
-  get maxTangle (): number {
+  get maxTangle(): number {
     return -Math.abs(this.mmuState?.flowguard?.max_tangle ?? 0.0)
   }
 
-  get flowguardLevel (): number {
+  get flowguardLevel(): number {
     return this.mmuState?.flowguard?.level ?? 0.0
   }
 
-  get svgClasses (): Record<string, boolean> {
+  get svgClasses(): Record<string, boolean> {
     return {
       'disabled-flowguard': !this.flowguardEnabled
     }
   }
 
-  get clogWarning (): boolean {
+  get clogWarning(): boolean {
     return Math.abs(this.maxClog) > this.DANGER
   }
 
-  get maxClogLineClasses (): Record<string, boolean> {
+  get maxClogLineClasses(): Record<string, boolean> {
     return {
       'warning-color': this.clogWarning,
-      'primary-color': !this.clogWarning,
+      'primary-color': !this.clogWarning
     }
   }
 
-  get clogHeadroomDashOffset (): number {
+  get clogHeadroomDashOffset(): number {
     return this.CIRCUMFERENCE * (1 + (1 - this.DANGER) * (150 / 360))
   }
 
-  get tangleWarning (): boolean {
+  get tangleWarning(): boolean {
     return Math.abs(this.maxTangle) > this.DANGER
   }
 
-  get maxTangleLineClasses (): Record<string, boolean> {
+  get maxTangleLineClasses(): Record<string, boolean> {
     return {
       'warning-color': this.tangleWarning,
-      'primary-color': !this.tangleWarning,
+      'primary-color': !this.tangleWarning
     }
   }
 
-  get tangleHeadroomDashOffset (): number {
+  get tangleHeadroomDashOffset(): number {
     return this.CIRCUMFERENCE * (1 - (1 - this.DANGER) * (150 / 360))
   }
 
-  get flowguardPercent (): number {
+  get flowguardPercent(): number {
     return Math.max(Math.min(1, this.flowguardLevel), -1) * 100
   }
 
-  get meterDashOffset (): number {
+  get meterDashOffset(): number {
     return this.CIRCUMFERENCE * ((100 - (this.flowguardPercent * 150) / 360) / 100)
   }
 
-  get maxClogAngle (): number {
+  get maxClogAngle(): number {
     return this.maxClog * 150 + 150
   }
 
-  get x1MaxClog (): number {
+  get x1MaxClog(): number {
     return this.calcX1(this.maxClogAngle)
   }
 
-  get y1MaxClog (): number {
+  get y1MaxClog(): number {
     return this.calcY1(this.maxClogAngle)
   }
 
-  get maxTangleAngle (): number {
+  get maxTangleAngle(): number {
     return this.maxTangle * 150 + 150
   }
 
-  get x1MaxTangle (): number {
+  get x1MaxTangle(): number {
     return this.calcX1(this.maxTangleAngle)
   }
 
-  get y1MaxTangle (): number {
+  get y1MaxTangle(): number {
     return this.calcY1(this.maxTangleAngle)
   }
 
-  private calcX1 (angle: number): number {
+  private calcX1(angle: number): number {
     return 70 + 59 * Math.cos(((120 + angle) * Math.PI) / 180)
   }
 
-  private calcY1 (angle: number): number {
+  private calcY1(angle: number): number {
     return 70 + 59 * Math.sin(((120 + angle) * Math.PI) / 180)
   }
 
   @Watch('meterDashOffset', { immediate: true })
-  onDashOffsetChanged (newValue: number) {
+  onDashOffsetChanged(newValue: number) {
     if (!this.dialCircle) return
 
     const currentOffset = parseFloat(this.dialCircle?.style?.strokeDashoffset) || this.CIRCUMFERENCE
@@ -319,19 +319,19 @@ export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .disabled-flowguard {
-    opacity: 0.5;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .primary-color {
-    stroke: var(--v-primary-lighten1, #2ca9bc);
+  stroke: var(--v-primary-lighten1, #2ca9bc);
 }
 .warning-color {
-    stroke: var(--v-error-base, #ff0000);
+  stroke: var(--v-error-base, #ff0000);
 }
 .small-text-color {
-    fill: var(--v-primary-lighten1, #2ca9bc);
+  fill: var(--v-primary-lighten1, #2ca9bc);
 }
 .small-text-warning {
-    fill: var(--v-error-base, #ff0000);
+  fill: var(--v-error-base, #ff0000);
 }
 </style>

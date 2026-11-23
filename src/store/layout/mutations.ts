@@ -8,7 +8,7 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
@@ -18,7 +18,7 @@ export const mutations = {
    * being the default state, and newly added components users may not
    * have in their moonraker db.
    */
-  setInitLayout (state, payload: LayoutState) {
+  setInitLayout(state, payload: LayoutState) {
     if (payload && Object.keys(payload).length > 0) {
       const defaultLayouts = createState().layouts
 
@@ -35,8 +35,7 @@ export const mutations = {
       for (const [layoutKey, currentLayout] of Object.entries(payload.layouts)) {
         for (const [containerKey, components] of Object.entries(currentLayout)) {
           currentLayout[containerKey] = Array.isArray(components)
-            ? components
-              .filter(card => card != null)
+            ? components.filter(card => card != null)
             : []
         }
 
@@ -44,15 +43,23 @@ export const mutations = {
 
         if (migratableLayoutKey) {
           const defaultLayout = defaultLayouts[migratableLayoutKey]
-          const defaultComponentIds = Object.values(defaultLayout).flat().map(card => card.id)
-          const currentComponentIds = Object.values(currentLayout).flat().map(card => card.id)
+          const defaultComponentIds = Object.values(defaultLayout)
+            .flat()
+            .map(card => card.id)
+          const currentComponentIds = Object.values(currentLayout)
+            .flat()
+            .map(card => card.id)
 
           for (const [containerKey, defaultContainerComponents] of Object.entries(defaultLayout)) {
             const currentContainerComponents = currentLayout[containerKey] || []
 
             currentLayout[containerKey] = [
-              ...currentContainerComponents.filter(component => defaultComponentIds.includes(component.id)),
-              ...defaultContainerComponents.filter(component => !currentComponentIds.includes(component.id))
+              ...currentContainerComponents.filter(component =>
+                defaultComponentIds.includes(component.id)
+              ),
+              ...defaultContainerComponents.filter(
+                component => !currentComponentIds.includes(component.id)
+              )
             ]
           }
         }
@@ -77,14 +84,17 @@ export const mutations = {
     }
   },
 
-  setLayoutChange (state, payload: { name: string; value: LayoutContainer }) {
+  setLayoutChange(state, payload: { name: string; value: LayoutContainer }) {
     Vue.set(state.layouts, payload.name, payload.value)
   },
 
   /**
    * Updates a layout config item.
    */
-  setUpdateConfig (state, payload: { name: string; container: string; i: number; value: LayoutConfig }) {
+  setUpdateConfig(
+    state,
+    payload: { name: string; container: string; i: number; value: LayoutConfig }
+  ) {
     Vue.set(state.layouts[payload.name][payload.container], payload.i, payload.value)
   }
 } satisfies MutationTree<LayoutState>

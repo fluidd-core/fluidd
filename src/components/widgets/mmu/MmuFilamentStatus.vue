@@ -8,7 +8,12 @@
     <defs>
       <g
         id="sync-feedback"
-        style="stroke: var(--color-outline); stroke-linecap: round; stroke-linejoin: round; fill: none;"
+        style="
+          stroke: var(--color-outline);
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          fill: none;
+        "
       >
         <path
           d="m18 9-4.22-5.61a1 1 0 0 0-1.56 0L8 9"
@@ -87,7 +92,12 @@
 
       <g
         id="sissors"
-        style="stroke: var(--color-outline); fill: none; stroke-linecap: round; stroke-linejoin: round;"
+        style="
+          stroke: var(--color-outline);
+          fill: none;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        "
       >
         <path
           d="M8.8 7.72c-.6 1.21-2.34 1.64-3.89 1S2.6 6.48 3.2 5.28s2.34-1.64 3.89-1S9.4 6.52 8.8 7.72m-3.89 1L21 16M7.09 19.68c-1.55.68-3.29.25-3.89-1s.17-2.73 1.71-3.4 3.29-.25 3.89 1-.17 2.72-1.71 3.4M21 8 4.91 15.32"
@@ -105,13 +115,13 @@
       <g id="sync-extruder">
         <g
           style="
-                        stroke: none;
-                        stroke-width: 2;
-                        stroke-dasharray: none;
-                        stroke-linecap: round;
-                        stroke-linejoin: round;
-                        stroke-miterlimit: 4;
-                    "
+            stroke: none;
+            stroke-width: 2;
+            stroke-dasharray: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-miterlimit: 4;
+          "
         >
           <rect
             style="fill: rgb(131, 148, 150)"
@@ -237,7 +247,14 @@
       rx="10"
       ry="10"
     />
-    <g style="stroke: var(--color-outline); stroke-linecap: round; stroke-linejoin: round; stroke-width: 1;">
+    <g
+      style="
+        stroke: var(--color-outline);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1;
+      "
+    >
       <path
         d="M242 25v380l7 6h2l7-6V25"
         style="fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1"
@@ -266,7 +283,13 @@
     />
 
     <g
-      style="stroke: var(--color-outline); stroke-linejoin: round; stroke-width: 0; font-family: Roboto; font-size: 16;"
+      style="
+        stroke: var(--color-outline);
+        stroke-linejoin: round;
+        stroke-width: 0;
+        font-family: Roboto;
+        font-size: 16;
+      "
     >
       <g v-if="hasSensor('mmu_pre_gate')">
         <circle
@@ -280,7 +303,9 @@
           x="278"
           y="55"
           :class="{ 'text-disabled': !isSensorEnabled('mmu_pre_gate') }"
-        >{{ $t('app.mmu.label.pre_gate') }}</text>
+        >
+          {{ $t('app.mmu.label.pre_gate') }}
+        </text>
       </g>
 
       <g v-if="hasSensor('mmu_gear')">
@@ -295,13 +320,17 @@
           x="278"
           y="85"
           :class="{ 'text-disabled': !isSensorEnabled('mmu_gear') }"
-        >{{ $t('app.mmu.label.gear') }}</text>
+        >
+          {{ $t('app.mmu.label.gear') }}
+        </text>
         <text
           v-if="homedToGear"
           x="219.5"
           y="85"
           font-weight="bold"
-        >H</text>
+        >
+          H
+        </text>
       </g>
 
       <g v-if="hasSensor('mmu_gate')">
@@ -316,14 +345,18 @@
           x="278"
           y="115"
           :class="{ 'text-disabled': !isSensorEnabled('mmu_gate') }"
-        >{{ gateSensorName }}</text>
+        >
+          {{ gateSensorName }}
+        </text>
         <transition name="fade">
           <text
             v-if="homedToGate"
             x="219.5"
             y="115"
             font-weight="bold"
-          >H</text>
+          >
+            H
+          </text>
         </transition>
       </g>
 
@@ -343,19 +376,25 @@
         <text
           x="278"
           y="145"
-        >{{ $t('app.mmu.label.encoder') }}</text>
+        >
+          {{ $t('app.mmu.label.encoder') }}
+        </text>
         <text
           x="345"
           y="145"
           font-size="11px"
-        >{{ encoderPosText }}</text>
+        >
+          {{ encoderPosText }}
+        </text>
         <transition name="fade">
           <text
             v-if="homedToEncoder"
             x="219.5"
             y="145"
             font-weight="bold"
-          >H</text>
+          >
+            H
+          </text>
         </transition>
       </g>
 
@@ -371,14 +410,18 @@
           x="278"
           y="325"
           :class="{ 'text-disabled': !isSensorEnabled('extruder') }"
-        >{{ $t('app.mmu.label.extruder') }}</text>
+        >
+          {{ $t('app.mmu.label.extruder') }}
+        </text>
         <transition name="fade">
           <text
             v-if="homedToExtruder"
             x="219.5"
             y="325"
             font-weight="bold"
-          >H</text>
+          >
+            H
+          </text>
         </transition>
       </g>
 
@@ -388,7 +431,9 @@
           x="219.5"
           y="339"
           font-weight="bold"
-        >H</text>
+        >
+          H
+        </text>
       </transition>
 
       <g v-if="hasSensor('toolhead')">
@@ -403,14 +448,18 @@
           x="278"
           y="355"
           :class="{ 'text-disabled': !isSensorEnabled('toolhead') }"
-        >{{ $t('app.mmu.label.toolhead') }}</text>
+        >
+          {{ $t('app.mmu.label.toolhead') }}
+        </text>
         <transition name="fade">
           <text
             v-if="homedToToolhead"
             x="219.5"
             y="355"
             font-weight="bold"
-          >H</text>
+          >
+            H
+          </text>
         </transition>
       </g>
 
@@ -430,7 +479,7 @@
           xlink:href="#sync-feedback-buffer-piston"
           :style="{
             transform: `translate(232px, ${syncFeedbackPistonPos}px)`,
-            transition: 'transform 250ms ease',
+            transition: 'transform 250ms ease'
           }"
         />
         <use
@@ -499,7 +548,9 @@
         x="160"
         y="60"
         :class="tool === -2 ? 'tool-bypass' : 'tool-text'"
-      >{{ toolText(tool) }}</text>
+      >
+        {{ toolText(tool) }}
+      </text>
     </g>
 
     <transition name="fade">
@@ -569,16 +620,16 @@ const POSITIONS = {
   TOOLHEAD: 325,
   COOLING_TUBE: 338,
   CUT_POINT: 355,
-  NOZZLE_START: 371,
+  NOZZLE_START: 371
 } as const
 
 @Component({})
 export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
-  get tipFormingClass () {
+  get tipFormingClass() {
     return this.action === this.ACTION_FORMING_TIP ? 'form-tip-effect' : ''
   }
 
-  get filamentRectHeight () {
+  get filamentRectHeight() {
     if (this.gate === this.TOOL_GATE_BYPASS) {
       if (this.filamentPos === this.FILAMENT_POS_EXTRUDER_ENTRY) return POSITIONS.BEFORE_TOOLHEAD
       if (this.filamentPos === this.FILAMENT_POS_HOMED_TS) return POSITIONS.TOOLHEAD
@@ -634,35 +685,41 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return POSITIONS.UNKNOWN
   }
 
-  get endOfBowdenPos () {
-    if (
-      typeof this.toolheadSensor === 'boolean' &&
-      !this.configExtruderForceHoming
-    ) return POSITIONS.END_BOWDEN
+  get endOfBowdenPos() {
+    if (typeof this.toolheadSensor === 'boolean' && !this.configExtruderForceHoming) {
+      return POSITIONS.END_BOWDEN
+    }
 
     if (
       this.configExtruderHomingEndstop === 'none' ||
       this.configExtruderHomingEndstop === 'collision' ||
       this.configExtruderHomingEndstop === 'mmu_gear_touch' ||
       this.configExtruderHomingEndstop === 'filament_compression'
-    ) return POSITIONS.EXTRUDER_ENTRANCE
+    ) {
+      return POSITIONS.EXTRUDER_ENTRANCE
+    }
 
     if (this.configExtruderHomingEndstop === 'extruder') return POSITIONS.EXTRUDER
 
     return POSITIONS.END_BOWDEN
   }
 
-  get statusText (): string {
+  get statusText(): string {
     let posStr: string = ''
     if (['complete', 'error', 'cancelled', 'started'].includes(this.printState)) {
       posStr = this.capitalize(this.printState)
     } else if (this.action === this.ACTION_IDLE) {
       if (this.printState === 'printing') {
         posStr = `Printing (${this.numToolchanges}`
-        if (this.slicerToolMap?.total_toolchanges) posStr += `/${this.slicerToolMap?.total_toolchanges}`
+        if (this.slicerToolMap?.total_toolchanges) {
+          posStr += `/${this.slicerToolMap?.total_toolchanges}`
+        }
         posStr += ' swaps)'
       } else {
-        posStr = this.filament !== 'Unloaded' ? `Filament: ${this.filamentPosition} mm` : 'Filament: Unloaded'
+        posStr =
+          this.filament !== 'Unloaded'
+            ? `Filament: ${this.filamentPosition} mm`
+            : 'Filament: Unloaded'
       }
     } else if (this.action === this.ACTION_LOADING || this.action === this.ACTION_UNLOADING) {
       posStr = `${this.action}: ${this.filamentPosition} mm`
@@ -672,55 +729,55 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return posStr
   }
 
-  private capitalize (str: string): string {
+  private capitalize(str: string): string {
     if (!str) return str
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
   }
 
-  get toolheadSensor () {
+  get toolheadSensor() {
     return this.sensors['toolhead']
   }
 
-  get encoderPosText (): string {
+  get encoderPosText(): string {
     if (this.encoderPos < 10000) {
       return `${this.encoderPos} mm`
     }
     return `${this.encoderPos}`
   }
 
-  get gateSensorName (): string {
+  get gateSensorName(): string {
     if (this.unitDetails(this.unit).multiGear) {
       return 'Hub (Gate)'
     }
     return 'Gate'
   }
 
-  get temperatureClass (): string {
+  get temperatureClass(): string {
     const canExtrude = this.$typedState.printer.printer.extruder?.can_extrude ?? false
     if (canExtrude === false) return 'text-disabled'
     return ''
   }
 
-  get temperatureText (): string {
+  get temperatureText(): string {
     const extTemp = this.$typedState.printer.printer.extruder?.temperature ?? null
     if (extTemp) return `${extTemp.toFixed(0)}°C`
     return ''
   }
 
-  private hasSensor (sensorName: string): boolean {
+  private hasSensor(sensorName: string): boolean {
     return sensorName in this.sensors
   }
 
-  private isSensorEnabled (sensorName: string): boolean {
+  private isSensorEnabled(sensorName: string): boolean {
     return this.sensors[sensorName] != null
   }
 
-  private isSensorTriggered (sensorName: string): boolean {
+  private isSensorTriggered(sensorName: string): boolean {
     const value = this.sensors[sensorName]
     return value !== null && value === true
   }
 
-  sensorClass (sensorName: string): string {
+  sensorClass(sensorName: string): string {
     let sClass = ''
     if (!this.isSensorEnabled(sensorName)) {
       sClass = sensorName === 'extruder' ? 'sensor-disabled-extruder' : 'sensor-disabled'
@@ -734,7 +791,7 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return this.$vuetify.theme.dark ? sClass + '-dark-theme' : sClass + '-light-theme'
   }
 
-  get encoderClass (): string {
+  get encoderClass(): string {
     let eClass = ''
     // TODO: Need to separate encoder runout disable from general availability (like other sensors)
     if (this.filamentPos === this.FILAMENT_POS_UNLOADED) eClass = 'sensor-disabled'
@@ -742,21 +799,25 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return this.$vuetify.theme.dark ? eClass + '-dark-theme' : eClass + '-light-theme'
   }
 
-  get hasSyncFeedback (): boolean {
-    return this.hasFilamentCompressionSensor || this.hasFilamentTensionSensor || this.hasFilamentProportionalSensor
+  get hasSyncFeedback(): boolean {
+    return (
+      this.hasFilamentCompressionSensor ||
+      this.hasFilamentTensionSensor ||
+      this.hasFilamentProportionalSensor
+    )
   }
 
-  get syncFeedbackActive (): boolean {
+  get syncFeedbackActive(): boolean {
     return this.hasSyncFeedback && this.filamentPos >= this.FILAMENT_POS_END_BOWDEN
   }
 
-  get syncFeedbackPistonPos (): number {
+  get syncFeedbackPistonPos(): number {
     const bias = this.syncFeedbackBiasModelled
     const yPos = bias * 12 + 234
     return yPos
   }
 
-  get syncFeedbackPistonText (): string {
+  get syncFeedbackPistonText(): string {
     if (this.hasFilamentProportionalSensor) {
       const bias = this.syncFeedbackBiasModelled
       return bias.toFixed(2)
@@ -764,78 +825,91 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
     return ''
   }
 
-  get hasFilamentProportionalSensor () {
+  get hasFilamentProportionalSensor() {
     return this.hasSensor('filament_proportional')
   }
 
-  get hasFilamentCompressionSensor () {
+  get hasFilamentCompressionSensor() {
     return this.hasSensor('filament_compression')
   }
 
-  get hasFilamentTensionSensor () {
+  get hasFilamentTensionSensor() {
     return this.hasSensor('filament_tension')
   }
 
-  get homedToEncoder (): boolean {
+  get homedToEncoder(): boolean {
     if (this.filamentDirection === this.DIRECTION_LOAD) {
-      return this.configGateHomingEndstop === 'encoder' && this.filamentPos === this.FILAMENT_POS_START_BOWDEN
+      return (
+        this.configGateHomingEndstop === 'encoder' &&
+        this.filamentPos === this.FILAMENT_POS_START_BOWDEN
+      )
     } else {
-      return this.configGateHomingEndstop === 'encoder' && this.filamentPos === this.FILAMENT_POS_START_BOWDEN
+      return (
+        this.configGateHomingEndstop === 'encoder' &&
+        this.filamentPos === this.FILAMENT_POS_START_BOWDEN
+      )
     }
   }
 
-  get homedToGear (): boolean {
-    return this.configGateHomingEndstop === 'mmu_gear' && this.filamentPos === this.FILAMENT_POS_HOMED_GATE
-  }
-
-  get homedToGate (): boolean {
-    return this.configGateHomingEndstop === 'mmu_gate' && this.filamentPos === this.FILAMENT_POS_HOMED_GATE
-  }
-
-  get homedToExtruder (): boolean {
-    return this.filamentPos === this.FILAMENT_POS_HOMED_ENTRY
-  }
-
-  get homedToExtruderEntrance (): boolean {
-    return this.filamentPos === this.FILAMENT_POS_HOMED_EXTRUDER
-  }
-
-  get homedToToolhead (): boolean {
-    return this.filamentPos === this.FILAMENT_POS_HOMED_TS
-  }
-
-  get upperNozzleFull (): boolean {
-    return this.filamentPos === this.FILAMENT_POS_LOADED || !!this.varsFilamentRemaining
-  }
-
-  get lowerNozzleFull (): boolean {
+  get homedToGear(): boolean {
     return (
-      this.filamentPos === this.FILAMENT_POS_LOADED ||
-            !!this.varsFilamentRemaining ||
-            !!this.varsFilamentRemainingColor
+      this.configGateHomingEndstop === 'mmu_gear' &&
+      this.filamentPos === this.FILAMENT_POS_HOMED_GATE
     )
   }
 
-  get upperNozzleColor (): string {
+  get homedToGate(): boolean {
+    return (
+      this.configGateHomingEndstop === 'mmu_gate' &&
+      this.filamentPos === this.FILAMENT_POS_HOMED_GATE
+    )
+  }
+
+  get homedToExtruder(): boolean {
+    return this.filamentPos === this.FILAMENT_POS_HOMED_ENTRY
+  }
+
+  get homedToExtruderEntrance(): boolean {
+    return this.filamentPos === this.FILAMENT_POS_HOMED_EXTRUDER
+  }
+
+  get homedToToolhead(): boolean {
+    return this.filamentPos === this.FILAMENT_POS_HOMED_TS
+  }
+
+  get upperNozzleFull(): boolean {
+    return this.filamentPos === this.FILAMENT_POS_LOADED || !!this.varsFilamentRemaining
+  }
+
+  get lowerNozzleFull(): boolean {
+    return (
+      this.filamentPos === this.FILAMENT_POS_LOADED ||
+      !!this.varsFilamentRemaining ||
+      !!this.varsFilamentRemainingColor
+    )
+  }
+
+  get upperNozzleColor(): string {
     if (this.varsFilamentRemaining) return this.varsFilamentRemainingColor
     return 'none'
   }
 
-  get lowerNozzleColor (): string {
+  get lowerNozzleColor(): string {
     if (this.varsFilamentRemainingColor) return this.varsFilamentRemainingColor
     return this.currentGateColor
   }
 
-  get currentGateColor (): string {
-    const color = this.gate === this.TOOL_GATE_BYPASS
-      ? this.$typedGetters['spoolman/getActiveSpool']?.filament.color_hex ?? null
-      : this.$typedState.printer.printer.mmu?.gate_color[this.gate] ?? ''
+  get currentGateColor(): string {
+    const color =
+      this.gate === this.TOOL_GATE_BYPASS
+        ? (this.$typedGetters['spoolman/getActiveSpool']?.filament.color_hex ?? null)
+        : (this.$typedState.printer.printer.mmu?.gate_color[this.gate] ?? '')
 
     return this.fromColorString(color)
   }
 
-  get isGripped (): boolean {
-    return (this.grip === 'Gripped' || this.servo === 'Down')
+  get isGripped(): boolean {
+    return this.grip === 'Gripped' || this.servo === 'Down'
   }
 }
 </script>
@@ -847,144 +921,144 @@ export default class MmuFilamentStatus extends Mixins(StateMixin, MmuMixin) {
   --background-dark-theme: #262629;
   --zone-background-dark-theme: #2c2c2c;
   --disabled-stroke: #808080;
-  --color-outline:#2CA9BC;
+  --color-outline: #2ca9bc;
 }
 
 svg text {
-    fill: currentColor;
+  fill: currentColor;
 }
 
 .text-disabled {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .zone-background-light-theme {
-    fill: var(--zone-background-light-theme);
+  fill: var(--zone-background-light-theme);
 }
 
 .sensor-triggered-light-theme {
-    fill: limegreen;
+  fill: limegreen;
 }
 
 .sensor-disabled-light-theme {
-    stroke: var(--disabled-stroke);
-    stroke-dasharray: 2, 1;
-    fill: var(--zone-background-light-theme);
+  stroke: var(--disabled-stroke);
+  stroke-dasharray: 2, 1;
+  fill: var(--zone-background-light-theme);
 }
 
 .sensor-open-light-theme {
-    fill: var(--zone-background-light-theme);
+  fill: var(--zone-background-light-theme);
 }
 
 .sensor-disabled-extruder-light-theme {
-    stroke: var(--disabled-stroke);
-    stroke-dasharray: 2, 1;
-    fill: var(--background-light-theme);
+  stroke: var(--disabled-stroke);
+  stroke-dasharray: 2, 1;
+  fill: var(--background-light-theme);
 }
 
 .sensor-open-extruder-light-theme {
-    fill: var(--background-light-theme);
+  fill: var(--background-light-theme);
 }
 
 .zone-background-dark-theme {
-    fill: var(--zone-background-dark-theme);
+  fill: var(--zone-background-dark-theme);
 }
 
 .sensor-triggered-dark-theme {
-    fill: limegreen;
+  fill: limegreen;
 }
 
 .sensor-disabled-dark-theme {
-    stroke: var(--disabled-stroke);
-    stroke-dasharray: 2, 1;
-    fill: var(--zone-background-dark-theme);
+  stroke: var(--disabled-stroke);
+  stroke-dasharray: 2, 1;
+  fill: var(--zone-background-dark-theme);
 }
 
 .sensor-open-dark-theme {
-    fill: var(--zone-background-dark-theme);
+  fill: var(--zone-background-dark-theme);
 }
 
 .sensor-disabled-extruder-dark-theme {
-    stroke: var(--disabled-stroke);
-    stroke-dasharray: 2, 1;
-    fill: var(--background-dark-theme);
+  stroke: var(--disabled-stroke);
+  stroke-dasharray: 2, 1;
+  fill: var(--background-dark-theme);
 }
 
 .sensor-open-extruder-dark-theme {
-    fill: var(--background-dark-theme);
+  fill: var(--background-dark-theme);
 }
 
 .tool-text {
-    font-size: 28px;
-    font-weight: bold;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .tool-bypass {
-    font-size: 16px;
-    font-weight: normal;
+  font-size: 16px;
+  font-weight: normal;
 }
 
 @keyframes fadeInOut {
-    0%,
-    100% {
-        opacity: 0;
-        transform: translate(250px, 414px) scale(1);
-    }
-    90% {
-        opacity: 1;
-        transform: translate(250px, 414px) scale(16);
-    }
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate(250px, 414px) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(250px, 414px) scale(16);
+  }
 }
 .blob-effect {
-    animation: fadeInOut 4s infinite;
+  animation: fadeInOut 4s infinite;
 }
 
 @keyframes cut1 {
-    0%,
-    100% {
-        opacity: 0.5;
-        transform: translate(190px, 145px) scale(1.2);
-    }
-    30%,
-    70% {
-        opacity: 1;
-        transform: translate(205px, 145px) scale(1.2);
-    }
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(190px, 145px) scale(1.2);
+  }
+  30%,
+  70% {
+    opacity: 1;
+    transform: translate(205px, 145px) scale(1.2);
+  }
 }
 .cut1-effect {
-    animation: cut1 3s infinite;
+  animation: cut1 3s infinite;
 }
 
 @keyframes cut2 {
-    0%,
-    100% {
-        opacity: 0.5;
-        transform: translate(190px, 365px) scale(1.2);
-    }
-    30%,
-    70% {
-        opacity: 1;
-        transform: translate(205px, 365px) scale(1.2);
-    }
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(190px, 365px) scale(1.2);
+  }
+  30%,
+  70% {
+    opacity: 1;
+    transform: translate(205px, 365px) scale(1.2);
+  }
 }
 .cut2-effect {
-    animation: cut2 3s infinite;
+  animation: cut2 3s infinite;
 }
 
 @keyframes form-tip {
-    0%,
-    100% {
-        height: 371px;
-    }
-    50% {
-        height: 338px;
-    }
+  0%,
+  100% {
+    height: 371px;
+  }
+  50% {
+    height: 338px;
+  }
 }
 .form-tip-effect {
-    animation: form-tip 1s infinite;
+  animation: form-tip 1s infinite;
 }
 
 .filament-animation {
-    transition: height 0.5s ease-in;
+  transition: height 0.5s ease-in;
 }
 </style>

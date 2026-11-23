@@ -31,9 +31,7 @@
               class="ml-1"
               @click.prevent.stop="handleEditCategory(category?.id ?? '0')"
             >
-              <v-icon small>
-                $cog
-              </v-icon>
+              <v-icon small> $cog </v-icon>
             </app-btn>
           </div>
         </v-expansion-panel-header>
@@ -76,22 +74,22 @@ import MacroBtn from './MacroBtn.vue'
   }
 })
 export default class Macros extends Mixins(StateMixin) {
-  get macros () {
+  get macros() {
     return this.$typedGetters['macros/getVisibleMacros']
   }
 
-  get expanded () {
+  get expanded() {
     let expanded: number[] = this.$typedState.macros.expanded
     // Remove any indexes that may no longer exist.
     expanded = expanded.filter(i => i <= this.macros.length)
     return expanded
   }
 
-  set expanded (val: number[]) {
+  set expanded(val: number[]) {
     this.$typedDispatch('macros/saveExpanded', val)
   }
 
-  handleEditCategory (categoryId: string) {
+  handleEditCategory(categoryId: string) {
     this.$router.push({
       name: 'macro_category_settings',
       params: {
@@ -103,7 +101,7 @@ export default class Macros extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-expansion-panel::before) {
-    box-shadow: none;
-  }
+:deep(.v-expansion-panel::before) {
+  box-shadow: none;
+}
 </style>

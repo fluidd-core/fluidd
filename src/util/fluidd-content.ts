@@ -1,9 +1,9 @@
 export type FluiddContent<T> = {
   meta: {
-    app: 'Fluidd',
-    version: string,
+    app: 'Fluidd'
+    version: string
     type: string
-  },
+  }
   data: T
 }
 

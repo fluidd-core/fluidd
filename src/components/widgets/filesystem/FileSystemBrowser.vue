@@ -92,7 +92,7 @@
               <v-icon
                 v-if="!item.thumbnails?.length"
                 :small="dense"
-                :color="(item.type === 'file') ? 'grey' : 'primary'"
+                :color="item.type === 'file' ? 'grey' : 'primary'"
               >
                 {{ getItemIcon(item) }}
               </v-icon>
@@ -104,7 +104,7 @@
                 }"
                 :src="getThumbUrl(item, root, item.path, thumbnailSize > 16, item.modified)"
                 loading="lazy"
-              >
+              />
             </v-layout>
           </template>
 
@@ -195,7 +195,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   ghost?: HTMLDivElement = undefined
 
   // Only the name is displayed, the other values are placeholders.
-  get parentItem (): AppDirectory | undefined {
+  get parentItem(): AppDirectory | undefined {
     if (!this.path) return undefined
 
     return {
@@ -209,66 +209,65 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Is the history component enabled
-  get showHistory (): boolean {
-    return (
-      this.$typedGetters['server/componentSupport']('history') &&
-      this.root === 'gcodes'
-    )
+  get showHistory(): boolean {
+    return this.$typedGetters['server/componentSupport']('history') && this.root === 'gcodes'
   }
 
-  get rootProperties (): RootProperties {
+  get rootProperties(): RootProperties {
     return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
-  get readonly () {
+  get readonly() {
     return this.rootProperties.readonly
   }
 
-  get thumbnailSize (): number {
+  get thumbnailSize(): number {
     const thumbnailSize: number = this.$typedState.config.uiSettings.thumbnailSizes[this.root] ?? 32
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
-  get textSortOrder (): TextSortOrder {
+  get textSortOrder(): TextSortOrder {
     return this.$typedState.config.uiSettings.general.textSortOrder
   }
 
-  get filesAndFoldersDragAndDrop (): boolean {
+  get filesAndFoldersDragAndDrop(): boolean {
     return this.$typedState.config.uiSettings.general.filesAndFoldersDragAndDrop
   }
 
-  get draggedItems () {
+  get draggedItems() {
     if (this.dragItem) {
-      return this.selected.length > 0
-        ? this.selected
-        : [this.dragItem]
+      return this.selected.length > 0 ? this.selected : [this.dragItem]
     }
 
     return []
   }
 
-  get sortBy (): string {
+  get sortBy(): string {
     const sortBy: string | null = this.$typedState.config.uiSettings.fileSystem.sortBy[this.root]
 
     return sortBy ?? 'modified'
   }
 
-  set sortBy (value: string | null | undefined) {
+  set sortBy(value: string | null | undefined) {
     this.$typedDispatch('config/updateFileSystemSortBy', { root: this.root, value: value ?? null })
   }
 
-  get sortDesc (): boolean {
-    const sortDesc: boolean | null = this.$typedState.config.uiSettings.fileSystem.sortDesc[this.root]
+  get sortDesc(): boolean {
+    const sortDesc: boolean | null =
+      this.$typedState.config.uiSettings.fileSystem.sortDesc[this.root]
 
     return sortDesc ?? true
   }
 
-  set sortDesc (value: boolean | null | undefined) {
-    this.$typedDispatch('config/updateFileSystemSortDesc', { root: this.root, value: value ?? null })
+  set sortDesc(value: boolean | null | undefined) {
+    this.$typedDispatch('config/updateFileSystemSortDesc', {
+      root: this.root,
+      value: value ?? null
+    })
   }
 
-  customSort (items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {
+  customSort(items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {
     if (sortBy === null || !sortBy.length) return items
 
     const stringCollator = new Intl.Collator(locale, {
@@ -283,10 +282,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
 
-        const sortValues: unknown[] = [
-          get(a, sortKey),
-          get(b, sortKey)
-        ]
+        const sortValues: unknown[] = [get(a, sortKey), get(b, sortKey)]
 
         // If values are equal, continue
         if (sortValues[0] === sortValues[1]) {
@@ -308,12 +304,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
           return sortValues[0] - sortValues[1]
         }
 
-        const sortValuesAsString = sortValues
-          .map(s => s?.toString() ?? '')
+        const sortValuesAsString = sortValues.map(s => s?.toString() ?? '')
 
         if (this.textSortOrder === 'numeric-prefix') {
-          const [sortA, sortB] = sortValuesAsString
-            .map(s => s.match(/^\d+/))
+          const [sortA, sortB] = sortValuesAsString.map(s => s.match(/^\d+/))
 
           // If are number prefixed, compare prefixes as number
           if (sortA && sortB && sortA[0] !== sortB[0]) {
@@ -330,7 +324,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     })
   }
 
-  getItemIcon (item: FileBrowserEntry) {
+  getItemIcon(item: FileBrowserEntry) {
     const readonly = !this.isItemWriteable(item)
 
     if (item.type === 'file') {
@@ -341,9 +335,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
         SupportedVideoFormats.includes(item.extension)
       ) {
         return readonly ? '$fileImageLock' : '$fileImage'
-      } else if (
-        SupportedMarkdownFormats.includes(item.extension)
-      ) {
+      } else if (SupportedMarkdownFormats.includes(item.extension)) {
         return readonly ? '$fileDocumentLock' : '$fileDocument'
       } else {
         return readonly ? '$fileLock' : '$file'
@@ -354,26 +346,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Determines if a row is currently in a draggable state or not.
-  isItemDraggable (item: FileBrowserEntry) {
+  isItemDraggable(item: FileBrowserEntry) {
     return (
       this.filesAndFoldersDragAndDrop &&
       this.files.length > 0 &&
-      (
-        this.selected.length === 0 ||
-        this.selected.includes(item)
-      )
+      (this.selected.length === 0 || this.selected.includes(item))
     )
   }
 
-  isItemWriteable (item: FileBrowserEntry) {
-    return (
-      !this.readonly &&
-      item.permissions.includes('w')
-    )
+  isItemWriteable(item: FileBrowserEntry) {
+    return !this.readonly && item.permissions.includes('w')
   }
 
   // Fake a drag image when the user drags a file or folder.
-  handleDragStart (item: FileBrowserEntry, event: DragEvent) {
+  handleDragStart(item: FileBrowserEntry, event: DragEvent) {
     if (this.dragStateModel !== true) {
       this.dragItem = item
       this.dragStateModel = true
@@ -384,10 +370,11 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
       this.ghost = document.createElement('div')
       this.ghost.classList.add('bulk-drag')
-      this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
-      this.ghost.innerHTML = draggedItems.length > 1
-        ? this.$tc('app.file_system.tooltip.items_count', draggedItems.length)
-        : item.name
+      this.ghost.classList.add(this.$vuetify.theme.dark ? 'theme--dark' : 'theme--light')
+      this.ghost.innerHTML =
+        draggedItems.length > 1
+          ? this.$tc('app.file_system.tooltip.items_count', draggedItems.length)
+          : item.name
       document.body.appendChild(this.ghost)
       event.dataTransfer.effectAllowed = 'all'
       event.dataTransfer.setDragImage(this.ghost, 0, 0)
@@ -397,7 +384,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // File was dropped on another table row.
-  handleDrop (item: FileBrowserEntry, event: DragEvent) {
+  handleDrop(item: FileBrowserEntry, event: DragEvent) {
     this.handleDragLeave(event)
 
     if (
@@ -416,7 +403,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Handles highlighting rows as drag over them
-  handleDragOver (item: FileBrowserEntry, event: DragEvent) {
+  handleDragOver(item: FileBrowserEntry, event: DragEvent) {
     if (
       item.type === 'directory' &&
       this.isItemWriteable(item) &&
@@ -446,7 +433,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Handles un highlighting rows as we drag out of them.
-  handleDragLeave (event: DragEvent) {
+  handleDragLeave(event: DragEvent) {
     if (event.target instanceof HTMLElement) {
       let element: HTMLElement | null = event.target
 
@@ -463,7 +450,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Drag ended
-  handleDragEnd () {
+  handleDragEnd() {
     const ghost = this.ghost
 
     if (ghost) {
@@ -475,7 +462,11 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     this.dragStateModel = false
   }
 
-  getItemValue (item: FileBrowserEntry, header: DataTableHeader, defaultGetter: DefaultGetterFunction) {
+  getItemValue(
+    item: FileBrowserEntry,
+    header: DataTableHeader,
+    defaultGetter: DefaultGetterFunction
+  ) {
     const value = defaultGetter(item, header)
 
     if (typeof value === 'number') {
@@ -510,18 +501,12 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     if (Array.isArray(value) && value.length > 0) {
       switch (header.value) {
         case 'filament_weights':
-          return value
-            .map(x => typeof x === 'number'
-              ? this.$filters.getReadableWeightString(x)
-              : x
-            )
+          return value.map(x =>
+            typeof x === 'number' ? this.$filters.getReadableWeightString(x) : x
+          )
 
         case 'file_processors':
-          return value
-            .map(x => typeof x === 'string'
-              ? this.$filters.prettyCase(x)
-              : x
-            )
+          return value.map(x => (typeof x === 'string' ? this.$filters.prettyCase(x) : x))
       }
     }
 
@@ -531,10 +516,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  // Lighten up dark mode checkboxes.
-  .theme--dark :deep(.v-simple-checkbox .v-icon) {
-    color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
-  }
+// Lighten up dark mode checkboxes.
+.theme--dark :deep(.v-simple-checkbox .v-icon) {
+  color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
+}
 </style>

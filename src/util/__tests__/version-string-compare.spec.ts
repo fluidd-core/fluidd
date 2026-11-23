@@ -69,18 +69,8 @@ describe('naturalStringCompare', () => {
   })
 
   it('Can version sort tilde correctly', () => {
-    const input = [
-      'a',
-      '~',
-      '~~a',
-      '~~'
-    ]
+    const input = ['a', '~', '~~a', '~~']
 
-    expect(input.sort(versionStringCompare)).toEqual([
-      '~~',
-      '~~a',
-      '~',
-      'a'
-    ])
+    expect(input.sort(versionStringCompare)).toEqual(['~~', '~~a', '~', 'a'])
   })
 })

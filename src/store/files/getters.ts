@@ -1,11 +1,23 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
-import type { AppDirectory, AppDiskUsage, AppFile, AppFileMeta, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
+import type {
+  AppDirectory,
+  AppDiskUsage,
+  AppFile,
+  AppFileMeta,
+  AppFileWithMeta,
+  FileBrowserEntry,
+  FilesState,
+  RootProperties
+} from './types'
 import type { RootState } from '../types'
 import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
-const toAppFileMetaWithHistory = (file: Moonraker.Files.File | Moonraker.Files.FileWithMeta, rootGetters: any) => {
+const toAppFileMetaWithHistory = (
+  file: Moonraker.Files.File | Moonraker.Files.FileWithMeta,
+  rootGetters: any
+) => {
   const metadata: Partial<AppFileMeta> & Pick<AppFileWithMeta, 'history'> = {}
 
   if ('job_id' in file && file.job_id) {
@@ -50,11 +62,14 @@ export const getters = {
 
       // If root is timelapse, then add thumbnails data to files
 
-      const timelapseThumbnailFiles = root === 'timelapse'
-        ? new Set(pathContent.files
-          .map(file => file.filename)
-          .filter(filename => filename.endsWith('.jpg')))
-        : undefined
+      const timelapseThumbnailFiles =
+        root === 'timelapse'
+          ? new Set(
+              pathContent.files
+                .map(file => file.filename)
+                .filter(filename => filename.endsWith('.jpg'))
+            )
+          : undefined
 
       for (const file of pathContent.files) {
         const metadata = toAppFileMetaWithHistory(file, rootGetters)
@@ -94,7 +109,7 @@ export const getters = {
     }
   },
 
-  getRootFiles: (state) => (root: string) => {
+  getRootFiles: state => (root: string) => {
     return state.rootFiles[root]
   },
 
@@ -108,127 +123,141 @@ export const getters = {
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (root: string): RootProperties => {
-    const canView = [
-      ...SupportedImageFormats,
-      ...SupportedMarkdownFormats,
-      ...SupportedVideoFormats
-    ]
+  getRootProperties:
+    () =>
+    (root: string): RootProperties => {
+      const canView = [
+        ...SupportedImageFormats,
+        ...SupportedMarkdownFormats,
+        ...SupportedVideoFormats
+      ]
 
-    switch (root) {
-      case 'gcodes':
-        return {
-          readonly: false,
-          accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
-          canView,
-          canConfigure: true,
-          filterTypes: ['print_start_time', 'hidden_files', 'moonraker_temporary_upload_files']
-        }
-      case 'config':
-        return {
-          readonly: false,
-          accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
-          canView,
-          canConfigure: false,
-          filterTypes: ['hidden_files', 'klipper_backup_files', 'moonraker_backup_files', 'moonraker_temporary_upload_files', 'crowsnest_backup_files']
-        }
-      case 'config_examples':
-        return {
-          readonly: true,
-          accepts: [],
-          canView,
-          canConfigure: false,
-          filterTypes: ['hidden_files']
-        }
-      case 'docs':
-        return {
-          readonly: true,
-          accepts: [],
-          canView,
-          canConfigure: false,
-          filterTypes: ['hidden_files']
-        }
-      case 'logs':
-        return {
-          readonly: true,
-          accepts: [],
-          canView,
-          canConfigure: false,
-          filterTypes: ['hidden_files', 'rolled_log_files']
-        }
-      case 'timelapse':
-        return {
-          readonly: false,
-          accepts: [],
-          canView,
-          canConfigure: false,
-          filterTypes: ['hidden_files', 'moonraker_temporary_upload_files']
-        }
-      default:
-        return {
-          readonly: true,
-          accepts: [],
-          canView: [],
-          canConfigure: false,
-          filterTypes: ['hidden_files']
-        }
-    }
-  },
+      switch (root) {
+        case 'gcodes':
+          return {
+            readonly: false,
+            accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
+            canView,
+            canConfigure: true,
+            filterTypes: ['print_start_time', 'hidden_files', 'moonraker_temporary_upload_files']
+          }
+        case 'config':
+          return {
+            readonly: false,
+            accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
+            canView,
+            canConfigure: false,
+            filterTypes: [
+              'hidden_files',
+              'klipper_backup_files',
+              'moonraker_backup_files',
+              'moonraker_temporary_upload_files',
+              'crowsnest_backup_files'
+            ]
+          }
+        case 'config_examples':
+          return {
+            readonly: true,
+            accepts: [],
+            canView,
+            canConfigure: false,
+            filterTypes: ['hidden_files']
+          }
+        case 'docs':
+          return {
+            readonly: true,
+            accepts: [],
+            canView,
+            canConfigure: false,
+            filterTypes: ['hidden_files']
+          }
+        case 'logs':
+          return {
+            readonly: true,
+            accepts: [],
+            canView,
+            canConfigure: false,
+            filterTypes: ['hidden_files', 'rolled_log_files']
+          }
+        case 'timelapse':
+          return {
+            readonly: false,
+            accepts: [],
+            canView,
+            canConfigure: false,
+            filterTypes: ['hidden_files', 'moonraker_temporary_upload_files']
+          }
+        default:
+          return {
+            readonly: true,
+            accepts: [],
+            canView: [],
+            canConfigure: false,
+            filterTypes: ['hidden_files']
+          }
+      }
+    },
 
   /**
    * Returns a specific file.
    */
-  getFile: (state, getters, rootState, rootGetters) => (path: string, filename: string): AppFile | AppFileWithMeta | undefined => {
-    const pathContent = state.pathContent[path]
+  getFile:
+    (state, getters, rootState, rootGetters) =>
+    (path: string, filename: string): AppFile | AppFileWithMeta | undefined => {
+      const pathContent = state.pathContent[path]
 
-    const file = pathContent?.files.find(file => file.filename === filename)
+      const file = pathContent?.files.find(file => file.filename === filename)
 
-    if (file) {
-      const metadata = toAppFileMetaWithHistory(file, rootGetters)
+      if (file) {
+        const metadata = toAppFileMetaWithHistory(file, rootGetters)
 
-      const [, ...restOfPath] = path.split('/')
-      const pathFilename = restOfPath.join('/')
+        const [, ...restOfPath] = path.split('/')
+        const pathFilename = restOfPath.join('/')
 
-      const extensionIndex = filename.lastIndexOf('.')
-      const extension = extensionIndex > -1 ? filename.substring(extensionIndex) : ''
+        const extensionIndex = filename.lastIndexOf('.')
+        const extension = extensionIndex > -1 ? filename.substring(extensionIndex) : ''
 
-      const item: AppFile | AppFileWithMeta = {
-        ...file,
-        ...metadata,
-        type: 'file',
-        name: file.filename,
-        extension,
-        path: pathFilename
+        const item: AppFile | AppFileWithMeta = {
+          ...file,
+          ...metadata,
+          type: 'file',
+          name: file.filename,
+          extension,
+          path: pathFilename
+        }
+
+        return item
       }
-
-      return item
-    }
-  },
+    },
 
   /**
    * Gets the currently stored path for any given root.
    */
-  getCurrentPathByRoot: (state) => (root: string) => {
+  getCurrentPathByRoot: state => (root: string) => {
     return state.currentPaths[root] ?? ''
   },
 
-  getRootDetails: (state) => (root: string): Moonraker.Files.RootInfoWithPath | undefined => {
-    return state.roots?.find(rootInfo => rootInfo.name === root)
-  },
+  getRootDetails:
+    state =>
+    (root: string): Moonraker.Files.RootInfoWithPath | undefined => {
+      return state.roots?.find(rootInfo => rootInfo.name === root)
+    },
 
-  getDiskUsage: (state) => (root: string): AppDiskUsage | undefined => {
-    const diskUsage = state.diskUsage[root]
+  getDiskUsage:
+    state =>
+    (root: string): AppDiskUsage | undefined => {
+      const diskUsage = state.diskUsage[root]
 
-    if (diskUsage != null) {
-      // 1073741824 = 1gb
-      const lowOnSpace = diskUsage.free < Math.min(1073741824, diskUsage.total * 0.2)
-      const usedPercent = Math.floor((diskUsage.used / diskUsage.total) * 100)
+      if (diskUsage != null) {
+        // 1073741824 = 1gb
+        const lowOnSpace = diskUsage.free < Math.min(1073741824, diskUsage.total * 0.2)
+        const usedPercent = Math.floor((diskUsage.used / diskUsage.total) * 100)
 
-      return {
-        ...diskUsage,
-        usedPercent,
-        lowOnSpace
+        return {
+          ...diskUsage,
+          usedPercent,
+          lowOnSpace
+        }
       }
     }
-  }
 } satisfies GetterTree<FilesState, RootState>

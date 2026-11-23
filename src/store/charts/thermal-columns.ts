@@ -3,20 +3,17 @@ import type { ChartSelectedLegends } from './types'
 // Columns are `<sensor>` or `<sensor>#<sub>`; sensor names are runtime data.
 export const thermalSubKeys = ['target', 'power', 'speed'] as const
 
-export type ThermalSubKey = typeof thermalSubKeys[number]
+export type ThermalSubKey = (typeof thermalSubKeys)[number]
 
 interface ParsedThermalColumn {
-  sensor: string;
-  sub?: ThermalSubKey;
+  sensor: string
+  sub?: ThermalSubKey
 }
 
 const thermalSubKeySet: ReadonlySet<string> = new Set(thermalSubKeys)
 
-export const thermalColumn = (sensor: string, sub?: ThermalSubKey): string => (
-  sub
-    ? `${sensor}#${sub}`
-    : sensor
-)
+export const thermalColumn = (sensor: string, sub?: ThermalSubKey): string =>
+  sub ? `${sensor}#${sub}` : sensor
 
 export const parseThermalColumn = (column: string): ParsedThermalColumn => {
   const index = column.lastIndexOf('#')
@@ -42,16 +39,12 @@ export const parseThermalColumn = (column: string): ParsedThermalColumn => {
 }
 
 // Duty cycles - secondary (%) axis, hidden by default.
-export const isDutyCycleSubKey = (sub?: ThermalSubKey): boolean => (
-  sub === 'power' ||
-  sub === 'speed'
-)
+export const isDutyCycleSubKey = (sub?: ThermalSubKey): boolean =>
+  sub === 'power' || sub === 'speed'
 
 // The chart legend and the temperature table must agree on what starts hidden.
 export const isThermalLegendSelected = (
   selectedLegends: ChartSelectedLegends,
   sensor: string,
   sub?: ThermalSubKey
-): boolean => (
-  selectedLegends[thermalColumn(sensor, sub)] ?? !isDutyCycleSubKey(sub)
-)
+): boolean => selectedLegends[thermalColumn(sensor, sub)] ?? !isDutyCycleSubKey(sub)

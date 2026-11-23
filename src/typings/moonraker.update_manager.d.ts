@@ -1,113 +1,112 @@
 declare namespace Moonraker.UpdateManager {
   export interface StatusResponse {
-    busy: boolean;
-    github_rate_limit: number | null;
-    github_requests_remaining: number | null;
-    github_limit_reset_time: number | null;
-    version_info: VersionInfo;
+    busy: boolean
+    github_rate_limit: number | null
+    github_requests_remaining: number | null
+    github_limit_reset_time: number | null
+    version_info: VersionInfo
   }
 
-  export interface VersionInfo extends Record<string, VersionInfoEntry> {
-  }
+  export interface VersionInfo extends Record<string, VersionInfoEntry> {}
 
   export type VersionInfoEntry = System | GitRepo | NetHosted | Python
 
   export interface System {
-    configured_type?: 'system';
-    name?: string;
-    package_count: number;
-    package_list: string[];
+    configured_type?: 'system'
+    name?: string
+    package_count: number
+    package_list: string[]
   }
 
   export interface GitRepo {
-    configured_type: 'git_repo';
-    name?: string;
-    detected_type: 'git_repo';
-    channel: 'stable' | 'beta' | 'dev';
-    channel_invalid: boolean;
-    debug_enabled: boolean;
-    is_valid: boolean;
-    version: string;
-    remote_version: string;
-    rollback_version: string;
-    full_version_string: string;
-    remote_hash: string;
-    current_hash: string;
-    remote_alias: string;
-    remote_url: string;
-    recovery_url: string;
-    owner: string;
-    branch: string;
-    repo_name: string;
-    repo_detected?: boolean;
-    is_dirty: boolean;
-    corrupt: boolean;
-    pristine: boolean;
-    detached: boolean;
-    git_messages: string[];
-    anomalies: string[];
-    warnings: string[];
-    commits_behind: GitRepoCommit[];
-    commits_behind_count: number;
-    info_tags: string[];
+    configured_type: 'git_repo'
+    name?: string
+    detected_type: 'git_repo'
+    channel: 'stable' | 'beta' | 'dev'
+    channel_invalid: boolean
+    debug_enabled: boolean
+    is_valid: boolean
+    version: string
+    remote_version: string
+    rollback_version: string
+    full_version_string: string
+    remote_hash: string
+    current_hash: string
+    remote_alias: string
+    remote_url: string
+    recovery_url: string
+    owner: string
+    branch: string
+    repo_name: string
+    repo_detected?: boolean
+    is_dirty: boolean
+    corrupt: boolean
+    pristine: boolean
+    detached: boolean
+    git_messages: string[]
+    anomalies: string[]
+    warnings: string[]
+    commits_behind: GitRepoCommit[]
+    commits_behind_count: number
+    info_tags: string[]
   }
 
   export interface GitRepoCommit {
-    sha: string;
-    author: string;
-    date: string;
-    subject: string;
-    message: string;
-    tag: string | null;
+    sha: string
+    author: string
+    date: string
+    subject: string
+    message: string
+    tag: string | null
   }
 
   export interface NetHosted {
-    configured_type: 'web' | 'zip' | 'executable';
-    name: string;
-    channel: 'stable' | 'beta';
-    channel_invalid: boolean;
-    debug_enabled: boolean;
-    owner: string;
-    repo_name: string;
-    last_error: string;
-    version: string;
-    remote_version: string;
-    rollback_version: string;
-    is_valid: boolean;
-    anomalies: string[];
-    warnings: string[];
-    info_tags: string[];
+    configured_type: 'web' | 'zip' | 'executable'
+    name: string
+    channel: 'stable' | 'beta'
+    channel_invalid: boolean
+    debug_enabled: boolean
+    owner: string
+    repo_name: string
+    last_error: string
+    version: string
+    remote_version: string
+    rollback_version: string
+    is_valid: boolean
+    anomalies: string[]
+    warnings: string[]
+    info_tags: string[]
   }
 
   export interface Python {
-    configured_type: 'python';
-    detected_type: 'python_package';
-    name: string;
-    channel: 'stable' | 'beta' | 'dev';
-    channel_invalid: boolean;
-    debug_enabled: boolean;
-    owner: string;
-    repo_name: string;
-    branch: string;
-    version: string;
-    remote_version: string;
-    rollback_version: string;
-    full_version_string: string;
-    current_hash: string;
-    remote_hash: string;
-    is_valid: boolean;
-    is_dirty: boolean;
-    pristine: boolean;
-    changelog_url: string;
-    warnings: string[];
-    info_tags: string[];
+    configured_type: 'python'
+    detected_type: 'python_package'
+    name: string
+    channel: 'stable' | 'beta' | 'dev'
+    channel_invalid: boolean
+    debug_enabled: boolean
+    owner: string
+    repo_name: string
+    branch: string
+    version: string
+    remote_version: string
+    rollback_version: string
+    full_version_string: string
+    current_hash: string
+    remote_hash: string
+    is_valid: boolean
+    is_dirty: boolean
+    pristine: boolean
+    changelog_url: string
+    warnings: string[]
+    info_tags: string[]
   }
 
   export interface UpdateResponseEvent {
-    application: string;
-    proc_id: number;
-    message: string;
-    complete: boolean;
+    application: string
+    proc_id: number
+    message: string
+    complete: boolean
   }
 }
 
@@ -116,49 +115,49 @@ declare namespace Moonraker {
     'machine.update.status': {
       params: {
         refresh?: boolean
-      },
+      }
       result: UpdateManager.StatusResponse
-    },
+    }
     'machine.update.refresh': {
       params: {
         name?: string
-      },
+      }
       result: UpdateManager.StatusResponse
-    },
+    }
     'machine.update.recover': {
       params: {
-        name: string,
-        hard?: boolean,
+        name: string
+        hard?: boolean
         update_deps?: boolean
-      },
+      }
       result: OkResponse
-    },
+    }
     'machine.update.moonraker': {
-      params: undefined,
+      params: undefined
       result: OkResponse
-    },
+    }
     'machine.update.klipper': {
-      params: undefined,
+      params: undefined
       result: OkResponse
-    },
+    }
     'machine.update.client': {
       params: {
         name?: string
-      },
+      }
       result: OkResponse
-    },
+    }
     'machine.update.system': {
-      params: undefined,
+      params: undefined
       result: OkResponse
-    },
+    }
     'machine.update.full': {
-      params: undefined,
+      params: undefined
       result: OkResponse
     }
   }
 
   export interface Notifications {
-    notify_update_response: [UpdateManager.UpdateResponseEvent],
+    notify_update_response: [UpdateManager.UpdateResponseEvent]
     notify_update_refreshed: [UpdateManager.StatusResponse]
   }
 }

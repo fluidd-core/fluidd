@@ -8,7 +8,7 @@
       <app-btn-group
         class="app-toolchanger-control d-flex"
         :class="{
-          [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
+          [$vuetify.theme.dark ? 'theme--dark' : 'theme--light']: true
         }"
       >
         <v-tooltip
@@ -63,29 +63,30 @@ import { chunk } from 'lodash-es'
 import type { Macro } from '@/store/macros/types'
 
 type ToolChangeCommand = {
-  name: string,
-  description: string | TranslateResult,
-  color?: string,
-  active?: boolean,
+  name: string
+  description: string | TranslateResult
+  color?: string
+  active?: boolean
   spoolId?: number
 }
 
 @Component({})
 export default class ToolChangeCommands extends Mixins(StateMixin) {
-  get availableCommands (): GcodeCommands {
+  get availableCommands(): GcodeCommands {
     return this.$typedGetters['printer/getAvailableCommands']
   }
 
-  get toolChangeCommands (): ToolChangeCommand[] {
+  get toolChangeCommands(): ToolChangeCommand[] {
     const availableCommands = this.availableCommands
 
     return Object.keys(availableCommands)
       .filter(command => /^t\d+$/i.test(command))
       .map((command): ToolChangeCommand => {
         const { help } = availableCommands[command]
-        const description = help && help !== 'G-Code macro'
-          ? help
-          : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
+        const description =
+          help && help !== 'G-Code macro'
+            ? help
+            : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
 
         const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName'](command)
 
@@ -100,7 +101,7 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
       .sort((a, b) => +a.name.substring(1) - +b.name.substring(1))
   }
 
-  get toolChangeCommandsGrouped (): ToolChangeCommand[][] {
+  get toolChangeCommandsGrouped(): ToolChangeCommand[][] {
     const toolChangeCommands = this.toolChangeCommands
 
     const cols = Math.ceil(toolChangeCommands.length / Math.ceil(toolChangeCommands.length / 6))
@@ -108,34 +109,34 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
     return chunk(toolChangeCommands, cols)
   }
 
-  getSpoolById (id: number): Spool | undefined {
+  getSpoolById(id: number): Spool | undefined {
     return this.$typedGetters['spoolman/getSpoolById'](id)
   }
 
-  getSpoolColor (spool: Spool | undefined) {
+  getSpoolColor(spool: Spool | undefined) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  @include theme(app-toolchanger-control) using ($material) {
-    .extruder-color {
-      border-color: map-deep-get($material, 'text', 'primary');
-    }
+@include theme(app-toolchanger-control) using ($material) {
+  .extruder-color {
+    border-color: map-deep-get($material, 'text', 'primary');
   }
+}
 
-  .app-toolchanger-control .extruder-color {
-    width: 15px;
-    height: 15px;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 50%;
+.app-toolchanger-control .extruder-color {
+  width: 15px;
+  height: 15px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 50%;
 
-    &.active {
-      border-color: map-deep-get($material-dark, 'text', 'primary');
-    }
+  &.active {
+    border-color: map-deep-get($material-dark, 'text', 'primary');
   }
+}
 </style>

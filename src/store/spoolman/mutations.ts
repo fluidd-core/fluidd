@@ -1,51 +1,48 @@
 import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
 import { createState } from './state'
-import type {
-  SpoolmanState,
-  SpoolSelectionDialogState
-} from '@/store/spoolman/types'
+import type { SpoolmanState, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import type { HttpDiagnosticResult } from '@/util/http-endpoint-diagnostics'
 
 export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     state.socket?.close()
     Object.assign(state, createState())
   },
 
-  setActiveSpool (state, payload: number | null) {
+  setActiveSpool(state, payload: number | null) {
     state.activeSpool = payload
   },
 
-  setSpools (state, payload: Moonraker.Spoolman.Spool[]) {
+  setSpools(state, payload: Moonraker.Spoolman.Spool[]) {
     state.spools = Object.freeze(payload)
   },
 
-  setDialogState (state, payload: SpoolSelectionDialogState) {
+  setDialogState(state, payload: SpoolSelectionDialogState) {
     state.dialog = payload
   },
 
-  setInfo (state, payload: Moonraker.Spoolman.Info) {
+  setInfo(state, payload: Moonraker.Spoolman.Info) {
     state.info = Object.freeze(payload)
   },
 
-  setCurrency (state, payload: Moonraker.Spoolman.Currency) {
+  setCurrency(state, payload: Moonraker.Spoolman.Currency) {
     state.currency = payload.value.replace(/^"|"$/g, '')
   },
 
-  setConnected (state, payload: boolean) {
+  setConnected(state, payload: boolean) {
     state.connected = payload
   },
 
-  setSocket (state, payload: WebSocket | null) {
+  setSocket(state, payload: WebSocket | null) {
     state.socket?.close()
     state.socket = payload != null ? markRaw(payload) : null
   },
 
-  setSocketDiagnostic (state, payload: HttpDiagnosticResult['kind'] | null) {
+  setSocketDiagnostic(state, payload: HttpDiagnosticResult['kind'] | null) {
     state.socketDiagnostic = payload
   }
 } satisfies MutationTree<SpoolmanState>

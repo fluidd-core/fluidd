@@ -28,12 +28,12 @@ export default class StatusLabel extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .status-label {
-    margin: 0 0 2px 0;
-  }
+.status-label {
+  margin: 0 0 2px 0;
+}
 
-  .status-label__value {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
+.status-label__value {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 </style>

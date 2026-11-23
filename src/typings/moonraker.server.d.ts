@@ -1,75 +1,75 @@
 declare namespace Moonraker.Server {
   export interface InfoResponse {
-    klippy_connected: boolean;
-    klippy_state: KlippyState;
-    components: string[];
-    failed_components: string[];
-    registered_directories: string[];
-    warnings: string[];
-    websocket_count: number;
-    moonraker_version: string;
-    missing_klippy_requirements: string[];
-    api_version: number[];
-    api_version_string: string;
+    klippy_connected: boolean
+    klippy_state: KlippyState
+    components: string[]
+    failed_components: string[]
+    registered_directories: string[]
+    warnings: string[]
+    websocket_count: number
+    moonraker_version: string
+    missing_klippy_requirements: string[]
+    api_version: number[]
+    api_version_string: string
   }
 
   export type LogsRolloverApplication = 'moonraker' | 'klipper'
 
   export interface LogsRolloverResponse {
-    rolled_over: string[];
-    failed: Record<string, string>;
+    rolled_over: string[]
+    failed: Record<string, string>
   }
 
   export type KlippyState = 'disconnected' | 'startup' | 'ready' | 'error' | 'shutdown'
 
   export interface ConfigResponse {
-    config: Config;
-    orig: Record<string, unknown>;
-    files: ConfigFile[];
+    config: Config
+    orig: Record<string, unknown>
+    files: ConfigFile[]
   }
 
   export interface ConfigFile {
-    filename: string;
-    sections: string[];
+    filename: string
+    sections: string[]
   }
 
   export interface Config {
-    [key: string]: Record<string, any> | undefined;
-    server?: ConfigServer;
-    data_store?: ConfigDataStore;
-    authorization?: ConfigAuthorization;
-    template?: Record<string, unknown>;
+    [key: string]: Record<string, any> | undefined
+    server?: ConfigServer
+    data_store?: ConfigDataStore
+    authorization?: ConfigAuthorization
+    template?: Record<string, unknown>
   }
 
   export interface ConfigServer {
-    host?: string;
-    port?: number;
-    ssl_port?: number;
-    enable_debug_logging?: boolean;
-    enable_asyncio_debug?: boolean;
-    klippy_uds_address?: string;
-    max_upload_size?: number;
-    ssl_certificate_path?: string | null;
-    ssl_key_path?: string | null;
-    temperature_store_size?: number;
-    gcode_store_size?: number;
-    spoolman?: ConfigSpoolman;
+    host?: string
+    port?: number
+    ssl_port?: number
+    enable_debug_logging?: boolean
+    enable_asyncio_debug?: boolean
+    klippy_uds_address?: string
+    max_upload_size?: number
+    ssl_certificate_path?: string | null
+    ssl_key_path?: string | null
+    temperature_store_size?: number
+    gcode_store_size?: number
+    spoolman?: ConfigSpoolman
   }
 
   export interface ConfigDataStore {
-    temperature_store_size?: number;
-    gcode_store_size?: number;
+    temperature_store_size?: number
+    gcode_store_size?: number
   }
 
   export interface ConfigAuthorization {
-    login_timeout?: number;
-    force_logins?: boolean;
-    cors_domains?: string[];
-    trusted_clients?: string[];
+    login_timeout?: number
+    force_logins?: boolean
+    cors_domains?: string[]
+    trusted_clients?: string[]
   }
 
   export interface ConfigSpoolman {
-    server?: string;
+    server?: string
   }
 }
 
@@ -78,29 +78,29 @@ declare namespace Moonraker {
     'server.info': {
       params: {
         raw?: boolean
-      },
+      }
       result: Server.InfoResponse
-    },
+    }
     'server.config': {
-      params: undefined,
+      params: undefined
       result: Server.ConfigResponse
-    },
+    }
     'server.restart': {
-      params: undefined,
+      params: undefined
       result: OkResponse
-    },
+    }
     'server.logs.rollover': {
       params: {
         application?: Server.LogsRolloverApplication
-      },
+      }
       result: Server.LogsRolloverResponse
     }
   }
 
   export interface Notifications {
-    notify_gcode_response: [string],
-    notify_klippy_ready: undefined,
-    notify_klippy_shutdown: undefined,
+    notify_gcode_response: [string]
+    notify_klippy_ready: undefined
+    notify_klippy_shutdown: undefined
     notify_klippy_disconnected: undefined
   }
 }

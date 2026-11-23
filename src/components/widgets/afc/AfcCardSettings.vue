@@ -12,9 +12,7 @@
         v-bind="attrs"
         v-on="on"
       >
-        <v-icon dense>
-          $cog
-        </v-icon>
+        <v-icon dense> $cog </v-icon>
       </app-btn>
     </template>
 
@@ -96,11 +94,11 @@ import AfcCardSettingsUnit from '@/components/widgets/afc/AfcCardSettingsUnit.vu
   }
 })
 export default class AfcCardSettings extends Mixins(StateMixin, AfcMixin) {
-  get showFilamentName (): boolean {
+  get showFilamentName(): boolean {
     return this.afcShowFilamentName
   }
 
-  set showFilamentName (value: boolean) {
+  set showFilamentName(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.afc.showFilamentName',
       value,
@@ -108,11 +106,11 @@ export default class AfcCardSettings extends Mixins(StateMixin, AfcMixin) {
     })
   }
 
-  get showLaneInfinite (): boolean {
+  get showLaneInfinite(): boolean {
     return this.afcShowLaneInfinite
   }
 
-  set showLaneInfinite (value: boolean) {
+  set showLaneInfinite(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.afc.showLaneInfinite',
       value,
@@ -120,11 +118,11 @@ export default class AfcCardSettings extends Mixins(StateMixin, AfcMixin) {
     })
   }
 
-  get showUnitIcons (): boolean {
+  get showUnitIcons(): boolean {
     return this.afcShowUnitIcons
   }
 
-  set showUnitIcons (value: boolean) {
+  set showUnitIcons(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.afc.showUnitIcons',
       value,
@@ -132,15 +130,15 @@ export default class AfcCardSettings extends Mixins(StateMixin, AfcMixin) {
     })
   }
 
-  get td1Present (): boolean {
+  get td1Present(): boolean {
     return this.afc?.td1_present === true
   }
 
-  get showTd1Color (): boolean {
+  get showTd1Color(): boolean {
     return this.afcShowTd1Color
   }
 
-  set showTd1Color (value: boolean) {
+  set showTd1Color(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.afc.showTd1Color',
       value,

@@ -59,41 +59,41 @@ import { defaultWritableSettings } from '@/store/timelapse/state'
 
 @Component({})
 export default class TimelapseSettingsCard extends Mixins(StateMixin) {
-  get enabledBlocked (): boolean {
+  get enabledBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('enabled')
   }
 
-  get enabled () {
+  get enabled() {
     return this.settings.enabled
   }
 
-  set enabled (value: boolean) {
+  set enabled(value: boolean) {
     SocketActions.machineTimelapsePostSettings({ enabled: value })
   }
 
-  get autoRenderBlocked (): boolean {
+  get autoRenderBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('autorender')
   }
 
-  get autoRender () {
+  get autoRender() {
     return this.settings.autorender
   }
 
-  set autoRender (value: boolean) {
+  set autoRender(value: boolean) {
     SocketActions.machineTimelapsePostSettings({ autorender: value })
   }
 
-  get frameCount () {
+  get frameCount() {
     const lastFrame: TimelapseLastFrame | null = this.$typedGetters['timelapse/getLastFrame']
 
     return lastFrame?.count
   }
 
-  get settings (): Moonraker.Timelapse.WriteableSettings {
+  get settings(): Moonraker.Timelapse.WriteableSettings {
     return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  subtitleIfBlocked (blocked: boolean): string {
+  subtitleIfBlocked(blocked: boolean): string {
     return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }

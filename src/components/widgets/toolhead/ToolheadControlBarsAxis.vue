@@ -43,13 +43,13 @@ export default class ToolheadControlBarsAxis extends Mixins(StateMixin, Toolhead
   @Prop({ type: String })
   readonly axis!: Axis
 
-  get values (): number[] {
+  get values(): number[] {
     return this.axis === 'Z'
       ? this.$typedState.config.uiSettings.general.toolheadZMoveDistances
       : this.$typedState.config.uiSettings.general.toolheadXYMoveDistances
   }
 
-  get homed (): boolean {
+  get homed(): boolean {
     switch (this.axis) {
       case 'X':
         return this.xHomed
@@ -60,7 +60,7 @@ export default class ToolheadControlBarsAxis extends Mixins(StateMixin, Toolhead
     }
   }
 
-  get wait (): string {
+  get wait(): string {
     switch (this.axis) {
       case 'X':
         return this.$waits.onHomeX
@@ -71,21 +71,22 @@ export default class ToolheadControlBarsAxis extends Mixins(StateMixin, Toolhead
     }
   }
 
-  get rate (): number {
+  get rate(): number {
     return this.axis === 'Z'
       ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
       : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
-  moveBy (distance: number) {
+  moveBy(distance: number) {
     this.sendMoveGcode(
       {
         [this.axis]: distance
       },
-      this.rate)
+      this.rate
+    )
   }
 
-  home () {
+  home() {
     this.sendGcode(`G28 ${this.axis}`, this.wait)
   }
 }

@@ -124,102 +124,105 @@ import type { KlippyApp } from '@/store/printer/types'
 
 @Component({})
 export default class Retract extends Mixins(StateMixin, BrowserMixin) {
-  get firmwareRetraction () {
+  get firmwareRetraction() {
     const printerSettings: Klipper.SettingsState = this.$typedGetters['printer/getPrinterSettings']
 
     return printerSettings.firmware_retraction
   }
 
-  get defaultRetractLength (): number {
+  get defaultRetractLength(): number {
     return this.firmwareRetraction?.retract_length ?? 0
   }
 
-  get retractLength (): number {
+  get retractLength(): number {
     return this.$typedState.printer.printer.firmware_retraction?.retract_length ?? 0
   }
 
-  get maxRetractLength (): number {
+  get maxRetractLength(): number {
     if (this.defaultRetractLength <= 0) return 15
     return Math.round(this.defaultRetractLength * 2 * 100) / 100
   }
 
-  get defaultRetractSpeed (): number {
+  get defaultRetractSpeed(): number {
     return this.firmwareRetraction?.retract_speed ?? 0
   }
 
-  get retractSpeed (): number {
+  get retractSpeed(): number {
     return this.$typedState.printer.printer.firmware_retraction?.retract_speed ?? 0
   }
 
-  get maxRetractSpeed (): number {
+  get maxRetractSpeed(): number {
     if (this.defaultRetractSpeed <= 0) return 100
     return Math.round(this.defaultRetractSpeed * 2)
   }
 
-  get defaultUnretractSpeed (): number {
+  get defaultUnretractSpeed(): number {
     return this.firmwareRetraction?.unretract_speed ?? 0
   }
 
-  get unretractSpeed (): number {
+  get unretractSpeed(): number {
     return this.$typedState.printer.printer.firmware_retraction?.unretract_speed ?? 0
   }
 
-  get maxUnretractSpeed (): number {
+  get maxUnretractSpeed(): number {
     if (this.defaultUnretractSpeed <= 0) return 100
     return Math.round(this.defaultUnretractSpeed * 2)
   }
 
-  get defaultUnretractExtraLength (): number {
+  get defaultUnretractExtraLength(): number {
     return this.firmwareRetraction?.unretract_extra_length ?? 0
   }
 
-  get unretractExtraLength (): number {
+  get unretractExtraLength(): number {
     return this.$typedState.printer.printer.firmware_retraction?.unretract_extra_length ?? 0
   }
 
-  get maxUnretractExtraLength (): number {
+  get maxUnretractExtraLength(): number {
     if (this.defaultUnretractExtraLength <= 0) return 15
     return Math.round(this.defaultUnretractExtraLength * 2 * 100) / 100
   }
 
-  get defaultZHopHeight (): number {
+  get defaultZHopHeight(): number {
     return this.firmwareRetraction?.z_hop_height ?? 0
   }
 
-  get zHopHeight (): number {
+  get zHopHeight(): number {
     return this.$typedState.printer.printer.firmware_retraction?.z_hop_height ?? 0
   }
 
-  get maxZHopHeight (): number {
+  get maxZHopHeight(): number {
     if (this.defaultZHopHeight <= 0) return 2
     return Math.round(this.defaultZHopHeight * 2 * 100) / 100
   }
 
-  get klippyApp (): KlippyApp {
+  get klippyApp(): KlippyApp {
     return this.$typedGetters['printer/getKlippyApp']
   }
 
-  get supportsZHopHeight () {
+  get supportsZHopHeight() {
     return this.klippyApp.isKalicoOrDangerKlipper
   }
 
-  setRetractLength (val: number) {
+  setRetractLength(val: number) {
     this.sendGcode(`SET_RETRACTION RETRACT_LENGTH=${val}`, this.$waits.onSetRetractLength)
   }
 
-  setRetractSpeed (val: number) {
+  setRetractSpeed(val: number) {
     this.sendGcode(`SET_RETRACTION RETRACT_SPEED=${val}`, this.$waits.onSetRetractSpeed)
   }
 
-  setUnretractSpeed (val: number) {
+  setUnretractSpeed(val: number) {
     this.sendGcode(`SET_RETRACTION UNRETRACT_SPEED=${val}`, this.$waits.onSetUnretractSpeed)
   }
 
-  setUnRetractExtraLength (val: number) {
-    this.sendGcode(`SET_RETRACTION UNRETRACT_EXTRA_LENGTH=${val}`, this.$waits.onSetUnretractExtraLength)
+  setUnRetractExtraLength(val: number) {
+    this.sendGcode(
+      `SET_RETRACTION UNRETRACT_EXTRA_LENGTH=${val}`,
+      this.$waits.onSetUnretractExtraLength
+    )
   }
 
-  setZHopHeight (val: number) {
+  setZHopHeight(val: number) {
     this.sendGcode(`SET_RETRACTION Z_HOP_HEIGHT=${val}`, this.$waits.onSetZHopHeight)
   }
 }

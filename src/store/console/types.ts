@@ -1,68 +1,71 @@
 export interface ConsoleState {
-  consoleCommand: string;
-  consoleSearch: string;
-  console: Readonly<ConsoleEntry>[]; // console stream
-  gcodeHelp: Readonly<Moonraker.KlippyApis.GcodeHelpResponse>; // known commands
-  consoleEntryCount: number; // give each console entry a unique id.
-  commandHistory: string[];
-  autoScroll: boolean;
-  lastCleared: number;
-  promptDialog: PromptDialog;
-  consoleFilters: ConsoleFilter[];
-  consoleFiltersRegexp: RegExp[];
+  consoleCommand: string
+  consoleSearch: string
+  console: Readonly<ConsoleEntry>[] // console stream
+  gcodeHelp: Readonly<Moonraker.KlippyApis.GcodeHelpResponse> // known commands
+  consoleEntryCount: number // give each console entry a unique id.
+  commandHistory: string[]
+  autoScroll: boolean
+  lastCleared: number
+  promptDialog: PromptDialog
+  consoleFilters: ConsoleFilter[]
+  consoleFiltersRegexp: RegExp[]
 }
 
 export interface ConsoleEntry {
-  id: number;
-  message: string;
-  time?: number;
-  type: 'command' | 'response' | 'action';
+  id: number
+  message: string
+  time?: number
+  type: 'command' | 'response' | 'action'
 }
 
 export interface ConsoleLogEntry {
-  id: number;
-  message: string;
+  id: number
+  message: string
 }
 
 export type ConsoleFilterType = 'contains' | 'starts-with' | 'expression'
 
 export interface ConsoleFilter {
-  id: string;
-  name: string;
-  type: ConsoleFilterType;
-  value: string;
-  enabled: boolean;
+  id: string
+  name: string
+  type: ConsoleFilterType
+  value: string
+  enabled: boolean
 }
 
 export interface PromptDialog {
-  open: boolean;
-  title?: string;
-  items: PromptDialogItem[];
-  pendingItems: PromptDialogItem[] | null;
-  footerButtons: PromptDialogButton[];
+  open: boolean
+  title?: string
+  items: PromptDialogItem[]
+  pendingItems: PromptDialogItem[] | null
+  footerButtons: PromptDialogButton[]
 }
 
-export type PromptDialogItem = PromptDialogItemText | PromptDialogItemButtonGroup | PromptDialogItemButton
+export type PromptDialogItem =
+  | PromptDialogItemText
+  | PromptDialogItemButtonGroup
+  | PromptDialogItemButton
 
 export interface PromptDialogItemText {
-  type: 'text';
-  id: number;
-  text: string;
+  type: 'text'
+  id: number
+  text: string
 }
 
 export interface PromptDialogItemButtonGroup {
-  type: 'button_group';
-  id: number;
-  buttons: PromptDialogButton[];
+  type: 'button_group'
+  id: number
+  buttons: PromptDialogButton[]
 }
 
 export interface PromptDialogItemButton extends PromptDialogButton {
-  type: 'button';
+  type: 'button'
 }
 
 export interface PromptDialogButton {
-  id: number;
-  text: string;
-  command?: string;
-  color?: string;
+  id: number
+  text: string
+  command?: string
+  color?: string
 }

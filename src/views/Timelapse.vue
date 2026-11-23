@@ -60,7 +60,7 @@ export default class Timelapse extends Mixins(StateMixin) {
   renderDialogOpen = false
   renderDialogRenderable = false
 
-  openRenderDialog (renderable = false) {
+  openRenderDialog(renderable = false) {
     this.renderDialogRenderable = renderable
     this.renderDialogOpen = true
   }
@@ -68,8 +68,8 @@ export default class Timelapse extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .full-screen {
-    max-height: calc(100vh - 190px);
-    max-height: calc(100svh - 190px);
-  }
+.full-screen {
+  max-height: calc(100vh - 190px);
+  max-height: calc(100svh - 190px);
+}
 </style>

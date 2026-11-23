@@ -12,8 +12,8 @@
           <img
             :src="previewUrl"
             class="mx-auto thumbnail"
-            :style="{filter: isRendering ? `saturate(${renderProgress}%)` : 'none'}"
-          >
+            :style="{ filter: isRendering ? `saturate(${renderProgress}%)` : 'none' }"
+          />
           <v-progress-circular
             v-if="isRendering"
             class="render-progress"
@@ -88,23 +88,23 @@ import { defaultWritableSettings } from '@/store/timelapse/state'
 export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   selectedFrameNumber = 0
 
-  saveFrames () {
+  saveFrames() {
     SocketActions.machineTimelapseSaveFrames()
   }
 
-  get savingFrames () {
+  get savingFrames() {
     return this.hasWait(this.$waits.onTimelapseSaveFrame)
   }
 
-  get selectedFrame () {
+  get selectedFrame() {
     return this.selectedFrameNumber || this.frameCount || 0
   }
 
-  set selectedFrame (value: number) {
+  set selectedFrame(value: number) {
     this.selectedFrameNumber = value === this.frameCount ? 0 : value
   }
 
-  get previewUrl () {
+  get previewUrl() {
     const file = this.lastFrame?.file
 
     if (file) {
@@ -116,31 +116,31 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     }
   }
 
-  get isRendering () {
+  get isRendering() {
     return this.renderStatus && this.renderStatus.status !== 'success'
   }
 
-  get frameCount () {
+  get frameCount() {
     return this.lastFrame?.uniqueCount
   }
 
-  get camera (): Moonraker.Webcam.Entry | undefined {
+  get camera(): Moonraker.Webcam.Entry | undefined {
     return this.$typedGetters['webcams/getWebcamById'](this.settings.camera)
   }
 
-  get settings (): Moonraker.Timelapse.WriteableSettings {
+  get settings(): Moonraker.Timelapse.WriteableSettings {
     return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  get lastFrame (): TimelapseLastFrame | null {
+  get lastFrame(): TimelapseLastFrame | null {
     return this.$typedGetters['timelapse/getLastFrame']
   }
 
-  get renderStatus (): Moonraker.Timelapse.RenderResponse | null {
+  get renderStatus(): Moonraker.Timelapse.RenderResponse | null {
     return this.$typedState.timelapse.renderStatus
   }
 
-  get renderProgress () {
+  get renderProgress() {
     const renderStatus = this.renderStatus
 
     if (renderStatus?.status === 'running') {

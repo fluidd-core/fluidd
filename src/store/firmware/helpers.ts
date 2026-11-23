@@ -8,20 +8,14 @@ const KNOWN_UPDATABLE_STATES: readonly string[] = ['update_available']
 
 export const formatResponse = (payload: Aldis.UpdateResponse, id: number): ConsoleLogEntry => ({
   id,
-  message: payload.mcu
-    ? `${payload.mcu}: ${payload.message}`
-    : payload.message
+  message: payload.mcu ? `${payload.mcu}: ${payload.message}` : payload.message
 })
 
-export const isUpdatable = (mcu: Pick<Aldis.Mcu, 'state' | 'actions'>): boolean => (
-  KNOWN_UPDATABLE_STATES.includes(mcu.state) &&
-  mcu.actions.includes('update')
-)
+export const isUpdatable = (mcu: Pick<Aldis.Mcu, 'state' | 'actions'>): boolean =>
+  KNOWN_UPDATABLE_STATES.includes(mcu.state) && mcu.actions.includes('update')
 
 export const applyEvent = (run: Aldis.Run | null, payload: Aldis.UpdateResponse): Aldis.Run => {
-  const messages = run?.run_id === payload.run_id
-    ? [...run.messages, payload]
-    : [payload]
+  const messages = run?.run_id === payload.run_id ? [...run.messages, payload] : [payload]
 
   return payload.complete
     ? {
@@ -54,7 +48,11 @@ export const endLostRun = (run: Aldis.Run, message: string): Aldis.Run => ({
   ]
 })
 
-export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null, lost = false): Aldis.Run | null => {
+export const reconcileRun = (
+  current: Aldis.Run | null,
+  run: Aldis.Run | null,
+  lost = false
+): Aldis.Run | null => {
   if (run == null) {
     return current
   }
@@ -70,117 +68,122 @@ export const reconcileRun = (current: Aldis.Run | null, run: Aldis.Run | null, l
   }
 
   // A lost run takes the agent's view; otherwise a running snapshot predates the final event
-  return lost
-    ? run
-    : current
+  return lost ? run : current
 }
 
 export const finishedRunOf = (state: FirmwareState): Aldis.Run | null => {
   const run = state.run
 
-  return (
-    run?.state === 'finished' &&
-    !state.pending &&
-    run.run_id !== state.dismissedRunId
-  )
+  return run?.state === 'finished' && !state.pending && run.run_id !== state.dismissedRunId
     ? run
     : null
 }
 
 // The agent emits a run's final event before it marks the run finished, so a
 // refresh issued on that event can read pre-run MCU rows once. One retry fixes it.
-export const needsRetry = (current: Aldis.Run | null, run: Aldis.Run | null): boolean => (
-  current?.state === 'finished' &&
-  run?.state === 'running' &&
-  run.run_id === current.run_id
-)
+export const needsRetry = (current: Aldis.Run | null, run: Aldis.Run | null): boolean =>
+  current?.state === 'finished' && run?.state === 'running' && run.run_id === current.run_id
 
 export const updatableMcus = (status: Aldis.StatusResponse | null): string[] => {
-  if (
-    status == null ||
-    status.blocker != null
-  ) {
+  if (status == null || status.blocker != null) {
     return []
   }
 
-  return status.mcus
-    .filter(isUpdatable)
-    .map(mcu => mcu.name)
+  return status.mcus.filter(isUpdatable).map(mcu => mcu.name)
 }
 
-const isRunResult = (value: unknown): value is Aldis.RunResult => (
+const isRunResult = (value: unknown): value is Aldis.RunResult =>
   value != null &&
   typeof value === 'object' &&
-  'outcome' in value && (value.outcome === 'success' || value.outcome === 'failed') &&
-  'klippy_state' in value && typeof value.klippy_state === 'string' &&
-  'klipper_left_stopped' in value && typeof value.klipper_left_stopped === 'boolean' &&
-  'mcus' in value && Array.isArray(value.mcus)
-)
+  'outcome' in value &&
+  (value.outcome === 'success' || value.outcome === 'failed') &&
+  'klippy_state' in value &&
+  typeof value.klippy_state === 'string' &&
+  'klipper_left_stopped' in value &&
+  typeof value.klipper_left_stopped === 'boolean' &&
+  'mcus' in value &&
+  Array.isArray(value.mcus)
 
-export const isUpdateResponse = (value: unknown): value is Aldis.UpdateResponse => (
+export const isUpdateResponse = (value: unknown): value is Aldis.UpdateResponse =>
   value != null &&
   typeof value === 'object' &&
-  'run_id' in value && typeof value.run_id === 'string' &&
-  'message' in value && typeof value.message === 'string' &&
-  'complete' in value && typeof value.complete === 'boolean' &&
-  'phase' in value && typeof value.phase === 'string' &&
-  'mcu' in value && (value.mcu === null || typeof value.mcu === 'string') &&
+  'run_id' in value &&
+  typeof value.run_id === 'string' &&
+  'message' in value &&
+  typeof value.message === 'string' &&
+  'complete' in value &&
+  typeof value.complete === 'boolean' &&
+  'phase' in value &&
+  typeof value.phase === 'string' &&
+  'mcu' in value &&
+  (value.mcu === null || typeof value.mcu === 'string') &&
   (!('result' in value) || value.result == null || isRunResult(value.result))
-)
 
-const isRun = (value: unknown): value is Aldis.Run => (
+const isRun = (value: unknown): value is Aldis.Run =>
   value != null &&
   typeof value === 'object' &&
-  'run_id' in value && typeof value.run_id === 'string' &&
-  'state' in value && (value.state === 'running' || value.state === 'finished') &&
-  'messages' in value && Array.isArray(value.messages) && value.messages.every(isUpdateResponse) &&
+  'run_id' in value &&
+  typeof value.run_id === 'string' &&
+  'state' in value &&
+  (value.state === 'running' || value.state === 'finished') &&
+  'messages' in value &&
+  Array.isArray(value.messages) &&
+  value.messages.every(isUpdateResponse) &&
   (!('result' in value) || value.result == null || isRunResult(value.result))
-)
 
-const isBlocker = (value: unknown): value is Aldis.Blocker => (
+const isBlocker = (value: unknown): value is Aldis.Blocker =>
   value != null &&
   typeof value === 'object' &&
-  'reason' in value && typeof value.reason === 'string' &&
-  'message' in value && typeof value.message === 'string'
-)
+  'reason' in value &&
+  typeof value.reason === 'string' &&
+  'message' in value &&
+  typeof value.message === 'string'
 
-const isHost = (value: unknown): value is Aldis.Host => (
+const isHost = (value: unknown): value is Aldis.Host =>
   value != null &&
   typeof value === 'object' &&
-  'klippy_state' in value && typeof value.klippy_state === 'string' &&
-  'klippy_message' in value && typeof value.klippy_message === 'string' &&
+  'klippy_state' in value &&
+  typeof value.klippy_state === 'string' &&
+  'klippy_message' in value &&
+  typeof value.klippy_message === 'string' &&
   (!('software_version' in value) || typeof value.software_version === 'string') &&
   (!('klipper_path' in value) || typeof value.klipper_path === 'string') &&
   (!('checkout_version' in value) || typeof value.checkout_version === 'string')
-)
 
-export const isStatusResponse = (value: unknown): value is Aldis.StatusResponse => (
+export const isStatusResponse = (value: unknown): value is Aldis.StatusResponse =>
   value != null &&
   typeof value === 'object' &&
-  'api_version' in value && typeof value.api_version === 'number' &&
-  'host' in value && isHost(value.host) &&
-  'mcus' in value && Array.isArray(value.mcus) &&
-  value.mcus.every(mcu => (
-    mcu != null &&
-    typeof mcu === 'object' &&
-    'name' in mcu && typeof mcu.name === 'string' &&
-    'state' in mcu && typeof mcu.state === 'string' &&
-    'actions' in mcu && Array.isArray(mcu.actions) &&
-    'message' in mcu && typeof mcu.message === 'string' &&
-    'running_version' in mcu && (mcu.running_version === null || typeof mcu.running_version === 'string')
-  )) &&
+  'api_version' in value &&
+  typeof value.api_version === 'number' &&
+  'host' in value &&
+  isHost(value.host) &&
+  'mcus' in value &&
+  Array.isArray(value.mcus) &&
+  value.mcus.every(
+    mcu =>
+      mcu != null &&
+      typeof mcu === 'object' &&
+      'name' in mcu &&
+      typeof mcu.name === 'string' &&
+      'state' in mcu &&
+      typeof mcu.state === 'string' &&
+      'actions' in mcu &&
+      Array.isArray(mcu.actions) &&
+      'message' in mcu &&
+      typeof mcu.message === 'string' &&
+      'running_version' in mcu &&
+      (mcu.running_version === null || typeof mcu.running_version === 'string')
+  ) &&
   (!('blocker' in value) || value.blocker == null || isBlocker(value.blocker)) &&
   (!('run' in value) || value.run == null || isRun(value.run))
-)
 
-export const apiVersionOf = (value: unknown): number | null => (
+export const apiVersionOf = (value: unknown): number | null =>
   value != null &&
   typeof value === 'object' &&
   'api_version' in value &&
   typeof value.api_version === 'number'
     ? value.api_version
     : null
-)
 
 export const unsupportedStatus = (apiVersion: number): Aldis.StatusResponse => ({
   api_version: apiVersion,
@@ -193,24 +196,16 @@ export const unsupportedStatus = (apiVersion: number): Aldis.StatusResponse => (
   run: null
 })
 
-const isAgentError = (value: unknown): value is Aldis.AgentError => (
+const isAgentError = (value: unknown): value is Aldis.AgentError =>
   value != null &&
   typeof value === 'object' &&
   'message' in value &&
   typeof value.message === 'string'
-)
 
 export const agentErrorMessage = (error: unknown): string => {
   if (isSocketError(error)) {
-    return (
-      'data' in error &&
-      isAgentError(error.data)
-    )
-      ? error.data.message
-      : error.message
+    return 'data' in error && isAgentError(error.data) ? error.data.message : error.message
   }
 
-  return error instanceof Error
-    ? error.message
-    : String(error)
+  return error instanceof Error ? error.message : String(error)
 }

@@ -4,15 +4,15 @@ import type { DatabaseInfo, DatabaseState } from './types'
 import getFilePaths from '@/util/get-file-paths'
 
 export const mutations = {
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setServerDatabaseList (state, payload: DatabaseInfo) {
+  setServerDatabaseList(state, payload: DatabaseInfo) {
     state.info = payload
   },
 
-  setServerDatabasePostBackup (state, payload: { backup_path: string }) {
+  setServerDatabasePostBackup(state, payload: { backup_path: string }) {
     if (state.info?.backups) {
       const { filename } = getFilePaths(payload.backup_path)
 
@@ -20,7 +20,7 @@ export const mutations = {
     }
   },
 
-  setServerDatabaseDeleteBackup (state, payload: { backup_path: string }) {
+  setServerDatabaseDeleteBackup(state, payload: { backup_path: string }) {
     if (state.info?.backups) {
       const { filename } = getFilePaths(payload.backup_path)
       const index = state.info.backups.findIndex(backup => backup === filename)

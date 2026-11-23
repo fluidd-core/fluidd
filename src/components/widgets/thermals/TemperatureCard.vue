@@ -28,9 +28,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon dense>
-              $cog
-            </v-icon>
+            <v-icon dense> $cog </v-icon>
           </app-btn>
         </template>
 
@@ -136,7 +134,7 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   @Ref('thermalchart')
   readonly thermalChartElement!: ThermalChart
 
-  get chartReady (): boolean {
+  get chartReady(): boolean {
     return (
       this.$typedState.socket.acceptingNotifications &&
       this.$typedState.socket.status === 'ready' &&
@@ -145,29 +143,29 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     )
   }
 
-  updateChartSelectedLegends (chartSelectedLegends: ChartSelectedLegends) {
+  updateChartSelectedLegends(chartSelectedLegends: ChartSelectedLegends) {
     if (this.chartVisible) {
       this.thermalChartElement.updateChartSelectedLegends(chartSelectedLegends)
     }
   }
 
-  highlightChartSeries (key: string) {
+  highlightChartSeries(key: string) {
     if (this.chartVisible) {
       this.thermalChartElement.highlightSeries(key)
     }
   }
 
-  downplayChartSeries () {
+  downplayChartSeries() {
     if (this.chartVisible) {
       this.thermalChartElement.downplaySeries()
     }
   }
 
-  get chartVisible (): boolean {
+  get chartVisible(): boolean {
     return this.$typedState.config.uiSettings.general.chartVisible
   }
 
-  set chartVisible (value: boolean) {
+  set chartVisible(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.chartVisible',
       value,
@@ -175,11 +173,11 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showRateOfChange (): boolean {
+  get showRateOfChange(): boolean {
     return this.$typedState.config.uiSettings.general.showRateOfChange
   }
 
-  set showRateOfChange (value: boolean) {
+  set showRateOfChange(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showRateOfChange',
       value,
@@ -187,11 +185,11 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showRelativeHumidity (): boolean {
+  get showRelativeHumidity(): boolean {
     return this.$typedState.config.uiSettings.general.showRelativeHumidity
   }
 
-  set showRelativeHumidity (value: boolean) {
+  set showRelativeHumidity(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showRelativeHumidity',
       value,
@@ -199,11 +197,11 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showBarometricPressure (): boolean {
+  get showBarometricPressure(): boolean {
     return this.$typedState.config.uiSettings.general.showBarometricPressure
   }
 
-  set showBarometricPressure (value: boolean) {
+  set showBarometricPressure(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showBarometricPressure',
       value,
@@ -211,11 +209,11 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showGasResistance (): boolean {
+  get showGasResistance(): boolean {
     return this.$typedState.config.uiSettings.general.showGasResistance
   }
 
-  set showGasResistance (value: boolean) {
+  set showGasResistance(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showGasResistance',
       value,
@@ -223,16 +221,20 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  handleApplyPreset (preset: TemperaturePreset) {
+  handleApplyPreset(preset: TemperaturePreset) {
     if (preset) {
       if (preset.values) {
         for (const key in preset.values) {
           const item = preset.values[key]
           if (item.type === 'heater' && item.active && item.value > -1) {
-            this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${encodeGcodeParamValue(key)} TARGET=${item.value}`)
+            this.sendGcode(
+              `SET_HEATER_TEMPERATURE HEATER=${encodeGcodeParamValue(key)} TARGET=${item.value}`
+            )
           }
           if (item.type === 'fan' && item.active && item.value > -1) {
-            this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${encodeGcodeParamValue(key)} TARGET=${item.value}`)
+            this.sendGcode(
+              `SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${encodeGcodeParamValue(key)} TARGET=${item.value}`
+            )
           }
         }
       }
@@ -243,14 +245,14 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  async handleApplyOff () {
-    const result = (
+  async handleApplyOff() {
+    const result =
       !this.printerBusy ||
-      await this.$confirm(
-        this.$tc('app.general.label.heaters_busy'),
-        { title: this.$tc('app.general.simple_form.msg.confirm'), color: 'card-heading', icon: '$error' }
-      )
-    )
+      (await this.$confirm(this.$tc('app.general.label.heaters_busy'), {
+        title: this.$tc('app.general.simple_form.msg.confirm'),
+        color: 'card-heading',
+        icon: '$error'
+      }))
 
     if (result) {
       this.sendGcode('TURN_OFF_HEATERS')

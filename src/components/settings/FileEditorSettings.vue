@@ -90,11 +90,11 @@ import type { KlipperSaveAndRestartAction, RestoreViewState } from '@/store/conf
 
 @Component({})
 export default class FileEditorSettings extends Mixins(StateMixin) {
-  get confirmDirtyEditorClose (): boolean {
+  get confirmDirtyEditorClose(): boolean {
     return this.$typedState.config.uiSettings.editor.confirmDirtyEditorClose
   }
 
-  set confirmDirtyEditorClose (value: boolean) {
+  set confirmDirtyEditorClose(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.confirmDirtyEditorClose',
       value,
@@ -102,25 +102,25 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     })
   }
 
-  get autoEditExtensions (): string[] {
+  get autoEditExtensions(): string[] {
     return this.$typedState.config.uiSettings.editor.autoEditExtensions
   }
 
-  set autoEditExtensions (value: string[]) {
+  set autoEditExtensions(value: string[]) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.autoEditExtensions',
-      value: [
-        ...new Set(value.map(ext => ext.startsWith('.') ? ext : `.${ext}`))
-      ].sort((a, b) => a.localeCompare(b)),
+      value: [...new Set(value.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)))].sort((a, b) =>
+        a.localeCompare(b)
+      ),
       server: true
     })
   }
 
-  get restoreViewState (): RestoreViewState {
+  get restoreViewState(): RestoreViewState {
     return this.$typedState.config.uiSettings.editor.restoreViewState
   }
 
-  set restoreViewState (value: RestoreViewState) {
+  set restoreViewState(value: RestoreViewState) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.restoreViewState',
       value,
@@ -128,7 +128,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     })
   }
 
-  get availableRestoreViewState (): { value: RestoreViewState, text: string }[] {
+  get availableRestoreViewState(): { value: RestoreViewState; text: string }[] {
     return [
       {
         value: 'never',
@@ -145,11 +145,11 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     ]
   }
 
-  get codeLens (): boolean {
+  get codeLens(): boolean {
     return this.$typedState.config.uiSettings.editor.codeLens
   }
 
-  set codeLens (value: boolean) {
+  set codeLens(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.codeLens',
       value,
@@ -157,11 +157,11 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     })
   }
 
-  get klipperSaveAndRestartAction (): KlipperSaveAndRestartAction {
+  get klipperSaveAndRestartAction(): KlipperSaveAndRestartAction {
     return this.$typedState.config.uiSettings.editor.klipperSaveAndRestartAction
   }
 
-  set klipperSaveAndRestartAction (value: KlipperSaveAndRestartAction) {
+  set klipperSaveAndRestartAction(value: KlipperSaveAndRestartAction) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor.klipperSaveAndRestartAction',
       value,
@@ -169,13 +169,16 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     })
   }
 
-  get availableKlipperSaveAndRestartActions (): { value: KlipperSaveAndRestartAction, text: string }[] {
+  get availableKlipperSaveAndRestartActions(): {
+    value: KlipperSaveAndRestartAction
+    text: string
+  }[] {
     const isSimulavrMcu: boolean = this.$typedGetters['printer/getIsSimulavrMcu']
 
     return [
       {
         value: 'auto',
-        text: `${this.$tc('app.setting.label.auto')} (${isSimulavrMcu ? this.$tc('app.setting.label.service_restart') : this.$tc('app.setting.label.firmware_restart')})`,
+        text: `${this.$tc('app.setting.label.auto')} (${isSimulavrMcu ? this.$tc('app.setting.label.service_restart') : this.$tc('app.setting.label.firmware_restart')})`
       },
       {
         value: 'firmware-restart',
@@ -192,7 +195,7 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     ]
   }
 
-  handleReset () {
+  handleReset() {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.editor',
       value: createState().uiSettings.editor,

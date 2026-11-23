@@ -21,12 +21,11 @@ export default class AfcCardSettingsExtruder extends Mixins(StateMixin, AfcMixin
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get showExtruder () {
-    return !this.afcHiddenExtruders
-      .includes(this.name)
+  get showExtruder() {
+    return !this.afcHiddenExtruders.includes(this.name)
   }
 
-  set showExtruder (value: boolean) {
+  set showExtruder(value: boolean) {
     const values = new Set(this.afcHiddenExtruders)
 
     if (value) {

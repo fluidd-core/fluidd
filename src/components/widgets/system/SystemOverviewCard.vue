@@ -12,9 +12,7 @@
             v-on="on"
             @click="peripheralsDialogOpen = true"
           >
-            <v-icon dense>
-              $devices
-            </v-icon>
+            <v-icon dense> $devices </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.system_info.label.devices') }}</span>
@@ -31,9 +29,7 @@
             v-on="on"
             @click="rolloverLogsDialogOpen = true"
           >
-            <v-icon dense>
-              $fileRefresh
-            </v-icon>
+            <v-icon dense> $fileRefresh </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.general.tooltip.rollover_logs') }}</span>
@@ -66,7 +62,9 @@
               </tr>
               <tr v-if="cpuInfo.bits && cpuInfo.processor && cpuInfo.cpu_count">
                 <th>{{ $t('app.system_info.label.processor_desc') }}</th>
-                <td>{{ cpuInfo.bits }} {{ cpuInfo.processor }} with {{ cpuInfo.cpu_count }} cores</td>
+                <td
+                  >{{ cpuInfo.bits }} {{ cpuInfo.processor }} with {{ cpuInfo.cpu_count }} cores</td
+                >
               </tr>
             </template>
             <template v-if="distribution">
@@ -127,19 +125,19 @@ export default class PrinterStatsCard extends Vue {
   rolloverLogsDialogOpen = false
   peripheralsDialogOpen = false
 
-  get systemInfo (): Moonraker.Machine.SystemInfo | null {
+  get systemInfo(): Moonraker.Machine.SystemInfo | null {
     return this.$typedState.server.system_info
   }
 
-  get cpuInfo () {
+  get cpuInfo() {
     return this.systemInfo?.cpu_info
   }
 
-  get distribution () {
+  get distribution() {
     return this.systemInfo?.distribution
   }
 
-  get distributionName (): string | undefined {
+  get distributionName(): string | undefined {
     if (!this.distribution) {
       return undefined
     }
@@ -151,35 +149,33 @@ export default class PrinterStatsCard extends Vue {
         return undefined
       }
 
-      return `${(
-        name.startsWith('#')
-          ? id
-          : name
-      )} ${this.distribution.release_info?.version_id ?? ''}`
+      return `${
+        name.startsWith('#') ? id : name
+      } ${this.distribution.release_info?.version_id ?? ''}`
     }
   }
 
-  get virtualization () {
+  get virtualization() {
     return this.systemInfo?.virtualization
   }
 
-  get network () {
+  get network() {
     return Object.entries(this.systemInfo?.network || {})
       .map(([key, entry]) => {
-        const ipAddresses = entry.ip_addresses?.filter(x => x.family === 'ipv4') || entry.ip_addresses?.filter(x => x.family === 'ipv6')
+        const ipAddresses =
+          entry.ip_addresses?.filter(x => x.family === 'ipv4') ||
+          entry.ip_addresses?.filter(x => x.family === 'ipv6')
 
-        return ipAddresses
-          ? `${key} (${ipAddresses.map(x => x.address).join(', ')})`
-          : key
+        return ipAddresses ? `${key} (${ipAddresses.map(x => x.address).join(', ')})` : key
       })
       .join(', ')
   }
 
-  get printerInfo (): Moonraker.KlippyApis.Info | null {
+  get printerInfo(): Moonraker.KlippyApis.Info | null {
     return this.$typedState.printer.info
   }
 
-  get canRolloverLogs (): boolean {
+  get canRolloverLogs(): boolean {
     return this.$typedGetters['server/getIsMinApiVersion']('1.0.5')
   }
 }

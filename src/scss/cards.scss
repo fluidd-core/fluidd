@@ -32,9 +32,9 @@
 }
 
 .theme--dark .v-card .v-card__title.collapsable-card-title {
-  border-bottom: thin solid rgba(map-get($shades, 'white'), 0.10) !important;
+  border-bottom: thin solid rgba(map-get($shades, 'white'), 0.1) !important;
 }
 
 .theme--light .v-card .v-card__title.collapsable-card-title {
-  border-bottom: thin solid rgba(map-get($shades, 'black'), 0.10) !important;
+  border-bottom: thin solid rgba(map-get($shades, 'black'), 0.1) !important;
 }

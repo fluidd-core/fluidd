@@ -6,11 +6,11 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setDialogState (state, payload: AfcDialogState) {
+  setDialogState(state, payload: AfcDialogState) {
     state.dialog = payload
-  },
+  }
 } satisfies MutationTree<AfcState>

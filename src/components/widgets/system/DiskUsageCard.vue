@@ -51,28 +51,20 @@
         :size="90"
         :height="10"
         :value="diskUsage?.usedPercent"
-        :color="diskUsage?.lowOnSpace ? 'error': 'primary'"
+        :color="diskUsage?.lowOnSpace ? 'error' : 'primary'"
         class="my-1"
       />
 
       <v-layout justify-space-between>
         <div>
           <span class="focus--text">
-            {{
-              diskUsage != null
-                ? $filters.getReadableFileSizeString(diskUsage.used)
-                : '?'
-            }}
+            {{ diskUsage != null ? $filters.getReadableFileSizeString(diskUsage.used) : '?' }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.used') }}</span>
         </div>
         <div>
           <span class="focus--text">
-            {{
-              diskUsage != null
-                ? $filters.getReadableFileSizeString(diskUsage.free)
-                : '?'
-            }}
+            {{ diskUsage != null ? $filters.getReadableFileSizeString(diskUsage.free) : '?' }}
           </span>
           <span class="secondary--text">{{ $t('app.general.label.free') }}</span>
         </div>
@@ -91,23 +83,23 @@ import StateMixin from '@/mixins/state'
 export default class DiskUsageCard extends Mixins(StateMixin) {
   tab: number | null = null
 
-  get roots (): string[] {
+  get roots(): string[] {
     return this.$typedState.server.info.registered_directories
   }
 
-  get currentRoot (): string | null {
-    return this.tab != null
-      ? this.roots[this.tab] ?? null
-      : null
+  get currentRoot(): string | null {
+    return this.tab != null ? (this.roots[this.tab] ?? null) : null
   }
 
-  get loading (): boolean {
+  get loading(): boolean {
     return this.hasWait(`${this.$waits.onFileSystem}/${this.currentRoot}/`)
   }
 
-  get diskUsage (): AppDiskUsage | undefined {
+  get diskUsage(): AppDiskUsage | undefined {
     if (this.currentRoot != null) {
-      const diskUsage: AppDiskUsage | undefined = this.$typedGetters['files/getDiskUsage'](this.currentRoot)
+      const diskUsage: AppDiskUsage | undefined = this.$typedGetters['files/getDiskUsage'](
+        this.currentRoot
+      )
 
       if (diskUsage == null) {
         SocketActions.serverFilesGetDirectory(this.currentRoot)
@@ -117,7 +109,7 @@ export default class DiskUsageCard extends Mixins(StateMixin) {
     }
   }
 
-  handleRefresh () {
+  handleRefresh() {
     if (this.currentRoot != null) {
       SocketActions.serverFilesGetDirectory(this.currentRoot)
     }

@@ -9,7 +9,7 @@
       :class="{
         'v-input--is-focused': hasFocus,
         'v-input--is-disabled': disabled,
-        [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
+        [$vuetify.theme.dark ? 'theme--dark' : 'theme--light']: true
       }"
     >
       <div class="v-input__control">
@@ -45,7 +45,7 @@ export default class AppFocusableContainer extends Vue {
   hasFocus = false
 
   @Watch('hasFocus')
-  onHasFocusChanged (value: boolean) {
+  onHasFocusChanged(value: boolean) {
     if (value) {
       this.$emit('focus')
     } else {
@@ -53,22 +53,22 @@ export default class AppFocusableContainer extends Vue {
     }
   }
 
-  focus () {
+  focus() {
     this.inputSlot.focus()
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .app-focusable-container {
-    .app-focusable-container__slot {
-      padding: 0px !important;
-      outline: none !important;
-      cursor: default !important;
+.app-focusable-container {
+  .app-focusable-container__slot {
+    padding: 0px !important;
+    outline: none !important;
+    cursor: default !important;
 
-      fieldset {
-        top: 0px !important;
-      }
+    fieldset {
+      top: 0px !important;
     }
   }
+}
 </style>

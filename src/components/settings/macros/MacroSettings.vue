@@ -54,18 +54,14 @@
               icon
               @click.stop="handleEditCategoryDialog(category)"
             >
-              <v-icon dense>
-                $edit
-              </v-icon>
+              <v-icon dense> $edit </v-icon>
             </app-btn>
 
             <app-btn
               icon
               @click.stop="handleRemoveCategory(category)"
             >
-              <v-icon dense>
-                $delete
-              </v-icon>
+              <v-icon dense> $delete </v-icon>
             </app-btn>
           </app-setting>
         </section>
@@ -136,21 +132,20 @@ export default class MacroSettings extends Mixins(StateMixin) {
     group: 'macro-settings'
   })
 
-  get categories (): MacroCategory[] {
+  get categories(): MacroCategory[] {
     return this.$typedGetters['macros/getCategories']
   }
 
-  set categories (value: MacroCategory[]) {
-    const categories = value
-      .map(({ id, name }) => ({
-        id,
-        name
-      }))
+  set categories(value: MacroCategory[]) {
+    const categories = value.map(({ id, name }) => ({
+      id,
+      name
+    }))
 
     this.$typedDispatch('macros/updateCategories', categories)
   }
 
-  get uncategorizedMacros () {
+  get uncategorizedMacros() {
     const uncategorized: Macro[] = this.$typedGetters['macros/getMacrosByCategory']()
     const count = uncategorized.length
     const visible = uncategorized.filter(macro => macro.visible).length
@@ -160,7 +155,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleAddCategoryDialog () {
+  handleAddCategoryDialog() {
     this.categoryDialogState = {
       open: true,
       title: this.$t('app.general.label.add_category'),
@@ -171,7 +166,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleEditCategoryDialog (category: MacroCategory) {
+  handleEditCategoryDialog(category: MacroCategory) {
     this.categoryDialogState = {
       open: true,
       title: this.$t('app.general.label.edit_category'),
@@ -182,9 +177,11 @@ export default class MacroSettings extends Mixins(StateMixin) {
     }
   }
 
-  async handleRemoveCategory (category: MacroCategory) {
+  async handleRemoveCategory(category: MacroCategory) {
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_remove_macro_category', { name: category.name }).toString(),
+      this.$t('app.general.simple_form.msg.confirm_remove_macro_category', {
+        name: category.name
+      }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
@@ -193,11 +190,11 @@ export default class MacroSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleAddCategory (category: string) {
+  handleAddCategory(category: string) {
     this.$typedDispatch('macros/addCategory', category)
   }
 
-  handleEditCategory (name: string) {
+  handleEditCategory(name: string) {
     const category = {
       ...this.categoryDialogState.category,
       name
@@ -205,7 +202,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
     this.$typedDispatch('macros/editCategory', category)
   }
 
-  handleCategoryClick (category?: MacroCategory) {
+  handleCategoryClick(category?: MacroCategory) {
     const categoryId = category?.id ?? '0'
     this.$router.push({
       name: 'macro_category_settings',

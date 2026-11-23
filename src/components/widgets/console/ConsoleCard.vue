@@ -18,9 +18,7 @@
         icon
         @click="$filters.routeTo({ name: 'console' })"
       >
-        <v-icon dense>
-          $fullScreen
-        </v-icon>
+        <v-icon dense> $fullScreen </v-icon>
       </app-btn>
     </template>
 
@@ -63,19 +61,19 @@ export default class ConsoleCard extends Vue {
 
   autoScrollPaused = false
 
-  get search (): string {
+  get search(): string {
     return this.$typedState.console.consoleSearch
   }
 
-  set search (value: string) {
+  set search(value: string) {
     this.$typedCommit('console/setConsoleSearch', value)
   }
 
-  get flipLayout (): boolean {
+  get flipLayout(): boolean {
     return this.$typedState.config.uiSettings.general.flipConsoleLayout
   }
 
-  set flipLayout (value: boolean) {
+  set flipLayout(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.flipConsoleLayout',
       value,
@@ -83,28 +81,28 @@ export default class ConsoleCard extends Vue {
     })
   }
 
-  get items (): ConsoleEntry[] {
+  get items(): ConsoleEntry[] {
     return this.$typedGetters['console/getConsoleEntries']
   }
 
-  get inLayout (): boolean {
-    return (this.$typedState.config.layoutMode)
+  get inLayout(): boolean {
+    return this.$typedState.config.layoutMode
   }
 
   @Watch('inLayout')
-  inLayoutChange (inLayout: boolean) {
+  inLayoutChange(inLayout: boolean) {
     if (!inLayout) {
       this.consoleBrowserElement.scrollToLatest()
     }
   }
 
-  handleCollapseChange (collapsed: boolean) {
+  handleCollapseChange(collapsed: boolean) {
     if (!collapsed) {
       this.consoleBrowserElement.scrollToLatest()
     }
   }
 
-  handleClear () {
+  handleClear() {
     this.$typedDispatch('console/onClear')
   }
 }

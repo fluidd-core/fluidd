@@ -4,9 +4,7 @@ const setUrlQueryParam = (url: string, key: string, value: string) => {
 
   newUrl.searchParams.set(key, value)
 
-  return newUrl.origin === fakeOrigin
-    ? newUrl.pathname + newUrl.search
-    : newUrl.href
+  return newUrl.origin === fakeOrigin ? newUrl.pathname + newUrl.search : newUrl.href
 }
 
 export default setUrlQueryParam

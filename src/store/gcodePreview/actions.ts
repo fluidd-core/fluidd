@@ -7,7 +7,10 @@ import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { consola } from 'consola'
 
-import type { ParseGcodeWorkerResponseMessage, ParseGcodeWorkerRequestMessage } from '@/workers/parseGcode.worker'
+import type {
+  ParseGcodeWorkerResponseMessage,
+  ParseGcodeWorkerRequestMessage
+} from '@/workers/parseGcode.worker'
 
 import ParseGcodeWorker from '@/workers/parseGcode.worker.ts?worker'
 
@@ -15,11 +18,11 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async terminateParserWorker ({ commit, state }) {
+  async terminateParserWorker({ commit, state }) {
     const worker = state.parserWorker
 
     if (worker) {
@@ -31,7 +34,10 @@ export const actions = {
     }
   },
 
-  async loadGcode ({ commit, state, rootState, dispatch }, payload: { file: AppFile | AppFileWithMeta; url: string }) {
+  async loadGcode(
+    { commit, state, rootState, dispatch },
+    payload: { file: AppFile | AppFileWithMeta; url: string }
+  ) {
     if (state.parserWorker) {
       await dispatch('terminateParserWorker')
     }
@@ -67,20 +73,31 @@ export const actions = {
             commit('setParserProgress', payload.file.size)
 
             if (message.truncated) {
-              EventBus.$emit(i18n.t('app.general.msg.gcode_preview_truncated').toString(), { type: 'warning' })
+              EventBus.$emit(i18n.t('app.general.msg.gcode_preview_truncated').toString(), {
+                type: 'warning'
+              })
             }
 
-            if (rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox && message.parts.length <= 1) {
-              dispatch('config/saveByPath', {
-                path: 'uiSettings.gcodePreview.showParts',
-                value: false,
-                server: true
-              }, { root: true })
+            if (
+              rootState.config.uiSettings.gcodePreview.hideSinglePartBoundingBox &&
+              message.parts.length <= 1
+            ) {
+              dispatch(
+                'config/saveByPath',
+                {
+                  path: 'uiSettings.gcodePreview.showParts',
+                  value: false,
+                  server: true
+                },
+                { root: true }
+              )
             }
           } catch (e) {
             consola.error('Error parsing g-code file', e)
 
-            EventBus.$emit(i18n.t('app.general.msg.gcode_preview_failed').toString(), { type: 'error' })
+            EventBus.$emit(i18n.t('app.general.msg.gcode_preview_failed').toString(), {
+              type: 'error'
+            })
           }
 
           commit('setParserWorker', null)
@@ -97,7 +114,9 @@ export const actions = {
         case 'error': {
           dispatch('terminateParserWorker')
 
-          EventBus.$emit(i18n.t('app.general.msg.gcode_preview_failed').toString(), { type: 'error' })
+          EventBus.$emit(i18n.t('app.general.msg.gcode_preview_failed').toString(), {
+            type: 'error'
+          })
 
           break
         }

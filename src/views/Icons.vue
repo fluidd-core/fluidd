@@ -31,7 +31,7 @@ import { Icons } from '@/globals'
 
 @Component({})
 export default class Configure extends Mixins(StateMixin) {
-  get icons () {
+  get icons() {
     return Object.keys(Icons)
   }
 }

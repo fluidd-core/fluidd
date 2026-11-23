@@ -25,9 +25,7 @@
           icon
           @click="$filters.routeTo({ name: 'gcode_preview' })"
         >
-          <v-icon dense>
-            $fullScreen
-          </v-icon>
+          <v-icon dense> $fullScreen </v-icon>
         </app-btn>
       </app-btn-collapse-group>
     </template>
@@ -56,8 +54,8 @@
             <v-col>
               <app-named-slider
                 :label="$t('app.gcode.label.layer')"
-                :value="(!fileLoaded) ? 0 : currentLayer + 1"
-                :min="(!fileLoaded) ? 0 : 1"
+                :value="!fileLoaded ? 0 : currentLayer + 1"
+                :min="!fileLoaded ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
                 @input="setCurrentLayer($event - 1)"
@@ -148,7 +146,10 @@ import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { Layer, MinMax, MoveStore } from '@/store/gcodePreview/types'
-import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
+import {
+  getFileDataTransferDataFromDataTransfer,
+  hasFileDataTransferTypeInDataTransfer
+} from '@/util/file-data-transfer'
 import { consola } from 'consola'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
@@ -173,12 +174,12 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   overlay = false
 
   @Watch('layerCount')
-  onLayerCountChanged () {
+  onLayerCountChanged() {
     this.currentLayer = 0
   }
 
   @Watch('followProgress')
-  onFollowProgressChanged () {
+  onFollowProgressChanged() {
     if (this.followProgress) {
       this.currentLayer = this.fileProgressLayerNr
       this.syncMoveProgress()
@@ -186,7 +187,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   @Watch('currentLayer')
-  onCurrentLayerChanged () {
+  onCurrentLayerChanged() {
     if (this.followProgress && this.currentLayer !== this.fileProgressLayerNr) {
       this.followProgress = false
     }
@@ -197,7 +198,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   @Watch('filePosition')
-  onFilePositionChanged () {
+  onFilePositionChanged() {
     if (this.followProgress) {
       const moves = this.moves
 
@@ -207,21 +208,23 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
 
       this.syncMoveProgress()
 
-      const {
-        min,
-        max
-      } = this.currentLayerMoveRange
+      const { min, max } = this.currentLayerMoveRange
 
-      if (this.filePosition < moves.filePosition[min] || this.filePosition > moves.filePosition[max]) {
+      if (
+        this.filePosition < moves.filePosition[min] ||
+        this.filePosition > moves.filePosition[max]
+      ) {
         this.currentLayer = this.fileProgressLayerNr
       }
     }
   }
 
   @Watch('moveProgress')
-  onMoveProgressChanged () {
+  onMoveProgressChanged() {
     if (this.followProgress) {
-      const fileMovePosition: number = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
+      const fileMovePosition: number = this.$typedGetters[
+        'gcodePreview/getMoveIndexByFilePosition'
+      ](this.filePosition)
 
       // In some (yet unclear) cases, fileMovePosition can get out of sync with
       // the component's notion of moveProgress.  This seems to happen during
@@ -235,18 +238,12 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   @Watch('printerFile')
-  onPrinterFileChanged (value: AppFileWithMeta | undefined, oldValue: AppFileWithMeta | undefined) {
-    if (this.autoLoadOnPrintStart &&
+  onPrinterFileChanged(value: AppFileWithMeta | undefined, oldValue: AppFileWithMeta | undefined) {
+    if (
+      this.autoLoadOnPrintStart &&
       value != null &&
-      (
-        oldValue == null ||
-        value.path !== oldValue.path ||
-        value.filename !== oldValue.filename
-      ) &&
-      (
-        this.printerPrinting ||
-        this.printerPaused
-      ) &&
+      (oldValue == null || value.path !== oldValue.path || value.filename !== oldValue.filename) &&
+      (this.printerPrinting || this.printerPaused) &&
       !this.printerFileLoaded
     ) {
       this.loadCurrent()
@@ -254,7 +251,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   @Watch('fileLoaded')
-  onFileLoaded () {
+  onFileLoaded() {
     if (
       this.fileLoaded &&
       this.$typedState.config.uiSettings.gcodePreview.autoFollowOnFileLoad &&
@@ -264,47 +261,47 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  get file (): AppFile | AppFileWithMeta | null {
+  get file(): AppFile | AppFileWithMeta | null {
     return this.$typedState.gcodePreview.file
   }
 
-  get moves (): MoveStore {
+  get moves(): MoveStore {
     return this.$typedState.gcodePreview.moves
   }
 
-  get fileLoaded (): boolean {
+  get fileLoaded(): boolean {
     return this.moves.length > 0
   }
 
-  get parserProgress (): number {
+  get parserProgress(): number {
     return this.$typedState.gcodePreview.parserProgress
   }
 
-  get showParserProgressDialog (): boolean {
+  get showParserProgressDialog(): boolean {
     return this.file != null && this.parserProgress !== this.file.size
   }
 
-  get filePosition (): number {
+  get filePosition(): number {
     return this.$typedState.printer.printer.virtual_sdcard?.file_position ?? 0
   }
 
-  get fileProgressLayerNr (): number {
+  get fileProgressLayerNr(): number {
     return this.$typedGetters['gcodePreview/getLayerNrByFilePosition'](this.filePosition)
   }
 
-  get layerCount (): number {
+  get layerCount(): number {
     return this.$typedGetters['gcodePreview/getLayers'].length
   }
 
-  get currentLayerHeight (): number {
+  get currentLayerHeight(): number {
     return this.$typedGetters['gcodePreview/getLayers'][this.currentLayer]?.z ?? 0
   }
 
-  get followProgress (): boolean {
+  get followProgress(): boolean {
     return this.$typedState.config.uiSettings.gcodePreview.followProgress
   }
 
-  set followProgress (value: boolean) {
+  set followProgress(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.followProgress',
       value,
@@ -312,7 +309,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     })
   }
 
-  get currentLayerMoveRange (): MinMax {
+  get currentLayerMoveRange(): MinMax {
     const moves = this.moves
 
     if (moves.length === 0) {
@@ -330,27 +327,29 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  setCurrentLayer (value: number) {
+  setCurrentLayer(value: number) {
     if (value >= 0) this.currentLayer = value
   }
 
-  setMoveProgress (value: number) {
+  setMoveProgress(value: number) {
     if (value >= 0) this.moveProgress = value
   }
 
-  syncMoveProgress () {
-    this.moveProgress = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
+  syncMoveProgress() {
+    this.moveProgress = this.$typedGetters['gcodePreview/getMoveIndexByFilePosition'](
+      this.filePosition
+    )
   }
 
-  abortParser () {
+  abortParser() {
     this.$typedDispatch('gcodePreview/terminateParserWorker')
   }
 
-  resetFile () {
+  resetFile() {
     this.$typedDispatch('gcodePreview/reset')
   }
 
-  async loadCurrent () {
+  async loadCurrent() {
     const printerFile = this.printerFile
 
     if (printerFile) {
@@ -358,7 +357,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  async loadFile (file: AppFile | AppFileWithMeta) {
+  async loadFile(file: AppFile | AppFileWithMeta) {
     try {
       const url = await this.getGcodePreviewUrl(file)
 
@@ -373,11 +372,11 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  get printerFile (): AppFileWithMeta | undefined {
+  get printerFile(): AppFileWithMeta | undefined {
     return this.$typedGetters['printer/getPrinterFile']
   }
 
-  get printerFileLoaded () {
+  get printerFileLoaded() {
     const file = this.file
     const printerFile = this.printerFile
 
@@ -397,7 +396,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     return true
   }
 
-  get autoLoadOnPrintStart (): boolean {
+  get autoLoadOnPrintStart(): boolean {
     if (this.isMobileViewport) {
       return this.$typedState.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
     }
@@ -405,7 +404,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     return this.$typedState.config.uiSettings.gcodePreview.autoLoadOnPrintStart
   }
 
-  async cancelObject (id: string) {
+  async cancelObject(id: string) {
     const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
@@ -418,11 +417,8 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  handleDragOver (event: DragEvent) {
-    if (
-      event.dataTransfer &&
-      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
-    ) {
+  handleDragOver(event: DragEvent) {
+    if (event.dataTransfer && hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')) {
       event.preventDefault()
 
       event.dataTransfer.dropEffect = 'link'
@@ -431,17 +427,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  handleDragLeave () {
+  handleDragLeave() {
     this.overlay = false
   }
 
-  handleDrop (event: DragEvent) {
+  handleDrop(event: DragEvent) {
     this.overlay = false
 
-    if (
-      event.dataTransfer &&
-      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
-    ) {
+    if (event.dataTransfer && hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')) {
       const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
 
       if (files) {
@@ -456,7 +449,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     }
   }
 
-  created () {
+  created() {
     if (this.followProgress) {
       this.currentLayer = this.fileProgressLayerNr
       this.syncMoveProgress()

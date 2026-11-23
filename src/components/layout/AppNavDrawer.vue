@@ -157,48 +157,48 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean })
   open?: boolean
 
-  get supportsHistory (): boolean {
+  get supportsHistory(): boolean {
     return this.$typedGetters['server/componentSupport']('history')
   }
 
-  get supportsTimelapse (): boolean {
+  get supportsTimelapse(): boolean {
     return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
-  get enableDiagnostics (): boolean {
+  get enableDiagnostics(): boolean {
     return this.$typedState.config.uiSettings.general.enableDiagnostics
   }
 
-  get hasSubNavigation () {
+  get hasSubNavigation() {
     return this.$route.meta?.hasSubNavigation ?? false
   }
 
-  get showSubNavigation () {
+  get showSubNavigation() {
     return this.hasSubNavigation && this.socketReady
   }
 
-  get canEditLayout () {
+  get canEditLayout() {
     return this.$route.meta?.dashboard ?? false
   }
 
-  get layoutMode (): boolean {
+  get layoutMode(): boolean {
     return this.$typedState.config.layoutMode
   }
 
-  set layoutMode (val: boolean) {
+  set layoutMode(val: boolean) {
     this.$typedCommit('config/setLayoutMode', val)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .app-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.app-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  :deep(.v-navigation-drawer.no-subnav > .v-navigation-drawer__border) {
-     display: none;
-  }
+:deep(.v-navigation-drawer.no-subnav > .v-navigation-drawer__border) {
+  display: none;
+}
 </style>

@@ -7,11 +7,7 @@
     >
       <app-text-field
         :value="parkRetractDistance"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThanOrEqual(0)
-        ]"
+        :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
         :disabled="parkRetractDistanceBlocked"
         hide-details="auto"
         filled
@@ -30,11 +26,7 @@
     >
       <app-text-field
         :value="parkRetractSpeed"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThan(0)
-        ]"
+        :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThan(0)]"
         :disabled="parkRetractSpeedBlocked"
         hide-details="auto"
         filled
@@ -53,11 +45,7 @@
     >
       <app-text-field
         :value="parkExtrudeDistance"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThanOrEqual(0)
-        ]"
+        :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(0)]"
         :disabled="parkExtrudeDistanceBlocked"
         hide-details="auto"
         filled
@@ -76,11 +64,7 @@
     >
       <app-text-field
         :value="parkExtrudeSpeed"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThan(0)
-        ]"
+        :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThan(0)]"
         :disabled="parkExtrudeSpeedBlocked"
         hide-details="auto"
         filled
@@ -102,59 +86,59 @@ import { defaultWritableSettings } from '@/store/timelapse/state'
 
 @Component({})
 export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
-  get parkRetractDistanceBlocked (): boolean {
+  get parkRetractDistanceBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_retract_distance')
   }
 
-  get parkRetractDistance (): number {
+  get parkRetractDistance(): number {
     return this.settings.park_retract_distance
   }
 
-  setParkRetractDistance (value: number) {
+  setParkRetractDistance(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_retract_distance: value })
   }
 
-  get parkRetractSpeedBlocked (): boolean {
+  get parkRetractSpeedBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_retract_speed')
   }
 
-  get parkRetractSpeed (): number {
+  get parkRetractSpeed(): number {
     return this.settings.park_retract_speed
   }
 
-  setParkRetractSpeed (value: number) {
+  setParkRetractSpeed(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_retract_speed: value })
   }
 
-  get parkExtrudeDistanceBlocked (): boolean {
+  get parkExtrudeDistanceBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_extrude_distance')
   }
 
-  get parkExtrudeDistance (): number {
+  get parkExtrudeDistance(): number {
     return this.settings.park_extrude_distance
   }
 
-  setParkExtrudeDistance (value: number) {
+  setParkExtrudeDistance(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_extrude_distance: value })
   }
 
-  get parkExtrudeSpeedBlocked (): boolean {
+  get parkExtrudeSpeedBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('park_extrude_speed')
   }
 
-  get parkExtrudeSpeed (): number {
+  get parkExtrudeSpeed(): number {
     return this.settings.park_extrude_speed
   }
 
-  setParkExtrudeSpeed (value: number) {
+  setParkExtrudeSpeed(value: number) {
     SocketActions.machineTimelapsePostSettings({ park_extrude_speed: value })
   }
 
-  get settings (): Moonraker.Timelapse.WriteableSettings {
+  get settings(): Moonraker.Timelapse.WriteableSettings {
     return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  subtitleIfBlocked (blocked: boolean): string {
+  subtitleIfBlocked(blocked: boolean): string {
     return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }

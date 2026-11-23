@@ -7,11 +7,7 @@
     >
       <app-text-field
         :value="hyperlapseCycle"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThanOrEqual(1)
-        ]"
+        :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(1)]"
         :disabled="hyperlapseCycleBlocked"
         hide-details="auto"
         filled
@@ -33,23 +29,23 @@ import { defaultWritableSettings } from '@/store/timelapse/state'
 
 @Component({})
 export default class HyperlapseSettings extends Mixins(StateMixin) {
-  get hyperlapseCycleBlocked (): boolean {
+  get hyperlapseCycleBlocked(): boolean {
     return this.$typedGetters['timelapse/isBlockedSetting']('hyperlapse_cycle')
   }
 
-  get hyperlapseCycle () {
+  get hyperlapseCycle() {
     return this.settings.hyperlapse_cycle
   }
 
-  setHyperlapseCycle (value: number) {
+  setHyperlapseCycle(value: number) {
     SocketActions.machineTimelapsePostSettings({ hyperlapse_cycle: value })
   }
 
-  get settings (): Moonraker.Timelapse.WriteableSettings {
+  get settings(): Moonraker.Timelapse.WriteableSettings {
     return this.$typedState.timelapse.settings ?? defaultWritableSettings
   }
 
-  subtitleIfBlocked (blocked: boolean): string {
+  subtitleIfBlocked(blocked: boolean): string {
     return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }

@@ -26,7 +26,7 @@ type RTCConfigurationWithSdpSemantics = RTCConfiguration & {
 type Go2RtcReceivedMessageType = 'webrtc/candidate' | 'webrtc/offer' | 'webrtc/answer' | 'error'
 
 type Go2RtcMessage = {
-  type: Go2RtcReceivedMessageType,
+  type: Go2RtcReceivedMessageType
   value?: string
 }
 
@@ -42,7 +42,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
   // adapted from https://github.com/AlexxIT/go2rtc/blob/d7cdc8b3b07f6fbff7daae2736377de98444b962/www/video-rtc.js
 
-  loadStream () {
+  loadStream() {
     try {
       this.pc?.close()
       this.ws?.close()
@@ -59,9 +59,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
       const socketUrl = new URL('api/ws' + url.search, url)
 
-      socketUrl.protocol = socketUrl.protocol === 'https:'
-        ? 'wss:'
-        : 'ws:'
+      socketUrl.protocol = socketUrl.protocol === 'https:' ? 'wss:' : 'ws:'
 
       this.ws = markRaw(new WebSocket(socketUrl))
       this.ws.binaryType = 'arraybuffer'
@@ -75,14 +73,12 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     }
   }
 
-  async onWebSocketOpen () {
+  async onWebSocketOpen() {
     consola.debug('[WebrtcGo2RtcCamera] socket opened')
 
     const config: RTCConfigurationWithSdpSemantics = {
       bundlePolicy: 'max-bundle',
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' }
-      ],
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
       sdpSemantics: 'unified-plan'
     }
 
@@ -102,7 +98,8 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.pc.onconnectionstatechange = () => {
       switch (this.pc?.connectionState) {
         case 'connected': {
-          const tracks = this.pc.getTransceivers()
+          const tracks = this.pc
+            .getTransceivers()
             .filter(tr => tr.direction === 'recvonly')
             .map(tr => tr.receiver.track)
 
@@ -130,7 +127,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.ws?.send(JSON.stringify(msg))
   }
 
-  async onWebSocketMessage (ev: MessageEvent) {
+  async onWebSocketMessage(ev: MessageEvent) {
     const msg = JSON.parse(ev.data) as Go2RtcMessage
 
     switch (msg.type) {
@@ -157,7 +154,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     }
   }
 
-  async onWebSocketClose (ev: CloseEvent) {
+  async onWebSocketClose(ev: CloseEvent) {
     if (!ev.wasClean) {
       this.updateStatus('error')
 
@@ -171,13 +168,10 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
       this.sleepAbortController?.abort()
 
-      const sleepAbortController = this.sleepAbortController = new AbortController()
+      const sleepAbortController = (this.sleepAbortController = new AbortController())
 
       try {
-        const signals = [
-          playbackAbortSignal,
-          sleepAbortController.signal,
-        ]
+        const signals = [playbackAbortSignal, sleepAbortController.signal]
 
         await sleep(2000, AbortSignal.any(signals))
 
@@ -186,13 +180,13 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     }
   }
 
-  startPlayback () {
+  startPlayback() {
     this.playbackAbortController = new AbortController()
 
     this.loadStream()
   }
 
-  stopPlayback () {
+  stopPlayback() {
     this.playbackAbortController?.abort()
     this.playbackAbortController = null
     this.updateStatus('disconnected')

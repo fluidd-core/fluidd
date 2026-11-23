@@ -64,7 +64,7 @@ export default class McuInformationDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly mcu!: MCU
 
-  get kconfig (): string | null {
+  get kconfig(): string | null {
     return this.mcu.mcu_kconfig?.trim() || null
   }
 }

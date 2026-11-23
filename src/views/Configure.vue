@@ -56,7 +56,7 @@ import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
   }
 })
 export default class Configure extends Mixins(StateMixin) {
-  get hasGraphData () {
+  get hasGraphData() {
     return (
       this.$typedState.charts.klipper !== undefined ||
       this.$typedState.charts.moonraker !== undefined ||
@@ -64,11 +64,12 @@ export default class Configure extends Mixins(StateMixin) {
     )
   }
 
-  get roots () {
+  get roots() {
     const roots = ['logs', 'docs', 'config_examples']
     const excludeRoots = ['gcodes', 'config', 'timelapse', 'timelapse_frames']
 
-    const registeredDirectories: string[] = this.$typedState.server.info.registered_directories || []
+    const registeredDirectories: string[] =
+      this.$typedState.server.info.registered_directories || []
 
     for (const root of registeredDirectories) {
       if (!excludeRoots.includes(root) && !roots.includes(root)) {
@@ -82,8 +83,8 @@ export default class Configure extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .full-screen {
-    max-height: calc(100vh - 190px);
-    max-height: calc(100svh - 190px);
-  }
+.full-screen {
+  max-height: calc(100vh - 190px);
+  max-height: calc(100svh - 190px);
+}
 </style>

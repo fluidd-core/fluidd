@@ -85,17 +85,17 @@ import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import { Component, VModel, Mixins } from 'vue-property-decorator'
 
 type PauseNextLayer = {
-  enable: boolean,
+  enable: boolean
   call: string
 }
 type PauseAtLayer = {
-  enable: boolean,
-  call: string,
+  enable: boolean
+  call: string
   layer: number
 }
 type PrintStatsMacroVariables = {
   pause_next_layer?: PauseNextLayer
-  pause_at_layer?: PauseAtLayer,
+  pause_at_layer?: PauseAtLayer
 }
 
 @Component({})
@@ -114,38 +114,40 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
     layer: 0
   }
 
-  get setPauseNextLayerMacro () : Macro | undefined {
+  get setPauseNextLayerMacro(): Macro | undefined {
     return this.$typedGetters['macros/getMacroByName']('SET_PAUSE_NEXT_LAYER')
   }
 
-  get setPauseAtLayerMacro () : Macro | undefined {
+  get setPauseAtLayerMacro(): Macro | undefined {
     return this.$typedGetters['macros/getMacroByName']('SET_PAUSE_AT_LAYER')
   }
 
-  get setPrintStatsInfoMacro () : Macro | undefined {
+  get setPrintStatsInfoMacro(): Macro | undefined {
     return this.$typedGetters['macros/getMacroByName']('SET_PRINT_STATS_INFO')
   }
 
-  get printStatsMacroVariables () {
+  get printStatsMacroVariables() {
     const variables: PrintStatsMacroVariables = this.setPrintStatsInfoMacro?.variables ?? {}
 
     return variables
   }
 
-  get currentLayer (): number {
+  get currentLayer(): number {
     return this.$typedState.printer.printer.print_stats?.info?.current_layer ?? 0
   }
 
-  get totalLayers (): number {
+  get totalLayers(): number {
     return this.$typedState.printer.printer.print_stats?.info?.total_layer ?? 0
   }
 
-  sendAccept () {
+  sendAccept() {
     const gcodes: string[] = []
 
     if (this.setPauseNextLayerMacro) {
       if (this.pauseNextLayer.enable) {
-        gcodes.push(`SET_PAUSE_NEXT_LAYER ENABLE=1 MACRO=${encodeGcodeParamValue(this.pauseNextLayer.call)}`)
+        gcodes.push(
+          `SET_PAUSE_NEXT_LAYER ENABLE=1 MACRO=${encodeGcodeParamValue(this.pauseNextLayer.call)}`
+        )
       } else {
         gcodes.push('SET_PAUSE_NEXT_LAYER ENABLE=0')
       }
@@ -153,7 +155,9 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
 
     if (this.setPauseAtLayerMacro) {
       if (this.pauseAtLayer.enable) {
-        gcodes.push(`SET_PAUSE_AT_LAYER ENABLE=1 LAYER=${this.pauseAtLayer.layer} MACRO=${encodeGcodeParamValue(this.pauseAtLayer.call)}`)
+        gcodes.push(
+          `SET_PAUSE_AT_LAYER ENABLE=1 LAYER=${this.pauseAtLayer.layer} MACRO=${encodeGcodeParamValue(this.pauseAtLayer.call)}`
+        )
       } else {
         gcodes.push('SET_PAUSE_AT_LAYER ENABLE=0')
       }
@@ -164,7 +168,7 @@ export default class PauseAtLayerDialog extends Mixins(StateMixin) {
     this.open = false
   }
 
-  mounted () {
+  mounted() {
     const { pause_at_layer, pause_next_layer } = this.printStatsMacroVariables
 
     this.pauseNextLayer = {

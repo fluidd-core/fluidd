@@ -16,11 +16,11 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
-  async resetKlippy ({ commit }) {
+  async resetKlippy({ commit }) {
     commit('setResetKlippy')
   },
 
@@ -30,35 +30,38 @@ export const actions = {
    * of klippy's state. After that, we'd only ever init once more if
    * klippy is connected.
    */
-  async initComponents ({ dispatch }, payload: Moonraker.Server.InfoResponse) {
-    if (
-      payload.components &&
-      payload.components.length > 0
-    ) {
-      const promises = Object.values(Globals.MOONRAKER_COMPONENTS)
-        .map((component) => (
-          payload.components.includes(component.name)
-            ? dispatch(component.dispatch, undefined, { root: true })
-            : null
-        ))
+  async initComponents({ dispatch }, payload: Moonraker.Server.InfoResponse) {
+    if (payload.components && payload.components.length > 0) {
+      const promises = Object.values(Globals.MOONRAKER_COMPONENTS).map(component =>
+        payload.components.includes(component.name)
+          ? dispatch(component.dispatch, undefined, { root: true })
+          : null
+      )
 
       await Promise.all(promises)
     }
   },
 
-  async notifyOldMoonraker ({ dispatch }) {
-    await dispatch('notifications/pushNotification', {
-      id: 'old-moonraker',
-      title: 'Moonraker',
-      description: i18n.t('app.version.label.old_component_version', { name: 'Moonraker', version: Globals.MOONRAKER_MIN_VERSION }),
-      to: '/settings#versions',
-      btnText: i18n.t('app.version.btn.view_versions'),
-      type: 'warning',
-      merge: true
-    }, { root: true })
+  async notifyOldMoonraker({ dispatch }) {
+    await dispatch(
+      'notifications/pushNotification',
+      {
+        id: 'old-moonraker',
+        title: 'Moonraker',
+        description: i18n.t('app.version.label.old_component_version', {
+          name: 'Moonraker',
+          version: Globals.MOONRAKER_MIN_VERSION
+        }),
+        to: '/settings#versions',
+        btnText: i18n.t('app.version.btn.view_versions'),
+        type: 'warning',
+        merge: true
+      },
+      { root: true }
+    )
   },
 
-  async checkMoonrakerMinVersion ({ state, dispatch }) {
+  async checkMoonrakerMinVersion({ state, dispatch }) {
     const moonrakerVersion = state.info.moonraker_version || '?'
 
     const fullMoonrakerVersion = moonrakerVersion.includes('-')
@@ -77,7 +80,7 @@ export const actions = {
   /**
    * On server info
    */
-  async onServerInfo ({ commit, dispatch, state }, payload: Moonraker.Server.InfoResponse) {
+  async onServerInfo({ commit, dispatch, state }, payload: Moonraker.Server.InfoResponse) {
     const klippyStateChanged = payload.klippy_state !== state.info.klippy_state
 
     clearTimeout(retryTimeout)
@@ -112,29 +115,29 @@ export const actions = {
   /**
    * Gives us moonrakers configuration./
    */
-  async onServerConfig ({ commit }, payload: Moonraker.Server.ConfigResponse) {
+  async onServerConfig({ commit }, payload: Moonraker.Server.ConfigResponse) {
     if (payload.config) {
       commit('setServerConfig', payload.config)
     }
   },
 
-  async onLogsRollOver (_, payload: Moonraker.Server.LogsRolloverResponse) {
+  async onLogsRollOver(_, payload: Moonraker.Server.LogsRolloverResponse) {
     if (payload.failed && Object.keys(payload.failed).length > 0) {
-      const message = Object.values(payload.failed)
-        .join('\n')
+      const message = Object.values(payload.failed).join('\n')
 
       EventBus.$emit(message, { type: 'error' })
     } else if (payload.rolled_over && payload.rolled_over.length) {
-      const applications = payload.rolled_over
-        .map(Vue.$filters.prettyCase)
-        .join(', ')
+      const applications = payload.rolled_over.map(Vue.$filters.prettyCase).join(', ')
       const message = i18n.tc('app.general.msg.rolledover_logs', 0, { applications })
 
       EventBus.$emit(message, { type: 'success' })
     }
   },
 
-  async onMachineProcStats ({ commit, dispatch }, payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.UpdateEvent) {
+  async onMachineProcStats(
+    { commit, dispatch },
+    payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.UpdateEvent
+  ) {
     if ('throttled_state' in payload && payload.throttled_state) {
       await dispatch('onMachineThrottledState', payload.throttled_state)
     }
@@ -144,30 +147,36 @@ export const actions = {
     await dispatch('charts/onMoonrakerStats', payload.moonraker_stats, { root: true })
   },
 
-  async onMachineSystemInfo ({ commit }, payload: Moonraker.Machine.SystemInfoResponse) {
+  async onMachineSystemInfo({ commit }, payload: Moonraker.Machine.SystemInfoResponse) {
     commit('setSystemInfo', payload)
   },
 
-  async onMachinePeripherals ({ commit }, payload: Partial<Peripherals>) {
+  async onMachinePeripherals({ commit }, payload: Partial<Peripherals>) {
     commit('setMachinePeripherals', payload)
   },
 
-  async onMachinePeripheralsCanbus ({ commit }, payload: ObjectWithRequest<'machine.peripherals.canbus'>) {
+  async onMachinePeripheralsCanbus(
+    { commit },
+    payload: ObjectWithRequest<'machine.peripherals.canbus'>
+  ) {
     const canbusInterface = payload.__request__.params?.interface ?? 'can0'
 
     commit('setMachinePeripheralsCanbus', { canbusInterface, can_uuids: payload.can_uuids })
   },
 
-  async onServiceStateChanged ({ commit }, payload: Moonraker.Machine.ServiceState) {
+  async onServiceStateChanged({ commit }, payload: Moonraker.Machine.ServiceState) {
     commit('setServiceState', payload)
   },
 
-  async onMachineThrottledState ({ commit, dispatch, state, rootState }, payload: Moonraker.ProcStats.ThrottledState) {
+  async onMachineThrottledState(
+    { commit, dispatch, state, rootState },
+    payload: Moonraker.ProcStats.ThrottledState
+  ) {
     if (payload) {
       // If we have a throttled condition.
       if (rootState.config.uiSettings.warnings.warnOnCpuThrottled) {
         // Fire notifications.
-        payload.flags.forEach((flag) => {
+        payload.flags.forEach(flag => {
           // Only apply a notification if the flag changed state.
           if (state.throttled_state && !state.throttled_state.flags.includes(flag)) {
             const previousEvent = flag.toLowerCase().startsWith('previously')
@@ -176,7 +185,7 @@ export const actions = {
               title: flag,
               description: i18n.t('app.general.msg.throttled_warning').toString(),
               to: 'https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#frequency-management-and-thermal-control',
-              type: (previousEvent) ? 'info' : 'error',
+              type: previousEvent ? 'info' : 'error',
               snackbar: !previousEvent, // Snackbar only if not a previously encountered event.
               merge: true, // Merge if it was a previously encountered event.
               clear: !previousEvent, // Dont allow the user to clear if it was a previously encountered event.

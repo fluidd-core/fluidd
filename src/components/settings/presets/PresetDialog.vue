@@ -1,18 +1,18 @@
 <template>
   <app-dialog
     v-model="open"
-    :title="(preset.id != -1) ? $t('app.general.label.edit_preset') : $t('app.general.label.add_preset')"
+    :title="
+      preset.id != -1 ? $t('app.general.label.edit_preset') : $t('app.general.label.add_preset')
+    "
     max-width="500"
-    :save-button-text="(preset.id !== -1) ? $t('app.general.btn.save') : $t('app.general.btn.add')"
+    :save-button-text="preset.id !== -1 ? $t('app.general.btn.save') : $t('app.general.btn.add')"
     @save="handleSave"
   >
     <v-card-text class="pa-0">
       <app-setting :title="$t('app.setting.label.thermal_preset_name')">
         <v-text-field
           v-model="preset.name"
-          :rules="[
-            $rules.required
-          ]"
+          :rules="[$rules.required]"
           hide-details="auto"
           filled
           dense
@@ -34,11 +34,11 @@
           <v-text-field
             v-model.number="preset.values[item.name].value"
             :disabled="!preset.values[item.name].active"
-            :rules="preset.values[item.name].active ? [
-              $rules.required,
-              $rules.numberValid,
-              $rules.numberGreaterThan(0)
-            ] : undefined"
+            :rules="
+              preset.values[item.name].active
+                ? [$rules.required, $rules.numberValid, $rules.numberGreaterThan(0)]
+                : undefined
+            "
             hide-details="auto"
             type="number"
             suffix="°C"
@@ -63,11 +63,11 @@
           <v-text-field
             v-model.number="preset.values[item.name].value"
             :disabled="!preset.values[item.name].active"
-            :rules="preset.values[item.name].active ? [
-              $rules.required,
-              $rules.numberValid,
-              $rules.numberGreaterThan(0)
-            ] : undefined"
+            :rules="
+              preset.values[item.name].active
+                ? [$rules.required, $rules.numberValid, $rules.numberGreaterThan(0)]
+                : undefined
+            "
             hide-details="auto"
             type="number"
             suffix="°C"
@@ -106,15 +106,15 @@ export default class TemperaturePresetDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly preset!: TemperaturePreset
 
-  get heaters (): Heater[] {
+  get heaters(): Heater[] {
     return this.$typedGetters['printer/getHeaters']
   }
 
-  get fans (): Fan[] {
+  get fans(): Fan[] {
     return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.preset)
     this.open = false
   }
@@ -122,7 +122,7 @@ export default class TemperaturePresetDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .console-command {
-    font-family: monospace;
-  }
+.console-command {
+  font-family: monospace;
+}
 </style>

@@ -51,11 +51,11 @@ export default class JobQueueToolbar extends Vue {
   @Prop({ type: Array })
   readonly headers?: AppDataTableHeader[]
 
-  get thumbnailSize (): number {
+  get thumbnailSize(): number {
     return this.$typedState.config.uiSettings.thumbnailSizes.jobQueue ?? 32
   }
 
-  set thumbnailSize (value: number) {
+  set thumbnailSize(value: number) {
     this.$typedDispatch('config/updateThumbnailSizes', { name: 'jobQueue', size: value })
   }
 }

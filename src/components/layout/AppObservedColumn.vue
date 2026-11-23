@@ -18,17 +18,19 @@ export default class AppObservedColumn extends Vue {
   observer: ResizeObserver | null = null
   narrow = false
 
-  updateNarrow (width: number) {
+  updateNarrow(width: number) {
     this.narrow = width < 560
   }
 
-  mounted () {
+  mounted() {
     if (typeof ResizeObserver !== 'undefined') {
-      this.observer = markRaw(new ResizeObserver(entries => {
-        const lastEntry = entries[entries.length - 1]
+      this.observer = markRaw(
+        new ResizeObserver(entries => {
+          const lastEntry = entries[entries.length - 1]
 
-        this.updateNarrow(lastEntry.contentRect.width)
-      }))
+          this.updateNarrow(lastEntry.contentRect.width)
+        })
+      )
 
       this.observer.observe(this.$el)
     }
@@ -36,7 +38,7 @@ export default class AppObservedColumn extends Vue {
     this.updateNarrow(this.$el.clientWidth)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     this.observer?.disconnect()
     this.observer = null
   }

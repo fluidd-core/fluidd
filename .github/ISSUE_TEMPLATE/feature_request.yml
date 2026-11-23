@@ -1,6 +1,6 @@
 name: Feature Request
 description: Have a cool feature in mind? Use this template!
-labels: ["FR - Enhancement"]
+labels: ['FR - Enhancement']
 body:
   - type: markdown
     attributes:

@@ -15,9 +15,7 @@
               v-on="on"
               @click="unloadLane"
             >
-              <v-icon small>
-                $afcUnloadLane
-              </v-icon>
+              <v-icon small> $afcUnloadLane </v-icon>
             </v-btn>
           </template>
           <span>
@@ -37,9 +35,7 @@
               v-on="on"
               @click="loadLane"
             >
-              <v-icon small>
-                $afcLoadLane
-              </v-icon>
+              <v-icon small> $afcLoadLane </v-icon>
             </v-btn>
           </template>
           <span>
@@ -56,9 +52,7 @@
               v-on="on"
               @click="ejectLane"
             >
-              <v-icon small>
-                $afcEjectFilament
-              </v-icon>
+              <v-icon small> $afcEjectFilament </v-icon>
             </v-btn>
           </template>
           <span>
@@ -81,34 +75,31 @@ export default class AfcCardUnitLaneActions extends Mixins(StateMixin, AfcMixin,
   @Prop({ type: String, required: true })
   readonly name!: string
 
-  get lane (): Klipper.AfcLaneState | undefined {
+  get lane(): Klipper.AfcLaneState | undefined {
     return this.getAfcLaneObject(this.name)
   }
 
-  get laneActive (): boolean {
+  get laneActive(): boolean {
     return this.name === this.afcCurrentLane?.name
   }
 
-  get laneRunout (): boolean {
-    return (
-      this.laneActive &&
-      this.lane?.prep !== true
-    )
+  get laneRunout(): boolean {
+    return this.laneActive && this.lane?.prep !== true
   }
 
-  get toolLoaded (): boolean {
+  get toolLoaded(): boolean {
     return this.lane?.tool_loaded === true
   }
 
-  loadLane () {
+  loadLane() {
     this.sendGcode(`CHANGE_TOOL LANE=${encodeGcodeParamValue(this.name)}`)
   }
 
-  unloadLane () {
+  unloadLane() {
     this.sendGcode(`TOOL_UNLOAD LANE=${encodeGcodeParamValue(this.name)}`)
   }
 
-  ejectLane () {
+  ejectLane() {
     this.sendGcode(`LANE_UNLOAD LANE=${encodeGcodeParamValue(this.name)}`)
   }
 }

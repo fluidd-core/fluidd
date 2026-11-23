@@ -9,14 +9,10 @@
       item-key="job_id"
       sort-by="start_time"
       sort-desc
-      style="background-color: transparent;"
+      style="background-color: transparent"
     >
-      <template
-        #item="{ item }"
-      >
-        <tr
-          class="px-1"
-        >
+      <template #item="{ item }">
+        <tr class="px-1">
           <td>
             <!-- If the item no longer exists. -->
             <v-icon
@@ -40,10 +36,18 @@
             <img
               v-else
               class="mr-2 file-icon-thumb"
-              :src="getThumbUrl(item.metadata, 'gcodes', getFilePaths(item.filename).path, false, item.metadata.modified)"
+              :src="
+                getThumbUrl(
+                  item.metadata,
+                  'gcodes',
+                  getFilePaths(item.filename).path,
+                  false,
+                  item.metadata.modified
+                )
+              "
               :width="24"
               @error="handleJobThumbnailError(item)"
-            >
+            />
           </td>
 
           <td>
@@ -75,9 +79,7 @@
                 icon
                 @click="$emit('print', item.filename)"
               >
-                <v-icon dense>
-                  $printer
-                </v-icon>
+                <v-icon dense> $printer </v-icon>
               </app-btn>
             </div>
           </td>
@@ -101,27 +103,31 @@ import type { HistoryItem } from '@/store/history/types'
   }
 })
 export default class ReprintTab extends Mixins(StateMixin, FilesMixin) {
-  get history (): HistoryItem[] {
+  get history(): HistoryItem[] {
     return this.$typedGetters['history/getUniqueHistory'](3)
   }
 
-  getFilePaths (filename: string) {
+  getFilePaths(filename: string) {
     return getFilePaths(filename, 'gcodes')
   }
 
-  get headers () {
+  get headers() {
     const headers = [
       { text: '', value: 'data-table-icons', sortable: false, width: 24 },
       { text: this.$tc('app.general.table.header.name'), value: 'filename', sortable: false },
       { text: this.$tc('app.general.table.header.status'), value: 'status', sortable: false },
-      { text: this.$tc('app.general.table.header.print_duration'), value: 'print_duration', sortable: false }
+      {
+        text: this.$tc('app.general.table.header.print_duration'),
+        value: 'print_duration',
+        sortable: false
+      }
       // { text: this.$tc('app.general.table.header.total_duration'), value: 'total_duration', sortable: false },
       // { text: this.$tc('app.general.table.header.start_time'), value: 'start_time', sortable: false }
     ]
     return headers
   }
 
-  handleJobThumbnailError (job: HistoryItem) {
+  handleJobThumbnailError(job: HistoryItem) {
     this.$typedDispatch('history/clearHistoryThumbnails', job.job_id)
   }
 }

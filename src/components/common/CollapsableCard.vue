@@ -7,7 +7,7 @@
   >
     <v-card-title
       class="collapsable-card-title card-heading"
-      :class="{ 'draggable': inLayout }"
+      :class="{ draggable: inLayout }"
     >
       <v-row
         no-gutters
@@ -220,7 +220,7 @@ export default class CollapsableCard extends Vue {
   baseCardClasses = { 'collapsable-card': true }
   baseContentClasses = { 'overflow-hidden': true }
 
-  get _cardClasses () {
+  get _cardClasses() {
     // If user defined, format to an object based on the input.
     const classes: Record<string, unknown> = {}
     if (this.cardClasses) {
@@ -231,11 +231,12 @@ export default class CollapsableCard extends Vue {
     return {
       ...classes,
       ...this.baseCardClasses,
-      collapsed: (this.isCollapsed || !this.hasDefaultSlot || this.inLayout) && !this.hasCollapsedContentSlot
+      collapsed:
+        (this.isCollapsed || !this.hasDefaultSlot || this.inLayout) && !this.hasCollapsedContentSlot
     }
   }
 
-  get _contentClasses () {
+  get _contentClasses() {
     const classes: Record<string, unknown> = {}
     if (this.contentClasses) {
       this.contentClasses.split(' ').forEach(s => {
@@ -253,18 +254,16 @@ export default class CollapsableCard extends Vue {
   // Instead we assign the height to the content area
   // and abritrarily remove what we think the header
   // height is to get close enough.
-  get _contentStyles () {
-    return (this.height)
-      ? `height: calc(${this.height}px - 49px);`
-      : ''
+  get _contentStyles() {
+    return this.height ? `height: calc(${this.height}px - 49px);` : ''
   }
 
-  get _collapsable () {
+  get _collapsable() {
     if (!this.collapsable) return false
-    return (this.layout) ? this.collapsable : false
+    return this.layout ? this.collapsable : false
   }
 
-  get _layoutPath () {
+  get _layoutPath() {
     if (this.layoutPath) {
       if (this.layoutPath.includes('.')) {
         const split = this.layoutPath.split('.')
@@ -281,7 +280,7 @@ export default class CollapsableCard extends Vue {
     }
   }
 
-  get layout (): LayoutConfig | undefined {
+  get layout(): LayoutConfig | undefined {
     if (this._layoutPath) {
       return this.$typedGetters['layout/getConfig'](this._layoutPath.name, this._layoutPath.id)
     }
@@ -290,12 +289,12 @@ export default class CollapsableCard extends Vue {
   /**
    * The menu classes associated with the btns not inside a dropdown.
    */
-  get menuClasses () {
+  get menuClasses() {
     return `d-none d-${this.menuBreakpoint}-flex`
   }
 
-  get isLoading (): boolean | string {
-    return (this.loading) ? 'primary' : false
+  get isLoading(): boolean | string {
+    return this.loading ? 'primary' : false
   }
 
   /**
@@ -303,14 +302,14 @@ export default class CollapsableCard extends Vue {
    * E.g., in layout mode - you may set it to collapsed.
    * If the layout isn't defined, then this should always be disabled.
    */
-  get isCollapsed (): boolean {
+  get isCollapsed(): boolean {
     if (!this.collapsable) {
       return false
     }
-    return (this.layout) ? this.layout.collapsed : false
+    return this.layout ? this.layout.collapsed : false
   }
 
-  set isCollapsed (collapsed: boolean) {
+  set isCollapsed(collapsed: boolean) {
     const value = this.layout
     if (value && this._layoutPath) {
       value.collapsed = collapsed
@@ -319,7 +318,7 @@ export default class CollapsableCard extends Vue {
   }
 
   @Watch('isCollapsed')
-  isCollapsedChange (val: boolean) {
+  isCollapsedChange(val: boolean) {
     this.$emit('collapsed', val)
   }
 
@@ -329,11 +328,11 @@ export default class CollapsableCard extends Vue {
    * in order to prevent its display.
    * If the layout isn't defined, then this should always be enabled.
    */
-  get isEnabled (): boolean {
-    return (this.layout) ? this.layout.enabled : true
+  get isEnabled(): boolean {
+    return this.layout ? this.layout.enabled : true
   }
 
-  set isEnabled (enabled: boolean) {
+  set isEnabled(enabled: boolean) {
     const value = this.layout
     if (value && this._layoutPath) {
       value.enabled = enabled
@@ -341,42 +340,39 @@ export default class CollapsableCard extends Vue {
     }
   }
 
-  get inLayout (): boolean {
-    return (
-      this.$typedState.config.layoutMode &&
-      !!this.draggable
-    )
+  get inLayout(): boolean {
+    return this.$typedState.config.layoutMode && !!this.draggable
   }
 
   /**
    * Main content.
    */
-  get hasDefaultSlot () {
+  get hasDefaultSlot() {
     return !!this.$slots.default || !!this.$scopedSlots.default
   }
 
   /**
    * To override the title.
    */
-  get hasTitleSlot () {
+  get hasTitleSlot() {
     return !!this.$slots.title || !!this.$scopedSlots.title
   }
 
   /**
    * To override the sub title.
    */
-  get hasSubTitleSlot () {
+  get hasSubTitleSlot() {
     return !!this.$slots['sub-title'] || !!this.$scopedSlots['sub-title']
   }
 
   /**
    * To override the collapse button.
    */
-  get hasCollapseButtonSlot () {
+  get hasCollapseButtonSlot() {
     return !!this.$slots['collapse-button'] || !!this.$scopedSlots['collapse-button']
   }
 
-  get hasCollapsedContentSlot () {
+  get hasCollapsedContentSlot() {
     // no idea if the slot has children, so we assume it does
     if (this.$scopedSlots['collapse-button']) return true
 
@@ -384,7 +380,7 @@ export default class CollapsableCard extends Vue {
     return !!this.$slots['collapsed-content']?.length
   }
 
-  mounted () {
+  mounted() {
     this.$emit('collapsed', this.isCollapsed)
   }
 }

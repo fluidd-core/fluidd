@@ -75,27 +75,27 @@ import WarningsSettings from '@/components/settings/WarningsSettings.vue'
   }
 })
 export default class Settings extends Mixins(StateMixin) {
-  get supportsVersions (): boolean {
+  get supportsVersions(): boolean {
     return this.$typedGetters['server/componentSupport']('update_manager')
   }
 
-  get supportsFirmware (): boolean {
+  get supportsFirmware(): boolean {
     return this.$typedGetters['firmware/isAvailable']
   }
 
-  get supportsAuth (): boolean {
+  get supportsAuth(): boolean {
     return this.$typedGetters['server/componentSupport']('authorization')
   }
 
-  get supportsTimelapse (): boolean {
+  get supportsTimelapse(): boolean {
     return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
-  get supportsSpoolman (): boolean {
+  get supportsSpoolman(): boolean {
     return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
-  get supportsMmu (): boolean {
+  get supportsMmu(): boolean {
     return this.$typedState.printer.printer.mmu != null
   }
 }

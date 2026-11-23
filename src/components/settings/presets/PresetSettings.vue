@@ -48,18 +48,14 @@
             icon
             @click.stop="openEditDialog(preset)"
           >
-            <v-icon dense>
-              $edit
-            </v-icon>
+            <v-icon dense> $edit </v-icon>
           </app-btn>
 
           <app-btn
             icon
             @click.stop="handleRemovePreset(preset)"
           >
-            <v-icon dense>
-              $delete
-            </v-icon>
+            <v-icon dense> $delete </v-icon>
           </app-btn>
         </app-setting>
       </template>
@@ -87,15 +83,15 @@ import StateMixin from '@/mixins/state'
   }
 })
 export default class TemperaturePresetSettings extends Mixins(StateMixin) {
-  get heaters (): Heater[] {
+  get heaters(): Heater[] {
     return this.$typedGetters['printer/getHeaters']
   }
 
-  get fans (): Fan[] {
+  get fans(): Fan[] {
     return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
-  get presets (): TemperaturePreset[] {
+  get presets(): TemperaturePreset[] {
     return this.$typedGetters['config/getTempPresets']
   }
 
@@ -104,14 +100,14 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
     preset: null
   }
 
-  openEditDialog (preset: TemperaturePreset) {
+  openEditDialog(preset: TemperaturePreset) {
     this.dialogState = {
       active: true,
       preset
     }
   }
 
-  openAddDialog () {
+  openAddDialog() {
     const preset: any = {
       id: -1,
       name: '',
@@ -129,13 +125,15 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
     }
   }
 
-  handleSavePreset (preset: TemperaturePreset) {
+  handleSavePreset(preset: TemperaturePreset) {
     this.$typedDispatch('config/updatePreset', preset)
   }
 
-  async handleRemovePreset (preset: TemperaturePreset) {
+  async handleRemovePreset(preset: TemperaturePreset) {
     const result = await this.$confirm(
-      this.$t('app.general.simple_form.msg.confirm_remove_thermal_preset', { name: preset.name }).toString(),
+      this.$t('app.general.simple_form.msg.confirm_remove_thermal_preset', {
+        name: preset.name
+      }).toString(),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
@@ -147,9 +145,9 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .presets-table table > tbody > tr > td {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    vertical-align: top;
-  }
+.presets-table table > tbody > tr > td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  vertical-align: top;
+}
 </style>

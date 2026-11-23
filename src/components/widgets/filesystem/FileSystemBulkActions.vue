@@ -1,7 +1,5 @@
 <template>
-  <v-toolbar
-    dense
-  >
+  <v-toolbar dense>
     <v-toolbar-title class="d-none d-sm-block">
       <file-system-breadcrumbs
         :root="root"
@@ -24,9 +22,7 @@
           v-on="on"
           @click="$emit('enqueue', selected)"
         >
-          <v-icon>
-            $enqueueJob
-          </v-icon>
+          <v-icon> $enqueueJob </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.general.btn.add_to_queue') }}</span>
@@ -44,9 +40,7 @@
           v-on="on"
           @click="$emit('refresh-metadata', selected)"
         >
-          <v-icon>
-            $sync
-          </v-icon>
+          <v-icon> $sync </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.general.btn.refresh_metadata') }}</span>
@@ -64,9 +58,7 @@
           v-on="on"
           @click="$emit('perform-time-analysis', selected)"
         >
-          <v-icon>
-            $stopwatch
-          </v-icon>
+          <v-icon> $stopwatch </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.general.btn.perform_time_analysis') }}</span>
@@ -84,9 +76,7 @@
           v-on="on"
           @click="$emit('create-zip', selected)"
         >
-          <v-icon>
-            $fileZipAdd
-          </v-icon>
+          <v-icon> $fileZipAdd </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.general.btn.create_zip_archive') }}</span>
@@ -101,9 +91,7 @@
           v-on="on"
           @click="$emit('remove', selected)"
         >
-          <v-icon>
-            $delete
-          </v-icon>
+          <v-icon> $delete </v-icon>
         </app-btn>
       </template>
       <span>{{ $t('app.general.btn.delete') }}</span>
@@ -133,46 +121,41 @@ export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   @Prop({ type: [Object, Array], required: true })
   readonly selected!: FileBrowserEntry[]
 
-  get rootProperties (): RootProperties {
+  get rootProperties(): RootProperties {
     return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
-  get canCreateZip (): boolean {
+  get canCreateZip(): boolean {
     return (
-      (
-        this.selected.length > 1 ||
+      (this.selected.length > 1 ||
         this.selected[0].type !== 'file' ||
-        this.selected[0].extension !== '.zip'
-      ) &&
+        this.selected[0].extension !== '.zip') &&
       !this.rootProperties.readonly &&
       this.$typedGetters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 
-  get isGcodesRootWithAcceptedFiles () {
+  get isGcodesRootWithAcceptedFiles() {
     return (
       this.root === 'gcodes' &&
-      this.selected.some(x =>
-        x.type !== 'directory' &&
-        this.rootProperties.accepts.includes(x.extension)
+      this.selected.some(
+        x => x.type !== 'directory' && this.rootProperties.accepts.includes(x.extension)
       )
     )
   }
 
-  get canAddToQueue (): boolean {
+  get canAddToQueue(): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
       this.$typedGetters['server/componentSupport']('job_queue')
     )
   }
 
-  get canRefreshMetadata (): boolean {
-    return (
-      this.isGcodesRootWithAcceptedFiles
-    )
+  get canRefreshMetadata(): boolean {
+    return this.isGcodesRootWithAcceptedFiles
   }
 
-  get canPerformTimeAnalysys (): boolean {
+  get canPerformTimeAnalysys(): boolean {
     return (
       this.isGcodesRootWithAcceptedFiles &&
       this.$typedGetters['server/componentSupport']('analysis')

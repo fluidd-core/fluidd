@@ -16,12 +16,13 @@ const trimUrl = (url: string): string => {
   return result
 }
 
-export const escapeHtml = (text: string) => text
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/"/g, '&quot;')
-  .replace(/'/g, '&#39;')
+export const escapeHtml = (text: string) =>
+  text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 
 export const urlToAnchor = (url: string) => {
   const escapedUrl = escapeHtml(url)

@@ -36,14 +36,12 @@
           <app-btn
             v-if="resetValue !== undefined"
             :disabled="disabled || loading"
-            style="margin-top: -4px;"
+            style="margin-top: -4px"
             icon
             small
             @click="handleReset"
           >
-            <v-icon small>
-              $reset
-            </v-icon>
+            <v-icon small> $reset </v-icon>
           </app-btn>
         </template>
       </v-text-field>
@@ -124,14 +122,14 @@ export default class AppNamedSlider extends Vue {
   readonly form!: VForm
 
   @Watch('value')
-  onValue (value: number) {
+  onValue(value: number) {
     if (!this.hasFocus) {
       this.currentValue = value.toString()
     }
   }
 
   @Watch('currentValue')
-  onCurrentValue (value: string) {
+  onCurrentValue(value: string) {
     const valueAsNumber = +value
 
     if (!Number.isNaN(valueAsNumber)) {
@@ -141,7 +139,7 @@ export default class AppNamedSlider extends Vue {
   }
 
   @Watch('sliderValue')
-  onSliderValue (value: number) {
+  onSliderValue(value: number) {
     if (!this.hasFocus) {
       this.currentValue = value.toString()
     }
@@ -149,12 +147,12 @@ export default class AppNamedSlider extends Vue {
   }
 
   @Watch('locked')
-  onLocked (value: boolean) {
+  onLocked(value: boolean) {
     this.internalLocked = value
   }
 
   @Watch('max')
-  onMax () {
+  onMax() {
     this.checkOverride(this.sliderValue)
   }
 
@@ -165,23 +163,21 @@ export default class AppNamedSlider extends Vue {
   overridden = false
   hasFocus = false
 
-  get textRules () {
+  get textRules() {
     // Apply a min and max rule as per the slider.
     const rules = [
-      ...this.rules || [],
+      ...(this.rules || []),
       this.$rules.required,
       this.$rules.numberValid,
       this.$rules.numberGreaterThanOrEqual(this.min)
     ]
     if (!this.overridable) {
-      rules.push(
-        this.$rules.numberLessThanOrEqual(this.max)
-      )
+      rules.push(this.$rules.numberLessThanOrEqual(this.max))
     }
     return rules
   }
 
-  checkOverride (value: number) {
+  checkOverride(value: number) {
     if (value > this.max && this.overridable) {
       // This is overridable, and the user wants to increase
       // past the given max. So, disable the slider - and let it be.
@@ -195,7 +191,7 @@ export default class AppNamedSlider extends Vue {
     }
   }
 
-  submitValue (value: number) {
+  submitValue(value: number) {
     if (this.form.validate()) {
       this.currentValue = value.toString()
 
@@ -205,7 +201,7 @@ export default class AppNamedSlider extends Vue {
     }
   }
 
-  handleReset () {
+  handleReset() {
     if (this.resetValue !== undefined) {
       this.$emit('change', this.resetValue)
 
@@ -213,7 +209,7 @@ export default class AppNamedSlider extends Vue {
     }
   }
 
-  handleFocus (event: FocusEvent) {
+  handleFocus(event: FocusEvent) {
     this.hasFocus = true
 
     if (event.target instanceof HTMLInputElement) {
@@ -221,7 +217,7 @@ export default class AppNamedSlider extends Vue {
     }
   }
 
-  handleBlur () {
+  handleBlur() {
     if (this.hasFocus) {
       this.$emit('change', this.currentValue)
 
@@ -231,26 +227,26 @@ export default class AppNamedSlider extends Vue {
     }
   }
 
-  handleSubmit (value: number) {
+  handleSubmit(value: number) {
     this.submitValue(value)
   }
 
-  handleStart (value: number) {
+  handleStart(value: number) {
     this.hasFocus = false
     this.$emit('start', value)
   }
 
-  handleEnd (value: number) {
+  handleEnd(value: number) {
     this.$emit('end', value)
   }
 
-  handleChange (value: number) {
+  handleChange(value: number) {
     this.$emit('change', value)
 
     this.submitValue(value)
   }
 
-  created () {
+  created() {
     this.currentValue = this.inputValue.toString()
     this.sliderValue = this.inputValue
     this.internalLocked = this.locked

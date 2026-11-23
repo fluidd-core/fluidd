@@ -6,33 +6,31 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setCurrentUser (state, user: AppUser | Moonraker.Authorization.GetUserResponse | null) {
-    state.currentUser = user?.username != null
-      ? user
-      : null
+  setCurrentUser(state, user: AppUser | Moonraker.Authorization.GetUserResponse | null) {
+    state.currentUser = user?.username != null ? user : null
   },
 
-  setUsers (state, users: Moonraker.Authorization.User[]) {
+  setUsers(state, users: Moonraker.Authorization.User[]) {
     state.users = users
   },
 
-  setAddUser (state, user: Moonraker.Authorization.UserEvent) {
+  setAddUser(state, user: Moonraker.Authorization.UserEvent) {
     state.users.push({
       ...user,
-      source: 'moonraker',
+      source: 'moonraker'
     })
   },
 
-  setRemoveUser (state, user: Moonraker.Authorization.UserEvent) {
+  setRemoveUser(state, user: Moonraker.Authorization.UserEvent) {
     const i = state.users.findIndex(u => u.username === user.username)
     if (i >= 0) state.users.splice(i, 1)
   },
 
-  setApiKey (state, key: string) {
+  setApiKey(state, key: string) {
     state.apiKey = key
   }
 } satisfies MutationTree<AuthState>

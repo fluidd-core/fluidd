@@ -6,14 +6,14 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
   /**
    * Add a wait, ensuring we don't add dupes.
    */
-  setAddWait (state, payload: string) {
+  setAddWait(state, payload: string) {
     const i = state.waits.indexOf(payload)
     if (i === -1) state.waits.push(payload)
   },
@@ -21,7 +21,7 @@ export const mutations = {
   /**
    * Remove a wait, if found.
    */
-  setRemoveWait (state, payload: string) {
+  setRemoveWait(state, payload: string) {
     const i = state.waits.indexOf(payload)
     if (i !== -1) state.waits.splice(i, 1)
   }

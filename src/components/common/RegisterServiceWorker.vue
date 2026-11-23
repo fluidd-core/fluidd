@@ -31,30 +31,30 @@ export default class RegisterServiceWorker extends Vue {
   updateSW: ((reloadPage?: boolean) => Promise<void>) | null = null
   needRefresh = false
 
-  onOfflineReady () {
+  onOfflineReady() {
     consola.debug('[PWA] ready for offline work')
     EventBus.$emit(this.$tc('app.general.msg.offline_ready'), { timeout: 5000 })
   }
 
-  onNeedRefresh () {
+  onNeedRefresh() {
     consola.debug('[PWA] needs refresh')
     this.needRefresh = true
   }
 
-  onRegistered (registration?: ServiceWorkerRegistration) {
+  onRegistered(registration?: ServiceWorkerRegistration) {
     consola.debug('[PWA] registered', registration)
   }
 
-  onRegisterError (e: unknown) {
+  onRegisterError(e: unknown) {
     consola.error('[PWA] registration error', e)
   }
 
-  updateServiceWorker () {
+  updateServiceWorker() {
     // oxlint-disable-next-line no-unused-expressions
     this.updateSW && this.updateSW(true)
   }
 
-  async mounted () {
+  async mounted() {
     try {
       const { registerSW } = await import('virtual:pwa-register')
 
@@ -73,8 +73,8 @@ export default class RegisterServiceWorker extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  :deep(.v-snack__wrapper .v-snack__content) {
-    overflow: hidden;
-    overflow-wrap: break-word;
-  }
+:deep(.v-snack__wrapper .v-snack__content) {
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
 </style>

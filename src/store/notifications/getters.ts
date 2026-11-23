@@ -19,7 +19,8 @@ export const getters = {
   },
 
   getAnnouncementsAsNotifications: (state, getters, rootState, rootGetters) => {
-    const announcements: Moonraker.Announcements.Entry[] = rootGetters['announcements/getAnnouncements']
+    const announcements: Moonraker.Announcements.Entry[] =
+      rootGetters['announcements/getAnnouncements']
 
     return announcements.map((a): AppNotification => ({
       id: a.entry_id,

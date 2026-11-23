@@ -5,7 +5,11 @@ import { thermalColumn } from './charts/thermal-columns'
 import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import decimalRound from '@/util/decimal-round'
 
-export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, state: RootState, commit: Commit) => {
+export const handleMcuStatsChange = (
+  payload: Partial<Klipper.PrinterState>,
+  state: RootState,
+  commit: Commit
+) => {
   for (const key in payload) {
     if (key.startsWith('mcu')) {
       // Combine existing with the update.
@@ -26,7 +30,8 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
         // Load & Awake times
         const task_max = 0.0025
         const stats_interval = 5
-        const load = 100 * (stats.last_stats.mcu_task_avg + (3 * stats.last_stats.mcu_task_stddev)) / task_max
+        const load =
+          (100 * (stats.last_stats.mcu_task_avg + 3 * stats.last_stats.mcu_task_stddev)) / task_max
         const awake = 100 * (stats.last_stats.mcu_awake / stats_interval)
 
         // Bandwidth
@@ -39,29 +44,37 @@ export const handleMcuStatsChange = (payload: Partial<Klipper.PrinterState>, sta
 
         // The time delta between the last and this entry, clamped so that two
         // updates within the same millisecond don't divide by zero below.
-        const timedelta = (lastTime != null) ? Math.max(1, time - lastTime) : 1000
+        const timedelta = lastTime != null ? Math.max(1, time - lastTime) : 1000
 
         let bw = stats.last_stats.bytes_write + stats.last_stats.bytes_retransmit
         const lastbw = Math.min(bw, lastBw ?? bw)
-        bw = 100 * (bw - lastbw) / (maxbw * timedelta)
+        bw = (100 * (bw - lastbw)) / (maxbw * timedelta)
 
         // Commit the formatted result to our chart data.
-        commit('charts/setChartEntry', {
-          bucket: 'mcu',
-          id: key,
-          time,
-          values: {
-            load: decimalRound(load, 2),
-            awake: decimalRound(awake, 2),
-            bw: decimalRound(bw, 2)
-          }
-        }, { root: true })
+        commit(
+          'charts/setChartEntry',
+          {
+            bucket: 'mcu',
+            id: key,
+            time,
+            values: {
+              load: decimalRound(load, 2),
+              awake: decimalRound(awake, 2),
+              bw: decimalRound(bw, 2)
+            }
+          },
+          { root: true }
+        )
       }
     }
   }
 }
 
-export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, state: RootState, commit: Commit) => {
+export const handleSystemStatsChange = (
+  payload: Partial<Klipper.PrinterState>,
+  state: RootState,
+  commit: Commit
+) => {
   if (payload.system_stats != null) {
     // Combine existing with the update.
     const stats: Klipper.SystemStatsState = {
@@ -73,41 +86,43 @@ export const handleSystemStatsChange = (payload: Partial<Klipper.PrinterState>, 
     const time = Date.now()
 
     // Add an entry for the memory graph.
-    if (
-      stats.memavail != null &&
-      state.server.system_info?.cpu_info?.total_memory
-    ) {
+    if (stats.memavail != null && state.server.system_info?.cpu_info?.total_memory) {
       const total_memory = state.server.system_info.cpu_info.total_memory || 0
       const mem_used = total_memory - stats.memavail
-      const percent_mem_used = Math.ceil(mem_used / total_memory * 100)
+      const percent_mem_used = Math.ceil((mem_used / total_memory) * 100)
 
       // Commit the formatted result to our chart data.
-      commit('charts/setChartEntry', {
-        bucket: 'memory',
-        time,
-        values: {
-          memused: decimalRound(percent_mem_used, 2)
-        }
-      }, { root: true })
+      commit(
+        'charts/setChartEntry',
+        {
+          bucket: 'memory',
+          time,
+          values: {
+            memused: decimalRound(percent_mem_used, 2)
+          }
+        },
+        { root: true }
+      )
     }
 
     // Add an entry for the cpu time and sysload.
-    if (
-      stats.cputime != null &&
-      stats.sysload != null
-    ) {
+    if (stats.cputime != null && stats.sysload != null) {
       const cputime = stats.cputime
       const last_cputime = state.printer.printer.system_stats?.cputime || stats.cputime || 0
 
       // Commit the formatted result to our chart data.
-      commit('charts/setChartEntry', {
-        bucket: 'klipper',
-        time,
-        values: {
-          load: decimalRound(stats.sysload, 2),
-          cputime_change: decimalRound((cputime - last_cputime) * 100, 2)
-        }
-      }, { root: true })
+      commit(
+        'charts/setChartEntry',
+        {
+          bucket: 'klipper',
+          time,
+          values: {
+            load: decimalRound(stats.sysload, 2),
+            cputime_change: decimalRound((cputime - last_cputime) * 100, 2)
+          }
+        },
+        { root: true }
+      )
     }
   }
 }
@@ -131,12 +146,16 @@ export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
     }
 
     if (hasNumericValue) {
-      commit('charts/setChartEntry', {
-        bucket: 'sensor',
-        id: sensorId,
-        time,
-        values
-      }, { root: true })
+      commit(
+        'charts/setChartEntry',
+        {
+          bucket: 'sensor',
+          id: sensorId,
+          time,
+          values
+        },
+        { root: true }
+      )
     }
   }
 }
@@ -145,7 +164,12 @@ export const handleAddSensorChartEntry = (state: RootState, commit: Commit) => {
  * Prepare packet data for a chart entry.
  * Every packet should contain an entry for all known sensors we want to track.
  */
-export const handleAddChartEntry = (retention: number, state: RootState, commit: Commit, getters: any) => {
+export const handleAddChartEntry = (
+  retention: number,
+  state: RootState,
+  commit: Commit,
+  getters: any
+) => {
   const nonCriticalDisconnectedMcusSet: Set<string> = getters.getNonCriticalDisconnectedMcusSet
 
   const configureChartEntry = () => {
@@ -191,11 +215,15 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
 
   if (state.charts.ready) {
     const values = configureChartEntry()
-    commit('charts/setChartEntry', {
-      bucket: 'thermal',
-      retention,
-      time: Date.now(),
-      values
-    }, { root: true })
+    commit(
+      'charts/setChartEntry',
+      {
+        bucket: 'thermal',
+        retention,
+        time: Date.now(),
+        values
+      },
+      { root: true }
+    )
   }
 }

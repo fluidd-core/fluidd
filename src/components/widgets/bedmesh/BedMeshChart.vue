@@ -19,9 +19,15 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
-import type { ECharts, EChartsInitOpts, EChartsOption, GraphicComponentOption, SetOptionOpts } from 'echarts'
+import type {
+  ECharts,
+  EChartsInitOpts,
+  EChartsOption,
+  GraphicComponentOption,
+  SetOptionOpts
+} from 'echarts'
 import { merge, cloneDeepWith } from 'lodash-es'
 import BrowserMixin from '@/mixins/browser'
 import type { BedSize } from '@/store/printer/types'
@@ -49,16 +55,16 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
   readonly updateOptions: SetOptionOpts = Object.freeze({ notMerge: false })
   readonly initOptions: EChartsInitOpts = Object.freeze({ renderer: 'canvas' })
 
-  get flatSurface (): boolean {
+  get flatSurface(): boolean {
     return this.$typedState.mesh.flatSurface
   }
 
-  get bedSize (): BedSize {
+  get bedSize(): BedSize {
     return this.$typedGetters['printer/getBedSize']
   }
 
   @Watch('flatSurface')
-  onFlatSurfaceChange (value: boolean) {
+  onFlatSurfaceChange(value: boolean) {
     if (!this.chart) return
 
     const type = value ? 'legendSelect' : 'legendUnSelect'
@@ -72,24 +78,24 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
     })
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     if (typeof window === 'undefined') return
     this.chart?.dispose()
   }
 
-  get opts (): EChartsOption {
+  get opts(): EChartsOption {
     // If options includes series data, rip it out so we can merge it with
     // the given series in our initial options.
     const darkMode: boolean = this.$typedState.config.uiSettings.theme.isDark
 
-    const fontColor = (darkMode) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
-    const fontSize = (this.isMobileViewport) ? 14 : 16
-    const labelBackground = (darkMode) ? 'rgba(10,10,10,0.90)' : 'rgba(255,255,255,0.90)'
-    const opacity = 0.10
-    const lineColor = (darkMode) ? '#ffffff' : '#000000'
+    const fontColor = darkMode ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
+    const fontSize = this.isMobileViewport ? 14 : 16
+    const labelBackground = darkMode ? 'rgba(10,10,10,0.90)' : 'rgba(255,255,255,0.90)'
+    const opacity = 0.1
+    const lineColor = darkMode ? '#ffffff' : '#000000'
     const visualMap = {
-      itemWidth: (this.isMobileViewport) ? 15 : 25,
-      itemHeight: (this.isMobileViewport) ? 140 : 280
+      itemWidth: this.isMobileViewport ? 15 : 25,
+      itemHeight: this.isMobileViewport ? 140 : 280
     }
 
     const axisCommon = {
@@ -209,7 +215,19 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
         dimension: 2,
         precision: 4,
         inRange: {
-          color: ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']
+          color: [
+            '#313695',
+            '#4575b4',
+            '#74add1',
+            '#abd9e9',
+            '#e0f3f8',
+            '#ffffbf',
+            '#fee090',
+            '#fdae61',
+            '#f46d43',
+            '#d73027',
+            '#a50026'
+          ]
         },
         ...visualMap
       },
@@ -249,7 +267,7 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
     return opts
   }
 
-  async downloadImage () {
+  async downloadImage() {
     if (!this.chart) return
 
     const url = this.chart.getDataURL({
@@ -257,19 +275,18 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
       backgroundColor: '#262629'
     })
 
-    const filename = [
-      'bedmesh',
-      this.$typedState.printer.printer.bed_mesh?.profile_name
-    ].filter(x => x).join('-')
+    const filename = ['bedmesh', this.$typedState.printer.printer.bed_mesh?.profile_name]
+      .filter(x => x)
+      .join('-')
 
     downloadUrl(filename, url)
   }
 }
 </script>
 
-<style lang='scss' scoped>
-  .chart {
-    width: 100%;
-    // height: 625px;
-  }
+<style lang="scss" scoped>
+.chart {
+  width: 100%;
+  // height: 625px;
+}
 </style>

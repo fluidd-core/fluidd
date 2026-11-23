@@ -7,7 +7,7 @@
         cols="12"
         md="6"
         :lg="columnSpan"
-        :class="{ 'drag': inLayout }"
+        :class="{ drag: inLayout }"
       >
         <template #default="{ narrow }">
           <app-draggable
@@ -83,34 +83,34 @@ import type Sortable from 'sortablejs'
 export default class Dashboard extends Mixins(StateMixin) {
   containers: Array<LayoutConfig[]> = []
 
-  mounted () {
+  mounted() {
     this.onLayoutChange()
   }
 
-  get columnCount () {
+  get columnCount() {
     if (this.inLayout) return 4
 
     return this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
   }
 
   @Watch('columnCount')
-  onColumnCount (value: number) {
+  onColumnCount(value: number) {
     this.$typedCommit('config/setContainerColumnCount', value)
   }
 
-  get columnSpan () {
+  get columnSpan() {
     return 12 / this.columnCount
   }
 
-  get printerSettings (): Klipper.SettingsState {
+  get printerSettings(): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  get hasCameras (): boolean {
+  get hasCameras(): boolean {
     return this.$typedGetters['webcams/getEnabledWebcams'].length > 0
   }
 
-  get hasHeatersOrTemperatureSensors (): boolean {
+  get hasHeatersOrTemperatureSensors(): boolean {
     return (
       this.$typedGetters['printer/getHeaters'].length > 0 ||
       this.$typedGetters['printer/getOutputs'](['temperature_fan']).length > 0 ||
@@ -118,47 +118,47 @@ export default class Dashboard extends Mixins(StateMixin) {
     )
   }
 
-  get hasSensors (): boolean {
+  get hasSensors(): boolean {
     return this.$typedGetters['sensors/getSensors'].length > 0
   }
 
-  get firmwareRetractionEnabled (): boolean {
+  get firmwareRetractionEnabled(): boolean {
     return 'firmware_retraction' in this.printerSettings
   }
 
-  get supportsJobQueue (): boolean {
+  get supportsJobQueue(): boolean {
     return this.$typedGetters['server/componentSupport']('job_queue')
   }
 
-  get supportsBedMesh (): boolean {
+  get supportsBedMesh(): boolean {
     return this.$typedGetters['mesh/getSupportsBedMesh']
   }
 
-  get supportsBeacon (): boolean {
+  get supportsBeacon(): boolean {
     return this.$typedGetters['printer/getSupportsBeacon']
   }
 
-  get supportsRunoutSensors (): boolean {
+  get supportsRunoutSensors(): boolean {
     return this.$typedGetters['printer/getRunoutSensors'].length > 0
   }
 
-  get supportsSpoolman (): boolean {
+  get supportsSpoolman(): boolean {
     return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
-  get supportsMmu (): boolean {
+  get supportsMmu(): boolean {
     return this.$typedState.printer.printer.mmu != null
   }
 
-  get supportsAfc (): boolean {
+  get supportsAfc(): boolean {
     return this.$typedGetters['printer/getSupportsAfc']
   }
 
-  get hasMacros (): boolean {
+  get hasMacros(): boolean {
     return this.$typedGetters['macros/getVisibleMacros'].length > 0
   }
 
-  get hasOutputs (): boolean {
+  get hasOutputs(): boolean {
     return (
       this.$typedGetters['printer/getAllFans'].length > 0 ||
       this.$typedGetters['printer/getAllPins'].length > 0 ||
@@ -166,17 +166,17 @@ export default class Dashboard extends Mixins(StateMixin) {
     )
   }
 
-  get inLayout (): boolean {
+  get inLayout(): boolean {
     return this.$typedState.config.layoutMode
   }
 
-  get layout (): LayoutContainer | undefined {
+  get layout(): LayoutContainer | undefined {
     const layoutName: string = this.$typedGetters['layout/getSpecificLayoutName']
 
     return this.$typedGetters['layout/getLayout'](layoutName)
   }
 
-  get draggableOptions (): Sortable.Options {
+  get draggableOptions(): Sortable.Options {
     return {
       group: 'dashboard',
       disabled: !this.inLayout
@@ -184,7 +184,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   @Watch('layout')
-  onLayoutChange () {
+  onLayoutChange() {
     const containers: Array<LayoutConfig[]> = []
 
     for (let index = 1; index <= 4; index++) {
@@ -202,7 +202,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     this.containers = containers.slice(0, 4)
   }
 
-  handleUpdateLayout () {
+  handleUpdateLayout() {
     const name: string = this.$typedGetters['layout/getSpecificLayoutName']
 
     this.$typedDispatch('layout/onLayoutChange', {
@@ -216,11 +216,11 @@ export default class Dashboard extends Mixins(StateMixin) {
     })
   }
 
-  hasCards (container: LayoutConfig[]) {
+  hasCards(container: LayoutConfig[]) {
     return container.some(card => card.enabled && !this.filtered(card))
   }
 
-  filtered (item: LayoutConfig) {
+  filtered(item: LayoutConfig) {
     // Take care of special cases.
     if (this.inLayout) return false
     if (item.id === 'camera-card' && !this.hasCameras) return true

@@ -31,10 +31,7 @@ import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 
-const spoomanDataPatterns = [
-  /web\+spoolman:s-(\d+)/i,
-  /\/spool\/show\/(\d+)\/?/i
-]
+const spoomanDataPatterns = [/web\+spoolman:s-(\d+)/i, /\/spool\/show\/(\d+)\/?/i]
 
 @Component({
   components: { CameraItem }
@@ -51,7 +48,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   @Ref('canvas')
   canvas!: HTMLCanvasElement
 
-  get camera (): Moonraker.Webcam.Entry | { name: string, service: 'device' } | undefined {
+  get camera(): Moonraker.Webcam.Entry | { name: string; service: 'device' } | undefined {
     if (this.source === 'device') {
       return {
         name: this.$t('app.spoolman.label.device_camera').toString(),
@@ -64,17 +61,17 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  get open () {
+  get open() {
     return this.source !== null
   }
 
-  set open (state) {
+  set open(state) {
     if (!state) {
       this.source = null
     }
   }
 
-  async mounted () {
+  async mounted() {
     this.processing = true
     this.context = this.canvas.getContext('2d', { willReadFrequently: true })
     if (this.context === null) {
@@ -83,7 +80,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     this.processing = false
   }
 
-  async handlePrinterCameraFrame (image: HTMLVideoElement | HTMLImageElement) {
+  async handlePrinterCameraFrame(image: HTMLVideoElement | HTMLImageElement) {
     // if broken canvas or still processing
     if (this.processing) {
       return
@@ -115,7 +112,9 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
       if (this.context) {
         this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
         const result = await QrScanner.scanImage(this.canvas, { returnDetailedScanResult: true })
-        if (result.data) { this.handleCodeFound(result.data) }
+        if (result.data) {
+          this.handleCodeFound(result.data)
+        }
       }
     } catch (err) {
       if (err instanceof DOMException) {
@@ -131,11 +130,11 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     this.processing = false
   }
 
-  get availableSpools (): Spool[] {
+  get availableSpools(): Spool[] {
     return this.$typedGetters['spoolman/getAvailableSpools']
   }
 
-  handleCodeFound (code: string) {
+  handleCodeFound(code: string) {
     for (const pattern of spoomanDataPatterns) {
       const match = pattern.exec(code)
 

@@ -17,9 +17,7 @@
           type="password"
           class="mt-0"
           hide-details="auto"
-          :rules="[
-            $rules.required
-          ]"
+          :rules="[$rules.required]"
         />
       </app-setting>
 
@@ -60,13 +58,13 @@ export default class UserPasswordDialog extends Vue {
   password = ''
   loading = false
 
-  get currentUser () {
+  get currentUser() {
     const currentUser: AppUser | null = this.$typedState.auth.currentUser
 
     return currentUser?.username ?? ''
   }
 
-  async handleSave () {
+  async handleSave() {
     try {
       this.loading = true
 

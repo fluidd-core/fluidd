@@ -14,9 +14,7 @@
           dense
           single-line
           hide-details="auto"
-          :rules="[
-            $rules.required
-          ]"
+          :rules="[$rules.required]"
           :value="instanceName"
           :default-value="$globals.APP_NAME"
           submit-on-change
@@ -159,7 +157,9 @@
       <template v-if="showSaveConfigAndRestart && confirmOnSaveConfigAndRestart">
         <v-divider />
 
-        <app-setting :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')">
+        <app-setting
+          :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')"
+        >
           <v-combobox
             v-model="sectionsToIgnorePendingConfigurationChanges"
             :items="['bed_mesh default', 'bed_tilt']"
@@ -199,9 +199,7 @@
           filled
           dense
           hide-details="auto"
-          :rules="[
-            $rules.lengthGreaterThanOrEqual(1),
-          ]"
+          :rules="[$rules.lengthGreaterThanOrEqual(1)]"
           :items="availablePrintProgressCalculation"
         />
       </app-setting>
@@ -218,9 +216,7 @@
           filled
           dense
           hide-details="auto"
-          :rules="[
-            $rules.lengthGreaterThanOrEqual(1),
-          ]"
+          :rules="[$rules.lengthGreaterThanOrEqual(1)]"
           :items="availablePrintEtaCalculation"
         />
       </app-setting>
@@ -281,7 +277,7 @@
       :accept="isIOS ? undefined : '.json'"
       style="display: none"
       @change="handleRestoreSettings"
-    >
+    />
   </div>
 </template>
 
@@ -291,7 +287,11 @@ import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 import type { OutputPin } from '@/store/printer/types'
-import type { PrintEtaCalculation, PrintInProgressLayout, PrintProgressCalculation } from '@/store/config/types'
+import type {
+  PrintEtaCalculation,
+  PrintInProgressLayout,
+  PrintProgressCalculation
+} from '@/store/config/types'
 import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
 import { readFileAsTextAsync } from '@/util/file-system-entry'
@@ -305,34 +305,31 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
   @Ref('uploadSettingsFile')
   readonly uploadSettingsFile!: HTMLInputElement
 
-  get instanceName (): string {
+  get instanceName(): string {
     return this.$typedState.config.uiSettings.general.instanceName
   }
 
-  setInstanceName (value: string) {
+  setInstanceName(value: string) {
     this.$typedDispatch('config/updateInstance', value)
   }
 
-  get locale (): string {
+  get locale(): string {
     return this.$typedState.config.uiSettings.general.locale
   }
 
-  get supportedLocales () {
-    return [
-      { name: 'Browser default', code: 'default' },
-      ...SupportedLocales
-    ]
+  get supportedLocales() {
+    return [{ name: 'Browser default', code: 'default' }, ...SupportedLocales]
   }
 
-  setLocale (value: string) {
+  setLocale(value: string) {
     this.$typedDispatch('config/onLocaleChange', value)
   }
 
-  get dateFormat (): string {
+  get dateFormat(): string {
     return this.$typedState.config.uiSettings.general.dateFormat
   }
 
-  set dateFormat (value: string) {
+  set dateFormat(value: string) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.dateFormat',
       value,
@@ -340,21 +337,20 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get availableDateFormats () {
+  get availableDateFormats() {
     const date = new Date()
 
-    return Object.entries(DateFormats)
-      .map(([key, entry]) => ({
-        value: key,
-        text: `${date.toLocaleDateString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
-      }))
+    return Object.entries(DateFormats).map(([key, entry]) => ({
+      value: key,
+      text: `${date.toLocaleDateString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
+    }))
   }
 
-  get timeFormat (): string {
+  get timeFormat(): string {
     return this.$typedState.config.uiSettings.general.timeFormat
   }
 
-  set timeFormat (value: string) {
+  set timeFormat(value: string) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.timeFormat',
       value,
@@ -362,21 +358,20 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get availableTimeFormats () {
+  get availableTimeFormats() {
     const date = new Date()
 
-    return Object.entries(TimeFormats)
-      .map(([key, entry]) => ({
-        value: key,
-        text: `${date.toLocaleTimeString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
-      }))
+    return Object.entries(TimeFormats).map(([key, entry]) => ({
+      value: key,
+      text: `${date.toLocaleTimeString(entry.locales ?? getAllLocales(), entry.options)}${entry.suffix ?? ''}`
+    }))
   }
 
-  get chartSmoothingWindow (): number {
+  get chartSmoothingWindow(): number {
     return this.$typedState.config.uiSettings.general.chartSmoothingWindow
   }
 
-  set chartSmoothingWindow (value: number) {
+  set chartSmoothingWindow(value: number) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.chartSmoothingWindow',
       value,
@@ -384,23 +379,24 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get availableChartSmoothingWindows () {
-    const nf = new Intl.NumberFormat(getAllLocales(), { style: 'unit', unit: 'second', unitDisplay: 'short' })
+  get availableChartSmoothingWindows() {
+    const nf = new Intl.NumberFormat(getAllLocales(), {
+      style: 'unit',
+      unit: 'second',
+      unitDisplay: 'short'
+    })
 
-    return [0, 1, 3, 5, 10, 15, 30]
-      .map(value => ({
-        value,
-        text: value === 0
-          ? this.$t('app.setting.label.none').toString()
-          : nf.format(value)
-      }))
+    return [0, 1, 3, 5, 10, 15, 30].map(value => ({
+      value,
+      text: value === 0 ? this.$t('app.setting.label.none').toString() : nf.format(value)
+    }))
   }
 
-  get enableKeyboardShortcuts (): boolean {
+  get enableKeyboardShortcuts(): boolean {
     return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
-  set enableKeyboardShortcuts (value: boolean) {
+  set enableKeyboardShortcuts(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.enableKeyboardShortcuts',
       value,
@@ -408,11 +404,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get confirmOnEstop (): boolean {
+  get confirmOnEstop(): boolean {
     return this.$typedState.config.uiSettings.general.confirmOnEstop
   }
 
-  set confirmOnEstop (value: boolean) {
+  set confirmOnEstop(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnEstop',
       value,
@@ -420,11 +416,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get printerPowerDevice (): string | null {
+  get printerPowerDevice(): string | null {
     return this.$typedState.config.uiSettings.general.printerPowerDevice
   }
 
-  set printerPowerDevice (value: string | null) {
+  set printerPowerDevice(value: string | null) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printerPowerDevice',
       value,
@@ -432,7 +428,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get printerPowerDevicesList () {
+  get printerPowerDevicesList() {
     const devices: Moonraker.Power.Device[] = this.$typedGetters['power/getDevices']
 
     const deviceEntries = devices.map(device => ({
@@ -453,11 +449,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     ]
   }
 
-  get topNavPowerToggle (): string | null {
+  get topNavPowerToggle(): string | null {
     return this.$typedState.config.uiSettings.general.topNavPowerToggle
   }
 
-  set topNavPowerToggle (value: string | null) {
+  set topNavPowerToggle(value: string | null) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.topNavPowerToggle',
       value,
@@ -465,7 +461,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get topNavPowerToggleDevicesList () {
+  get topNavPowerToggleDevicesList() {
     const devices: Moonraker.Power.Device[] = this.$typedGetters['power/getDevices']
     const deviceEntries = devices.length
       ? [
@@ -498,11 +494,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     ]
   }
 
-  get confirmOnPowerDeviceChange (): boolean {
+  get confirmOnPowerDeviceChange(): boolean {
     return this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
   }
 
-  set confirmOnPowerDeviceChange (value: boolean) {
+  set confirmOnPowerDeviceChange(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnPowerDeviceChange',
       value,
@@ -510,11 +506,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showSaveConfigAndRestart (): boolean {
+  get showSaveConfigAndRestart(): boolean {
     return this.$typedState.config.uiSettings.general.showSaveConfigAndRestart
   }
 
-  set showSaveConfigAndRestart (value: boolean) {
+  set showSaveConfigAndRestart(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showSaveConfigAndRestart',
       value,
@@ -522,11 +518,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get showUploadAndPrint (): boolean {
+  get showUploadAndPrint(): boolean {
     return this.$typedState.config.uiSettings.general.showUploadAndPrint
   }
 
-  set showUploadAndPrint (value: boolean) {
+  set showUploadAndPrint(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.showUploadAndPrint',
       value,
@@ -534,11 +530,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get confirmOnSaveConfigAndRestart (): boolean {
+  get confirmOnSaveConfigAndRestart(): boolean {
     return this.$typedState.config.uiSettings.general.confirmOnSaveConfigAndRestart
   }
 
-  set confirmOnSaveConfigAndRestart (value: boolean) {
+  set confirmOnSaveConfigAndRestart(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnSaveConfigAndRestart',
       value,
@@ -546,11 +542,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get sectionsToIgnorePendingConfigurationChanges (): string[] {
+  get sectionsToIgnorePendingConfigurationChanges(): string[] {
     return this.$typedState.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
-  set sectionsToIgnorePendingConfigurationChanges (value: string[]) {
+  set sectionsToIgnorePendingConfigurationChanges(value: string[]) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.sectionsToIgnorePendingConfigurationChanges',
       value: [...new Set(value)].sort((a, b) => a.localeCompare(b)),
@@ -558,11 +554,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get printInProgressLayout (): PrintInProgressLayout {
+  get printInProgressLayout(): PrintInProgressLayout {
     return this.$typedState.config.uiSettings.general.printInProgressLayout
   }
 
-  set printInProgressLayout (value: PrintInProgressLayout) {
+  set printInProgressLayout(value: PrintInProgressLayout) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printInProgressLayout',
       value,
@@ -570,7 +566,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get availablePrintInProgressLayouts () {
+  get availablePrintInProgressLayouts() {
     return [
       {
         value: 'default',
@@ -583,7 +579,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     ]
   }
 
-  get availablePrintProgressCalculation () {
+  get availablePrintProgressCalculation() {
     return [
       {
         value: 'file',
@@ -604,11 +600,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     ]
   }
 
-  get printProgressCalculation (): PrintProgressCalculation[] {
+  get printProgressCalculation(): PrintProgressCalculation[] {
     return this.$typedState.config.uiSettings.general.printProgressCalculation
   }
 
-  set printProgressCalculation (value: PrintProgressCalculation[]) {
+  set printProgressCalculation(value: PrintProgressCalculation[]) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printProgressCalculation',
       value,
@@ -616,7 +612,7 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get availablePrintEtaCalculation () {
+  get availablePrintEtaCalculation() {
     return [
       {
         value: 'file',
@@ -629,11 +625,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     ]
   }
 
-  get printEtaCalculation (): PrintEtaCalculation[] {
+  get printEtaCalculation(): PrintEtaCalculation[] {
     return this.$typedState.config.uiSettings.general.printEtaCalculation
   }
 
-  set printEtaCalculation (value: PrintEtaCalculation[]) {
+  set printEtaCalculation(value: PrintEtaCalculation[]) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.printEtaCalculation',
       value,
@@ -641,11 +637,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  get enableDiagnostics (): boolean {
+  get enableDiagnostics(): boolean {
     return this.$typedState.config.uiSettings.general.enableDiagnostics
   }
 
-  set enableDiagnostics (value: boolean) {
+  set enableDiagnostics(value: boolean) {
     this.$typedDispatch('config/saveByPath', {
       path: 'uiSettings.general.enableDiagnostics',
       value,
@@ -653,13 +649,11 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     })
   }
 
-  async handleBackupSettings () {
+  async handleBackupSettings() {
     try {
-      const response = await SocketActions.serverDatabaseGetItem(
-        undefined,
-        undefined,
-        { suppressError: true }
-      )
+      const response = await SocketActions.serverDatabaseGetItem(undefined, undefined, {
+        suppressError: true
+      })
 
       const data = response.value
 
@@ -675,11 +669,13 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     } catch (e) {
       consola.error('[Settings] backup failed', e)
 
-      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_backup_failed').toString(), { type: 'error' })
+      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_backup_failed').toString(), {
+        type: 'error'
+      })
     }
   }
 
-  async handleRestoreSettings () {
+  async handleRestoreSettings() {
     try {
       if (this.uploadSettingsFile?.files?.length === 1) {
         const backupDataAsString = await readFileAsTextAsync(this.uploadSettingsFile.files[0])
@@ -687,21 +683,18 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
         if (backupDataAsString) {
           const backupData = JSON.parse(backupDataAsString)
 
-          if (
-            !isFluiddContent<Record<string, unknown>>('settings-backup', backupData)
-          ) {
-            EventBus.$emit(this.$t('app.general.msg.not_valid_fluidd_backup_file').toString(), { type: 'error' })
+          if (!isFluiddContent<Record<string, unknown>>('settings-backup', backupData)) {
+            EventBus.$emit(this.$t('app.general.msg.not_valid_fluidd_backup_file').toString(), {
+              type: 'error'
+            })
 
             return
           }
 
           for (const key in backupData.data) {
-            await SocketActions.serverDatabasePostItem(
-              key,
-              backupData.data[key],
-              undefined,
-              { suppressError: true }
-            )
+            await SocketActions.serverDatabasePostItem(key, backupData.data[key], undefined, {
+              suppressError: true
+            })
           }
 
           window.location.reload()
@@ -710,7 +703,9 @@ export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {
     } catch (e) {
       consola.error('[Settings] restore failed', e)
 
-      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_restore_failed').toString(), { type: 'error' })
+      EventBus.$emit(this.$t('app.general.msg.fluidd_settings_restore_failed').toString(), {
+        type: 'error'
+      })
     } finally {
       this.uploadSettingsFile.value = ''
     }

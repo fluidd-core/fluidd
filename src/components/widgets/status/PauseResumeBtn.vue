@@ -60,9 +60,7 @@
       <v-list dense>
         <v-list-item @click="$emit('pauseAtLayer')">
           <v-list-item-icon>
-            <v-icon>
-              $pause
-            </v-icon>
+            <v-icon> $pause </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>
@@ -82,16 +80,13 @@ import type { Macro } from '@/store/macros/types'
 
 @Component({})
 export default class PauseResumeBtn extends Mixins(StateMixin) {
-  get hasLayersFromPrintStats () {
+  get hasLayersFromPrintStats() {
     const { total_layer, current_layer } = this.$typedState.printer.printer.print_stats?.info ?? {}
 
-    return (
-      typeof total_layer === 'number' &&
-      typeof current_layer === 'number'
-    )
+    return typeof total_layer === 'number' && typeof current_layer === 'number'
   }
 
-  get hasPauseAtLayerMacros () {
+  get hasPauseAtLayerMacros() {
     const macro: Macro | undefined = this.$typedGetters['macros/getMacroByName'](
       'SET_PAUSE_NEXT_LAYER',
       'SET_PAUSE_AT_LAYER'
@@ -100,11 +95,11 @@ export default class PauseResumeBtn extends Mixins(StateMixin) {
     return macro != null
   }
 
-  get setPrintStatsInfoMacro (): Macro | undefined {
+  get setPrintStatsInfoMacro(): Macro | undefined {
     return this.$typedGetters['macros/getMacroByName']('SET_PRINT_STATS_INFO')
   }
 
-  get hasPrintAtLayerMacros () {
+  get hasPrintAtLayerMacros() {
     if (!this.hasPauseAtLayerMacros) {
       return false
     }

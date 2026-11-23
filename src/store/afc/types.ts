@@ -1,8 +1,8 @@
 export interface AfcState {
-  dialog: AfcDialogState;
+  dialog: AfcDialogState
 }
 
 export interface AfcDialogState {
-  show: boolean;
-  filename?: string;
+  show: boolean
+  filename?: string
 }

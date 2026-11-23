@@ -82,21 +82,21 @@
                   <div v-if="spoolmanSupport === SPOOLMAN_PULL">
                     {{
                       $t('app.mmu.msg.spoolman_pull', {
-                        mode: spoolmanSupport,
+                        mode: spoolmanSupport
                       })
                     }}
                   </div>
                   <div v-else-if="spoolmanSupport === SPOOLMAN_OFF">
                     {{
                       $t('app.mmu.msg.spoolman_off', {
-                        mode: spoolmanSupport,
+                        mode: spoolmanSupport
                       })
                     }}
                   </div>
                   <div v-else>
                     {{
                       $t('app.mmu.msg.spoolman_other', {
-                        mode: spoolmanSupport,
+                        mode: spoolmanSupport
                       })
                     }}
                   </div>
@@ -120,8 +120,7 @@
                         v-model="useSpoolman"
                         :label="$t('app.mmu.label.spoolman')"
                         :disabled="
-                          spoolmanSupport === SPOOLMAN_PULL ||
-                            spoolmanSupport === SPOOLMAN_OFF
+                          spoolmanSupport === SPOOLMAN_PULL || spoolmanSupport === SPOOLMAN_OFF
                         "
                         hide-details
                         class="short-switch"
@@ -136,13 +135,13 @@
                         :rules="spoolIdRules()"
                         :disabled="
                           !useSpoolman ||
-                            spoolmanSupport === SPOOLMAN_PULL ||
-                            spoolmanSupport === SPOOLMAN_OFF
+                          spoolmanSupport === SPOOLMAN_PULL ||
+                          spoolmanSupport === SPOOLMAN_OFF
                         "
                         :hide-spin-buttons="
                           !useSpoolman ||
-                            spoolmanSupport === SPOOLMAN_PULL ||
-                            spoolmanSupport === SPOOLMAN_OFF
+                          spoolmanSupport === SPOOLMAN_PULL ||
+                          spoolmanSupport === SPOOLMAN_OFF
                         "
                         outlined
                         dense
@@ -192,9 +191,7 @@
                         type="number"
                         :label="$t('app.mmu.label.temperature')"
                         :disabled="useSpoolman || spoolmanSupport === SPOOLMAN_PULL"
-                        :hide-spin-buttons="
-                          useSpoolman || spoolmanSupport === SPOOLMAN_PULL
-                        "
+                        :hide-spin-buttons="useSpoolman || spoolmanSupport === SPOOLMAN_PULL"
                         suffix="°C"
                         :rules="temperatureRules()"
                         outlined
@@ -264,14 +261,10 @@
                           hide-details
                         >
                           <template #prepend>
-                            <v-icon @click="decrementSpeed">
-                              $mmuDecrementSpeed
-                            </v-icon>
+                            <v-icon @click="decrementSpeed"> $mmuDecrementSpeed </v-icon>
                           </template>
                           <template #append>
-                            <v-icon @click="incrementSpeed">
-                              $mmuIncrementSpeed
-                            </v-icon>
+                            <v-icon @click="incrementSpeed"> $mmuIncrementSpeed </v-icon>
                           </template>
                         </v-slider>
                       </v-card-text>
@@ -302,7 +295,7 @@
                   <div v-else>
                     <div
                       :class="!spoolIdExists ? 'no-spool' : ''"
-                      style="align-items: center;"
+                      style="align-items: center"
                     >
                       <v-icon
                         :color="spoolmanColor"
@@ -327,9 +320,7 @@
                         class="spoolman-btn"
                         @click="handleSelectSpool()"
                       >
-                        <v-icon>
-                          $mmuChooseSpool
-                        </v-icon>
+                        <v-icon> $mmuChooseSpool </v-icon>
                         {{ $t('app.mmu.label.choose_spool') }}
                       </v-btn>
                     </div>
@@ -368,20 +359,24 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   private editGateSelected: number = -1
 
   @Watch('open')
-  onOpenChanged () {
+  onOpenChanged() {
     this.initialize()
   }
 
   @Watch('gateMap')
-  onGateMapChanged () {
+  onGateMapChanged() {
     this.initialize()
   }
 
-  private initialize () {
+  private initialize() {
     if (this.open) {
       this.editGateMap = Array.from(this.gateMap)
 
-      if (typeof this.initialGate === 'number' && this.initialGate >= 0 && this.initialGate < this.editGateMap.length) {
+      if (
+        typeof this.initialGate === 'number' &&
+        this.initialGate >= 0 &&
+        this.initialGate < this.editGateMap.length
+      ) {
         this.editGateSelected = this.initialGate
       } else {
         this.editGateSelected = -1
@@ -392,7 +387,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     }
   }
 
-  private selectGate (gate: number) {
+  private selectGate(gate: number) {
     if (this.editGateSelected !== -1) this.adjustSpoolId() // Get rid of null possibility
     if (this.editGateSelected === gate) {
       this.editGateSelected = -1
@@ -406,79 +401,83 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     }
   }
 
-  private handleEscapePress (event: KeyboardEvent) {
+  private handleEscapePress(event: KeyboardEvent) {
     if (event.key === 'Escape' || event.keyCode === 27) {
       this.editGateSelected = -1
     }
   }
 
-  private adjustName () {
+  private adjustName() {
     const filamentName = this.editGateMap[this.editGateSelected].filamentName ?? ''
     this.editGateMap[this.editGateSelected].filamentName = filamentName.trim().replace(/[#'"]/g, '')
   }
 
-  private adjustMaterial () {
+  private adjustMaterial() {
     const material = this.editGateMap[this.editGateSelected].material ?? ''
     this.editGateMap[this.editGateSelected].material = material.trim().replace(/[#'"]/g, '')
   }
 
-  get spoolId (): number | null {
+  get spoolId(): number | null {
     if (!this.editGateMap || !this.editGateMap[this.editGateSelected]) {
       return null
     }
     return this.editGateMap[this.editGateSelected].spoolId
   }
 
-  set spoolId (newSpoolIdStr: string | null) {
+  set spoolId(newSpoolIdStr: string | null) {
     const newSpoolId = newSpoolIdStr ? parseInt(newSpoolIdStr) : null
-    this.editGateMap[this.editGateSelected].spoolId = newSpoolId !== null && !Number.isNaN(newSpoolId) ? newSpoolId : null
+    this.editGateMap[this.editGateSelected].spoolId =
+      newSpoolId !== null && !Number.isNaN(newSpoolId) ? newSpoolId : null
   }
 
   @Watch('spoolId')
-  onSpoolIdChanged (newSpoolId: number | null) {
+  onSpoolIdChanged(newSpoolId: number | null) {
     if (newSpoolId !== null && newSpoolId > 0) {
       const spool = this.spoolmanSpool(newSpoolId)
       this.editGateMap[this.editGateSelected].filamentName =
-                spool?.filament?.name ?? this.$t('app.mmu.label.unknown').toString()
+        spool?.filament?.name ?? this.$t('app.mmu.label.unknown').toString()
       this.editGateMap[this.editGateSelected].material =
-                spool?.filament?.material ?? this.$t('app.mmu.label.unknown').toString()
+        spool?.filament?.material ?? this.$t('app.mmu.label.unknown').toString()
       const color = this.fromColorString(spool?.filament?.color_hex ?? '')
       this.editGateMap[this.editGateSelected].color = color
-      this.editGateMap[this.editGateSelected].temperature = spool?.filament?.settings_extruder_temp ?? -1
+      this.editGateMap[this.editGateSelected].temperature =
+        spool?.filament?.settings_extruder_temp ?? -1
     }
   }
 
-  private spoolIdRules () {
+  private spoolIdRules() {
     const spools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
     return [
       (v: number) => {
         if (!v || v <= 0) return true
-        const spoolExists = spools.some((spool) => spool.id === v) ?? null
+        const spoolExists = spools.some(spool => spool.id === v) ?? null
         return spoolExists ? true : this.$t('app.mmu.msg.no_matching_spool')
       }
     ]
   }
 
-  private adjustSpoolId () {
+  private adjustSpoolId() {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     this.editGateMap[this.editGateSelected].spoolId = spoolId
   }
 
-  get spoolIdExists (): boolean {
+  get spoolIdExists(): boolean {
     const spools: Spool[] = this.$typedGetters['spoolman/getAvailableSpools']
-    return spools.some((spool) => spool.id === this.spoolId)
+    return spools.some(spool => spool.id === this.spoolId)
   }
 
-  get temperature (): number {
+  get temperature(): number {
     return this.editGateMap[this.editGateSelected].temperature
   }
 
-  set temperature (newTemperatureStr: string) {
+  set temperature(newTemperatureStr: string) {
     const newTemperature = newTemperatureStr ? parseInt(newTemperatureStr) : -1
-    this.editGateMap[this.editGateSelected].temperature = Number.isNaN(newTemperature) ? -1 : newTemperature
+    this.editGateMap[this.editGateSelected].temperature = Number.isNaN(newTemperature)
+      ? -1
+      : newTemperature
   }
 
-  private temperatureRules () {
+  private temperatureRules() {
     return [
       (v: string | number) => {
         const num = parseFloat(String(v))
@@ -489,7 +488,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     ]
   }
 
-  private adjustTemperature () {
+  private adjustTemperature() {
     const temp = this.editGateMap[this.editGateSelected].temperature
     if (temp < 100) {
       this.editGateMap[this.editGateSelected].temperature = 100
@@ -498,12 +497,12 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     }
   }
 
-  get useSpoolman (): boolean {
+  get useSpoolman(): boolean {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId
     return spoolId === null || spoolId > 0
   }
 
-  set useSpoolman (newValue) {
+  set useSpoolman(newValue) {
     if (!newValue) {
       this.editGateMap[this.editGateSelected].spoolId = -1
     } else {
@@ -511,17 +510,18 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     }
   }
 
-  get selectedGateStatus (): boolean {
+  get selectedGateStatus(): boolean {
     return (
-      this.editGateMap[this.editGateSelected].status === 1 || this.editGateMap[this.editGateSelected].status === 2
+      this.editGateMap[this.editGateSelected].status === 1 ||
+      this.editGateMap[this.editGateSelected].status === 2
     )
   }
 
-  set selectedGateStatus (value: boolean) {
+  set selectedGateStatus(value: boolean) {
     this.editGateMap[this.editGateSelected].status = value ? this.GATE_AVAILABLE : this.GATE_EMPTY
   }
 
-  get selectedGateStatusLabel (): string {
+  get selectedGateStatusLabel(): string {
     const status = this.editGateMap[this.editGateSelected].status
     if (status === this.GATE_UNKNOWN) {
       return this.$t('app.mmu.msg.filament_unknown').toString()
@@ -531,7 +531,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     return this.$t('app.mmu.msg.filament_available').toString()
   }
 
-  handleSelectSpool () {
+  handleSelectSpool() {
     this.$typedCommit('spoolman/setDialogState', {
       show: true,
       spoolSelectionOnly: true
@@ -539,19 +539,19 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   @Watch('$typedState.spoolman.dialog')
-  onSpoolmanChanged (newDialog: SpoolSelectionDialogState) {
+  onSpoolmanChanged(newDialog: SpoolSelectionDialogState) {
     if (newDialog.selectedSpoolId != null) {
       this.editGateMap[this.editGateSelected].spoolId = newDialog.selectedSpoolId
     }
   }
 
-  get spoolmanColor (): string {
+  get spoolmanColor(): string {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     const spool = this.spoolmanSpool(spoolId)
     return spool?.filament.color_hex ?? '#000'
   }
 
-  get spoolmanRemainingWeight () {
+  get spoolmanRemainingWeight() {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     const spool = this.spoolmanSpool(spoolId)
     if (spool) {
@@ -561,7 +561,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     return '-'
   }
 
-  get spoolmanTotalWeight () {
+  get spoolmanTotalWeight() {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     const spool = this.spoolmanSpool(spoolId)
     if (spool) {
@@ -581,7 +581,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     return '-'
   }
 
-  get spoolmanLastUsed () {
+  get spoolmanLastUsed() {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     const spool = this.spoolmanSpool(spoolId)
     let usedStr = '-'
@@ -607,46 +607,47 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     return `${this.$t('app.mmu.label.spoolman_last_used')}: ${usedStr}`
   }
 
-  decrementSpeed (): void {
+  decrementSpeed(): void {
     let value = this.editGateMap[this.editGateSelected].speedOverride
     value = value > 10 ? Math.round(value - 10) : 10
     this.editGateMap[this.editGateSelected].speedOverride = value
   }
 
-  incrementSpeed (): void {
+  incrementSpeed(): void {
     let value = this.editGateMap[this.editGateSelected].speedOverride
     value = value < 150 ? Math.round(value + 10) : 150
     this.editGateMap[this.editGateSelected].speedOverride = value
   }
 
-  private resetSpeed (): void {
+  private resetSpeed(): void {
     this.editGateMap[this.editGateSelected].speedOverride = 100
   }
 
   // Actions...
 
-  async resetGateMap () {
-    const result = await this.$confirm(
-      this.$tc('app.mmu.msg.reset_gate_map_confirmation', 1),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async resetGateMap() {
+    const result = await this.$confirm(this.$tc('app.mmu.msg.reset_gate_map_confirmation', 1), {
+      title: this.$tc('app.general.label.confirm'),
+      color: 'card-heading',
+      icon: '$error'
+    })
 
     if (result) this.executeResetGateMap()
   }
 
-  executeResetGateMap () {
+  executeResetGateMap() {
     this.initialize()
     this.sendGcode('MMU_GATE_MAP RESET=1', this.$waits.onMmuGateMap)
   }
 
-  close () {
+  close() {
     this.$emit('close')
     this.editGateMap = []
     this.editGateSelected = -1
     this.open = false
   }
 
-  commit () {
+  commit() {
     if (this.editGateSelected !== -1) this.adjustSpoolId() // Get rid of null possibility
     const mapStr = this.generateMapString(this.editGateMap)
     const cmd = `MMU_GATE_MAP MAP="${mapStr}" QUIET=1`
@@ -654,39 +655,39 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     this.close()
   }
 
-  private generateMapString (gateMap: MmuGateDetails[]) {
-        type GateDetails = {
-          status: number
-          spool_id: number | null
-          material: string
-          color: string
-          name: string
-          temp: number
-          speed_override: number
-        }
-        const mapObject: Record<number, GateDetails> = {}
-        gateMap.forEach((gate) => {
-          mapObject[gate.index] = {
-            status: gate.status ?? this.GATE_UNKNOWN,
-            spool_id: gate.spoolId ?? -1,
-            material: gate.material ?? '',
-            color: gate.color.replace(this.NO_FILAMENT_COLOR, '').replace('#', ''),
-            name: gate.filamentName ?? '',
-            temp: gate.temperature ?? -1,
-            speed_override: gate.speedOverride ?? 100,
-          }
-        })
-        const jsonString = JSON.stringify(mapObject)
-          .replace(/"(\d+)":/g, '$1: ')
-          .replace(/"/g, "'")
-        return jsonString
+  private generateMapString(gateMap: MmuGateDetails[]) {
+    type GateDetails = {
+      status: number
+      spool_id: number | null
+      material: string
+      color: string
+      name: string
+      temp: number
+      speed_override: number
+    }
+    const mapObject: Record<number, GateDetails> = {}
+    gateMap.forEach(gate => {
+      mapObject[gate.index] = {
+        status: gate.status ?? this.GATE_UNKNOWN,
+        spool_id: gate.spoolId ?? -1,
+        material: gate.material ?? '',
+        color: gate.color.replace(this.NO_FILAMENT_COLOR, '').replace('#', ''),
+        name: gate.filamentName ?? '',
+        temp: gate.temperature ?? -1,
+        speed_override: gate.speedOverride ?? 100
+      }
+    })
+    const jsonString = JSON.stringify(mapObject)
+      .replace(/"(\d+)":/g, '$1: ')
+      .replace(/"/g, "'")
+    return jsonString
   }
 
-  mounted () {
+  mounted() {
     document.addEventListener('keydown', this.handleEscapePress)
   }
 
-  beforeDestroy () {
+  beforeDestroy() {
     document.removeEventListener('keydown', this.handleEscapePress)
   }
 }
@@ -767,5 +768,4 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
 .spoolman-btn .v-icon {
     margin-right: 4px;
 }
-
 </style>

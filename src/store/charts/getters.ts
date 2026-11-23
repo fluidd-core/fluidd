@@ -14,69 +14,72 @@ export const getters = {
   getChartRetention: (state, getters, rootState) => {
     const config = rootState.server.config
 
-    return config.data_store?.temperature_store_size ??
+    return (
+      config.data_store?.temperature_store_size ??
       config.server?.temperature_store_size ??
       Globals.CHART_HISTORY_RETENTION
+    )
   },
 
   /**
    * Return base chart options given a chart type.
    */
-  getBaseChartOptions: (state, getters, rootState) => (tooltipSuffix: Record<string, string> = {}): EChartsOption => {
-    // Common properties across all chart types.
-    const isDark = rootState.config.uiSettings.theme.isDark
-    const isMobile = vuetify.framework.breakpoint.mobile
+  getBaseChartOptions:
+    (state, getters, rootState) =>
+    (tooltipSuffix: Record<string, string> = {}): EChartsOption => {
+      // Common properties across all chart types.
+      const isDark = rootState.config.uiSettings.theme.isDark
+      const isMobile = vuetify.framework.breakpoint.mobile
 
-    const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
-    const fontSize = (isMobile) ? 13 : 14
+      const fontColor = isDark ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
+      const fontSize = isMobile ? 13 : 14
 
-    const lineStyle = {
-      color: (isDark) ? '#ffffff' : '#000000',
-      opacity: 0.05
-    }
-
-    const grid: EChartsOption['grid'] = {
-      show: true,
-      borderWidth: 1,
-      borderColor: (isDark) ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)'
-    }
-
-    const tooltip: EChartsOption['tooltip'] = {
-      backgroundColor: (isDark) ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
-      borderColor: (isDark) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
-      textStyle: {
-        color: fontColor,
-        fontSize
+      const lineStyle = {
+        color: isDark ? '#ffffff' : '#000000',
+        opacity: 0.05
       }
-    }
 
-    const theme = vuetify.framework.theme.currentTheme
-    const color: EChartsOption['color'] = [
-      theme.primary?.toString() ?? '',
-      theme.accent?.toString() ?? '',
-      theme.info?.toString() ?? '',
-    ]
-
-    return {
-      color,
-      grid,
-      textStyle: {
-        fontFamily: 'Roboto'
-      },
-      tooltip: {
-        ...tooltip,
+      const grid: EChartsOption['grid'] = {
         show: true,
-        trigger: 'axis',
-        position: ['-8px', '-8px'],
-        formatter: (params) => {
-          if (!Array.isArray(params)) {
-            return ''
-          }
+        borderWidth: 1,
+        borderColor: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.15)'
+      }
 
-          let title = false
-          let text = '<div>'
-          params
-            .forEach(param => {
+      const tooltip: EChartsOption['tooltip'] = {
+        backgroundColor: isDark ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
+        borderColor: isDark ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
+        textStyle: {
+          color: fontColor,
+          fontSize
+        }
+      }
+
+      const theme = vuetify.framework.theme.currentTheme
+      const color: EChartsOption['color'] = [
+        theme.primary?.toString() ?? '',
+        theme.accent?.toString() ?? '',
+        theme.info?.toString() ?? ''
+      ]
+
+      return {
+        color,
+        grid,
+        textStyle: {
+          fontFamily: 'Roboto'
+        },
+        tooltip: {
+          ...tooltip,
+          show: true,
+          trigger: 'axis',
+          position: ['-8px', '-8px'],
+          formatter: params => {
+            if (!Array.isArray(params)) {
+              return ''
+            }
+
+            let title = false
+            let text = '<div>'
+            params.forEach(param => {
               if (param == null) {
                 return
               }
@@ -85,10 +88,7 @@ export const getters = {
               const yValue = tooltipValue(param, 'y')
 
               const ySuffix = (yDimension && tooltipSuffix[yDimension]) || ''
-              if (
-                yDimension &&
-                param.seriesName
-              ) {
+              if (yDimension && param.seriesName) {
                 const xValue = tooltipValue(param, 'x')
 
                 if (!title && xValue != null) {
@@ -116,46 +116,46 @@ export const getters = {
                 `
               }
             })
-          text += '</div>'
-          return text
-        }
-      },
-      xAxis: {
-        type: 'time',
-        min: (value) => value.max - (600 * 1000),
-        // min: 'dataMin',
-        max: 'dataMax',
-        axisLine: {
-          show: false
+            text += '</div>'
+            return text
+          }
         },
-        axisTick: {
-          show: false
+        xAxis: {
+          type: 'time',
+          min: value => value.max - 600 * 1000,
+          // min: 'dataMin',
+          max: 'dataMax',
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            show: false
+          },
+          splitLine: {
+            show: true,
+            lineStyle
+          },
+          axisPointer: {
+            lineStyle
+          }
         },
-        axisLabel: {
-          show: false
-        },
-        splitLine: {
-          show: true,
-          lineStyle
-        },
-        axisPointer: {
-          lineStyle
-        }
-      },
-      yAxis: {
-        type: 'value',
-        min: 0,
-        max: (value) => Math.max(100, value.max),
-        axisLabel: {
-          show: false
-        },
-        splitLine: {
-          show: true,
-          lineStyle
+        yAxis: {
+          type: 'value',
+          min: 0,
+          max: value => Math.max(100, value.max),
+          axisLabel: {
+            show: false
+          },
+          splitLine: {
+            show: true,
+            lineStyle
+          }
         }
       }
-    }
-  },
+    },
 
   /**
    * Return base chart series configuration based on a type

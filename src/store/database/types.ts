@@ -1,8 +1,8 @@
 export interface DatabaseState {
-  info: DatabaseInfo | null;
+  info: DatabaseInfo | null
 }
 
 export interface DatabaseInfo {
-  namespaces: string[];
-  backups: string[];
+  namespaces: string[]
+  backups: string[]
 }

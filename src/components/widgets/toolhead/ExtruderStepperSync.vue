@@ -7,18 +7,15 @@
       <app-named-select
         :value="extruderStepper.motion_queue"
         :label="$t('app.general.label.synced_extruder')"
-        :items="[
-          { name: $t('app.setting.label.none'), key: null },
-          ...availableExtruders
-        ]"
+        :items="[{ name: $t('app.setting.label.none'), key: null }, ...availableExtruders]"
         :disabled="!klippyReady || printerPrinting"
         :loading="hasWait(`${$waits.onSyncExtruder}${extruderStepper.name}`)"
         :reset-value="extruderStepper.config?.extruder"
         item-value="key"
         item-text="name"
         @change="sendSyncExtruderMotion"
-      />
-    </v-col><v-col
+      /> </v-col
+    ><v-col
       v-if="extruderStepper.enabled !== undefined"
       cols="12"
       sm="6"
@@ -45,16 +42,22 @@ export default class ExtruderStepperSync extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly extruderStepper!: ExtruderStepper
 
-  get availableExtruders (): KnownExtruder[] {
+  get availableExtruders(): KnownExtruder[] {
     return this.$typedGetters['printer/getExtruders']
   }
 
-  sendSyncExtruderMotion (value: string | null) {
-    this.sendGcode(`SYNC_EXTRUDER_MOTION EXTRUDER=${encodeGcodeParamValue(this.extruderStepper.name)} MOTION_QUEUE=${value ?? ''}`, `${this.$waits.onSyncExtruder}${this.extruderStepper.name}`)
+  sendSyncExtruderMotion(value: string | null) {
+    this.sendGcode(
+      `SYNC_EXTRUDER_MOTION EXTRUDER=${encodeGcodeParamValue(this.extruderStepper.name)} MOTION_QUEUE=${value ?? ''}`,
+      `${this.$waits.onSyncExtruder}${this.extruderStepper.name}`
+    )
   }
 
-  sendSetStepperEnable (value: boolean) {
-    this.sendGcode(`SET_STEPPER_ENABLE STEPPER=${encodeGcodeParamValue(this.extruderStepper.key)} ENABLE=${+value}`, `${this.$waits.onStepperEnable}${this.extruderStepper.name}`)
+  sendSetStepperEnable(value: boolean) {
+    this.sendGcode(
+      `SET_STEPPER_ENABLE STEPPER=${encodeGcodeParamValue(this.extruderStepper.key)} ENABLE=${+value}`,
+      `${this.$waits.onStepperEnable}${this.extruderStepper.name}`
+    )
   }
 }
 </script>

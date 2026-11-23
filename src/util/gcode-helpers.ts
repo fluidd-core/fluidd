@@ -13,10 +13,7 @@ export const rawGcodeCommands = {
 }
 
 export const getParamNameForRawGcodeCommand = (commandName: string) => {
-  return (
-    isKeyOf(commandName, rawGcodeCommands) &&
-    rawGcodeCommands[commandName]
-  )
+  return isKeyOf(commandName, rawGcodeCommands) && rawGcodeCommands[commandName]
 }
 
 export const isBasicGcodeCommand = (commandName: string) => {
@@ -28,10 +25,7 @@ export const getParamValueAsString = (param: GcodeParamValue) => {
     param = param.value
   }
 
-  if (
-    !param &&
-    param !== 0
-  ) {
+  if (!param && param !== 0) {
     return ''
   }
 
@@ -40,15 +34,16 @@ export const getParamValueAsString = (param: GcodeParamValue) => {
 
 export const encodeGcodeParamValue = (value: string) => {
   if (quotableCharsRegexp.test(value)) {
-    return `"${value
-      .replace(/\\/g, '\\\\')
-      .replace(/"/g, '\\"')}"`
+    return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
   }
 
   return value
 }
 
-export const gcodeCommandBuilder = (commandName: string, params: Record<string, GcodeParamValue>) => {
+export const gcodeCommandBuilder = (
+  commandName: string,
+  params: Record<string, GcodeParamValue>
+) => {
   commandName = commandName.toUpperCase()
 
   const basicGcodeCommand = isBasicGcodeCommand(commandName)
@@ -57,23 +52,23 @@ export const gcodeCommandBuilder = (commandName: string, params: Record<string, 
   const paramsString = paramNameForRawGcodeCommand
     ? getParamValueAsString(params[paramNameForRawGcodeCommand])
     : Object.entries(params)
-      .map(([key, param]) => {
-        key = key.toUpperCase()
+        .map(([key, param]) => {
+          key = key.toUpperCase()
 
-        const value = getParamValueAsString(param)
+          const value = getParamValueAsString(param)
 
-        if (!value) {
-          return null
-        }
+          if (!value) {
+            return null
+          }
 
-        if (basicGcodeCommand) {
-          return `${key}${value}`
-        }
+          if (basicGcodeCommand) {
+            return `${key}${value}`
+          }
 
-        return `${key}=${encodeGcodeParamValue(value)}`
-      })
-      .filter(Boolean)
-      .join(' ')
+          return `${key}=${encodeGcodeParamValue(value)}`
+        })
+        .filter(Boolean)
+        .join(' ')
 
   if (paramsString) {
     return `${commandName} ${paramsString}`

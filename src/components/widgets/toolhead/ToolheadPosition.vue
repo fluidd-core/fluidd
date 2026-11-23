@@ -12,10 +12,7 @@
         <app-text-field
           :color="forceMoveEnabled ? 'error' : 'primary'"
           :label="`X [ ${livePosition[0].toFixed(2)} ]`"
-          :rules="[
-            $rules.required,
-            $rules.numberValid
-          ]"
+          :rules="[$rules.required, $rules.numberValid]"
           outlined
           persistent-placeholder
           hide-details
@@ -24,7 +21,7 @@
           type="number"
           :disabled="!klippyReady || (!xHomed && !xForceMove)"
           :readonly="printerPrinting"
-          :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
+          :value="useGcodeCoords ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @submit="moveAxisTo('X', +$event)"
         />
       </v-col>
@@ -35,10 +32,7 @@
         <app-text-field
           :color="forceMoveEnabled ? 'error' : 'primary'"
           :label="`Y [ ${livePosition[1].toFixed(2)} ]`"
-          :rules="[
-            $rules.required,
-            $rules.numberValid
-          ]"
+          :rules="[$rules.required, $rules.numberValid]"
           outlined
           persistent-placeholder
           hide-details
@@ -47,7 +41,7 @@
           type="number"
           :disabled="!klippyReady || (!yHomed && !yForceMove)"
           :readonly="printerPrinting"
-          :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
+          :value="useGcodeCoords ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @submit="moveAxisTo('Y', +$event)"
         />
       </v-col>
@@ -58,10 +52,7 @@
         <app-text-field
           :color="forceMoveEnabled ? 'error' : 'primary'"
           :label="`Z [ ${livePosition[2].toFixed(3)} ]`"
-          :rules="[
-            $rules.required,
-            $rules.numberValid
-          ]"
+          :rules="[$rules.required, $rules.numberValid]"
           outlined
           persistent-placeholder
           hide-details
@@ -70,7 +61,7 @@
           type="number"
           :disabled="!klippyReady || (!zHomed && !zForceMove)"
           :readonly="printerPrinting"
-          :value="(useGcodeCoords) ? gcodePosition[2].toFixed(3) : toolheadPosition[2].toFixed(3)"
+          :value="useGcodeCoords ? gcodePosition[2].toFixed(3) : toolheadPosition[2].toFixed(3)"
           @submit="moveAxisTo('Z', +$event)"
         />
       </v-col>
@@ -93,9 +84,7 @@
                 :disabled="!klippyReady || printerPrinting"
                 v-on="on"
               >
-                <v-icon small>
-                  $absolutePositioning
-                </v-icon>
+                <v-icon small> $absolutePositioning </v-icon>
               </app-btn>
             </template>
             <span>{{ $t('app.tool.tooltip.absolute_positioning') }}</span>
@@ -108,9 +97,7 @@
                 :disabled="!klippyReady || printerPrinting"
                 v-on="on"
               >
-                <v-icon small>
-                  $relativePositioning
-                </v-icon>
+                <v-icon small> $relativePositioning </v-icon>
               </app-btn>
             </template>
             <span>{{ $t('app.tool.tooltip.relative_positioning') }}</span>
@@ -136,73 +123,78 @@ const axisIndexMap: Record<Axis, number> = {
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
-  get gcodePosition (): [number, number, number, ...number[]] {
+  get gcodePosition(): [number, number, number, ...number[]] {
     return this.$typedState.printer.printer.gcode_move.gcode_position
   }
 
-  get toolheadPosition (): [number, number, number, ...number[]] {
+  get toolheadPosition(): [number, number, number, ...number[]] {
     return this.$typedState.printer.printer.toolhead.position
   }
 
-  get livePosition (): [number, number, number, ...number[]] {
+  get livePosition(): [number, number, number, ...number[]] {
     return this.$typedState.printer.printer.motion_report?.live_position ?? [0, 0, 0]
   }
 
-  get useGcodeCoords (): boolean {
+  get useGcodeCoords(): boolean {
     return this.$typedState.config.uiSettings.general.useGcodeCoords
   }
 
-  get xForceMove (): boolean {
+  get xForceMove(): boolean {
     return this.forceMoveEnabled && !this.xHasMultipleSteppers
   }
 
-  get yForceMove (): boolean {
+  get yForceMove(): boolean {
     return this.forceMoveEnabled && !this.yHasMultipleSteppers
   }
 
-  get zForceMove (): boolean {
+  get zForceMove(): boolean {
     return this.forceMoveEnabled && !this.zHasMultipleSteppers
   }
 
-  get usesAbsolutePositioning (): boolean {
+  get usesAbsolutePositioning(): boolean {
     return this.$typedState.printer.printer.gcode_move.absolute_coordinates
   }
 
-  get positioning () {
+  get positioning() {
     return this.usesAbsolutePositioning ? 0 : 1
   }
 
-  set positioning (value: number) {
+  set positioning(value: number) {
     this.sendGcode(`G9${value}`)
   }
 
-  get printerSettings (): Klipper.SettingsState {
+  get printerSettings(): Klipper.SettingsState {
     return this.$typedGetters['printer/getPrinterSettings']
   }
 
-  moveAxisTo (axis: Axis, pos: number) {
+  moveAxisTo(axis: Axis, pos: number) {
     const axisIndex = axisIndexMap[axis]
     const currentPos = this.useGcodeCoords
       ? this.gcodePosition[axisIndex]
       : this.toolheadPosition[axisIndex]
 
     if (currentPos !== pos) {
-      const rate: number = axis === 'Z'
-        ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
-        : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
+      const rate: number =
+        axis === 'Z'
+          ? this.$typedState.config.uiSettings.general.defaultToolheadZSpeed
+          : this.$typedState.config.uiSettings.general.defaultToolheadXYSpeed
 
       if (this.forceMoveEnabled) {
-        const accel: number = axis === 'Z'
-          ? this.printerSettings.printer?.max_z_accel ?? 100
-          : this.$typedState.printer.printer.toolhead.max_accel
-        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
+        const accel: number =
+          axis === 'Z'
+            ? (this.printerSettings.printer?.max_z_accel ?? 100)
+            : this.$typedState.printer.printer.toolhead.max_accel
+        this.sendGcode(
+          `FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`
+        )
       } else {
         this.sendMoveGcode(
           {
             [axis]: pos
           },
           rate,
-          true)
+          true
+        )
       }
     }
   }
@@ -210,8 +202,8 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 </script>
 
 <style type="scss" scoped>
-  .positioning-toggle-button {
-    min-width: 20px !important;
-    width: 50%;
-  }
+.positioning-toggle-button {
+  min-width: 20px !important;
+  width: 50%;
+}
 </style>

@@ -40,36 +40,26 @@ import { createGcodeRules } from './gcode-rules'
 export const conf: monaco.languages.LanguageConfiguration = {
   comments: { lineComment: '#' },
   brackets: [['[', ']']],
-  autoClosingPairs: [{ open: '[', close: ']' }],
+  autoClosingPairs: [{ open: '[', close: ']' }]
 }
 
 const gcode = createGcodeRules('embedded')
 
 // Runs at the start of every physical line to decide whether it still belongs
 // to the value being accumulated. `$S2` is the key's indent.
-const continuationCheck = (onContinuation: monaco.languages.IMonarchLanguageAction): monaco.languages.IMonarchLanguageRule[] => [
-  [
-    /^#\*#/,
-    { token: '@rematch', next: '@content' }
-  ],
+const continuationCheck = (
+  onContinuation: monaco.languages.IMonarchLanguageAction
+): monaco.languages.IMonarchLanguageRule[] => [
+  [/^#\*#/, { token: '@rematch', next: '@content' }],
 
   // Blank line or comment: stay and keep waiting
-  [
-    /^([ \t]*)((?:[#;].*)?)$/,
-    ['white', 'comment']
-  ],
+  [/^([ \t]*)((?:[#;].*)?)$/, ['white', 'comment']],
 
   // Continuation: strictly more indented than the key (indent = $S2)
-  [
-    '^$S2(?=[ \t]+[^ \t])',
-    onContinuation
-  ],
+  ['^$S2(?=[ \t]+[^ \t])', onContinuation],
 
   // Anything else: not a continuation, return to content without consuming
-  [
-    '',
-    { token: '@rematch', next: '@content' }
-  ]
+  ['', { token: '@rematch', next: '@content' }]
 ]
 
 export const language: monaco.languages.IMonarchLanguage = {
@@ -81,30 +71,18 @@ export const language: monaco.languages.IMonarchLanguage = {
 
   tokenizer: {
     root: [
-      [
-        /^#\*#.*$/,
-        'comment.control.save-config'
-      ],
+      [/^#\*#.*$/, 'comment.control.save-config'],
 
       [
         /^([ \t]*)(\[)([^\]]+)(\])/,
         ['white', 'bracket', 'type.identifier', { token: 'bracket', next: '@content' }]
       ],
 
-      [
-        /[#;].*$/,
-        'comment'
-      ],
+      [/[#;].*$/, 'comment'],
 
-      [
-        /[ \t]+/,
-        'white'
-      ],
+      [/[ \t]+/, 'white'],
 
-      [
-        /.*$/,
-        'invalid'
-      ]
+      [/.*$/, 'invalid']
     ],
 
     content: [
@@ -116,12 +94,17 @@ export const language: monaco.languages.IMonarchLanguage = {
 
       [
         /^([ \t]*)([^#;=: \t[]+(?:[ \t]+[^#;=: \t]+)*)([ \t]*)(=|:)/,
-        ['white', 'keyword', 'white', {
-          cases: {
-            '@eos': { token: 'separator', next: '@checkValue.$1' },
-            '@default': { token: 'separator', next: '@value.$1' }
+        [
+          'white',
+          'keyword',
+          'white',
+          {
+            cases: {
+              '@eos': { token: 'separator', next: '@checkValue.$1' },
+              '@default': { token: 'separator', next: '@value.$1' }
+            }
           }
-        }]
+        ]
       ],
 
       { include: '@root' }
@@ -135,10 +118,7 @@ export const language: monaco.languages.IMonarchLanguage = {
 
     value: [
       // Comment
-      [
-        /([ \t]+)([#;].*)$/,
-        ['white', { token: 'comment', next: '@checkValue.$S2' }]
-      ],
+      [/([ \t]+)([#;].*)$/, ['white', { token: 'comment', next: '@checkValue.$S2' }]],
 
       // Value
       [
@@ -162,5 +142,5 @@ export const language: monaco.languages.IMonarchLanguage = {
         }
       ]
     ]
-  },
+  }
 }

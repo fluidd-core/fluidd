@@ -1,5 +1,5 @@
 .fluidd.v-application blockquote {
-  font-family: monospace, monospace
+  font-family: monospace, monospace;
   // background-color: transparent;
   // color: #C0341D;
   // padding: 0 0.4rem;
@@ -14,7 +14,7 @@
 .v-application--wrap,
 .v-dialog__content {
   ::-webkit-scrollbar {
-    transition: all .5s;
+    transition: all 0.5s;
     width: 5px;
     height: 8px;
     z-index: 10;
@@ -42,7 +42,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
@@ -68,16 +68,16 @@ input[type=number] {
 }
 
 .spool-icon {
-  stroke: rgba(0,0,0, 0.25);
-  stroke-width: .025rem;
+  stroke: rgba(0, 0, 0, 0.25);
+  stroke-width: 0.025rem;
 }
 
 .theme--dark .spool-icon {
-  stroke: rgba(0,0,0, 0.5);
+  stroke: rgba(0, 0, 0, 0.5);
 }
 
 .v-application kbd {
-  background: #4A4A4F !important;
+  background: #4a4a4f !important;
 }
 
 textarea.clipboard-copy {
@@ -89,5 +89,5 @@ textarea.clipboard-copy {
 }
 
 .fill-width {
-    width: 100% !important;
+  width: 100% !important;
 }

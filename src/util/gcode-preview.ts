@@ -1,11 +1,26 @@
-import type { BuildLayerPathsOptions, LayerPaths, MinMax, MoveStore, Point } from '@/store/gcodePreview/types'
+import type {
+  BuildLayerPathsOptions,
+  LayerPaths,
+  MinMax,
+  MoveStore,
+  Point
+} from '@/store/gcodePreview/types'
 import { MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from './decimal-round'
 
 // PrusaSlicer's DEFAULT_RANGES_COLORS
 export const rangeColors = Object.freeze([
-  '#0B2C7A', '#135985', '#1C8891', '#04D60F', '#AAF200', '#FCF903',
-  '#F5CE0A', '#E38820', '#D16830', '#C2523C', '#942616'
+  '#0B2C7A',
+  '#135985',
+  '#1C8891',
+  '#04D60F',
+  '#AAF200',
+  '#FCF903',
+  '#F5CE0A',
+  '#E38820',
+  '#D16830',
+  '#C2523C',
+  '#942616'
 ])
 
 const lastRangeBucket = rangeColors.length - 1
@@ -78,7 +93,8 @@ const arcToSVGPath = (
 
   const radius = formatCoordinate(Math.hypot(i, j))
 
-  let angle = angleBetween(centerX, centerY, fromX, fromY) - angleBetween(centerX, centerY, toX, toY)
+  let angle =
+    angleBetween(centerX, centerY, fromX, fromY) - angleBetween(centerX, centerY, toX, toY)
 
   if (angle > 180) {
     angle -= 360
@@ -93,9 +109,11 @@ const arcToSVGPath = (
     return `A${radius},${radius},0,${+(angle < 0)},0,${x},${y}`
   }
 
-  return `M${x},${y}` +
+  return (
+    `M${x},${y}` +
     `A${radius},${radius},0,${+(angle > 0)},0,${formatCoordinate(fromX)},${formatCoordinate(fromY)}` +
     `M${x},${y}`
+  )
 }
 
 const moveToSVGPath = (moves: MoveStore, index: number, fromX: number, fromY: number): string => {
@@ -104,7 +122,15 @@ const moveToSVGPath = (moves: MoveStore, index: number, fromX: number, fromY: nu
   const flags = moves.flags[index]
 
   if ((flags & MoveFlags.Arc) !== 0) {
-    return arcToSVGPath(fromX, fromY, toX, toY, moves.i[index], moves.j[index], (flags & MoveFlags.Clockwise) !== 0)
+    return arcToSVGPath(
+      fromX,
+      fromY,
+      toX,
+      toY,
+      moves.i[index],
+      moves.j[index],
+      (flags & MoveFlags.Clockwise) !== 0
+    )
   }
 
   return `L${formatCoordinate(toX)},${formatCoordinate(toY)}`

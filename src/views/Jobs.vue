@@ -29,11 +29,11 @@ import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
   }
 })
 export default class Configuration extends Mixins(StateMixin) {
-  get supportsJobQueue (): boolean {
+  get supportsJobQueue(): boolean {
     return this.$typedGetters['server/componentSupport']('job_queue')
   }
 
-  get hasQueuedJobs () {
+  get hasQueuedJobs() {
     return this.supportsJobQueue && this.$typedState.jobQueue.queuedJobs.length > 0
   }
 }

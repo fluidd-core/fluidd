@@ -30,7 +30,7 @@
         class="es-group-icon"
         :style="{
           background: details.endlessSpoolGroup === selectedEsGroup ? 'limegreen' : 'none',
-          cursor: 'context-menu',
+          cursor: 'context-menu'
         }"
         @click.stop="$emit('select-es', details.index)"
       />
@@ -48,7 +48,7 @@ import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
 
 @Component({
-  components: { MmuSpool, MmuGateSummary },
+  components: { MmuSpool, MmuGateSummary }
 })
 export default class MmuGateDialogRow extends Mixins(StateMixin, MmuMixin) {
   @Prop({ required: true })
@@ -60,7 +60,7 @@ export default class MmuGateDialogRow extends Mixins(StateMixin, MmuMixin) {
   @Prop({ required: true })
   readonly selectedEsGroup!: number | null
 
-  get rowClass (): string[] {
+  get rowClass(): string[] {
     const classes = ['cursor-pointer']
     if (this.details.index === this.selectedGate) classes.push('selected-row')
     if (this.details.status === this.GATE_EMPTY) classes.push('disabled-row')
@@ -71,27 +71,27 @@ export default class MmuGateDialogRow extends Mixins(StateMixin, MmuMixin) {
 
 <style scoped>
 .v-data-table__table {
-    table-layout: fixed;
+  table-layout: fixed;
 }
 
 .selected-row {
-    background: #595959;
+  background: #595959;
 }
 
 .disabled-row {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .es-group-icon {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    border-radius: 25%;
-    border: 1px solid var(--v-secondary-lighten3);
-    vertical-align: middle;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 25%;
+  border: 1px solid var(--v-secondary-lighten3);
+  vertical-align: middle;
 }
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 </style>

@@ -43,50 +43,31 @@ export default class AppBtn extends Vue {
   @Prop({ type: Boolean })
   plain?: boolean
 
-  get colorToApply () {
+  get colorToApply() {
     if (this.color != null) {
       return this.color
     }
 
-    return (
-      this.fab ||
-      this.icon ||
-      this.plain
-    )
-      ? undefined
-      : 'btncolor'
+    return this.fab || this.icon || this.plain ? undefined : 'btncolor'
   }
 
-  get colorIsLight () {
+  get colorIsLight() {
     const color = this.colorToApply
 
-    if (
-      color == null ||
-      this.fab ||
-      this.icon ||
-      this.outlined ||
-      this.text ||
-      this.plain
-    ) {
+    if (color == null || this.fab || this.icon || this.outlined || this.text || this.plain) {
       return false
     }
 
     const themeColor = this.$vuetify.theme.currentTheme[color]
 
     // Theme colors are used as is, with the exception of "primary"
-    if (
-      themeColor != null &&
-      color !== 'primary'
-    ) {
+    if (themeColor != null && color !== 'primary') {
       return false
     }
 
     const resolvedColor = new TinyColor(themeColor?.toString() ?? color)
 
-    return (
-      resolvedColor.isValid &&
-      resolvedColor.isLight()
-    )
+    return resolvedColor.isValid && resolvedColor.isLight()
   }
 }
 </script>

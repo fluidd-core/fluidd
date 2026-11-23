@@ -17,9 +17,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon color="warning">
-              $warning
-            </v-icon>
+            <v-icon color="warning"> $warning </v-icon>
           </span>
         </template>
         <div
@@ -57,7 +55,7 @@
               small
               :color="fileFilament.color"
               class="mr-1"
-              style="min-width: 0; width: 20px; height: 20px; padding: 0;"
+              style="min-width: 0; width: 20px; height: 20px; padding: 0"
             />
             <span class="text-body-2 text--secondary">
               {{ fileFilament.material }}
@@ -76,7 +74,7 @@
           small
           :color="fileFilament.color"
           class="mr-1"
-          style="min-width: 0; width: 20px; height: 20px; padding: 0;"
+          style="min-width: 0; width: 20px; height: 20px; padding: 0"
         />
         <span class="text-body-2 text--secondary">
           {{ fileFilament.material }}
@@ -88,9 +86,7 @@
     </v-col>
 
     <v-col cols="auto">
-      <v-icon small>
-        $chevronRight
-      </v-icon>
+      <v-icon small> $chevronRight </v-icon>
     </v-col>
 
     <!-- Lane name + lane filament -->
@@ -109,7 +105,7 @@
           >
             <span
               class="text-subtitle-1 font-weight-bold text-uppercase"
-              style="padding-right: 10px;"
+              style="padding-right: 10px"
             >
               {{ laneName }}
             </span>
@@ -118,7 +114,7 @@
               small
               :color="laneFilament.color"
               class="mr-1"
-              style="min-width: 0; width: 20px; height: 20px; padding: 0;"
+              style="min-width: 0; width: 20px; height: 20px; padding: 0"
             />
             <span class="text-body-2 text--secondary">
               <template v-if="laneFilament.weight > 0">
@@ -129,9 +125,7 @@
         </template>
         <div v-if="laneSpool">
           <div>{{ $t('app.afc.PrintStartDialog.SpoolId', { id: laneSpoolId }) }}</div>
-          <div>
-            {{ laneSpoolVendorName }} — {{ laneSpoolFilamentName }}
-          </div>
+          <div> {{ laneSpoolVendorName }} — {{ laneSpoolFilamentName }} </div>
           <div>
             {{ laneSpool.filament.material || '--' }}
             <template v-if="laneSpool.filament.settings_extruder_temp">
@@ -142,10 +136,12 @@
             </template>
           </div>
           <div>
-            {{ $t('app.afc.PrintStartDialog.SpoolWeightRemaining', {
-              remaining: Math.round(laneSpool.remaining_weight ?? 0),
-              used: Math.round(laneSpool.used_weight ?? 0)
-            }) }}
+            {{
+              $t('app.afc.PrintStartDialog.SpoolWeightRemaining', {
+                remaining: Math.round(laneSpool.remaining_weight ?? 0),
+                used: Math.round(laneSpool.used_weight ?? 0)
+              })
+            }}
           </div>
         </div>
         <div v-else>
@@ -153,9 +149,11 @@
             {{ laneFilament.material }}
           </div>
           <div v-if="laneFilament.weight > 0">
-            {{ $t('app.afc.PrintStartDialog.LaneWeightRemaining', {
-              weight: Math.round(laneFilament.weight)
-            }) }}
+            {{
+              $t('app.afc.PrintStartDialog.LaneWeightRemaining', {
+                weight: Math.round(laneFilament.weight)
+              })
+            }}
           </div>
         </div>
       </v-tooltip>
@@ -179,9 +177,7 @@
             small
             v-on="on"
           >
-            <v-icon small>
-              $chevronDown
-            </v-icon>
+            <v-icon small> $chevronDown </v-icon>
           </app-btn>
         </template>
         <v-list dense>
@@ -209,7 +205,7 @@
                       small
                       :color="option.color"
                       class="mr-2"
-                      style="min-width: 0; width: 16px; height: 16px; padding: 0;"
+                      style="min-width: 0; width: 16px; height: 16px; padding: 0"
                     />
                     <span class="text-uppercase font-weight-bold mr-2">{{ option.lane }}</span>
                     <span class="text--secondary text-body-2 mr-1">{{ option.material }}</span>
@@ -231,23 +227,19 @@
                 </template>
                 <div v-if="option.spoolId != null">
                   <div>{{ $t('app.afc.PrintStartDialog.SpoolId', { id: option.spoolId }) }}</div>
-                  <div>
-                    {{ option.vendorName }} — {{ option.filamentName }}
-                  </div>
+                  <div> {{ option.vendorName }} — {{ option.filamentName }} </div>
                   <div>
                     {{ option.material }}
-                    <template v-if="option.extruderTemp">
-                      | {{ option.extruderTemp }}°C
-                    </template>
-                    <template v-if="option.bedTemp">
-                      | {{ option.bedTemp }}°C
-                    </template>
+                    <template v-if="option.extruderTemp"> | {{ option.extruderTemp }}°C </template>
+                    <template v-if="option.bedTemp"> | {{ option.bedTemp }}°C </template>
                   </div>
                   <div>
-                    {{ $t('app.afc.PrintStartDialog.SpoolWeightRemaining', {
-                      remaining: Math.round(option.weight),
-                      used: Math.round(option.usedWeight)
-                    }) }}
+                    {{
+                      $t('app.afc.PrintStartDialog.SpoolWeightRemaining', {
+                        remaining: Math.round(option.weight),
+                        used: Math.round(option.usedWeight)
+                      })
+                    }}
                   </div>
                 </div>
                 <div v-else>
@@ -255,9 +247,11 @@
                     {{ option.material }}
                   </div>
                   <div v-if="option.weight > 0">
-                    {{ $t('app.afc.PrintStartDialog.LaneWeightRemaining', {
-                      weight: Math.round(option.weight)
-                    }) }}
+                    {{
+                      $t('app.afc.PrintStartDialog.LaneWeightRemaining', {
+                        weight: Math.round(option.weight)
+                      })
+                    }}
                   </div>
                 </div>
               </v-tooltip>
@@ -305,11 +299,11 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
   @Prop({ type: Number, required: true })
   readonly toolIndex!: number
 
-  get toolName (): string {
+  get toolName(): string {
     return `T${this.toolIndex}`
   }
 
-  get fileFilament (): FilamentInfo {
+  get fileFilament(): FilamentInfo {
     const fileColors: string[] = this.file.filament_colors ?? []
     const fileNames: string[] = this.file.filament_name ?? []
     const fileTypes: string[] = this.file.filament_type ?? []
@@ -323,7 +317,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
     }
   }
 
-  get laneName (): string | undefined {
+  get laneName(): string | undefined {
     return this.afcLanes.find(lane => {
       const laneObj = this.getAfcLaneObject(lane)
       const mappedTool = laneObj?.map
@@ -336,36 +330,36 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
     })
   }
 
-  get laneInfo (): Klipper.AfcSpoolLaneInfo | undefined {
+  get laneInfo(): Klipper.AfcSpoolLaneInfo | undefined {
     if (!this.laneName) return undefined
 
     return this.getAfcLaneInfo(this.laneName)
   }
 
-  get laneSpoolId (): number | undefined {
+  get laneSpoolId(): number | undefined {
     return this.laneInfo?.spoolId
   }
 
-  get laneSpool () {
+  get laneSpool() {
     return this.laneInfo?.spool ?? null
   }
 
-  get laneSpoolVendorName (): string {
+  get laneSpoolVendorName(): string {
     return this.laneInfo?.filamentVendor ?? this.$t('app.afc.Unknown').toString()
   }
 
-  get laneSpoolFilamentName (): string {
+  get laneSpoolFilamentName(): string {
     return this.laneInfo?.filamentName ?? this.$t('app.afc.Unknown').toString()
   }
 
-  get hasLaneTooltipContent (): boolean {
+  get hasLaneTooltipContent(): boolean {
     if (this.laneSpool) return true
     if (!this.laneFilament) return false
 
     return this.laneFilament.material !== '--' || this.laneFilament.weight > 0
   }
 
-  get laneFilament (): FilamentInfo | undefined {
+  get laneFilament(): FilamentInfo | undefined {
     if (!this.laneName || !this.laneInfo) return undefined
 
     return {
@@ -376,7 +370,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
     }
   }
 
-  get isFilamentTypeValid (): boolean {
+  get isFilamentTypeValid(): boolean {
     if (!this.laneFilament) return false
     if (this.fileFilament.material === '--' || this.laneFilament.material === '--') return false
 
@@ -385,13 +379,13 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
     return laneMaterialLower.includes(this.fileFilament.material.toLowerCase())
   }
 
-  get isFilamentWeightValid (): boolean {
+  get isFilamentWeightValid(): boolean {
     if (!this.laneFilament) return false
 
     return this.fileFilament.weight <= this.laneFilament.weight
   }
 
-  get warnings (): string[] {
+  get warnings(): string[] {
     const warnings: string[] = []
 
     if (!this.laneName) {
@@ -434,7 +428,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
     return warnings
   }
 
-  get laneOptions (): LaneOption[] {
+  get laneOptions(): LaneOption[] {
     return this.afcLanes.map(lane => {
       const info = this.getAfcLaneInfo(lane)
       const material = info.material || '--'
@@ -457,7 +451,7 @@ export default class AfcPrintStartDialogTool extends Mixins(StateMixin, AfcMixin
     })
   }
 
-  changeLaneMapping (lane: string) {
+  changeLaneMapping(lane: string) {
     if (lane === this.laneName) return
 
     this.sendGcode(

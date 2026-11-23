@@ -32,9 +32,9 @@ import type { Led } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 type Rgbw = {
-  r: number,
-  g: number,
-  b: number,
+  r: number
+  g: number
+  b: number
   w: number
 }
 
@@ -50,7 +50,7 @@ export default class OutputLed extends Mixins(StateMixin) {
     w: 'WHITE'
   }
 
-  get supportedChannels (): string {
+  get supportedChannels(): string {
     const { type, config } = this.led
 
     if (config) {
@@ -84,9 +84,8 @@ export default class OutputLed extends Mixins(StateMixin) {
     return 'RBGW'
   }
 
-  get color (): Rgbw {
-    const [r, g, b, w] = this.led.color_data[0]
-      .map(value => Math.round(value * 255))
+  get color(): Rgbw {
+    const [r, g, b, w] = this.led.color_data[0].map(value => Math.round(value * 255))
 
     return {
       r,
@@ -96,13 +95,13 @@ export default class OutputLed extends Mixins(StateMixin) {
     }
   }
 
-  get primaryColor (): string {
+  get primaryColor(): string {
     const color = new IroColor(this.color)
 
     return color.hexString
   }
 
-  set primaryColor (value: string) {
+  set primaryColor(value: string) {
     const { r, g, b } = new IroColor(value).rgb
 
     const newColor: Rgbw = {
@@ -115,11 +114,11 @@ export default class OutputLed extends Mixins(StateMixin) {
     this.sendColor(newColor)
   }
 
-  get whiteValue () {
+  get whiteValue() {
     return this.color.w
   }
 
-  set whiteValue (value: number) {
+  set whiteValue(value: number) {
     const newColor: Rgbw = {
       ...this.color,
       w: value
@@ -128,11 +127,14 @@ export default class OutputLed extends Mixins(StateMixin) {
     this.sendColor(newColor)
   }
 
-  sendColor (color: Rgbw) {
+  sendColor(color: Rgbw) {
     const supportedChannels = this.supportedChannels.toLowerCase().split('') as (keyof Rgbw)[]
 
     const colorsString = supportedChannels
-      .map(channel => ` ${this.channelLookup[channel]}=${Math.round(color[channel] * 1000 / 255) / 1000}`)
+      .map(
+        channel =>
+          ` ${this.channelLookup[channel]}=${Math.round((color[channel] * 1000) / 255) / 1000}`
+      )
       .join('')
 
     this.sendGcode(`SET_LED LED=${encodeGcodeParamValue(this.led.name)}${colorsString}`)

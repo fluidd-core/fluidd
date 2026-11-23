@@ -11,22 +11,18 @@ type ArcPlane = 'xy' | 'xz' | 'yz'
 // axes named by a single G-code line, before positioning mode is applied; every
 // field is required so each construction site keeps the same shape
 interface GcodeMove {
-  x: number | undefined;
-  y: number | undefined;
-  z: number | undefined;
-  e: number | undefined;
-  i: number | undefined;
-  j: number | undefined;
-  r: number | undefined;
+  x: number | undefined
+  y: number | undefined
+  z: number | undefined
+  e: number | undefined
+  i: number | undefined
+  j: number | undefined
+  r: number | undefined
 }
 
 const MAX_TOOL = 255
 
-const isValidTool = (value: number) => (
-  Number.isInteger(value) &&
-  value >= 0 &&
-  value <= MAX_TOOL
-)
+const isValidTool = (value: number) => Number.isInteger(value) && value >= 0 && value <= MAX_TOOL
 
 // guards against a corrupt or hostile file exhausting memory
 const MAX_MOVES = 20_000_000
@@ -134,12 +130,10 @@ const parseLine = (line: string) => {
     }
   }
 
-  const clearedLine = trimmedLine
-    .split(';', 1)[0]
+  const clearedLine = trimmedLine.split(';', 1)[0]
 
   if (clearedLine) {
-    const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine
-      .split(/^([gmt]\d+)\s*/i)
+    const [, gcodeCommand, gcodeCommandArgs = ''] = clearedLine.split(/^([gmt]\d+)\s*/i)
 
     if (gcodeCommand) {
       return {
@@ -149,8 +143,9 @@ const parseLine = (line: string) => {
       }
     }
 
-    const [, macroCommand, macroCommandArgs = ''] = clearedLine
-      .split(/^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION|SET_HEATER_TEMPERATURE)\s+/i)
+    const [, macroCommand, macroCommandArgs = ''] = clearedLine.split(
+      /^(SET_PRINT_STATS_INFO|EXCLUDE_OBJECT_DEFINE|SET_RETRACTION|SET_HEATER_TEMPERATURE)\s+/i
+    )
 
     if (macroCommand) {
       return {
@@ -174,7 +169,7 @@ const arcRadiusToCenterOffset = (
   toY: number,
   r: number | undefined,
   clockwise: boolean
-): { i: number, j: number } | null => {
+): { i: number; j: number } | null => {
   if (r === undefined) {
     return null
   }
@@ -188,7 +183,7 @@ const arcRadiusToCenterOffset = (
   }
 
   const h = Math.sqrt(r * r - (chord * chord) / 4)
-  const sign = ((r < 0) !== clockwise) ? -1 : 1
+  const sign = r < 0 !== clockwise ? -1 : 1
 
   return {
     i: deltaX / 2 + (sign * h * -deltaY) / chord,
@@ -234,15 +229,9 @@ const utf8ByteLength = (str: string) => {
   return bytes
 }
 
-const isPolygonData = (data: unknown): data is [number, number][] => (
+const isPolygonData = (data: unknown): data is [number, number][] =>
   Array.isArray(data) &&
-  data
-    .every(x => (
-      Array.isArray(x) &&
-      x.length === 2 &&
-      x.every(y => typeof y === 'number')
-    ))
-)
+  data.every(x => Array.isArray(x) && x.length === 2 && x.every(y => typeof y === 'number'))
 
 const parseGcode = async (
   url: string,
@@ -291,7 +280,7 @@ const parseGcode = async (
     x: 0,
     y: 0,
     z: 0,
-    e: 0,
+    e: 0
   }
   let tool = 0
   let role: ExtrusionRole = ExtrusionRole.None
@@ -320,11 +309,8 @@ const parseGcode = async (
   }
 
   const setToolTemp = (targetTool: number, value: number) => {
-    if (
-      isValidTool(targetTool) &&
-      value >= 0
-    ) {
-      const heater = toolHeaters[targetTool] ??= targetTool
+    if (isValidTool(targetTool) && value >= 0) {
+      const heater = (toolHeaters[targetTool] ??= targetTool)
 
       heaterTemps[heater] = Math.min(MAX_TEMP, Math.round(value))
     }
@@ -364,8 +350,7 @@ const parseGcode = async (
 
               if (isPolygonData(data) && data.length <= MAX_POLYGON_POINTS) {
                 const part: Part = {
-                  polygon: data
-                    .map(([x, y]) => ({ x, y }))
+                  polygon: data.map(([x, y]) => ({ x, y }))
                 }
 
                 parts.push(part)
@@ -409,8 +394,13 @@ const parseGcode = async (
           updateFeedrate(f)
 
           if (
-            x !== undefined || y !== undefined || z !== undefined || e !== undefined ||
-            i !== undefined || j !== undefined || r !== undefined
+            x !== undefined ||
+            y !== undefined ||
+            z !== undefined ||
+            e !== undefined ||
+            i !== undefined ||
+            j !== undefined ||
+            r !== undefined
           ) {
             move = { x, y, z, e, i, j, r }
 
@@ -532,7 +522,11 @@ const parseGcode = async (
           truncated = true
         } else {
           if (move.e !== undefined) {
-            if (positioningMode === 'absolute' && extrusionMode === 'absolute' && !isSynthesizedMove) {
+            if (
+              positioningMode === 'absolute' &&
+              extrusionMode === 'absolute' &&
+              !isSynthesizedMove
+            ) {
               const extrusionLength = decimalRound(move.e - toolhead.e, 4)
 
               toolhead.e = move.e
@@ -624,11 +618,8 @@ const parseGcode = async (
           const nextX = move.x ?? toolhead.x
           const nextY = move.y ?? toolhead.y
 
-          const isExtruding = extrusion > 0 && (
-            isArcMove ||
-            nextX !== toolhead.x ||
-            nextY !== toolhead.y
-          )
+          const isExtruding =
+            extrusion > 0 && (isArcMove || nextX !== toolhead.x || nextY !== toolhead.y)
 
           toolhead.x = nextX
           toolhead.y = nextY
@@ -664,12 +655,11 @@ const parseGcode = async (
           moveSpeed[moveCount] = feedrate
           moveFan[moveCount] = fan
           moveTemp[moveCount] = temp
-          moveFlags[moveCount] = (
+          moveFlags[moveCount] =
             (isExtruding ? MoveFlags.Extruding : 0) |
             (extrusion < 0 ? MoveFlags.Retracting : 0) |
             (isArcMove ? MoveFlags.Arc : 0) |
             (isArcMove && isClockwise ? MoveFlags.Clockwise : 0)
-          )
 
           if (isArcMove) {
             lastArcMoveIndex = moveCount
@@ -783,13 +773,9 @@ const parseGcode = async (
     moves,
     layers,
     parts,
-    bounds: layers.length > 0
-      ? lastBounds ?? bounds
-      : null,
-    tools: [...tools]
-      .sort((a, b) => a - b),
-    roles: [...roles]
-      .sort((a, b) => a - b),
+    bounds: layers.length > 0 ? (lastBounds ?? bounds) : null,
+    tools: [...tools].sort((a, b) => a - b),
+    roles: [...roles].sort((a, b) => a - b),
     speedRange,
     fanRange,
     tempRange,

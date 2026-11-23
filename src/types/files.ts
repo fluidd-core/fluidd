@@ -1,4 +1,4 @@
 export type FileWithPath = {
-  file: File,
+  file: File
   path: string
 }

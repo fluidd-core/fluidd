@@ -18,6 +18,5 @@ import PrinterLimits from '@/components/widgets/limits/PrinterLimits.vue'
     PrinterLimits
   }
 })
-export default class PrinterLimitsCard extends Vue {
-}
+export default class PrinterLimitsCard extends Vue {}
 </script>

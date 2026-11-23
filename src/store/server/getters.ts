@@ -6,22 +6,19 @@ import { gte, valid } from 'semver'
 import type { KlippyApp } from '../printer/types'
 
 export const getters = {
-  getIsMinApiVersion: (state) => (minVersion: string): boolean => {
-    const apiVersion = state.info.api_version_string
+  getIsMinApiVersion:
+    state =>
+    (minVersion: string): boolean => {
+      const apiVersion = state.info.api_version_string
 
-    return !!(
-      apiVersion &&
-      valid(apiVersion) &&
-      valid(minVersion) &&
-      gte(apiVersion, minVersion)
-    )
-  },
+      return !!(apiVersion && valid(apiVersion) && valid(minVersion) && gte(apiVersion, minVersion))
+    },
 
   /**
    * Indicates if a component is enabled
    */
-  componentSupport: (state) => (component: string) => {
-    return (state.info.components.includes(component))
+  componentSupport: state => (component: string) => {
+    return state.info.components.includes(component)
   },
 
   /**
@@ -33,9 +30,7 @@ export const getters = {
     const service_states: Moonraker.Machine.ServiceState = state.system_info?.service_state || {}
 
     const services: ServiceInfo[] = [...available_services].sort().map((name: string) => {
-      return name in service_states
-        ? { name, ...service_states[name] }
-        : { name }
+      return name in service_states ? { name, ...service_states[name] } : { name }
     })
 
     return services
@@ -53,7 +48,9 @@ export const getters = {
 
     // ...now, try prefixes.
     if (!item) {
-      item = configMap.find(o => o.prefix && filename.toLowerCase().startsWith(o.prefix.toLowerCase()))
+      item = configMap.find(
+        o => o.prefix && filename.toLowerCase().startsWith(o.prefix.toLowerCase())
+      )
     }
 
     // Finally, try suffixes.
@@ -61,10 +58,7 @@ export const getters = {
       item = configMap.find(o => o.suffix && filename.endsWith(o.suffix.toLowerCase()))
     }
 
-    if (
-      item?.service === 'klipper' &&
-      item.link
-    ) {
+    if (item?.service === 'klipper' && item.link) {
       const klippyApp: KlippyApp = rootGetters['printer/getKlippyApp']
 
       item.link = item.link.replace('{klipperDomain}', klippyApp.domain)
@@ -75,7 +69,9 @@ export const getters = {
       const instanceIds = rootState.server.system_info?.instance_ids
 
       return {
-        serviceSupported: (instanceIds && itemService in instanceIds) || (getters.getServices as ServiceInfo[]).some(i => i.name === itemService),
+        serviceSupported:
+          (instanceIds && itemService in instanceIds) ||
+          (getters.getServices as ServiceInfo[]).some(i => i.name === itemService),
         ...item
       }
     }

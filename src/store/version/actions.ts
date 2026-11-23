@@ -9,35 +9,39 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Make a socket request to init the version component.
    */
-  async init () {
+  async init() {
     SocketActions.machineUpdateStatus()
   },
 
   /**
    * Inits any file config we may have.
    */
-  async onUpdateStatus ({ commit, dispatch, getters, rootState }, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
+  async onUpdateStatus(
+    { commit, dispatch, getters, rootState },
+    payload: Partial<Moonraker.UpdateManager.StatusResponse>
+  ) {
     commit('setUpdateStatus', payload)
 
-    if (
-      rootState.config.uiSettings.general.enableVersionNotifications &&
-      getters.hasUpdates
-    ) {
-      dispatch('notifications/pushNotification', {
-        id: 'updates-available',
-        title: i18n.t('app.version.label.updates_available'),
-        to: '/settings#versions',
-        btnText: i18n.t('app.version.btn.view_versions'),
-        type: 'info',
-        merge: true
-      }, { root: true })
+    if (rootState.config.uiSettings.general.enableVersionNotifications && getters.hasUpdates) {
+      dispatch(
+        'notifications/pushNotification',
+        {
+          id: 'updates-available',
+          title: i18n.t('app.version.label.updates_available'),
+          to: '/settings#versions',
+          btnText: i18n.t('app.version.btn.view_versions'),
+          type: 'info',
+          merge: true
+        },
+        { root: true }
+      )
     } else {
       dispatch('notifications/clearNotification', 'updates-available', { root: true })
     }
@@ -46,41 +50,41 @@ export const actions = {
   /**
    * As updates happen, we get responses here.
    */
-  async onUpdateResponse ({ commit }, payload: Moonraker.UpdateManager.UpdateResponseEvent) {
+  async onUpdateResponse({ commit }, payload: Moonraker.UpdateManager.UpdateResponseEvent) {
     commit('setUpdateResponse', payload)
   },
 
   /**
    * Notifications of specific updates
    */
-  async onUpdatedMoonraker (_, payload: { result?: string }) {
+  async onUpdatedMoonraker(_, payload: { result?: string }) {
     consola.debug('Finished updating moonraker', payload)
     SocketActions.machineUpdateStatus()
     // Moonraker is expected to restart; the socket will drop and naturally
     // cycle through connecting → identifying → ready via the state machine.
   },
 
-  async onUpdatedKlipper (_, payload: { result?: string }) {
+  async onUpdatedKlipper(_, payload: { result?: string }) {
     consola.debug('Finished updating klipper', payload)
     SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedClient (_, payload: { result?: string }) {
+  async onUpdatedClient(_, payload: { result?: string }) {
     consola.debug('Finished updating a client', payload)
     SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedFluidd (_, payload: { result?: string }) {
+  async onUpdatedFluidd(_, payload: { result?: string }) {
     consola.debug('Finished updating fluidd, reloading', payload)
     window.location.reload()
   },
 
-  async onUpdatedSystem (_, payload: { result?: string }) {
+  async onUpdatedSystem(_, payload: { result?: string }) {
     consola.debug('Finished updating system', payload)
     SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedAll (_, payload: { result?: string }) {
+  async onUpdatedAll(_, payload: { result?: string }) {
     consola.debug('Finished updating all services', payload)
     window.location.reload()
   }

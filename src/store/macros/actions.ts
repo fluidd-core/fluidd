@@ -8,29 +8,32 @@ export const actions = {
   /**
    * Reset our store
    */
-  async reset ({ commit }) {
+  async reset({ commit }) {
     commit('setReset')
   },
 
   /**
    * Init stored macros
    */
-  initMacros ({ commit }, payload: Partial<MacrosState>) {
+  initMacros({ commit }, payload: Partial<MacrosState>) {
     commit('initMacros', payload)
   },
 
   /**
    * Saves the state of a given macro.
    */
-  saveMacro ({ state, commit }, macro: Macro) {
+  saveMacro({ state, commit }, macro: Macro) {
     // Commit the change...
     commit('setUpdateMacro', macro)
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored',
+      state.stored
+    )
   },
 
-  saveAllOrder ({ state, commit }, macros: Macro[]) {
+  saveAllOrder({ state, commit }, macros: Macro[]) {
     // Commit the change...
     macros.forEach((macro, index) => {
       commit('setUpdateMacro', {
@@ -40,57 +43,78 @@ export const actions = {
     })
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored',
+      state.stored
+    )
   },
 
-  saveAllOn ({ state, commit }, macros: Macro[]) {
+  saveAllOn({ state, commit }, macros: Macro[]) {
     // Commit the change...
     commit('setUpdateAllVisible', { macros, visible: true })
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored',
+      state.stored
+    )
   },
 
-  saveAllOff ({ state, commit }, macros: Macro[]) {
+  saveAllOff({ state, commit }, macros: Macro[]) {
     // Commit the change...
     commit('setUpdateAllVisible', { macros, visible: false })
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored',
+      state.stored
+    )
   },
 
-  addCategory ({ commit, state }, category: string) {
+  addCategory({ commit, state }, category: string) {
     commit('setAddCategory', category)
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.categories', state.categories)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.categories',
+      state.categories
+    )
   },
 
-  editCategory ({ commit, state }, payload: MacroCategory) {
+  editCategory({ commit, state }, payload: MacroCategory) {
     commit('setEditCategory', payload)
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.categories', state.categories)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.categories',
+      state.categories
+    )
   },
 
-  updateCategories ({ commit, state }, payload: MacroCategory[]) {
+  updateCategories({ commit, state }, payload: MacroCategory[]) {
     commit('setUpdateCategories', payload)
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.categories', state.categories)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.categories',
+      state.categories
+    )
   },
 
-  removeCategory ({ commit, state }, category: MacroCategory) {
+  removeCategory({ commit, state }, category: MacroCategory) {
     commit('setRemoveCategory', category)
 
     // Save to moonraker.
     SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name, state)
   },
 
-  saveExpanded ({ commit, state }, expanded: number[]) {
+  saveExpanded({ commit, state }, expanded: number[]) {
     commit('setExpanded', expanded)
 
     // Save to moonraker.
-    SocketActions.serverDatabasePostItem(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.expanded', state.expanded)
+    SocketActions.serverDatabasePostItem(
+      Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.expanded',
+      state.expanded
+    )
   }
 } satisfies ActionTree<MacrosState, RootState>

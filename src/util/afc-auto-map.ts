@@ -34,9 +34,9 @@ export const hexToLab = (hex?: string): [number, number, number] | undefined => 
   const color = new TinyColor(hex)
   if (!color.isValid) return undefined
   const { r, g, b } = color.toRgb()
-  const lin = (c: number) => (c /= 255) > 0.04045 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92
+  const lin = (c: number) => ((c /= 255) > 0.04045 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92)
   const [lr, lg, lb] = [lin(r), lin(g), lin(b)]
-  const f = (t: number) => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116
+  const f = (t: number) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116)
   const x = f((lr * 0.4124 + lg * 0.3576 + lb * 0.1805) / 0.95047)
   const y = f(lr * 0.2126 + lg * 0.7152 + lb * 0.0722)
   const z = f((lr * 0.0193 + lg * 0.1192 + lb * 0.9505) / 1.08883)
@@ -57,7 +57,9 @@ const laneCost = (tool: AutoMapTool, lane: AutoMapLane): Cost => {
   return [
     isMaterialMismatch(tool.material, lane.material) ? 1 : 0,
     Number(tool.weight ?? 0) <= Number(lane.weight ?? 0) ? 0 : 1,
-    lab1 && lab2 ? Math.hypot(lab1[0] - lab2[0], lab1[1] - lab2[1], lab1[2] - lab2[2]) : NO_COLOR_DISTANCE,
+    lab1 && lab2
+      ? Math.hypot(lab1[0] - lab2[0], lab1[1] - lab2[1], lab1[2] - lab2[2])
+      : NO_COLOR_DISTANCE,
     lane.current[tool.tool] ? 0 : 1
   ]
 }
@@ -68,7 +70,8 @@ const compare = (a: Cost, b: Cost) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2] 
 
 // Greedy fallback: cheapest (tool, lane) pairs first, each tool and lane used once
 const greedy = (tools: AutoMapTool[], lanes: AutoMapLane[], costs: Cost[][]) => {
-  const pairs = tools.flatMap((_, t) => lanes.map((_, l) => ({ t, l })))
+  const pairs = tools
+    .flatMap((_, t) => lanes.map((_, l) => ({ t, l })))
     .sort((a, b) => compare(costs[a.t][a.l], costs[b.t][b.l]))
   const result = new Map<number, string>()
   const usedLanes = new Set<number>()

@@ -53,11 +53,11 @@ export default class ExcludeObjectDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
   open?: boolean
 
-  get parts (): ExcludeObjectPart[] {
+  get parts(): ExcludeObjectPart[] {
     return this.$typedGetters['printer/getExcludeObjectParts']
   }
 
-  async cancelObject (name: string) {
+  async cancelObject(name: string) {
     const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
@@ -73,11 +73,11 @@ export default class ExcludeObjectDialog extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .partName {
-    word-break: break-all;
-  }
+.partName {
+  word-break: break-all;
+}
 
-  .actions {
-    width: 32px;
-  }
+.actions {
+  width: 32px;
+}
 </style>

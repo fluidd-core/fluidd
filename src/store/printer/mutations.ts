@@ -7,31 +7,31 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setManualProbeDialogOpen (state, payload: boolean) {
+  setManualProbeDialogOpen(state, payload: boolean) {
     state.manualProbeDialogOpen = payload
   },
 
-  setBedScrewsAdjustDialogOpen (state, payload: boolean) {
+  setBedScrewsAdjustDialogOpen(state, payload: boolean) {
     state.bedScrewsAdjustDialogOpen = payload
   },
 
-  setScrewsTiltAdjustDialogOpen (state, payload: boolean) {
+  setScrewsTiltAdjustDialogOpen(state, payload: boolean) {
     state.screwsTiltAdjustDialogOpen = payload
   },
 
-  setForceMoveEnabled (state, payload: boolean) {
+  setForceMoveEnabled(state, payload: boolean) {
     state.forceMoveEnabled = payload
   },
 
-  setPrinterInfo (state, payload: Moonraker.KlippyApis.Info) {
+  setPrinterInfo(state, payload: Moonraker.KlippyApis.Info) {
     state.info = Object.freeze(payload)
   },
 
-  setClearEndStops (state) {
+  setClearEndStops(state) {
     const queryEndstops = state.printer.query_endstops
 
     if (queryEndstops == null) {
@@ -41,7 +41,7 @@ export const mutations = {
     queryEndstops.last_query = Object.freeze({})
   },
 
-  setClearScrewsTiltAdjust (state) {
+  setClearScrewsTiltAdjust(state) {
     const screwsTiltAdjust = state.printer.screws_tilt_adjust
 
     if (screwsTiltAdjust == null) {
@@ -53,7 +53,7 @@ export const mutations = {
     screwsTiltAdjust.results = Object.freeze({})
   },
 
-  setSocketNotify (state, payload: Partial<Klipper.PrinterState>) {
+  setSocketNotify(state, payload: Partial<Klipper.PrinterState>) {
     for (const payloadKey in payload) {
       const payloadValue = payload[payloadKey]
 

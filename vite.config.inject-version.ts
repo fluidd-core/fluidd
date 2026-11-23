@@ -6,7 +6,10 @@ import packageJson from './package.json' with { type: 'json' }
 import type { Plugin } from 'vite'
 
 const writeVersionFile = async () => {
-  const versionFile = await fs.promises.open(path.resolve(import.meta.dirname, 'dist/.version'), 'w')
+  const versionFile = await fs.promises.open(
+    path.resolve(import.meta.dirname, 'dist/.version'),
+    'w'
+  )
 
   await versionFile.writeFile(`v${packageJson.version}`)
 
@@ -14,13 +17,18 @@ const writeVersionFile = async () => {
 }
 
 const writeReleaseInfoFile = async () => {
-  const releaseInfoFile = await fs.promises.open(path.resolve(import.meta.dirname, 'dist/release_info.json'), 'w')
+  const releaseInfoFile = await fs.promises.open(
+    path.resolve(import.meta.dirname, 'dist/release_info.json'),
+    'w'
+  )
 
-  await releaseInfoFile.writeFile(JSON.stringify({
-    project_name: 'fluidd',
-    project_owner: 'fluidd-core',
-    version: `v${packageJson.version}`
-  }))
+  await releaseInfoFile.writeFile(
+    JSON.stringify({
+      project_name: 'fluidd',
+      project_owner: 'fluidd-core',
+      version: `v${packageJson.version}`
+    })
+  )
 
   await releaseInfoFile.close()
 }
@@ -29,9 +37,7 @@ const vitePluginInjectVersion = (): Plugin => {
   return {
     name: 'version',
     config: () => {
-      const git_hash = child_process
-        .execSync('git rev-parse --short HEAD')
-        .toString()
+      const git_hash = child_process.execSync('git rev-parse --short HEAD').toString()
 
       return {
         define: {

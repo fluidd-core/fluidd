@@ -116,49 +116,47 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
   bedTemp: number | null = null
   clearSpoolId = false
 
-  get lane () {
+  get lane() {
     return this.getAfcLaneObject(this.name)
   }
 
-  get hasSpoolId (): boolean {
+  get hasSpoolId(): boolean {
     return this.lane?.spool_id != null
   }
 
-  get hasBedTemp (): boolean {
+  get hasBedTemp(): boolean {
     return this.lane?.bed_temp != null
   }
 
-  get availableCommands (): GcodeCommands {
+  get availableCommands(): GcodeCommands {
     return this.$typedGetters['printer/getAvailableCommands']
   }
 
-  get hasSpoolTempMacro (): boolean {
+  get hasSpoolTempMacro(): boolean {
     return 'AFC_SET_SPOOL_TEMP' in this.availableCommands
   }
 
-  get currentColor (): string {
+  get currentColor(): string {
     return this.lane?.color ?? '#000000'
   }
 
-  get currentMaterial (): string {
+  get currentMaterial(): string {
     return this.lane?.material ?? ''
   }
 
-  get currentWeight (): number {
+  get currentWeight(): number {
     return Math.round(this.lane?.weight ?? 0)
   }
 
-  get currentExtruderTemp (): number {
+  get currentExtruderTemp(): number {
     return Math.round(this.lane?.extruder_temp ?? 0)
   }
 
-  get currentBedTemp (): number | null {
-    return this.hasBedTemp
-      ? Math.round(this.lane!.bed_temp!)
-      : null
+  get currentBedTemp(): number | null {
+    return this.hasBedTemp ? Math.round(this.lane!.bed_temp!) : null
   }
 
-  get disableSetBtn (): boolean {
+  get disableSetBtn(): boolean {
     return (
       !this.material ||
       !this.weight ||
@@ -171,11 +169,11 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
   }
 
   @Debounce(500)
-  setColor (newColor: { hex: string }) {
+  setColor(newColor: { hex: string }) {
     this.color = newColor.hex
   }
 
-  setSpool () {
+  setSpool() {
     const gcode: string[] = []
 
     if (this.clearSpoolId) {
@@ -184,11 +182,15 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
 
     if (this.clearSpoolId || this.color !== this.currentColor) {
       const cleanedColor = this.color.substring(1)
-      gcode.push(`SET_COLOR LANE=${encodeGcodeParamValue(this.name)} COLOR=${encodeGcodeParamValue(cleanedColor)}`)
+      gcode.push(
+        `SET_COLOR LANE=${encodeGcodeParamValue(this.name)} COLOR=${encodeGcodeParamValue(cleanedColor)}`
+      )
     }
 
     if (this.clearSpoolId || this.material !== this.currentMaterial) {
-      gcode.push(`SET_MATERIAL LANE=${encodeGcodeParamValue(this.name)} MATERIAL=${encodeGcodeParamValue(this.material)}`)
+      gcode.push(
+        `SET_MATERIAL LANE=${encodeGcodeParamValue(this.name)} MATERIAL=${encodeGcodeParamValue(this.material)}`
+      )
     }
 
     if (this.clearSpoolId || this.weight !== this.currentWeight) {
@@ -197,15 +199,15 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
 
     if (
       this.hasSpoolTempMacro &&
-      (
-        this.clearSpoolId ||
+      (this.clearSpoolId ||
         this.extruderTemp !== this.currentExtruderTemp ||
-        this.bedTemp !== this.currentBedTemp
-      )
+        this.bedTemp !== this.currentBedTemp)
     ) {
       // Only include BED_TEMP parameter if the lane reports a bed_temp
       const bedTempParam = this.bedTemp !== null ? ` BED_TEMP=${this.bedTemp}` : ''
-      gcode.push(`AFC_SET_SPOOL_TEMP LANE=${encodeGcodeParamValue(this.name)}${bedTempParam} EXTRUDER_TEMP=${this.extruderTemp}`)
+      gcode.push(
+        `AFC_SET_SPOOL_TEMP LANE=${encodeGcodeParamValue(this.name)}${bedTempParam} EXTRUDER_TEMP=${this.extruderTemp}`
+      )
     }
 
     if (gcode.length) {
@@ -216,7 +218,7 @@ export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMix
   }
 
   @Watch('show')
-  onShowChange (newValue: boolean) {
+  onShowChange(newValue: boolean) {
     if (!newValue) return
 
     this.color = this.currentColor

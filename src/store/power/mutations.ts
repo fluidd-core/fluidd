@@ -6,15 +6,15 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setDevices (state, payload: Moonraker.Power.DevicesResponse) {
+  setDevices(state, payload: Moonraker.Power.DevicesResponse) {
     state.devices = payload.devices
   },
 
-  setStatus (state, payload: Moonraker.Power.StatusResponse) {
+  setStatus(state, payload: Moonraker.Power.StatusResponse) {
     for (const key in payload) {
       const i = state.devices.findIndex(device => device.device === key)
       if (i >= 0) {

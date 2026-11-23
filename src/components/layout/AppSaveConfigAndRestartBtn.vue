@@ -49,7 +49,7 @@ export default class AppSaveConfigAndRestartBtn extends Vue {
   @Prop({ type: Boolean })
   readonly loading?: boolean
 
-  get isExpanded () {
+  get isExpanded() {
     return this.$vuetify.breakpoint.mdAndUp
   }
 }

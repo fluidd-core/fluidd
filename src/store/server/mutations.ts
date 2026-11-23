@@ -6,42 +6,45 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setResetKlippy (state) {
+  setResetKlippy(state) {
     const { info } = createState()
 
     state.info.klippy_connected = info.klippy_connected
     state.info.klippy_state = info.klippy_state
   },
 
-  setServerInfo (state, payload: Moonraker.Server.InfoResponse) {
+  setServerInfo(state, payload: Moonraker.Server.InfoResponse) {
     state.info = payload
   },
 
-  setSystemInfo (state, payload: Moonraker.Machine.SystemInfoResponse) {
+  setSystemInfo(state, payload: Moonraker.Machine.SystemInfoResponse) {
     if (payload.system_info) {
       state.system_info = payload.system_info
     }
   },
 
-  setMachinePeripherals (state, payload: Partial<Peripherals>) {
+  setMachinePeripherals(state, payload: Partial<Peripherals>) {
     state.peripherals = {
       ...state.peripherals,
       ...payload
     }
   },
 
-  setMachinePeripheralsCanbus (state, payload: { canbusInterface: string, can_uuids: Moonraker.Peripherals.CanbusUuid[] }) {
+  setMachinePeripheralsCanbus(
+    state,
+    payload: { canbusInterface: string; can_uuids: Moonraker.Peripherals.CanbusUuid[] }
+  ) {
     state.can_uuids = {
       ...state.can_uuids,
       [payload.canbusInterface]: payload.can_uuids
     }
   },
 
-  setServiceState (state, payload: Moonraker.Machine.ServiceState) {
+  setServiceState(state, payload: Moonraker.Machine.ServiceState) {
     if (payload && state.system_info?.service_state) {
       Object.assign(state.system_info.service_state, payload)
     }
@@ -50,7 +53,7 @@ export const mutations = {
   /**
    * On initial init we get the server (moonraker) configuration.
    */
-  setServerConfig (state, payload: Moonraker.Server.Config) {
+  setServerConfig(state, payload: Moonraker.Server.Config) {
     state.config = {
       ...state.config,
       ...payload
@@ -60,7 +63,10 @@ export const mutations = {
   /**
    * On initial init, we get the server (moonraker) process stats and any throttled state flags.
    */
-  setMoonrakerStats (state, payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.UpdateEvent) {
+  setMoonrakerStats(
+    state,
+    payload: Moonraker.ProcStats.Response | Moonraker.ProcStats.UpdateEvent
+  ) {
     if (payload.cpu_temp != null) {
       state.cpu_temp = payload.cpu_temp
     }
@@ -74,8 +80,7 @@ export const mutations = {
 
     if (Array.isArray(payload.moonraker_stats)) {
       // Update with array.
-      state.moonraker_stats = payload.moonraker_stats
-        .map(stat => Object.freeze(stat))
+      state.moonraker_stats = payload.moonraker_stats.map(stat => Object.freeze(stat))
     } else {
       // Append to array.
       state.moonraker_stats.push(Object.freeze(payload.moonraker_stats))

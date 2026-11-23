@@ -55,16 +55,15 @@
               v-on="on"
               @click="emergencyStop()"
             >
-              <v-icon color="white">
-                $estop
-              </v-icon>
+              <v-icon color="white"> $estop </v-icon>
             </app-btn>
           </template>
           <span>
             {{ $t('app.general.tooltip.estop') }}
             <template v-if="enableKeyboardShortcuts">
-              <br>
-              <kbd v-if="isAppleDevice">&#8984;</kbd><kbd v-else>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>e</kbd>
+              <br />
+              <kbd v-if="isAppleDevice">&#8984;</kbd><kbd v-else>Ctrl</kbd> + <kbd>Shift</kbd> +
+              <kbd>e</kbd>
             </template>
           </span>
         </v-tooltip>
@@ -93,7 +92,11 @@
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle.name }) }}</span>
+          <span>{{
+            $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, {
+              device: topNavPowerToggle.name
+            })
+          }}</span>
         </v-tooltip>
       </div>
 
@@ -125,18 +128,14 @@
             class="mx-1"
             label
           >
-            <v-icon left>
-              $account
-            </v-icon>
+            <v-icon left> $account </v-icon>
             {{ currentUser.username }}
           </v-chip>
           <v-chip
             class="mx-1"
             label
           >
-            <v-icon left>
-              $screenshot
-            </v-icon>
+            <v-icon left> $screenshot </v-icon>
             {{ currentBreakpoint.toUpperCase() }}
           </v-chip>
         </div>
@@ -151,9 +150,7 @@
                   @click.stop="handleExitLayout"
                   v-on="on"
                 >
-                  <v-icon left>
-                    $close
-                  </v-icon>
+                  <v-icon left> $close </v-icon>
                   {{ $t('app.general.btn.exit_layout') }}
                 </app-btn>
               </template>
@@ -168,9 +165,7 @@
                   @click.stop="handleResetLayout"
                   v-on="on"
                 >
-                  <v-icon left>
-                    $accountSettings
-                  </v-icon>
+                  <v-icon left> $accountSettings </v-icon>
                   {{ $t('app.general.btn.reset_layout') }}
                 </app-btn>
               </template>
@@ -191,9 +186,7 @@
                   @click.stop="handleSetDefaultLayout"
                   v-on="on"
                 >
-                  <v-icon left>
-                    $saveDefault
-                  </v-icon>
+                  <v-icon left> $saveDefault </v-icon>
                   {{ $t('app.general.btn.set_default_layout') }}
                 </app-btn>
               </template>
@@ -209,9 +202,7 @@
                   @click.stop="handleResetDefaultLayout"
                   v-on="on"
                 >
-                  <v-icon left>
-                    $resetDefaults
-                  </v-icon>
+                  <v-icon left> $resetDefaults </v-icon>
                   {{ $t('app.general.btn.reset_default_layout') }}
                 </app-btn>
               </template>
@@ -265,23 +256,23 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
 
-  get supportsAuth (): boolean {
+  get supportsAuth(): boolean {
     return this.$typedGetters['server/componentSupport']('authorization')
   }
 
-  get instanceName (): string {
+  get instanceName(): string {
     return this.$typedState.config.uiSettings.general.instanceName
   }
 
-  get saveConfigPending (): boolean {
+  get saveConfigPending(): boolean {
     return this.$typedGetters['printer/getSaveConfigPending']
   }
 
-  get saveConfigPendingItems (): Klipper.ConfigState {
+  get saveConfigPendingItems(): Klipper.ConfigState {
     return this.$typedGetters['printer/getSaveConfigPendingItems']
   }
 
-  get showSaveConfigAndRestartForPendingChanges (): boolean {
+  get showSaveConfigAndRestartForPendingChanges(): boolean {
     if (!this.showSaveConfigAndRestart || !this.saveConfigPending) {
       return false
     }
@@ -290,34 +281,34 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     return (
       sectionsToIgnore.length === 0 ||
-      Object.keys(this.saveConfigPendingItems)
-        .filter(key => !sectionsToIgnore.includes(key))
+      Object.keys(this.saveConfigPendingItems).filter(key => !sectionsToIgnore.includes(key))
         .length > 0
     )
   }
 
-  get devicePowerComponentEnabled (): boolean {
+  get devicePowerComponentEnabled(): boolean {
     return this.$typedGetters['server/componentSupport']('power')
   }
 
-  get inLayout (): boolean {
-    return (this.$typedState.config.layoutMode)
+  get inLayout(): boolean {
+    return this.$typedState.config.layoutMode
   }
 
-  get showSaveConfigAndRestart (): boolean {
+  get showSaveConfigAndRestart(): boolean {
     return this.$typedState.config.uiSettings.general.showSaveConfigAndRestart
   }
 
-  get sectionsToIgnorePendingConfigurationChanges (): string[] {
+  get sectionsToIgnorePendingConfigurationChanges(): string[] {
     return this.$typedState.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges
   }
 
-  get showUploadAndPrint (): boolean {
+  get showUploadAndPrint(): boolean {
     return this.$typedState.config.uiSettings.general.showUploadAndPrint
   }
 
-  get topNavPowerToggle () {
-    const topNavPowerToggle: string | null = this.$typedState.config.uiSettings.general.topNavPowerToggle
+  get topNavPowerToggle() {
+    const topNavPowerToggle: string | null =
+      this.$typedState.config.uiSettings.general.topNavPowerToggle
 
     if (!topNavPowerToggle) return null
 
@@ -337,7 +328,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       }
 
       default: {
-        const device: Moonraker.Power.Device | undefined = this.$typedGetters['power/getDeviceByName'](topNavPowerToggle)
+        const device: Moonraker.Power.Device | undefined =
+          this.$typedGetters['power/getDeviceByName'](topNavPowerToggle)
 
         if (!device) return null
 
@@ -350,7 +342,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     }
   }
 
-  get topNavPowerDeviceOn (): boolean {
+  get topNavPowerDeviceOn(): boolean {
     const { type, device } = this.topNavPowerToggle || {}
 
     if (!device) return false
@@ -366,14 +358,18 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return false
   }
 
-  get topNavPowerDeviceDisabled (): boolean {
+  get topNavPowerDeviceDisabled(): boolean {
     const { type, device } = this.topNavPowerToggle || {}
 
     if (!device) return true
 
     switch (type) {
       case 'moonraker':
-        return (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
+        return (
+          (this.printerPrinting && device.locked_while_printing) ||
+          ['init', 'error'].includes(device.status) ||
+          !this.devicePowerComponentEnabled
+        )
 
       case 'klipper':
         return !this.klippyReady
@@ -382,26 +378,22 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return true
   }
 
-  get enableKeyboardShortcuts (): boolean {
+  get enableKeyboardShortcuts(): boolean {
     return this.$typedState.config.uiSettings.general.enableKeyboardShortcuts
   }
 
-  handleExitLayout () {
+  handleExitLayout() {
     this.$typedCommit('config/setLayoutMode', false)
   }
 
-  get isDashboard () {
+  get isDashboard() {
     return this.$route.name === 'home'
   }
 
-  handleResetLayout () {
-    const pathLayouts = [
-      'diagnostics'
-    ]
+  handleResetLayout() {
+    const pathLayouts = ['diagnostics']
 
-    const pathLayout = pathLayouts.includes(this.$route.name ?? '')
-      ? this.$route.name
-      : undefined
+    const pathLayout = pathLayouts.includes(this.$route.name ?? '') ? this.$route.name : undefined
     const layoutDefaultState = pathLayout
       ? createState().layouts[pathLayout]
       : this.$typedGetters['layout/getLayout']('dashboard')!
@@ -414,71 +406,76 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     })
   }
 
-  get currentLayoutName () {
+  get currentLayoutName() {
     return this.$typedGetters['layout/getSpecificLayoutName']
   }
 
-  get currentUser (): AppUser | null {
+  get currentUser(): AppUser | null {
     return this.$typedState.auth.currentUser
   }
 
-  get currentBreakpoint () {
+  get currentBreakpoint() {
     return vuetify.framework.breakpoint.name
   }
 
-  handleSetDefaultLayout () {
+  handleSetDefaultLayout() {
     this.$typedDispatch('layout/onLayoutChange', {
       name: 'dashboard',
       value: this.$typedGetters['layout/getLayout'](this.currentLayoutName)!
     })
   }
 
-  handleResetDefaultLayout () {
+  handleResetDefaultLayout() {
     this.$typedDispatch('layout/onLayoutChange', {
       name: 'dashboard',
       value: createState().layouts.dashboard
     })
   }
 
-  async handlePowerToggle () {
+  async handlePowerToggle() {
     const { type, device } = this.topNavPowerToggle || {}
 
     if (!device) return
 
-    const confirmOnPowerDeviceChange: boolean = this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
+    const confirmOnPowerDeviceChange: boolean =
+      this.$typedState.config.uiSettings.general.confirmOnPowerDeviceChange
 
-    const result = (
+    const result =
       !confirmOnPowerDeviceChange ||
-      await this.$confirm(
-        this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-      )
-    )
+      (await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'), {
+        title: this.$tc('app.general.label.confirm'),
+        color: 'card-heading',
+        icon: '$error'
+      }))
 
     if (result) {
       switch (type) {
         case 'moonraker': {
-          const state = (device.status === 'on') ? 'off' : 'on'
+          const state = device.status === 'on' ? 'off' : 'on'
           SocketActions.machineDevicePowerSetDevice(device.device, state)
           break
         }
 
         case 'klipper': {
-          const value = (device.value !== 0) ? 0 : device.scale
-          this.sendGcode(`SET_PIN PIN=${encodeGcodeParamValue(device.name)} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
+          const value = device.value !== 0 ? 0 : device.scale
+          this.sendGcode(
+            `SET_PIN PIN=${encodeGcodeParamValue(device.name)} VALUE=${value}`,
+            `${this.$waits.onSetOutputPin}${device.name}`
+          )
           break
         }
       }
     }
   }
 
-  handleUploadAndPrint (file: File) {
+  handleUploadAndPrint(file: File) {
     this.uploadFile(file, '/', 'gcodes', true)
   }
 
-  saveConfigAndRestart (force = false) {
+  saveConfigAndRestart(force = false) {
     if (!force) {
-      const confirmOnSaveConfigAndRestart: boolean = this.$typedState.config.uiSettings.general.confirmOnSaveConfigAndRestart
+      const confirmOnSaveConfigAndRestart: boolean =
+        this.$typedState.config.uiSettings.general.confirmOnSaveConfigAndRestart
 
       if (confirmOnSaveConfigAndRestart) {
         this.pendingChangesDialogOpen = true
@@ -493,77 +490,80 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  .toolbar-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 56px;
-    height: inherit;
-  }
+.toolbar-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: inherit;
+}
 
-  .theme--dark .toolbar-logo {
-    border-right: thin solid rgba(map-get($shades, 'white'), 0.12);
-    background-color: #28282b;
-  }
+.theme--dark .toolbar-logo {
+  border-right: thin solid rgba(map-get($shades, 'white'), 0.12);
+  background-color: #28282b;
+}
 
-  .theme--light .toolbar-logo {
-    border-right: thin solid rgba(map-get($shades, 'black'), 0.12);
-    background-color: #FFFFFF;
-  }
+.theme--light .toolbar-logo {
+  border-right: thin solid rgba(map-get($shades, 'black'), 0.12);
+  background-color: #ffffff;
+}
 
-  .toolbar-title {
-    display: flex;
-    flex: 1 1;
-    max-width: 50%;
-    height: inherit;
-    align-items: center;
-    padding-left: 16px;
-  }
+.toolbar-title {
+  display: flex;
+  flex: 1 1;
+  max-width: 50%;
+  height: inherit;
+  align-items: center;
+  padding-left: 16px;
+}
 
-  .toolbar-supplemental {
-    display: flex;
-    justify-content: flex-end;
-    flex: 0 0 50%;
-    max-width: 50%;
-    align-items: center;
-    height: inherit;
-  }
+.toolbar-supplemental {
+  display: flex;
+  justify-content: flex-end;
+  flex: 0 0 50%;
+  max-width: 50%;
+  align-items: center;
+  height: inherit;
+}
 
-  .printer-title {
-    font-size: 1.25rem;
-    font-weight: 300;
-    font-family: raleway, sans-serif;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    @media #{map-get($display-breakpoints, 'sm-and-up')} {
-      font-size: 1.875rem;
-    }
+.printer-title {
+  font-size: 1.25rem;
+  font-weight: 300;
+  font-family: raleway, sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  @media #{map-get($display-breakpoints, 'sm-and-up')} {
+    font-size: 1.875rem;
   }
+}
 
-  .printer-title > a {
-    color: inherit;
-    text-decoration: none;
-  }
+.printer-title > a {
+  color: inherit;
+  text-decoration: none;
+}
 
-  .v-toolbar--extended :deep(.v-toolbar__content) {
-    box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
-  }
+.v-toolbar--extended :deep(.v-toolbar__content) {
+  box-shadow:
+    0px 2px 4px -1px rgb(0 0 0 / 20%),
+    0px 4px 5px 0px rgb(0 0 0 / 14%),
+    0px 1px 10px 0px rgb(0 0 0 / 12%);
+}
 
-  :deep(.v-toolbar__extension) {
-    flex: 1 1 auto;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
+:deep(.v-toolbar__extension) {
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
 
-  :deep(.v-toolbar__content) {
-    padding-left: 0;
-  }
+:deep(.v-toolbar__content) {
+  padding-left: 0;
+}
 
-  .v-btn.v-btn--disabled.v-btn--has-bg.bg-transparent {
-    background: none !important;
-  }
+.v-btn.v-btn--disabled.v-btn--has-bg.bg-transparent {
+  background: none !important;
+}
 </style>

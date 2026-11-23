@@ -53,9 +53,7 @@
             dense
             single-line
             hide-details="auto"
-            :rules="[
-              $rules.required
-            ]"
+            :rules="[$rules.required]"
           />
         </app-setting>
 
@@ -69,9 +67,7 @@
             single-line
             hide-details="auto"
             :hint="$t('app.setting.label.optional')"
-            :rules="[
-              $rules.numberValid
-            ]"
+            :rules="[$rules.numberValid]"
             :suffix="config.axes[i].unit"
           />
         </app-setting>
@@ -86,9 +82,7 @@
             single-line
             hide-details="auto"
             :hint="$t('app.setting.label.optional')"
-            :rules="[
-              $rules.numberValid
-            ]"
+            :rules="[$rules.numberValid]"
             :suffix="config.axes[i].unit"
           />
         </app-setting>

@@ -5,24 +5,23 @@ export type WebSocketCheckResult =
   | { ok: false; reason: 'timeout' | 'cancelled' | 'error'; message: string }
 
 export interface CheckWebSocketOptions {
-  timeout?: number;
-  signal?: AbortSignal;
-  protocols?: string | string[];
+  timeout?: number
+  signal?: AbortSignal
+  protocols?: string | string[]
 }
 
-const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Promise<WebSocketCheckResult> => {
-  const debug = (message: string, ...args: unknown[]) => consola.debug(`[webSocketWrapper] ${url} ${message}`, ...args)
+const webSocketWrapper = (
+  url: string,
+  options: CheckWebSocketOptions = {}
+): Promise<WebSocketCheckResult> => {
+  const debug = (message: string, ...args: unknown[]) =>
+    consola.debug(`[webSocketWrapper] ${url} ${message}`, ...args)
 
   const { timeout, signal, protocols } = options
 
-  const timeoutSignal = timeout !== undefined
-    ? AbortSignal.timeout(timeout)
-    : undefined
+  const timeoutSignal = timeout !== undefined ? AbortSignal.timeout(timeout) : undefined
 
-  const combinedSignal = AbortSignal.any(
-    [timeoutSignal, signal]
-      .filter(Boolean)
-  )
+  const combinedSignal = AbortSignal.any([timeoutSignal, signal].filter(Boolean))
 
   const getAbortResult = (): WebSocketCheckResult => {
     if (timeoutSignal?.aborted) {
@@ -40,9 +39,10 @@ const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Pro
     return {
       ok: false,
       reason: 'cancelled',
-      message: combinedSignal.reason instanceof Error
-        ? combinedSignal.reason.message
-        : 'Check was cancelled via AbortSignal.',
+      message:
+        combinedSignal.reason instanceof Error
+          ? combinedSignal.reason.message
+          : 'Check was cancelled via AbortSignal.'
     }
   }
 
@@ -50,7 +50,7 @@ const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Pro
     return Promise.resolve(getAbortResult())
   }
 
-  return new Promise<WebSocketCheckResult>((resolve) => {
+  return new Promise<WebSocketCheckResult>(resolve => {
     let settled = false
 
     const settle = (result: WebSocketCheckResult) => {
@@ -60,10 +60,7 @@ const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Pro
 
       combinedSignal.removeEventListener('abort', onAbort)
 
-      if (
-        ws.readyState === WebSocket.CONNECTING ||
-        ws.readyState === WebSocket.OPEN
-      ) {
+      if (ws.readyState === WebSocket.CONNECTING || ws.readyState === WebSocket.OPEN) {
         // Use code 1000 (Normal Closure) so servers don't log warnings.
         try {
           ws.close(1000, 'probe complete')
@@ -86,26 +83,26 @@ const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Pro
       resolve({
         ok: false,
         reason: 'error',
-        message: err instanceof Error ? err.message : String(err),
+        message: err instanceof Error ? err.message : String(err)
       })
 
       return
     }
 
-    ws.onopen = (event) => {
+    ws.onopen = event => {
       debug('opened', event)
 
       settle({ ok: true })
     }
 
-    ws.onerror = (event) => {
+    ws.onerror = event => {
       debug('error', event)
 
       // The browser hides error details for security reasons; the close event
       // that always follows carries a (limited) code and reason.
     }
 
-    ws.onclose = (event) => {
+    ws.onclose = event => {
       debug('closed', event)
 
       settle({
@@ -113,7 +110,7 @@ const webSocketWrapper = (url: string, options: CheckWebSocketOptions = {}): Pro
         reason: 'error',
         message: event.reason
           ? `Connection closed before opening: ${event.reason} (code ${event.code})`
-          : `Connection closed before opening (code ${event.code}).`,
+          : `Connection closed before opening (code ${event.code}).`
       })
     }
 

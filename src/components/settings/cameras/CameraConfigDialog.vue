@@ -26,9 +26,7 @@
           dense
           class="mt-0"
           hide-details="auto"
-          :rules="[
-            $rules.required
-          ]"
+          :rules="[$rules.required]"
         />
       </app-setting>
 
@@ -77,13 +75,22 @@
           dense
           hide-details="auto"
           :items="[
-            { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpegstreamer-adaptive' },
+            {
+              text: $t('app.setting.camera_type_options.mjpegadaptive'),
+              value: 'mjpegstreamer-adaptive'
+            },
             { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpegstreamer' },
             { text: $t('app.setting.camera_type_options.uv4l_mjpeg_stream'), value: 'uv4l-mjpeg' },
             { text: $t('app.setting.camera_type_options.hlsstream'), value: 'hlsstream' },
-            { text: $t('app.setting.camera_type_options.webrtc_camera_streamer'), value: 'webrtc-camerastreamer' },
+            {
+              text: $t('app.setting.camera_type_options.webrtc_camera_streamer'),
+              value: 'webrtc-camerastreamer'
+            },
             { text: $t('app.setting.camera_type_options.webrtc_go2rtc'), value: 'webrtc-go2rtc' },
-            { text: $t('app.setting.camera_type_options.webrtc_mediamtx'), value: 'webrtc-mediamtx' },
+            {
+              text: $t('app.setting.camera_type_options.webrtc_mediamtx'),
+              value: 'webrtc-mediamtx'
+            },
             { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
             { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
           ]"
@@ -101,9 +108,7 @@
             dense
             single-line
             hide-details="auto"
-            :rules="[
-              $rules.required
-            ]"
+            :rules="[$rules.required]"
           />
         </app-setting>
 
@@ -133,9 +138,7 @@
           dense
           single-line
           hide-details="auto"
-          :rules="[
-            $rules.required
-          ]"
+          :rules="[$rules.required]"
         />
       </app-setting>
 
@@ -151,9 +154,7 @@
           dense
           single-line
           hide-details="auto"
-          :rules="[
-            $rules.required
-          ]"
+          :rules="[$rules.required]"
         />
       </app-setting>
 
@@ -172,10 +173,7 @@
             dense
             single-line
             hide-details="auto"
-            :rules="[
-              $rules.required,
-              $rules.aspectRatioValid
-            ]"
+            :rules="[$rules.required, $rules.aspectRatioValid]"
           />
         </app-setting>
       </template>
@@ -194,7 +192,7 @@ export default class CameraConfigDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly camera!: Moonraker.Webcam.Entry
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.camera)
     this.open = false
   }

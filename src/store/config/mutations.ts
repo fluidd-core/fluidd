@@ -1,6 +1,15 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, TemperaturePreset, ConfiguredTableHeader, HostConfig, ApiConfig } from './types'
+import type {
+  ConfigState,
+  UiSettings,
+  SaveByPath,
+  InstanceConfig,
+  TemperaturePreset,
+  ConfiguredTableHeader,
+  HostConfig,
+  ApiConfig
+} from './types'
 import { createState } from './state'
 import { Globals } from '@/globals'
 import { cloneDeep, mergeWith, set } from 'lodash-es'
@@ -12,14 +21,14 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
   /**
    * Inits UI settings from the db
    */
-  setInitUiSettings (state, payload: Partial<UiSettings>) {
+  setInitUiSettings(state, payload: Partial<UiSettings>) {
     if (payload) {
       if (payload.theme) {
         // check for legacy theme color
@@ -45,10 +54,8 @@ export const mutations = {
         }
       }
 
-      const mergedSettings = mergeWith(
-        cloneDeep(state.uiSettings),
-        payload,
-        (dest, src) => Array.isArray(dest) ? src : undefined
+      const mergedSettings = mergeWith(cloneDeep(state.uiSettings), payload, (dest, src) =>
+        Array.isArray(dest) ? src : undefined
       )
 
       state.uiSettings = mergedSettings
@@ -59,7 +66,7 @@ export const mutations = {
    * Sets the API and Socket URLS on first load and
    * ensure the instance is configured in local storage
    */
-  setInitApiConfig (state, payload: ApiConfig) {
+  setInitApiConfig(state, payload: ApiConfig) {
     state.apiUrl = payload.apiUrl
     state.socketUrl = payload.socketUrl
     if (payload.name) {
@@ -67,7 +74,7 @@ export const mutations = {
     }
   },
 
-  setInitHostConfig (state, payload: HostConfig | undefined) {
+  setInitHostConfig(state, payload: HostConfig | undefined) {
     if (payload) {
       state.hostConfig.blacklist = payload.blacklist
       state.hostConfig.endpoints = payload.endpoints
@@ -76,7 +83,7 @@ export const mutations = {
     }
   },
 
-  setInitInstances (state, payload: ApiConfig) {
+  setInitInstances(state, payload: ApiConfig) {
     let instances: InstanceConfig[] = []
     // const uiSettings = payload.uiSettings
     const uiSettings = state.uiSettings
@@ -92,15 +99,19 @@ export const mutations = {
     if (i === -1) {
       if (
         (uiSettings || uiSettings === null) &&
-        (payload && payload.apiUrl !== '' && payload.socketUrl !== '')
+        payload &&
+        payload.apiUrl !== '' &&
+        payload.socketUrl !== ''
       ) {
         // Ensures we only add instances we've had a successful connection to.
-        instances.forEach(instance => { instance.active = false })
+        instances.forEach(instance => {
+          instance.active = false
+        })
         instances.push({ ...payload, active: true, name: state.uiSettings.general.instanceName })
       }
     } else {
       instances.forEach((instance, index) => {
-        instance.active = (index === i)
+        instance.active = index === i
         if (index === i && instance.name !== '') {
           instance.name = state.uiSettings.general.instanceName
         }
@@ -110,7 +121,7 @@ export const mutations = {
     state.instances = instances
   },
 
-  setUpdateInstanceName (state, payload: InstanceConfig) {
+  setUpdateInstanceName(state, payload: InstanceConfig) {
     const index = state.instances.findIndex(instance => instance.apiUrl === payload.apiUrl)
     if (index > -1) {
       const instance = state.instances[index]
@@ -119,7 +130,7 @@ export const mutations = {
     }
   },
 
-  setRemoveInstance (state, payload: InstanceConfig) {
+  setRemoveInstance(state, payload: InstanceConfig) {
     const index = state.instances.findIndex(instance => instance.apiUrl === payload.apiUrl)
     if (index >= 0) {
       state.instances.splice(index, 1)
@@ -131,14 +142,14 @@ export const mutations = {
    * This should only be used on properties that have a default state in the store
    * otherwise they will not be reactive.
    */
-  setSaveByPath (state, payload: SaveByPath) {
+  setSaveByPath(state, payload: SaveByPath) {
     set(state, payload.path, payload.value)
   },
 
   /**
    * Update / Add a temperature preset
    */
-  setPreset (state, payload: TemperaturePreset) {
+  setPreset(state, payload: TemperaturePreset) {
     if (payload.id === -1) {
       payload.id = uuidv4()
       state.uiSettings.dashboard.tempPresets.push(payload)
@@ -153,7 +164,7 @@ export const mutations = {
   /**
    * Remove a preset
    */
-  setRemovePreset (state, payload: TemperaturePreset) {
+  setRemovePreset(state, payload: TemperaturePreset) {
     const i = state.uiSettings.dashboard.tempPresets.findIndex(preset => preset.id === payload.id)
     if (i >= 0) {
       state.uiSettings.dashboard.tempPresets.splice(i, 1)
@@ -163,44 +174,44 @@ export const mutations = {
   /**
    * Set / update a temperature item color override
    */
-  setSensorColor (state, payload: { key: string; color: string }) {
+  setSensorColor(state, payload: { key: string; color: string }) {
     Vue.set(state.uiSettings.dashboard.sensorColors, payload.key, payload.color)
   },
 
   /**
    * Remove a temperature item color override
    */
-  setRemoveSensorColor (state, payload: { key: string }) {
+  setRemoveSensorColor(state, payload: { key: string }) {
     Vue.delete(state.uiSettings.dashboard.sensorColors, payload.key)
   },
 
-  setFileSystemActiveFilters (state, payload: { root: string, value: FileFilterType[] }) {
+  setFileSystemActiveFilters(state, payload: { root: string; value: FileFilterType[] }) {
     Vue.set(state.uiSettings.fileSystem.activeFilters, payload.root, payload.value)
   },
 
-  setFileSystemSortBy (state, payload: { root: string, value: string | null }) {
+  setFileSystemSortBy(state, payload: { root: string; value: string | null }) {
     Vue.set(state.uiSettings.fileSystem.sortBy, payload.root, payload.value)
   },
 
-  setFileSystemSortDesc (state, payload: { root: string, value: boolean | null }) {
+  setFileSystemSortDesc(state, payload: { root: string; value: boolean | null }) {
     Vue.set(state.uiSettings.fileSystem.sortDesc, payload.root, payload.value)
   },
 
   /**
    * Puts us into layout mode
    */
-  setLayoutMode (state, payload: boolean) {
+  setLayoutMode(state, payload: boolean) {
     state.layoutMode = payload
   },
 
-  setContainerColumnCount (state, payload: number) {
+  setContainerColumnCount(state, payload: number) {
     state.containerColumnCount = payload
   },
 
   /**
    * Toggle a tables header state based on its name and key.
    */
-  setUpdateHeader (state, payload: { name: string; header: ConfiguredTableHeader }) {
+  setUpdateHeader(state, payload: { name: string; header: ConfiguredTableHeader }) {
     const headers = state.uiSettings.tableHeaders[payload.name]
 
     if (headers) {
@@ -216,11 +227,11 @@ export const mutations = {
     }
   },
 
-  setUpdateHeaders (state, payload: { name: string; headers: ConfiguredTableHeader[] }) {
+  setUpdateHeaders(state, payload: { name: string; headers: ConfiguredTableHeader[] }) {
     Vue.set(state.uiSettings.tableHeaders, payload.name, payload.headers)
   },
 
-  setUpdateThumbnailSizes (state, payload: { name: string; size: number }) {
+  setUpdateThumbnailSizes(state, payload: { name: string; size: number }) {
     Vue.set(state.uiSettings.thumbnailSizes, payload.name, payload.size)
   }
 } satisfies MutationTree<ConfigState>

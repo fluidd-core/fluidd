@@ -8,11 +8,7 @@ export const smoothChartSource = (
 ): ChartDataSource => {
   const count = source.date.length
 
-  if (
-    windowSeconds <= 0 ||
-    count === 0 ||
-    columns.length === 0
-  ) {
+  if (windowSeconds <= 0 || count === 0 || columns.length === 0) {
     return source
   }
 

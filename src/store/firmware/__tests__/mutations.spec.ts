@@ -1,11 +1,24 @@
 import { mutations } from '../mutations'
 import { createState } from '../state'
 
-const run = (state: Aldis.Run['state'], runId = 'r1'): Aldis.Run => ({ run_id: runId, state, messages: [], result: null })
+const run = (state: Aldis.Run['state'], runId = 'r1'): Aldis.Run => ({
+  run_id: runId,
+  state,
+  messages: [],
+  result: null
+})
 
 describe('setReset', () => {
   it('keeps the dismissed run id and clears everything else', () => {
-    const state = { ...createState(), refreshing: true, pending: true, run: run('running'), logRunId: 'r1', runLost: true, dismissedRunId: 'r0' }
+    const state = {
+      ...createState(),
+      refreshing: true,
+      pending: true,
+      run: run('running'),
+      logRunId: 'r1',
+      runLost: true,
+      dismissedRunId: 'r0'
+    }
 
     mutations.setReset(state)
 
@@ -90,7 +103,10 @@ describe('setRunStarted', () => {
   })
 
   it('keeps a run its events already started', () => {
-    const current = { ...run('running'), messages: [{ run_id: 'r1', mcu: null, phase: 'build', message: 'building', complete: false }] }
+    const current = {
+      ...run('running'),
+      messages: [{ run_id: 'r1', mcu: null, phase: 'build', message: 'building', complete: false }]
+    }
     const state = { ...createState(), pending: false, run: current, logRunId: 'r1' }
 
     mutations.setRunStarted(state, 'r1')

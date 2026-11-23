@@ -51,7 +51,7 @@ export default class AppTextFieldWithCopy extends Vue {
   hasCopied = false
   abortController: AbortController | null = null
 
-  async handleCopy () {
+  async handleCopy() {
     if (this.inputValue) {
       if (await clipboardCopy(this.inputValue.toString(), this.$el)) {
         this.abortController?.abort()
@@ -59,7 +59,7 @@ export default class AppTextFieldWithCopy extends Vue {
         this.hasCopied = true
 
         try {
-          const abortController = this.abortController = new AbortController()
+          const abortController = (this.abortController = new AbortController())
 
           await sleep(2000, abortController.signal)
 
@@ -72,14 +72,14 @@ export default class AppTextFieldWithCopy extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .app-text-field-with-copy {
-    .app-text-field-with-copy__btn-copy {
-      margin-top: -8px;
-      margin-right: -2px;
-    }
-
-    .app-text-field-with-copy__icon-copy {
-      position: absolute;
-    }
+.app-text-field-with-copy {
+  .app-text-field-with-copy__btn-copy {
+    margin-top: -8px;
+    margin-right: -2px;
   }
+
+  .app-text-field-with-copy__icon-copy {
+    position: absolute;
+  }
+}
 </style>

@@ -20,7 +20,7 @@ describe('toCsv', () => {
     [[], ''],
     [null, ''],
     [undefined, ''],
-    ['', ''],
+    ['', '']
   ])('writes %o as %o', (value, expected) => {
     expect(toCsv([[value]])).toBe(expected)
   })
@@ -31,17 +31,19 @@ describe('toCsv', () => {
     ['-part.gcode', "'-part.gcode"],
     ['@SUM(A1)', "'@SUM(A1)"],
     ['=A1,B1', '"\'=A1,B1"'],
-    [['=1+1', 'b'], "'=1+1; b"],
+    [['=1+1', 'b'], "'=1+1; b"]
   ])('writes the formula-like string %o as text', (value, expected) => {
     expect(toCsv([[value]])).toBe(expected)
   })
 
   it('separates cells with commas and rows with CRLF', () => {
-    expect(toCsv([
-      ['Name', 'Duration (s)'],
-      ['a.gcode', 60],
-      ['b.gcode', 120],
-    ])).toBe('Name,Duration (s)\r\na.gcode,60\r\nb.gcode,120')
+    expect(
+      toCsv([
+        ['Name', 'Duration (s)'],
+        ['a.gcode', 60],
+        ['b.gcode', 120]
+      ])
+    ).toBe('Name,Duration (s)\r\na.gcode,60\r\nb.gcode,120')
   })
 
   it('returns an empty string for no rows', () => {

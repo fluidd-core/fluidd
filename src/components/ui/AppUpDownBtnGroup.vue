@@ -40,23 +40,21 @@ export default class AppUpDownBtnGroup extends Vue {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  get valuesDown (): number[] {
-    return [...this.values]
-      .sort((a, b) => b - a)
+  get valuesDown(): number[] {
+    return [...this.values].sort((a, b) => b - a)
   }
 
-  get valuesUp (): number[] {
-    return [...this.values]
-      .sort((a, b) => a - b)
+  get valuesUp(): number[] {
+    return [...this.values].sort((a, b) => a - b)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .app-up-down-btn-group {
-    .v-btn.value {
-      min-width: 44px;
-      padding: 0px;
-    }
+.app-up-down-btn-group {
+  .v-btn.value {
+    min-width: 44px;
+    padding: 0px;
   }
+}
 </style>

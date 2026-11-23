@@ -1,34 +1,44 @@
-import type { BBox, ExtrusionRole, Layer, MoveStore, Part, ValueRange } from '@/store/gcodePreview/types'
+import type {
+  BBox,
+  ExtrusionRole,
+  Layer,
+  MoveStore,
+  Part,
+  ValueRange
+} from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
 import { consola } from 'consola'
 
 export type ParseGcodeWorkerRequestMessage = {
-  action: 'parse',
-  url: string,
+  action: 'parse'
+  url: string
   fileSize: number
 }
 
 export type ParseGcodeWorkerResultMessage = {
-  action: 'result',
-  moves: MoveStore,
-  layers: Layer[],
-  parts: Part[],
-  tools: number[],
-  roles: ExtrusionRole[],
-  speedRange: ValueRange | null,
-  fanRange: ValueRange | null,
-  tempRange: ValueRange | null,
-  bounds: BBox | null,
+  action: 'result'
+  moves: MoveStore
+  layers: Layer[]
+  parts: Part[]
+  tools: number[]
+  roles: ExtrusionRole[]
+  speedRange: ValueRange | null
+  fanRange: ValueRange | null
+  tempRange: ValueRange | null
+  bounds: BBox | null
   truncated: boolean
 }
 
-export type ParseGcodeWorkerResponseMessage = {
-  action: 'progress',
-  filePosition: number
-} | ParseGcodeWorkerResultMessage | {
-  action: 'error',
-  error?: unknown
-}
+export type ParseGcodeWorkerResponseMessage =
+  | {
+      action: 'progress'
+      filePosition: number
+    }
+  | ParseGcodeWorkerResultMessage
+  | {
+      action: 'error'
+      error?: unknown
+    }
 
 const sendProgress = (filePosition: number) => {
   const message: ParseGcodeWorkerResponseMessage = {

@@ -34,58 +34,71 @@ import type { storeOptions } from '.'
 // options are annotated `satisfies StoreOptions<RootState>`, so deriving the list
 // from them would close a cycle and collapse every type below to `any`.
 type RootModulesType = {
-  socket: typeof socket,
-  auth: typeof auth,
-  server: typeof server,
-  printer: typeof printer,
-  config: typeof config,
-  files: typeof files,
-  layout: typeof layout,
-  charts: typeof charts,
-  console: typeof console,
-  macros: typeof macros,
-  power: typeof power,
-  history: typeof history,
-  version: typeof version,
-  firmware: typeof firmware,
-  mesh: typeof mesh,
-  notifications: typeof notifications,
-  announcements: typeof announcements,
-  extensions: typeof extensions,
-  wait: typeof wait,
-  gcodePreview: typeof gcodePreview,
-  timelapse: typeof timelapse,
-  webcams: typeof webcams,
-  jobQueue: typeof jobQueue,
-  spoolman: typeof spoolman,
-  mmu: typeof mmu,
-  sensors: typeof sensors,
-  database: typeof database,
-  analysis: typeof analysis,
+  socket: typeof socket
+  auth: typeof auth
+  server: typeof server
+  printer: typeof printer
+  config: typeof config
+  files: typeof files
+  layout: typeof layout
+  charts: typeof charts
+  console: typeof console
+  macros: typeof macros
+  power: typeof power
+  history: typeof history
+  version: typeof version
+  firmware: typeof firmware
+  mesh: typeof mesh
+  notifications: typeof notifications
+  announcements: typeof announcements
+  extensions: typeof extensions
+  wait: typeof wait
+  gcodePreview: typeof gcodePreview
+  timelapse: typeof timelapse
+  webcams: typeof webcams
+  jobQueue: typeof jobQueue
+  spoolman: typeof spoolman
+  mmu: typeof mmu
+  sensors: typeof sensors
+  database: typeof database
+  analysis: typeof analysis
   afc: typeof afc
 }
 
 type RootStateType<TModules> = {
   [K in keyof TModules]: TModules[K] extends { state: infer S }
-    ? S extends (...args: any[]) => infer R ? R : S
+    ? S extends (...args: any[]) => infer R
+      ? R
+      : S
     : never
 }
 
-type RootGettersType<TModules, TOptions> = UnionToIntersection<{
-  [K in keyof TModules]: GettersOf<TModules[K], K>
-}[keyof TModules] | GettersOf<TOptions, never>>
+type RootGettersType<TModules, TOptions> = UnionToIntersection<
+  | {
+      [K in keyof TModules]: GettersOf<TModules[K], K>
+    }[keyof TModules]
+  | GettersOf<TOptions, never>
+>
 
-type RootMutationsType<TModules, TOptions> = UnionToIntersection<{
-  [K in keyof TModules]: MutationsOf<TModules[K], K>
-}[keyof TModules] | MutationsOf<TOptions, never>>
+type RootMutationsType<TModules, TOptions> = UnionToIntersection<
+  | {
+      [K in keyof TModules]: MutationsOf<TModules[K], K>
+    }[keyof TModules]
+  | MutationsOf<TOptions, never>
+>
 
-type RootActionsType<TModules, TOptions> = UnionToIntersection<{
-  [K in keyof TModules]: ActionsOf<TModules[K], K>
-}[keyof TModules] | ActionsOf<TOptions, never>>
+type RootActionsType<TModules, TOptions> = UnionToIntersection<
+  | {
+      [K in keyof TModules]: ActionsOf<TModules[K], K>
+    }[keyof TModules]
+  | ActionsOf<TOptions, never>
+>
 
 type GettersOf<TModule, K> = TModule extends { getters: infer G }
   ? {
-      [U in keyof G as ModuleKey<TModule, K, U>]: G[U] extends (...args: any[]) => infer R ? R : never
+      [U in keyof G as ModuleKey<TModule, K, U>]: G[U] extends (...args: any[]) => infer R
+        ? R
+        : never
     }
   : never
 
@@ -114,19 +127,16 @@ type DispatchArgs<P extends any[]> = P extends []
   ? [payload?: undefined, options?: DispatchOptions]
   : [payload: P[0], options?: DispatchOptions]
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+  ? I
+  : never
 
-export interface RootModules extends RootModulesType {
-}
+export interface RootModules extends RootModulesType {}
 
-export interface RootState extends RootStateType<RootModulesType> {
-}
+export interface RootState extends RootStateType<RootModulesType> {}
 
-export interface RootGetters extends RootGettersType<RootModulesType, typeof storeOptions> {
-}
+export interface RootGetters extends RootGettersType<RootModulesType, typeof storeOptions> {}
 
-export interface RootMutations extends RootMutationsType<RootModulesType, typeof storeOptions> {
-}
+export interface RootMutations extends RootMutationsType<RootModulesType, typeof storeOptions> {}
 
-export interface RootActions extends RootActionsType<RootModulesType, typeof storeOptions> {
-}
+export interface RootActions extends RootActionsType<RootModulesType, typeof storeOptions> {}

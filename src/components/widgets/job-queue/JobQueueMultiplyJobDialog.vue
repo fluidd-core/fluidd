@@ -11,11 +11,7 @@
         autofocus
         outlined
         :label="$t('app.job_queue.label.number_of_copies')"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThanOrEqual(1)
-        ]"
+        :rules="[$rules.required, $rules.numberValid, $rules.numberGreaterThanOrEqual(1)]"
         required
       />
     </v-card-text>
@@ -35,13 +31,11 @@ export default class JobQueueMultiplyJobDialog extends Vue {
   @Prop({ type: [Object, Array], required: true })
   readonly job!: Moonraker.JobQueue.QueuedJob | Moonraker.JobQueue.QueuedJob[]
 
-  get jobCount () {
-    return Array.isArray(this.job)
-      ? this.job.length
-      : 1
+  get jobCount() {
+    return Array.isArray(this.job) ? this.job.length : 1
   }
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.job, this.copies)
     this.open = false
   }

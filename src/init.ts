@@ -26,14 +26,17 @@ const getHostConfig = async () => {
     throw new Error('Unable to load host configuration. Please check the host.')
   }
 
-  const hostConfig = await response.json() as HostConfig
+  const hostConfig = (await response.json()) as HostConfig
 
   consola.debug('Loaded web host configuration', hostConfig)
 
   return hostConfig
 }
 
-const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null): Promise<ApiConfig | InstanceConfig> => {
+const getApiConfig = async (
+  hostConfig: HostConfig,
+  apiUrlHash?: string | null
+): Promise<ApiConfig | InstanceConfig> => {
   // Local storage load
   if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
     const instancesValue = localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]
@@ -70,10 +73,7 @@ const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null):
   // If endpoints are defined in the hostConfig file,
   // we want to load these on initial application launch
   if (hostConfig && 'endpoints' in hostConfig && hostConfig.endpoints.length) {
-    endpoints.push(
-      ...hostConfig.endpoints
-        .map(sanitizeEndpoint)
-        .filter(Boolean))
+    endpoints.push(...hostConfig.endpoints.map(sanitizeEndpoint).filter(Boolean))
   }
 
   // Add the browsers url to our endpoints list, unless black listed.
@@ -93,21 +93,20 @@ const getApiConfig = async (hostConfig: HostConfig, apiUrlHash?: string | null):
     const { signal } = abortController
 
     return await promiseAny(
-      endpoints
-        .map(async (endpoint) => {
-          const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
+      endpoints.map(async endpoint => {
+        const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
 
-          const result = await webSocketWrapper(apiEndpoints.socketUrl, {
-            timeout: 1200,
-            signal
-          })
-
-          if (!result.ok) {
-            throw new Error(result.message)
-          }
-
-          return apiEndpoints
+        const result = await webSocketWrapper(apiEndpoints.socketUrl, {
+          timeout: 1200,
+          signal
         })
+
+        if (!result.ok) {
+          throw new Error(result.message)
+        }
+
+        return apiEndpoints
+      })
     )
   } catch {
     return {

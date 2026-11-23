@@ -19,7 +19,7 @@ describe('safeHtml', () => {
     expect(el.innerHTML).toBe('<b>a</b>')
   })
 
-  it.each([undefined, null])('renders nothing for %s', (value) => {
+  it.each([undefined, null])('renders nothing for %s', value => {
     const el = document.createElement('span')
 
     el.innerHTML = 'old'
@@ -40,12 +40,12 @@ describe('safeHtml', () => {
   it('sanitizes and marks with a search term', () => {
     const el = document.createElement('span')
 
-    update(el, { html: '<b onclick="x()">it\'s</b><script>it\'s</script>', search: 'it\'s' })
+    update(el, { html: '<b onclick="x()">it\'s</b><script>it\'s</script>', search: "it's" })
 
-    expect(el.innerHTML).toBe('<b><mark>it\'s</mark></b>')
+    expect(el.innerHTML).toBe("<b><mark>it's</mark></b>")
   })
 
-  it.each([undefined, null, ''])('does not mark for a %s search term', (search) => {
+  it.each([undefined, null, ''])('does not mark for a %s search term', search => {
     const el = document.createElement('span')
 
     update(el, { html: 'a', search })

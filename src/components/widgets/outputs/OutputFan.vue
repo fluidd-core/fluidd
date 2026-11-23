@@ -5,9 +5,7 @@
       suffix="%"
       :value="value"
       :reset-value="0"
-      :rules="[
-        customRules.minFan
-      ]"
+      :rules="[customRules.minFan]"
       :disabled="!klippyReady || fan.disconnected"
       :locked="isMobileUserAgent"
       :loading="hasWait(`${$waits.onSetFanSpeed}${fan.name}`)"
@@ -18,7 +16,8 @@
         <small
           v-if="rpm"
           class="ml-1"
-        >{{ rpm }}</small>
+          >{{ rpm }}</small
+        >
       </template>
     </app-named-slider>
 
@@ -35,7 +34,8 @@
         <small
           v-if="rpm"
           class="mr-2"
-        >{{ rpm }}</small>
+          >{{ rpm }}</small
+        >
         <span class="focus--text">{{ prettyValue }}</span>
       </div>
     </v-layout>
@@ -54,19 +54,17 @@ export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly fan!: Fan
 
-  get prettyValue () {
-    return (this.value === 0)
-      ? this.$t('app.general.label.off')
-      : `${this.value} %`
+  get prettyValue() {
+    return this.value === 0 ? this.$t('app.general.label.off') : `${this.value} %`
   }
 
-  get value () {
+  get value() {
     if (!this.fan.speed) return 0
     const speed = this.fan.speed / (this.fan.config?.max_power || 1)
     return Math.round(speed * 100)
   }
 
-  handleChange (target: number) {
+  handleChange(target: number) {
     // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
     if (this.fan.type === 'fan') {
       target = Math.ceil(target * 2.55)
@@ -74,17 +72,18 @@ export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
     }
     if (this.fan.type === 'fan_generic') {
       target = target / 100
-      this.sendGcode(`SET_FAN_SPEED FAN=${encodeGcodeParamValue(this.fan.name)} SPEED=${target}`, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
+      this.sendGcode(
+        `SET_FAN_SPEED FAN=${encodeGcodeParamValue(this.fan.name)} SPEED=${target}`,
+        `${this.$waits.onSetFanSpeed}${this.fan.name}`
+      )
     }
   }
 
-  get rpm () {
-    return (this.fan.rpm)
-      ? this.fan.rpm.toFixed() + ' rpm'
-      : undefined
+  get rpm() {
+    return this.fan.rpm ? this.fan.rpm.toFixed() + ' rpm' : undefined
   }
 
-  get customRules () {
+  get customRules() {
     return {
       minFan: (v: string | number) => {
         const off_below = (this.fan.config?.off_below || 0) * 100
@@ -93,7 +92,11 @@ export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
 
         v = +v
 
-        return (v >= off_below || v === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: off_below })
+        return (
+          v >= off_below ||
+          v === 0 ||
+          this.$t('app.general.simple_form.error.min_or_0', { min: off_below })
+        )
       }
     }
   }

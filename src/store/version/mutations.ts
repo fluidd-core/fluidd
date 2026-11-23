@@ -6,18 +6,18 @@ export const mutations = {
   /**
    * Reset state
    */
-  setReset (state) {
+  setReset(state) {
     Object.assign(state, createState())
   },
 
-  setUpdateStatus (state, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
+  setUpdateStatus(state, payload: Partial<Moonraker.UpdateManager.StatusResponse>) {
     state.status = {
       ...state.status,
       ...payload
     }
   },
 
-  setUpdateResponse (state, payload: Moonraker.UpdateManager.UpdateResponseEvent) {
+  setUpdateResponse(state, payload: Moonraker.UpdateManager.UpdateResponseEvent) {
     // If we get a complete === true, then assume the update is complete
     // and set busy to false also.
     if (payload.complete) {
@@ -33,7 +33,7 @@ export const mutations = {
     }
   },
 
-  setClearUpdateResponse (state) {
+  setClearUpdateResponse(state) {
     state.responses = []
   }
 } satisfies MutationTree<VersionState>

@@ -3,11 +3,9 @@
     dense
     width="180"
     class="grow pt-0"
-    :color="($vuetify.theme.dark) ? '#1E1E20' : '#FFFFFF'"
+    :color="$vuetify.theme.dark ? '#1E1E20' : '#FFFFFF'"
   >
-    <template
-      v-for="item in items"
-    >
+    <template v-for="item in items">
       <v-list-item
         v-if="item.visible"
         :key="item.name"
@@ -28,11 +26,11 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class AppSettingsNav extends Vue {
-  get isVisible () {
+  get isVisible() {
     return !this.$vuetify.breakpoint.mobile
   }
 
-  get items () {
+  get items() {
     return [
       { name: this.$t('app.setting.title.general'), hash: '#general', visible: true },
       { name: this.$t('app.setting.title.warnings'), hash: '#warnings', visible: true },
@@ -46,31 +44,39 @@ export default class AppSettingsNav extends Vue {
       { name: this.$t('app.setting.title.tool'), hash: '#toolhead', visible: true },
       { name: this.$t('app.setting.title.thermal_presets'), hash: '#presets', visible: true },
       { name: this.$t('app.setting.title.gcode_preview'), hash: '#gcodePreview', visible: true },
-      { name: this.$t('app.general.title.timelapse'), hash: '#timelapse', visible: this.supportsTimelapse },
+      {
+        name: this.$t('app.general.title.timelapse'),
+        hash: '#timelapse',
+        visible: this.supportsTimelapse
+      },
       { name: this.$t('app.mmu.title.headline'), hash: '#mmu', visible: this.supportsMmu },
-      { name: this.$t('app.spoolman.title.spoolman'), hash: '#spoolman', visible: this.supportsSpoolman },
+      {
+        name: this.$t('app.spoolman.title.spoolman'),
+        hash: '#spoolman',
+        visible: this.supportsSpoolman
+      },
       { name: this.$t('app.version.title'), hash: '#versions', visible: this.supportsVersions },
       { name: this.$t('app.firmware.title'), hash: '#firmware', visible: this.supportsFirmware }
     ]
   }
 
-  get supportsVersions (): boolean {
+  get supportsVersions(): boolean {
     return this.$typedGetters['server/componentSupport']('update_manager')
   }
 
-  get supportsFirmware (): boolean {
+  get supportsFirmware(): boolean {
     return this.$typedGetters['firmware/isAvailable']
   }
 
-  get supportsTimelapse (): boolean {
+  get supportsTimelapse(): boolean {
     return this.$typedGetters['server/componentSupport']('timelapse')
   }
 
-  get supportsSpoolman (): boolean {
+  get supportsSpoolman(): boolean {
     return this.$typedGetters['server/componentSupport']('spoolman')
   }
 
-  get supportsMmu (): boolean {
+  get supportsMmu(): boolean {
     return this.$typedState.printer.printer.mmu != null
   }
 }

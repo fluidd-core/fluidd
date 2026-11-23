@@ -32,37 +32,37 @@ export default class GcodePreviewTool extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  @include theme(gcode-preview-tool) using ($material) {
-    .extruder-color {
-      border-color: map-deep-get($material, 'text', 'primary');
-    }
+@include theme(gcode-preview-tool) using ($material) {
+  .extruder-color {
+    border-color: map-deep-get($material, 'text', 'primary');
   }
+}
 
-  .gcode-preview-tool {
-    display: inline-flex;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    align-items: center;
-    padding: 0 4px;
-    font-size: 0.8125rem;
-    white-space: nowrap;
+.gcode-preview-tool {
+  display: inline-flex;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  align-items: center;
+  padding: 0 4px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
 
-    &.active {
-      border-color: map-deep-get($material-dark, 'text', 'primary');
-
-      & .extruder-color {
-        border-color: map-deep-get($material-dark, 'text', 'primary');
-      }
-    }
+  &.active {
+    border-color: map-deep-get($material-dark, 'text', 'primary');
 
     & .extruder-color {
-      width: 15px;
-      height: 15px;
-      border-width: 1px;
-      border-style: solid;
-      border-radius: 50%;
+      border-color: map-deep-get($material-dark, 'text', 'primary');
     }
   }
+
+  & .extruder-color {
+    width: 15px;
+    height: 15px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 50%;
+  }
+}
 </style>

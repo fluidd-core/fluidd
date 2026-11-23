@@ -61,34 +61,34 @@ import type { PromptDialog, PromptDialogButton } from '@/store/console/types'
 
 @Component({})
 export default class ActionCommandPromptDialog extends Mixins(StateMixin) {
-  get dialog (): PromptDialog {
+  get dialog(): PromptDialog {
     return this.$typedState.console.promptDialog
   }
 
-  get open (): boolean {
+  get open(): boolean {
     return this.dialog.open
   }
 
-  set open (value: boolean) {
+  set open(value: boolean) {
     if (!value) {
       this.sendGcode('RESPOND TYPE=command MSG="action:prompt_end"')
     }
   }
 
-  handleClick (button: PromptDialogButton) {
+  handleClick(button: PromptDialogButton) {
     this.sendGcode(button.command || button.text)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .prompt-button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
+.prompt-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 
-    .v-btn {
-      flex: 1 1 0;
-    }
+  .v-btn {
+    flex: 1 1 0;
   }
+}
 </style>

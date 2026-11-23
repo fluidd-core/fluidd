@@ -11,9 +11,7 @@
         autofocus
         outlined
         :label="label"
-        :rules="[
-          $rules.required
-        ]"
+        :rules="[$rules.required]"
         spellcheck="false"
         required
         @focus="handleFocus"
@@ -46,17 +44,15 @@ export default class FileNameDialog extends Mixins(StateMixin) {
   newName = ''
 
   @Watch('open')
-  onOpenChanged (value: boolean) {
+  onOpenChanged(value: boolean) {
     if (value) {
       this.newName = this.name
     }
   }
 
-  handleFocus (event: FocusEvent) {
+  handleFocus(event: FocusEvent) {
     if (event.target instanceof HTMLInputElement) {
-      const index = this.isFile
-        ? event.target.value.lastIndexOf('.')
-        : -1
+      const index = this.isFile ? event.target.value.lastIndexOf('.') : -1
 
       if (index > 0) {
         event.target.setSelectionRange(0, index)
@@ -66,7 +62,7 @@ export default class FileNameDialog extends Mixins(StateMixin) {
     }
   }
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.newName)
     this.open = false
   }

@@ -105,15 +105,11 @@
             color="primary"
             @click="sendTestZ(`-${offset}`)"
           >
-            <v-icon>
-              $minus
-            </v-icon>
+            <v-icon> $minus </v-icon>
           </app-btn>
         </v-col>
         <v-col cols="4">
-          <div
-            class="v-btn v-size--default btncolor"
-          >
+          <div class="v-btn v-size--default btncolor">
             {{ offset }}
           </div>
         </v-col>
@@ -123,9 +119,7 @@
             color="primary"
             @click="sendTestZ(`+${offset}`)"
           >
-            <v-icon>
-              $plus
-            </v-icon>
+            <v-icon> $plus </v-icon>
           </app-btn>
         </v-col>
       </v-row>
@@ -140,88 +134,82 @@ import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin) {
-  get offsets (): number[] {
-    return [
-      1,
-      0.1,
-      ...this.$typedState.config.uiSettings.general.zAdjustDistances
-    ].sort((a, b) => b - a)
+  get offsets(): number[] {
+    return [1, 0.1, ...this.$typedState.config.uiSettings.general.zAdjustDistances].sort(
+      (a, b) => b - a
+    )
   }
 
-  get manualProbe (): Klipper.ManualProbeState | undefined {
+  get manualProbe(): Klipper.ManualProbeState | undefined {
     return this.$typedState.printer.printer.manual_probe
   }
 
-  get zPositionLower (): string {
+  get zPositionLower(): string {
     return this.manualProbe?.z_position_lower?.toFixed(3) ?? ''
   }
 
-  get zPosition (): string {
+  get zPosition(): string {
     return this.manualProbe?.z_position?.toFixed(3) ?? ''
   }
 
-  get zPositionUpper (): string {
+  get zPositionUpper(): string {
     return this.manualProbe?.z_position_upper?.toFixed(3) ?? ''
   }
 
-  get showManualProbeDialogAutomatically (): boolean {
+  get showManualProbeDialogAutomatically(): boolean {
     return this.$typedState.config.uiSettings.general.showManualProbeDialogAutomatically
   }
 
   @Watch('isManualProbeActive')
-  onIsManualProbeActive (value: boolean) {
+  onIsManualProbeActive(value: boolean) {
     if (
       !value ||
-      (
-        this.showManualProbeDialogAutomatically &&
-        this.klippyReady &&
-        !this.printerPrinting
-      )
+      (this.showManualProbeDialogAutomatically && this.klippyReady && !this.printerPrinting)
     ) {
       this.manualProbeDialogOpen = value
     }
   }
 
-  sendTestZ (zValue: string) {
+  sendTestZ(zValue: string) {
     this.sendGcode(`TESTZ Z=${zValue}`)
   }
 
-  sendAbort () {
+  sendAbort() {
     this.sendGcode('ABORT', this.$waits.onManualProbe)
     this.manualProbeDialogOpen = false
   }
 
-  sendAccept () {
+  sendAccept() {
     this.sendGcode('ACCEPT', this.$waits.onManualProbe)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import 'vuetify/src/styles/styles.sass';
+@import 'vuetify/src/styles/styles.sass';
 
-  .bysect-row > .col {
-    padding: 4px 1px;
+.bysect-row > .col {
+  padding: 4px 1px;
 
-    & .v-btn {
-      min-width: 40px;
-      flex-grow: 1;
-    }
+  & .v-btn {
+    min-width: 40px;
+    flex-grow: 1;
+  }
+}
+
+.offset-row > .col {
+  padding: 4px 1px;
+
+  & > * {
+    border-radius: 0;
+    width: 100%;
   }
 
-  .offset-row > .col {
-    padding: 4px 1px;
-
-    & > * {
-      border-radius: 0;
-      width: 100%;
-    }
-
-    &:first-child > * {
-      border-radius: $border-radius-root 0 0 $border-radius-root;
-    }
-    &:last-child > * {
-      border-radius: 0 $border-radius-root $border-radius-root 0;
-    }
+  &:first-child > * {
+    border-radius: $border-radius-root 0 0 $border-radius-root;
   }
+  &:last-child > * {
+    border-radius: 0 $border-radius-root $border-radius-root 0;
+  }
+}
 </style>

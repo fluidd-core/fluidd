@@ -85,20 +85,19 @@ import ThemePicker from '../ui/AppColorPicker.vue'
   }
 })
 export default class ThemeSettings extends Mixins(StateMixin) {
-  get theme (): ThemeConfig {
+  get theme(): ThemeConfig {
     return this.$typedState.config.uiSettings.theme
   }
 
-  get themePresets (): ThemePreset[] {
+  get themePresets(): ThemePreset[] {
     return this.$typedState.config.hostConfig.themePresets
   }
 
-  get themePreset (): ThemePreset | undefined {
-    return this.themePresets
-      .find(themePreset => themePreset.logo.src === this.theme.logo.src)
+  get themePreset(): ThemePreset | undefined {
+    return this.themePresets.find(themePreset => themePreset.logo.src === this.theme.logo.src)
   }
 
-  set themePreset (value: ThemePreset) {
+  set themePreset(value: ThemePreset) {
     const { color, isDark, logo } = value
 
     this.updateTheme({
@@ -108,11 +107,11 @@ export default class ThemeSettings extends Mixins(StateMixin) {
     })
   }
 
-  get themeColor () {
+  get themeColor() {
     return this.theme.color
   }
 
-  set themeColor (value: string) {
+  set themeColor(value: string) {
     if (this.theme.color.toLowerCase() !== value.toLowerCase()) {
       this.updateTheme({
         color: value
@@ -120,31 +119,31 @@ export default class ThemeSettings extends Mixins(StateMixin) {
     }
   }
 
-  get isDark () {
+  get isDark() {
     return this.theme.isDark
   }
 
-  set isDark (value: boolean) {
+  set isDark(value: boolean) {
     this.updateTheme({
       isDark: value
     })
   }
 
-  get backgroundLogo () {
+  get backgroundLogo() {
     return this.theme.backgroundLogo
   }
 
-  set backgroundLogo (value: boolean) {
+  set backgroundLogo(value: boolean) {
     this.updateTheme({
       backgroundLogo: value
     })
   }
 
-  updateTheme (updatedTheme: Partial<ThemeConfig>) {
+  updateTheme(updatedTheme: Partial<ThemeConfig>) {
     this.$typedDispatch('config/updateTheme', updatedTheme)
   }
 
-  handleReset () {
+  handleReset() {
     const themePreset = this.themePreset
 
     if (themePreset) {

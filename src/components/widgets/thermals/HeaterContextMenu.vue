@@ -14,9 +14,7 @@
         @click="$emit('turn-off', heater)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $snowflake
-          </v-icon>
+          <v-icon> $snowflake </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.chart.label.turn_off') }}</v-list-item-title>
@@ -30,9 +28,7 @@
         @click="$emit('pid-calibrate', heater)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $tools
-          </v-icon>
+          <v-icon> $tools </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>PID_CALIBRATE</v-list-item-title>
@@ -45,9 +41,7 @@
         @click="$emit('mpc-calibrate', heater)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $tools
-          </v-icon>
+          <v-icon> $tools </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>MPC_CALIBRATE</v-list-item-title>
@@ -76,15 +70,15 @@ export default class HeaterContextMenu extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly heater!: Heater
 
-  get klippyApp (): KlippyApp {
+  get klippyApp(): KlippyApp {
     return this.$typedGetters['printer/getKlippyApp']
   }
 
-  get heaterIsOn () {
+  get heaterIsOn() {
     return this.heater.target > 0
   }
 
-  get heaterUsesMpcControl () {
+  get heaterUsesMpcControl() {
     return this.heater.config?.control === 'mpc'
   }
 }

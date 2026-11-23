@@ -53,7 +53,7 @@ export default class AppBtnCollapseGroup extends Vue {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  get hasDefaultSlot () {
+  get hasDefaultSlot() {
     return !!this.$slots.default
   }
 }

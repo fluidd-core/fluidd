@@ -13,11 +13,9 @@
             :disabled="disabled"
             icon
             text
-            v-on="{... menu, ...tooltip}"
+            v-on="{ ...menu, ...tooltip }"
           >
-            <v-icon>
-              $plus
-            </v-icon>
+            <v-icon> $plus </v-icon>
           </app-btn>
         </template>
         <span>{{ $t('app.general.btn.add') }}</span>
@@ -30,9 +28,7 @@
         @click="emulateClick(false)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $fileUpload
-          </v-icon>
+          <v-icon> $fileUpload </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -47,9 +43,7 @@
         @click="emulateClick(false, true)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $folderUpload
-          </v-icon>
+          <v-icon> $folderUpload </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -64,9 +58,7 @@
         @click="emulateClick(true)"
       >
         <v-list-item-icon>
-          <v-icon>
-            $progressUpload
-          </v-icon>
+          <v-icon> $progressUpload </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -80,9 +72,7 @@
         @click="$emit('add-file')"
       >
         <v-list-item-icon>
-          <v-icon>
-            $fileAdd
-          </v-icon>
+          <v-icon> $fileAdd </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -96,9 +86,7 @@
         @click="$emit('add-dir')"
       >
         <v-list-item-icon>
-          <v-icon>
-            $folderAdd
-          </v-icon>
+          <v-icon> $folderAdd </v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
@@ -115,7 +103,7 @@
       style="display: none"
       multiple
       @change="fileChanged"
-    >
+    />
   </v-menu>
 </template>
 
@@ -140,32 +128,26 @@ export default class FileSystemAddMenu extends Mixins(StateMixin, BrowserMixin) 
 
   andPrint = false
 
-  get rootProperties (): RootProperties {
+  get rootProperties(): RootProperties {
     return this.$typedGetters['files/getRootProperties'](this.root)
   }
 
-  get accepts () {
-    return this.isIOS
-      ? undefined
-      : this.rootProperties.accepts.join(',')
+  get accepts() {
+    return this.isIOS ? undefined : this.rootProperties.accepts.join(',')
   }
 
-  get printerReady () {
-    return (
-      !this.printerPrinting &&
-      !this.printerPaused &&
-      this.klippyReady
-    )
+  get printerReady() {
+    return !this.printerPrinting && !this.printerPaused && this.klippyReady
   }
 
-  emulateClick (startPrint: boolean, folder = false) {
+  emulateClick(startPrint: boolean, folder = false) {
     this.andPrint = startPrint
     this.uploadFile.multiple = !startPrint // Can't start print with multiple files
     this.uploadFile.webkitdirectory = folder
     this.uploadFile.click()
   }
 
-  async fileChanged (event: Event) {
+  async fileChanged(event: Event) {
     if (event.target instanceof HTMLInputElement) {
       const files = await getFilesWithPathFromHTMLInputElement(event.target)
 

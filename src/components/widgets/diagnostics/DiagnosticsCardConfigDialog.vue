@@ -1,7 +1,9 @@
 <template>
   <app-dialog
     v-model="open"
-    :title="(config.id !== '') ? $t('app.general.title.edit_chart') : $t('app.general.title.add_chart')"
+    :title="
+      config.id !== '' ? $t('app.general.title.edit_chart') : $t('app.general.title.add_chart')
+    "
     max-width="800"
   >
     <v-card-text>
@@ -69,7 +71,7 @@
         color="primary"
         @click="handleSave"
       >
-        {{ (config.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+        {{ config.id !== '' ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
       </app-btn>
     </template>
   </app-dialog>
@@ -98,12 +100,12 @@ export default class DiagnosticsCardConfigDialog extends Mixins(BrowserMixin) {
     { name: this.$t('app.setting.label.metrics'), component: MetricsConfigStep }
   ]
 
-  handleSave () {
+  handleSave() {
     this.$emit('save', this.config)
     this.open = false
   }
 
-  handleDelete () {
+  handleDelete() {
     this.$emit('delete', this.config.id)
     this.open = false
   }

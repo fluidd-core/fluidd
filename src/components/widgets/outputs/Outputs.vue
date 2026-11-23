@@ -55,21 +55,19 @@ import type { Fan, Led, OutputPin } from '@/store/printer/types'
   }
 })
 export default class Outputs extends Mixins(StateMixin) {
-  get all () {
+  get all() {
     const fans: Fan[] = this.$typedGetters['printer/getAllFans']
     const pins: OutputPin[] = this.$typedGetters['printer/getAllPins']
     const leds: Led[] = this.$typedGetters['printer/getAllLeds']
 
     const items: Array<Fan | Led | OutputPin> = [
       ...fans,
-      ...pins
-        .sort((a, b) => (+a.pwm - +b.pwm) || a.name.localeCompare(b.name)),
+      ...pins.sort((a, b) => +a.pwm - +b.pwm || a.name.localeCompare(b.name)),
       ...leds
     ]
 
-    const [col1, col2] = items.length > 1
-      ? [items.splice(0, Math.ceil(items.length / 2)), items]
-      : [items, []]
+    const [col1, col2] =
+      items.length > 1 ? [items.splice(0, Math.ceil(items.length / 2)), items] : [items, []]
 
     return {
       col1,
