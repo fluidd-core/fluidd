@@ -12,7 +12,7 @@ const startWorker = (postMessage = vi.fn()) => {
   const scope: WorkerScope = { onmessage: null }
   const port: WorkerPort = { onmessage: null, postMessage }
 
-  // eslint-disable-next-line no-new-func
+  // oxlint-disable-next-line no-new-func
   new Function('self', `(${sandboxedEvalWorkerMain.toString()})(self)`)(scope)
 
   scope.onmessage?.({ data: port })
@@ -82,7 +82,7 @@ describe('sandboxedEvalFrameMain', () => {
     }
     const fakeUrl = { createObjectURL: () => 'blob:worker' }
 
-    // eslint-disable-next-line no-new-func
+    // oxlint-disable-next-line no-new-func
     new Function('window', 'URL', 'Worker', getFrameScript())(fakeWindow, fakeUrl, FakeWorker)
 
     const send = (data: unknown, ports: unknown[] = [], source: unknown = parent) => listener?.({ source, data, ports })

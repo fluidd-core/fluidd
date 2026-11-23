@@ -16,8 +16,7 @@
       "onAutoForward": "silent"
     }
   },
-  "features": {
-  },
+  "features": {},
   "postCreateCommand": "sudo chown node:node node_modules && pnpm i --frozen-lockfile",
   "customizations": {
     "vscode": {
@@ -26,20 +25,43 @@
         "dbaeumer.vscode-eslint",
         "eamodio.gitlens",
         "editorconfig.editorconfig",
-        "esbenp.prettier-vscode",
         "lukas-tr.materialdesignicons-intellisense",
         "ms-azuretools.vscode-docker",
+        "oxc.oxc-vscode",
         "orta.vscode-twoslash-queries",
         "redhat.vscode-yaml",
         "vue.volar"
       ],
       "settings": {
         "editor.codeActionsOnSave": {
+          "source.fixAll.oxc": "explicit",
           "source.fixAll.eslint": "explicit"
         },
-        "i18n-ally.localesPaths": [
-          "src/locales"
-        ],
+        "[javascript]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode",
+          "editor.formatOnSave": true
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode",
+          "editor.formatOnSave": true
+        },
+        "[vue]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode",
+          "editor.formatOnSave": true
+        },
+        "[json]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode",
+          "editor.formatOnSave": true
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode",
+          "editor.formatOnSave": true
+        },
+        "[scss]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode",
+          "editor.formatOnSave": true
+        },
+        "i18n-ally.localesPaths": ["src/locales"],
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.profiles.linux": {
           "zsh": {

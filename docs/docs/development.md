@@ -89,7 +89,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  get klippyReady (): boolean {
+  get klippyReady(): boolean {
     return this.$typedGetters['printer/getKlippyReady']
   }
 }
@@ -210,7 +210,7 @@ pnpm i --frozen-lockfile
 ```
 
 This also runs the `prepare` script, which installs the Git hooks that validate
-your commit messages and lint staged files before each commit.
+your commit messages and format and lint staged files before each commit.
 
 ### Run a local development server
 

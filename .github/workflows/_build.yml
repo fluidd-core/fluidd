@@ -30,9 +30,14 @@ jobs:
         run: |
           pnpm i --frozen-lockfile
 
-      - name: Run lint
+      - name: Run lint check
         run: |
           pnpm run lint --no-fix
+
+      - name: Run format check
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm run format --check
 
       - name: Run type check
         if: ${{ !cancelled() }}

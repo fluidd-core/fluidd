@@ -104,7 +104,6 @@ export default class MmuMixin extends Vue {
 
   get isMmuPaused (): boolean {
     return this.mmuState?.is_paused ?? false
-    return ['pause_locked', 'paused'].includes(this.printState)
   }
 
   get isMmuPausedAndLocked (): boolean {

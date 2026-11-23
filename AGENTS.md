@@ -19,7 +19,7 @@ rules there are not repeated here.
 | [`.agents/history.md`](.agents/history.md)               | `src/store/history/`, `JobHistory`, CSV export                                                          |
 | [`.agents/i18n.md`](.agents/i18n.md)                     | `src/plugins/i18n.ts`, Vuetify locales, `SupportedLocales`                                              |
 | [`.agents/testing.md`](.agents/testing.md)               | Specs needing jsdom, `location`, `fetch` stubs; `vitest.config.ts`, `tests/unit/setup.ts`               |
-| [`.agents/toolchain.md`](.agents/toolchain.md)           | `package.json`, `pnpm-workspace.yaml`, Vite/Vitest/TS/ESLint config, dependency versions                |
+| [`.agents/toolchain.md`](.agents/toolchain.md)           | `package.json`, `pnpm-workspace.yaml`, Vite/Vitest/TS/oxlint/oxfmt/ESLint config, dependency versions   |
 | [`.agents/ci.md`](.agents/ci.md)                         | `.github/`, `tools/bundle-size.mjs`                                                                     |
 | [`.agents/containers.md`](.agents/containers.md)         | `.devcontainer/`, `Dockerfile`, `server/nginx/`                                                         |
 | [`.agents/docs-site.md`](.agents/docs-site.md)           | anything under `docs/`                                                                                  |
@@ -51,7 +51,7 @@ export default class MyComponent extends Vue {
 // Component needing printer state — extend via Mixins()
 @Component({ components: { /* ... */ } })
 export default class PrinterWidget extends Mixins(StateMixin) {
-  get klippyReady (): boolean {
+  get klippyReady(): boolean {
     return this.$typedGetters['printer/getKlippyReady']
   }
 }
@@ -98,7 +98,8 @@ pnpm run prepare        # Install git hooks (runs automatically on `pnpm i`)
 pnpm run dev            # Start development server (port 8080)
 pnpm run build          # Production build
 pnpm run type-check     # TypeScript validation (vue-tsc)
-pnpm run lint           # ESLint with Vue/TS rules
+pnpm run lint           # oxlint, then ESLint (Vue templates only)
+pnpm run format         # oxfmt (`--check` in CI)
 pnpm run test           # Vitest unit tests
 pnpm run circular-check # Check for circular dependencies
 ```
@@ -158,6 +159,7 @@ pnpm run circular-check # Check for circular dependencies
 ## Code Style
 
 - Source must pass linting with **zero warnings and zero type errors** — run `pnpm run lint` and `pnpm run type-check` before committing
+- Formatting is owned by oxfmt (`oxfmt.config.ts`) — run `pnpm run format`, never hand-format against it. The pre-commit hook formats staged files
 - `.editorconfig` rules: 2 spaces, LF line endings, UTF-8, trim trailing whitespace, max line 100 (code)
 - camelCase for variables/methods, PascalCase for components
 - `src/components/ui/` components put a kebab-case class named after the component on their main

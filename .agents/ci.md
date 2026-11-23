@@ -6,9 +6,9 @@ Read before touching `.github/` or `tools/bundle-size.mjs`.
   installs pnpm and Node from `devEngines`. `bundle-baseline` uses it too, so its
   `sparse-checkout` lists `.github/actions` alongside `tools` (cone mode checks out root files but
   no other directory)
-- Pipeline: `pnpm i --frozen-lockfile` → `lint --no-fix` → `type-check` → `test:unit` →
-  `circular-check` → `build`. The three middle checks carry `if: ${{ !cancelled() }}` so one run
-  reports all four; `build` and the artifact upload deliberately don't
+- Pipeline: `pnpm i --frozen-lockfile` → `lint --no-fix` → `format --check` → `type-check` →
+  `test:unit` → `circular-check` → `build`. The four middle checks carry `if: ${{ !cancelled() }}`
+  so one run reports all five; `build` and the artifact upload deliberately don't
 - `_build.yml`, `_publish-docker.yml`, `_publish-web.yml` are `workflow_call` workflows, called by
   `ci.yml` (PRs, `develop`/`master` pushes) and `release.yml` (`v*` tags). A calling job's
   `permissions:` is a **ceiling** on the called workflow's token — every calling job needs its own

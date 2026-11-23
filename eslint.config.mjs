@@ -1,35 +1,33 @@
 import pluginVue from 'eslint-plugin-vue'
-import * as pluginRegexp from 'eslint-plugin-regexp'
-import neostandard from 'neostandard'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+
+// ESLint only lints `.vue` files, for the template rules oxlint cannot run; everything else is
+// linted by oxlint (`oxlint.config.ts`) and formatted by oxfmt (`oxfmt.config.ts`)
+
+// Layout rules are formatting, which oxfmt owns
+const vueLayoutRulesOff = Object.fromEntries(
+  Object.entries(pluginVue.rules)
+    .filter(([, rule]) => rule.meta?.type === 'layout')
+    .map(([name]) => [`vue/${name}`, 'off'])
+)
 
 export default defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
+    files: ['**/*.vue']
   },
   {
     name: 'app/files-to-ignore',
-    ignores: [
-      'dist/**',
-      'dev-dist/**',
-      'docs/.cache/**',
-      'docs/.venv/**',
-      'docs/site/**',
-    ]
+    ignores: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx,jsx}', 'dist/**', 'dev-dist/**', 'docs/**']
   },
   pluginVue.configs['flat/vue2-recommended'],
-  pluginRegexp.configs['flat/recommended'],
-  neostandard(),
-  vueTsConfigs.recommended,
+  vueTsConfigs.base,
   {
+    name: 'app/rules',
     rules: {
-      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-      camelcase: 'off',
-      'no-use-before-define': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-empty-object-type': 'off'
+      ...vueLayoutRulesOff,
+      // oxlint skips `no-unused-vars` in `.vue` files, as the template may use them
+      '@typescript-eslint/no-unused-vars': 'error'
     }
   }
 )

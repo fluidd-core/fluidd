@@ -1,20 +1,17 @@
 {
-  "extends": [
-    "@tsconfig/node26/tsconfig.json",
-    "@vue/tsconfig/tsconfig.json"
-  ],
+  "extends": ["@tsconfig/node26/tsconfig.json", "@vue/tsconfig/tsconfig.json"],
 
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.config.tsbuildinfo",
 
-    "types": [
-      "node"
-    ],
+    "types": ["node"]
   },
 
   "include": [
     "vite.config.*",
     "vitest.config.*",
+    "oxlint.config.*",
+    "oxfmt.config.*",
     "package.json"
   ]
 }

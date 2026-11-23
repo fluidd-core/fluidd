@@ -1,11 +1,16 @@
 git diff --cached --name-only --diff-filter=ACMR -z \
-  | grep -izE '\.(js|mjs|ts|vue)$' \
+  | grep -izE '^src/globals\.ts$|\.(vue|svg)$' \
+  | xargs -0 -r node tools/svgo.mjs
+
+git diff --cached --name-only --diff-filter=ACMR -z \
+  | xargs -0 -r pnpm exec oxfmt --no-error-on-unmatched-pattern
+
+git update-index --again
+
+git diff --cached --name-only --diff-filter=ACMR -z \
+  | grep -izE '\.(js|mjs|cjs|ts|mts|cts|vue)$' \
+  | xargs -0 -r pnpm exec oxlint --deny-warnings --no-error-on-unmatched-pattern
+
+git diff --cached --name-only --diff-filter=ACMR -z \
+  | grep -izE '\.vue$' \
   | xargs -0 -r pnpm exec eslint --max-warnings 0
-
-if git diff --cached --name-only --diff-filter=ACMR | grep -iqE '^src/globals\.ts$|\.(vue|svg)$'; then
-  git diff --cached --name-only --diff-filter=ACMR -z \
-    | grep -izE '^src/globals\.ts$|\.(vue|svg)$' \
-    | xargs -0 -r node tools/svgo.mjs
-
-  git update-index --again
-fi

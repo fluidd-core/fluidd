@@ -50,7 +50,7 @@ export default class RegisterServiceWorker extends Vue {
   }
 
   updateServiceWorker () {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    // oxlint-disable-next-line no-unused-expressions
     this.updateSW && this.updateSW(true)
   }
 

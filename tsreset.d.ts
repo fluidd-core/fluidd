@@ -77,12 +77,12 @@ interface MapConstructor {
   new <K = unknown, V = unknown>(): Map<K, V>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// oxlint-disable-next-line no-unused-vars
 interface Map<K, V> {
   has(value: K | (TSReset.WidenLiteral<K> & {})): boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// oxlint-disable-next-line no-unused-vars
 interface ReadonlyMap<K, V> {
   has(value: K | (TSReset.WidenLiteral<K> & {})): boolean;
 }

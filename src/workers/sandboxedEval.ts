@@ -42,7 +42,7 @@ export const sandboxedEvalWorkerMain = (scope: SandboxedEvalWorkerScope) => {
       let response: SandboxedEvalWorkerResponseMessage
 
       try {
-        // eslint-disable-next-line no-eval
+        // oxlint-disable-next-line no-eval
         const fn = (0, eval)(`(function (self, context) { ${code} })`)
 
         response = {

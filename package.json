@@ -2,18 +2,31 @@
   "name": "fluidd",
   "version": "1.38.1",
   "private": true,
-  "type": "module",
   "description": "fluidd, a klipper web client.",
+  "keywords": [
+    "klipper"
+  ],
+  "homepage": "https://github.com/fluidd-core/fluidd#readme",
+  "bugs": {
+    "url": "https://github.com/fluidd-core/fluidd/issues"
+  },
+  "license": "GPL-3.0",
   "author": {
     "name": "Craig Bassett"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fluidd-core/fluidd.git"
+  },
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "serve:prod": "vite preview --port 5000",
     "serve:docs": "cd ./docs && zensical serve",
-    "lint": "eslint .",
+    "lint": "oxlint && eslint .",
+    "format": "oxfmt",
     "prepare": "husky",
     "release": "commit-and-tag-version",
     "release:major": "pnpm run release --release-as major",
@@ -87,7 +100,8 @@
     "husky": "^9.1.7",
     "jsdom": "^31.0.1",
     "mockdate": "^3.0.5",
-    "neostandard": "^0.13.0",
+    "oxfmt": "0.79.0",
+    "oxlint": "1.94.0",
     "sass-embedded": "^1.108.2",
     "skott": "^0.35.12",
     "svgo": "^4.1.0",
@@ -107,21 +121,6 @@
     "workbox-strategies": "^7.4.1",
     "workbox-window": "^7.4.1"
   },
-  "bugs": {
-    "url": "https://github.com/fluidd-core/fluidd/issues"
-  },
-  "homepage": "https://github.com/fluidd-core/fluidd#readme",
-  "keywords": [
-    "klipper"
-  ],
-  "license": "GPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fluidd-core/fluidd.git"
-  },
-  "engines": {
-    "node": "^24 || ^26"
-  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
@@ -133,5 +132,8 @@
       "version": "^26.13.1",
       "onFail": "download"
     }
+  },
+  "engines": {
+    "node": "^24 || ^26"
   }
 }

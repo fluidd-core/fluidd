@@ -14,15 +14,9 @@ export default defineConfig({
       srcDir: 'src',
       filename: 'sw.ts',
       strategies: 'injectManifest',
-      includeAssets: [
-        '**/*.svg',
-        '**/*.png',
-        '**/*.ico',
-      ],
+      includeAssets: ['**/*.svg', '**/*.png', '**/*.ico'],
       injectManifest: {
-        globPatterns: [
-          '**/*.{js,css,html,ttf,woff,woff2,wasm}'
-        ],
+        globPatterns: ['**/*.{js,css,html,ttf,woff,woff2,wasm}'],
         maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
       },
       manifest: {
@@ -94,6 +88,7 @@ export default defineConfig({
       vueTsc: {
         tsconfigPath: path.resolve(import.meta.dirname, './tsconfig.app.json')
       },
+      oxlint: true,
       eslint: {
         lintCommand: 'eslint .',
         useFlatConfig: true
@@ -101,14 +96,8 @@ export default defineConfig({
     }),
     Components({
       dts: true,
-      dirs: [
-        'src/components/common',
-        'src/components/layout',
-        'src/components/ui'
-      ],
-      resolvers: [
-        VuetifyResolver()
-      ]
+      dirs: ['src/components/common', 'src/components/layout', 'src/components/ui'],
+      resolvers: [VuetifyResolver()]
     })
   ],
 
