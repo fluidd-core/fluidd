@@ -6,7 +6,7 @@ allowBuilds:
   vue-demi: true
 
 catalog:
-  dompurify: ^3.4.18
+  dompurify: ^3.5.0
   echarts: ^6.1.0
   typescript: npm:typescript-native-bridge@6.0.3-bridge.19.tsgo.7.0.2
   vite: ^8.3.8
