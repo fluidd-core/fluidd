@@ -140,14 +140,12 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
 
       if (match) {
         // code matches one of known patterns
-        const spoolId = match[1]
-        if (spoolId && !Number.isNaN(+spoolId)) {
+        const spoolId = +match[1]
+        if (!Number.isNaN(spoolId)) {
           // valid spool ID
-          const id = parseInt(spoolId, 10)
-
-          if (this.availableSpools.some(spool => spool.id === id)) {
+          if (this.availableSpools.some(spool => spool.id === spoolId)) {
             // spool exists in spoolman
-            this.$emit('detected', id)
+            this.$emit('detected', spoolId)
           } else {
             // spool doesn't exist
             this.statusMessage = 'error.spool_not_existant'
