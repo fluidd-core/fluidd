@@ -83,5 +83,18 @@ export default defineConfig({
     'typescript/no-require-imports': 'error',
     'typescript/no-unnecessary-type-constraint': 'error',
     'typescript/no-unsafe-function-type': 'error'
-  }
+  },
+  overrides: [
+    {
+      files: ['src/**/__tests__/**'],
+      plugins: ['vitest'],
+      rules: {
+        // `expect` takes an optional message as its second argument
+        'vitest/valid-expect': ['error', { maxArgs: 2 }],
+        // Typing a `fetch` mock as `typeof fetch` would force casting every partial `Response`
+        'vitest/require-mock-type-parameters': 'off',
+        'vitest/require-to-throw-message': 'off'
+      }
+    }
+  ]
 })

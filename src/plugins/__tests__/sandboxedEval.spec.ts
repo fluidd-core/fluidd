@@ -93,7 +93,10 @@ describe('sandboxedEval', () => {
 
     const { sandboxedEval, getIframe } = await loadPlugin()
 
+    // The rejection assertions attach before the timers advance and are awaited after, so the
+    // rejection is never unhandled
     const first = sandboxedEval('return 1', { timeout: 10_000 })
+    // oxlint-disable-next-line vitest/valid-expect
     const firstAssertion = expect(first).rejects.toThrow('Sandboxed eval frame failed to load')
 
     await vi.advanceTimersByTimeAsync(5000)
@@ -102,6 +105,7 @@ describe('sandboxedEval', () => {
     expect(getIframe()).toBeNull()
 
     const second = sandboxedEval('return 1', { timeout: 10_000 })
+    // oxlint-disable-next-line vitest/valid-expect
     const secondAssertion = expect(second).rejects.toThrow('Sandboxed eval frame failed to load')
 
     await vi.advanceTimersByTimeAsync(0)

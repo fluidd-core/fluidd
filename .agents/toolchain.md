@@ -17,6 +17,10 @@ Read before changing `package.json`, `pnpm-workspace.yaml`, `vite.config.ts`, `v
   `categories.correctness: 'off'` so nothing beyond it is enabled. `eslint-plugin-regexp` runs
   inside oxlint as a `jsPlugins` entry. Both oxc configs are `.ts` and type-checked through
   `tsconfig.config.json`
+- Specs (`src/**/__tests__/**`) also get oxlint's `vitest` plugin (its `correctness` rules:
+  focused/disabled tests, missing or conditional `expect`, un-awaited async assertions).
+  `require-mock-type-parameters` is off — typing a `fetch` mock as `typeof fetch` would force
+  casting every partial `Response`
 - oxlint **skips `no-unused-vars` in `.vue` files** (the template may use them), so ESLint keeps
   `@typescript-eslint/no-unused-vars` for `.vue` — a disable comment for it there must be an
   `eslint-disable` one; everything oxlint reports uses `oxlint-disable`
