@@ -9,7 +9,8 @@ export default defineConfig({
   plugins: ['typescript', 'node', 'promise', 'import'],
   jsPlugins: ['eslint-plugin-regexp'],
   categories: {
-    correctness: 'error'
+    correctness: 'error',
+    suspicious: 'error'
   },
   env: {
     builtin: true,
@@ -71,6 +72,12 @@ export default defineConfig({
     'valid-typeof': ['error', { requireStringLiterals: true }],
     yoda: 'error',
 
+    // `suspicious` rules that only flag house style: Vuex getters take a `getters` argument
+    // and callbacks reuse the outer name (`files.find(file => …)`); `_` marks unused and
+    // private names
+    'no-shadow': 'off',
+    'no-underscore-dangle': 'off',
+
     'node/handle-callback-err': ['error', '^(err|error)$'],
     'node/no-exports-assign': 'error',
     'node/no-new-require': 'error',
@@ -82,6 +89,11 @@ export default defineConfig({
     'import/no-cycle': 'error',
     // Misreads Vite's `?worker` imports; TypeScript already checks default imports
     'import/default': 'off',
+    // `Vue.set`, `Vuex.Store` and `import consola from 'consola'` are how these libraries are
+    // documented; side-effect imports (`import './setupConsola'`) are intentional
+    'import/no-named-as-default': 'off',
+    'import/no-named-as-default-member': 'off',
+    'import/no-unassigned-import': 'off',
 
     'typescript/ban-ts-comment': 'error',
     'typescript/no-namespace': 'error',

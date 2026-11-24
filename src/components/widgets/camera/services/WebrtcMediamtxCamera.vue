@@ -103,13 +103,13 @@ export default class WebrtcMediamtxCamera extends Mixins(CameraMixin) {
       candidatesByMedia[mid].push(candidate)
     }
 
-    let frag = 'a=ice-ufrag:' + od.iceUfrag + '\r\n' + 'a=ice-pwd:' + od.icePwd + '\r\n'
+    let frag = `a=ice-ufrag:${od.iceUfrag}\r\na=ice-pwd:${od.icePwd}\r\n`
 
     let mid = 0
 
     for (const media of od.medias) {
       if (candidatesByMedia[mid] !== undefined) {
-        frag += 'm=' + media + '\r\n' + 'a=mid:' + mid + '\r\n'
+        frag += `m=${media}\r\na=mid:${mid}\r\n`
 
         for (const candidate of candidatesByMedia[mid]) {
           frag += 'a=' + candidate.candidate + '\r\n'

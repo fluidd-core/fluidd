@@ -496,7 +496,7 @@ export default class MmuEditTtgMapDialog extends Mixins(BrowserMixin, StateMixin
     const toolMaterialText = this.toolMetaData[this.selectedTool].material
     let toolTempText = null
     if (this.toolMetaData[this.selectedTool].temp >= 0) {
-      toolTempText = this.toolMetaData[this.selectedTool].temp + '\u00B0' + 'C'
+      toolTempText = this.toolMetaData[this.selectedTool].temp + '\u00B0C'
     }
     return [toolMaterialText, toolTempText].filter(v => v !== null).join(' | ')
   }
