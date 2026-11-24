@@ -50,8 +50,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 import type { Endstop, Probe } from '@/store/printer/types'
 
 @Component({

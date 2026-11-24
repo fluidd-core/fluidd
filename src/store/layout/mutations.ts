@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
+import type { DiagnosticsCardContainer } from '../diagnostics/types'
 import { createState } from './state'
 import type { LayoutConfig, LayoutState, LayoutContainer } from './types'
-import type { DiagnosticsCardContainer } from '../diagnostics/types'
 
 export const mutations = {
   /**

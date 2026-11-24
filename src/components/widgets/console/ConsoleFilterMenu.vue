@@ -58,8 +58,8 @@
 </template>
 
 <script lang="ts">
-import type { ConsoleFilter } from '@/store/console/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
+import type { ConsoleFilter } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleFilterMenu extends Vue {

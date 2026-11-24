@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
+import { SocketActions } from '@/api/socketActions'
 import type { Macro } from '@/store/macros/types'
 import type { PrinterStatus } from '@/store/printer/types'
 

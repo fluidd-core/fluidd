@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, VModel, Vue, Watch } from 'vue-property-decorator'
-import { markRaw } from 'vue'
 import Sortable from 'sortablejs'
+import { markRaw } from 'vue'
+import { Component, Prop, VModel, Vue, Watch } from 'vue-property-decorator'
 
 const instanceMap = new WeakMap<HTMLElement, AppDraggable>()
 

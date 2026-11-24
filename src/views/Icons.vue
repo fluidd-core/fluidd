@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import { Icons } from '@/globals'
+import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class Configure extends Mixins(StateMixin) {

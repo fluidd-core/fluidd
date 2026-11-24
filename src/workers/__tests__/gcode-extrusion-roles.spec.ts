@@ -1,5 +1,5 @@
-import { parseExtrusionRoleComment, typeRoleTags } from '../gcode-extrusion-roles'
 import { ExtrusionRole } from '@/store/gcodePreview/types'
+import { parseExtrusionRoleComment, typeRoleTags } from '../gcode-extrusion-roles'
 
 describe('parseExtrusionRoleComment', () => {
   it.each([

@@ -277,18 +277,18 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Mixins, Watch } from 'vue-property-decorator'
-import BrowserMixin from '@/mixins/browser'
-import StateMixin from '@/mixins/state'
-import MmuMixin from '@/mixins/mmu'
 import { SocketActions } from '@/api/socketActions'
-import type { AppFileWithMeta } from '@/store/files/types'
-import type { SlicerToolDetails, MmuGateDetails } from '@/types'
-import Vue from 'vue'
+import MmuGateDialogRow from '@/components/widgets/mmu/MmuGateDialogRow.vue'
 import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
-import MmuGateDialogRow from '@/components/widgets/mmu/MmuGateDialogRow.vue'
+import BrowserMixin from '@/mixins/browser'
+import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
+import type { AppFileWithMeta } from '@/store/files/types'
+import type { SlicerToolDetails, MmuGateDetails } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
 
 @Component({

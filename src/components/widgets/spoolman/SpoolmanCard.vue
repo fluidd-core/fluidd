@@ -224,11 +224,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import type { Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
-import type { Macro } from '@/store/macros/types'
+import StateMixin from '@/mixins/state'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
+import type { Macro } from '@/store/macros/types'
+import type { Spool } from '@/store/spoolman/types'
 
 type MacroWithSpoolId = Macro & {
   variables: Record<string, unknown> & {

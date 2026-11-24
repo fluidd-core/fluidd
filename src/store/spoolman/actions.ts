@@ -1,4 +1,10 @@
+import { consola } from 'consola'
+import { gte, valid } from 'semver'
 import type { ActionTree } from 'vuex'
+import { SocketActions } from '@/api/socketActions'
+import { EventBus } from '@/eventBus'
+import diagnoseHttpEndpoint from '@/util/http-endpoint-diagnostics'
+import type { RootState } from '../types'
 import type {
   SpoolmanState,
   WebsocketBasePayload,
@@ -6,12 +12,6 @@ import type {
   WebsocketSpoolPayload,
   WebsocketVendorPayload
 } from './types'
-import type { RootState } from '../types'
-import { SocketActions } from '@/api/socketActions'
-import { consola } from 'consola'
-import { EventBus } from '@/eventBus'
-import { gte, valid } from 'semver'
-import diagnoseHttpEndpoint from '@/util/http-endpoint-diagnostics'
 
 const logPrefix = '[SPOOLMAN]'
 

@@ -42,10 +42,10 @@
 
 <script lang="ts">
 import { Component, Mixins, VModel } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
-import AfcSettingsDialogHub from './AfcSettingsDialogHub.vue'
+import StateMixin from '@/mixins/state'
 import AfcSettingsDialogExtruder from './AfcSettingsDialogExtruder.vue'
+import AfcSettingsDialogHub from './AfcSettingsDialogHub.vue'
 import AfcSettingsDialogLane from './AfcSettingsDialogLane.vue'
 
 @Component({

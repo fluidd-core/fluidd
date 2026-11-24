@@ -67,15 +67,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import type Sortable from 'sortablejs'
 import { v4 as uuidv4 } from 'uuid'
-import StateMixin from '@/mixins/state'
-import type { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
-import type { LayoutConfig } from '@/store/layout/types'
+import StateMixin from '@/mixins/state'
+import type { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import { createDiagnosticsCardState } from '@/store/layout/state'
-import type Sortable from 'sortablejs'
+import type { LayoutConfig } from '@/store/layout/types'
 
 @Component({
   components: {

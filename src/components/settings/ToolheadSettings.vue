@@ -373,9 +373,9 @@
 
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
-import { createState } from '@/store/config/state'
 import type { VCombobox } from 'vuetify/lib'
 import ToolheadMixin from '@/mixins/toolhead'
+import { createState } from '@/store/config/state'
 import type { GeneralConfig, ToolheadControlStyle } from '@/store/config/types'
 
 @Component({

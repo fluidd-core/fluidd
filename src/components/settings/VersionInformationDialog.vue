@@ -114,8 +114,8 @@
 </template>
 
 <script lang="ts">
-import type { VersionInfo } from '@/store/version/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
+import type { VersionInfo } from '@/store/version/types'
 
 @Component({})
 export default class VersionInformationDialog extends Vue {

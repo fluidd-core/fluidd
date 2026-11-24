@@ -149,8 +149,8 @@
 <script lang="ts">
 import { Component, Mixins, VModel } from 'vue-property-decorator'
 
-import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {

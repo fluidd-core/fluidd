@@ -86,11 +86,11 @@
 </template>
 
 <script lang="ts">
-import type { AppUser } from '@/store/auth/types'
 import { Component, Vue } from 'vue-property-decorator'
+import { SocketActions } from '@/api/socketActions'
+import type { AppUser } from '@/store/auth/types'
 import AddUserDialog from './AddUserDialog.vue'
 import ApiKeyDialog from './ApiKeyDialog.vue'
-import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {

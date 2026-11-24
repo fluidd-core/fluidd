@@ -1,11 +1,11 @@
+import { consola } from 'consola'
 import type { ActionTree } from 'vuex'
-import type { GcodePreviewState } from './types'
-import { defaultMoveStore } from './state'
-import type { RootState } from '../types'
-import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
-import { consola } from 'consola'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
+import type { RootState } from '../types'
+import { defaultMoveStore } from './state'
+import type { GcodePreviewState } from './types'
 
 import type {
   ParseGcodeWorkerResponseMessage,

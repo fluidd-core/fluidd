@@ -1,9 +1,9 @@
-import { Icons } from '@/globals'
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 import { Ripple } from 'vuetify/lib/directives'
 import colors from 'vuetify/lib/util/colors'
 import type { VuetifyLocale } from 'vuetify/types/services/lang'
+import { Icons } from '@/globals'
 
 // Vuetify's own component translations, keyed by Fluidd locale code.
 // Codes absent here (ie, `ta`) have no Vuetify translation and stay english.

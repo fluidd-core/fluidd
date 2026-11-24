@@ -1,6 +1,6 @@
 import type { MutationTree } from 'vuex'
-import type { JobQueueState } from './types'
 import { createState } from './state'
+import type { JobQueueState } from './types'
 
 export const mutations = {
   setReset(state) {

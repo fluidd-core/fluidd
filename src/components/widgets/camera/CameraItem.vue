@@ -112,12 +112,12 @@
 </template>
 
 <script lang="ts">
+import { startCase } from 'lodash-es'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import type CameraMixin from '@/mixins/camera'
+import type { CameraFullscreenAction } from '@/store/config/types'
 import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
-import { startCase } from 'lodash-es'
 
 @Component({})
 export default class CameraItem extends Vue {

@@ -315,19 +315,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import AfcMixin from '@/mixins/afc'
-import { SocketActions } from '@/api/socketActions'
-import type { Spool } from '@/store/spoolman/types'
-import BrowserMixin from '@/mixins/browser'
-import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import QrScanner from 'qr-scanner'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
+import type { DataTableHeader } from 'vuetify'
+import { SocketActions } from '@/api/socketActions'
+import QRReader from '@/components/widgets/spoolman/QRReader.vue'
+import AfcMixin from '@/mixins/afc'
+import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
+import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
+import type { AppFileWithMeta } from '@/store/files/types'
+import type { Spool } from '@/store/spoolman/types'
 import type { AppDataTableHeader } from '@/types'
 import getFilePaths from '@/util/get-file-paths'
-import type { DataTableHeader } from 'vuetify'
-import type { AppFileWithMeta } from '@/store/files/types'
-import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
 
 type SpoolWithAfcLoadedLane = Spool & {
   afc_loaded_lane?: string

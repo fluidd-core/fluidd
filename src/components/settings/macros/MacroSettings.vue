@@ -107,11 +107,11 @@
 </template>
 
 <script lang="ts">
+import type Sortable from 'sortablejs'
 import { Component, Mixins } from 'vue-property-decorator'
-import MacroCategoryDialog from './MacroCategoryDialog.vue'
 import StateMixin from '@/mixins/state'
 import type { Macro, MacroCategory } from '@/store/macros/types'
-import type Sortable from 'sortablejs'
+import MacroCategoryDialog from './MacroCategoryDialog.vue'
 
 @Component({
   components: {

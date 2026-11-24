@@ -1,8 +1,8 @@
 import { chartBufferColumn, commitChartSamples, createChartBuffer } from '@/util/chart-buffer'
 import decimalRound from '@/util/decimal-round'
-import type { ChartBuffer } from './types'
 import type { ThermalSubKey } from './thermal-columns'
 import { thermalColumn } from './thermal-columns'
+import type { ChartBuffer } from './types'
 
 type HistoryField = readonly [
   keyof Moonraker.DataStore.TemperatureStoreEntry,

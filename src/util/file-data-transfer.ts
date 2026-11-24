@@ -1,5 +1,5 @@
-import { Globals } from '@/globals'
 import consola from 'consola'
+import { Globals } from '@/globals'
 
 const isFileDataTransferData = (dataAsObject: unknown): dataAsObject is FileDataTransferData =>
   dataAsObject !== null &&

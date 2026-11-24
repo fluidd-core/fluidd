@@ -41,8 +41,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class SpeedAndFlowAdjust extends Mixins(StateMixin, BrowserMixin) {

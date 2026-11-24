@@ -1,9 +1,9 @@
+import { consola } from 'consola'
 import Vue from 'vue'
 import VueI18n, { type Locale } from 'vue-i18n'
-import { consola } from 'consola'
+import { I18nLocales } from '@/dynamicImports'
 import { SupportedLocales } from '@/globals'
 import messages from '@/locales/en.yaml'
-import { I18nLocales } from '@/dynamicImports'
 
 Vue.use(VueI18n)
 

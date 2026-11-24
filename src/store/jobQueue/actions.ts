@@ -1,8 +1,8 @@
 import type { ActionTree } from 'vuex'
-import type { JobQueueState } from './types'
-import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import getFilePaths from '@/util/get-file-paths'
+import type { RootState } from '../types'
+import type { JobQueueState } from './types'
 
 export const actions = {
   async reset({ commit }) {

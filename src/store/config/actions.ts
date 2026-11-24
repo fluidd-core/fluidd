@@ -1,5 +1,12 @@
-import vuetify, { loadVuetifyLocaleAsync } from '@/plugins/vuetify'
+import { TinyColor } from '@ctrl/tinycolor'
 import type { ActionTree } from 'vuex'
+import { SocketActions } from '@/api/socketActions'
+import { Waits } from '@/globals'
+import { loadLocaleMessagesAsync } from '@/plugins/i18n'
+import vuetify, { loadVuetifyLocaleAsync } from '@/plugins/vuetify'
+import dbKey from '@/util/db-key'
+import type { FileFilterType } from '../files/types'
+import type { RootState } from '../types'
 import type {
   ConfigState,
   SaveByPath,
@@ -10,13 +17,6 @@ import type {
   ThemeConfig,
   ConfiguredTableHeader
 } from './types'
-import type { RootState } from '../types'
-import { SocketActions } from '@/api/socketActions'
-import { loadLocaleMessagesAsync } from '@/plugins/i18n'
-import { Waits } from '@/globals'
-import type { FileFilterType } from '../files/types'
-import { TinyColor } from '@ctrl/tinycolor'
-import dbKey from '@/util/db-key'
 
 export const actions = {
   /**

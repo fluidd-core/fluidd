@@ -171,8 +171,8 @@
 
 <script lang="ts">
 import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
 
 @Component
 export default class MmuFlowguardMeter extends Mixins(StateMixin, MmuMixin) {

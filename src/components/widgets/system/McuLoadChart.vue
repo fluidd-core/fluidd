@@ -7,11 +7,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import type { MCU } from '@/store/printer/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
 import type { ChartDataSource } from '@/store/charts/types'
+import type { MCU } from '@/store/printer/types'
 import { chartBufferSource } from '@/util/chart-buffer'
 
 @Component({})

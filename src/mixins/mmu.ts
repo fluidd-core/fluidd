@@ -1,9 +1,9 @@
+import { TinyColor } from '@ctrl/tinycolor'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import type { Spool } from '@/store/spoolman/types'
 import type { AppFileWithMeta } from '@/store/files/types'
+import type { Spool } from '@/store/spoolman/types'
 import type { MmuGateDetails, SlicerToolDetails, MmuUnitDetails } from '@/types'
-import { TinyColor } from '@ctrl/tinycolor'
 
 @Component({})
 export default class MmuMixin extends Vue {

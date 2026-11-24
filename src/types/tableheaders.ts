@@ -1,5 +1,5 @@
-import type { ConfiguredTableHeader } from '@/store/config/types'
 import type { DataTableHeader } from 'vuetify'
+import type { ConfiguredTableHeader } from '@/store/config/types'
 
 /**
  * Vuetify table headers, extended with data so we can more easily save

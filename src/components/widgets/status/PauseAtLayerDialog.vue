@@ -79,10 +79,10 @@
 </template>
 
 <script lang="ts">
+import { Component, VModel, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { Macro } from '@/store/macros/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
-import { Component, VModel, Mixins } from 'vue-property-decorator'
 
 type PauseNextLayer = {
   enable: boolean

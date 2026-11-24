@@ -163,13 +163,13 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import BrowserMixin from '@/mixins/browser'
-import StateMixin from '@/mixins/state'
-import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/types'
-import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateStatus from '@/components/widgets/mmu/MmuGateStatus.vue'
+import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuUnitFooter from '@/components/widgets/mmu/MmuUnitFooter.vue'
+import BrowserMixin from '@/mixins/browser'
+import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
+import type { MmuGateDetails } from '@/types'
 
 type MenuDisabled = boolean | ((gate: number) => boolean)
 

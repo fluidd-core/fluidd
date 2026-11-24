@@ -1,9 +1,9 @@
-import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
+import Vue from 'vue'
 import type { MutationTree } from 'vuex'
+import { MACRO_DEFAULTS } from '@/store/macros/getters'
 import { createState } from './state'
 import type { Macro, MacroCategory, MacrosState } from './types'
-import { MACRO_DEFAULTS } from '@/store/macros/getters'
 
 const sanitizeMacroForStorage = (macro: Macro) => {
   for (const key in macro) {

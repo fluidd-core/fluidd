@@ -247,19 +247,19 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import MmuMixin from '@/mixins/mmu'
-import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
-import MmuFilamentStatus from '@/components/widgets/mmu/MmuFilamentStatus.vue'
-import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
-import MmuControls from '@/components/widgets/mmu/MmuControls.vue'
-import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
 import MmuClogMeter from '@/components/widgets/mmu/MmuClogMeter.vue'
-import MmuFlowguardMeter from '@/components/widgets/mmu/MmuFlowguardMeter.vue'
-import MmuSettings from '@/components/widgets/mmu/MmuSettings.vue'
-import MmuRecoverStateDialog from '@/components/widgets/mmu/MmuRecoverStateDialog.vue'
+import MmuControls from '@/components/widgets/mmu/MmuControls.vue'
 import MmuEditGateMapDialog from '@/components/widgets/mmu/MmuEditGateMapDialog.vue'
+import MmuFilamentStatus from '@/components/widgets/mmu/MmuFilamentStatus.vue'
+import MmuFlowguardMeter from '@/components/widgets/mmu/MmuFlowguardMeter.vue'
+import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
+import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
 import MmuMaintenanceDialog from '@/components/widgets/mmu/MmuMaintenanceDialog.vue'
+import MmuRecoverStateDialog from '@/components/widgets/mmu/MmuRecoverStateDialog.vue'
+import MmuSettings from '@/components/widgets/mmu/MmuSettings.vue'
+import MmuTtgMap from '@/components/widgets/mmu/MmuTtgMap.vue'
+import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {

@@ -73,12 +73,12 @@
 </template>
 
 <script lang="ts">
+import { consola } from 'consola'
+import { Marked, type MarkedExtension, type Tokens } from 'marked'
+import { baseUrl } from 'marked-base-url'
 import { Component, Prop, Mixins, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { AppFile } from '@/store/files/types'
-import { Marked, type MarkedExtension, type Tokens } from 'marked'
-import { baseUrl } from 'marked-base-url'
-import { consola } from 'consola'
 
 @Component({})
 export default class FilePreviewDialog extends Mixins(StateMixin) {

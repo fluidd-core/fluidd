@@ -241,14 +241,14 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StatusLabel from './StatusLabel.vue'
-import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
+import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
-import type { TimeEstimates } from '@/store/printer/types'
 import type { PrintInProgressLayout } from '@/store/config/types'
 import type { AppFileWithMeta } from '@/store/files/types'
+import type { TimeEstimates } from '@/store/printer/types'
+import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
+import StatusLabel from './StatusLabel.vue'
 
 @Component({
   components: {

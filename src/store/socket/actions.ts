@@ -1,13 +1,10 @@
-import type { ActionTree } from 'vuex'
 import { consola } from 'consola'
-import type { SocketState, SocketStatus } from './types'
-import type { RootState } from '../types'
-import { Globals } from '@/globals'
+import { jwtDecode } from 'jwt-decode'
+import { upperFirst, camelCase } from 'lodash-es'
+import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
-import { upperFirst, camelCase } from 'lodash-es'
-import { jwtDecode } from 'jwt-decode'
-import type { TokenKeys } from '../config/types'
+import { Globals } from '@/globals'
 import i18n from '@/plugins/i18n'
 import {
   isMoonrakerNotFoundError,
@@ -15,6 +12,9 @@ import {
   isSocketError,
   type SocketError
 } from '@/util/is-socket-error'
+import type { TokenKeys } from '../config/types'
+import type { RootState } from '../types'
+import type { SocketState, SocketStatus } from './types'
 
 const MODULES_TO_RESET_ON_DROP = [
   'server',

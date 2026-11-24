@@ -22,8 +22,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
 import { consola } from 'consola'
+import { Component, Vue } from 'vue-property-decorator'
 import { EventBus } from '@/eventBus'
 
 @Component({})

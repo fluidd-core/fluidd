@@ -18,9 +18,9 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import JobsCard from '@/components/widgets/jobs/JobsCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
+import JobsCard from '@/components/widgets/jobs/JobsCard.vue'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {

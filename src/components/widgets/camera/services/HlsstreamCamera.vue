@@ -13,11 +13,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Ref, Mixins } from 'vue-property-decorator'
-import { markRaw } from 'vue'
-import CameraMixin from '@/mixins/camera'
-import Hls from 'hls.js'
 import { consola } from 'consola'
+import Hls from 'hls.js'
+import { markRaw } from 'vue'
+import { Component, Ref, Mixins } from 'vue-property-decorator'
+import CameraMixin from '@/mixins/camera'
 
 @Component({})
 export default class HlsstreamCamera extends Mixins(CameraMixin) {

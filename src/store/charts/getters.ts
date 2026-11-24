@@ -1,11 +1,11 @@
-import Vue from 'vue'
-import vuetify from '@/plugins/vuetify'
-import type { GetterTree } from 'vuex'
-import type { ChartState } from './types'
-import type { RootState } from '../types'
-import { Globals } from '@/globals'
-import { tooltipDimensionName, tooltipValue } from '@/util/chart-tooltip'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import Vue from 'vue'
+import type { GetterTree } from 'vuex'
+import { Globals } from '@/globals'
+import vuetify from '@/plugins/vuetify'
+import { tooltipDimensionName, tooltipValue } from '@/util/chart-tooltip'
+import type { RootState } from '../types'
+import type { ChartState } from './types'
 
 export const getters = {
   /**

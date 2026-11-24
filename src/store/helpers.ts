@@ -1,10 +1,10 @@
 import type { Dispatch } from 'vuex'
-import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
-import type { AppPushNotification } from './notifications/types'
 import i18n from '@/plugins/i18n'
-import type { KlippyApp } from './printer/types'
 import getFilePaths from '@/util/get-file-paths'
+import type { AppPushNotification } from './notifications/types'
+import type { KlippyApp } from './printer/types'
+import type { RootState } from './types'
 
 const isTmc = (item: string): item is Klipper.TmcKey => /^tmc\d{4} /.test(item)
 

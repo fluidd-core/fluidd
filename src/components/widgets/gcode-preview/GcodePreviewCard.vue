@@ -138,20 +138,20 @@
 </template>
 
 <script lang="ts">
+import { consola } from 'consola'
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
-import GcodePreview from './GcodePreview.vue'
-import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
+import FilesMixin from '@/mixins/files'
+import StateMixin from '@/mixins/state'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type { Layer, MinMax, MoveStore } from '@/store/gcodePreview/types'
 import {
   getFileDataTransferDataFromDataTransfer,
   hasFileDataTransferTypeInDataTransfer
 } from '@/util/file-data-transfer'
-import { consola } from 'consola'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import GcodePreview from './GcodePreview.vue'
+import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 
 @Component({
   components: {

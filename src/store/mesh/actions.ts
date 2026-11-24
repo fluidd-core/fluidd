@@ -1,6 +1,6 @@
 import type { ActionTree } from 'vuex'
-import type { MatrixType, MeshState } from './types'
 import type { RootState } from '../types'
+import type { MatrixType, MeshState } from './types'
 
 export const actions = {
   /**

@@ -137,12 +137,12 @@
 </template>
 
 <script lang="ts">
+import { TinyColor } from '@ctrl/tinycolor'
 import Component from 'vue-class-component'
 import { Mixins, Prop, Ref } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
 import type { MmuGateDetails } from '@/types'
-import { TinyColor } from '@ctrl/tinycolor'
 
 @Component({})
 export default class MmuSpool extends Mixins(StateMixin, MmuMixin) {

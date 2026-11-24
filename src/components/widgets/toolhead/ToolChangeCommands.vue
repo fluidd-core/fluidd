@@ -54,13 +54,13 @@
 </template>
 
 <script lang="ts">
+import { chunk } from 'lodash-es'
+import type { TranslateResult } from 'vue-i18n'
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import type { GcodeCommands } from '@/store/printer/types'
-import type { TranslateResult } from 'vue-i18n'
-import type { Spool } from '@/store/spoolman/types'
-import { chunk } from 'lodash-es'
 import type { Macro } from '@/store/macros/types'
+import type { GcodeCommands } from '@/store/printer/types'
+import type { Spool } from '@/store/spoolman/types'
 
 type ToolChangeCommand = {
   name: string

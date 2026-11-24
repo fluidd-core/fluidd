@@ -1,5 +1,12 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
+import { Globals } from '@/globals'
+import i18n from '@/plugins/i18n'
+import getFilePaths from '@/util/get-file-paths'
+import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
+import getKlipperType from '@/util/get-klipper-type'
+import isKeyOf from '@/util/is-key-of'
+import type { AppFileWithMeta } from '../files/types'
 import type { RootState } from '../types'
 import type {
   PrinterState,
@@ -28,13 +35,6 @@ import type {
   Probe,
   PrinterStatus
 } from './types'
-import getKlipperType from '@/util/get-klipper-type'
-import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
-import i18n from '@/plugins/i18n'
-import { Globals } from '@/globals'
-import isKeyOf from '@/util/is-key-of'
-import getFilePaths from '@/util/get-file-paths'
-import type { AppFileWithMeta } from '../files/types'
 
 const configHasDisconnectedMcu = (
   config: Record<string, any> | undefined,

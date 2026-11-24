@@ -1,5 +1,5 @@
-import type { ConfigState } from './types'
 import { Globals } from '@/globals'
+import type { ConfigState } from './types'
 
 export const createState = (): ConfigState => {
   return {

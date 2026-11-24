@@ -132,9 +132,9 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
+import ServicesMixin from '@/mixins/services'
+import StateMixin from '@/mixins/state'
 import type { ServiceInfo } from '@/store/server/types'
 
 @Component({})

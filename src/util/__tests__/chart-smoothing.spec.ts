@@ -1,11 +1,11 @@
-import { smoothChartSource } from '../chart-smoothing'
+import type { ChartBuffer } from '@/store/charts/types'
 import {
   appendChartSamples,
   chartBufferColumn,
   chartBufferSource,
   createChartBuffer
 } from '../chart-buffer'
-import type { ChartBuffer } from '@/store/charts/types'
+import { smoothChartSource } from '../chart-smoothing'
 
 // Builds a buffer of 1Hz samples starting at epoch t=0s, one column, values
 // possibly interrupted by gaps (null -> no value appended for that sample).

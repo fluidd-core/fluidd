@@ -29,13 +29,13 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import AfcMixin from '@/mixins/afc'
-import AfcCardMessage from '@/components/widgets/afc/AfcCardMessage.vue'
+import AfcCardButtons from '@/components/widgets/afc/AfcCardButtons.vue'
 import AfcCardBypass from '@/components/widgets/afc/AfcCardBypass.vue'
 import AfcCardExtruder from '@/components/widgets/afc/AfcCardExtruder.vue'
-import AfcCardUnit from '@/components/widgets/afc/AfcCardUnit.vue'
-import AfcCardButtons from '@/components/widgets/afc/AfcCardButtons.vue'
+import AfcCardMessage from '@/components/widgets/afc/AfcCardMessage.vue'
 import AfcCardSettings from '@/components/widgets/afc/AfcCardSettings.vue'
+import AfcCardUnit from '@/components/widgets/afc/AfcCardUnit.vue'
+import AfcMixin from '@/mixins/afc'
 
 @Component({
   components: {

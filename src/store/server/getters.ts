@@ -1,9 +1,9 @@
-import type { GetterTree } from 'vuex'
-import type { ServerState, ServiceInfo } from './types'
-import type { RootState } from '../types'
-import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
+import type { GetterTree } from 'vuex'
+import { Globals } from '@/globals'
 import type { KlippyApp } from '../printer/types'
+import type { RootState } from '../types'
+import type { ServerState, ServiceInfo } from './types'
 
 export const getters = {
   getIsMinApiVersion:

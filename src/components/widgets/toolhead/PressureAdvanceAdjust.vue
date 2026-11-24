@@ -42,9 +42,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
+import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import BrowserMixin from '@/mixins/browser'
 import type { ExtruderStepper } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 

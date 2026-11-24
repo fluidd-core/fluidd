@@ -41,11 +41,11 @@
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/types'
-import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
 import MmuGateSummary from '@/components/widgets/mmu/MmuGateSummary.vue'
+import MmuSpool from '@/components/widgets/mmu/MmuSpool.vue'
+import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
+import type { MmuGateDetails } from '@/types'
 
 @Component({
   components: { MmuSpool, MmuGateSummary }

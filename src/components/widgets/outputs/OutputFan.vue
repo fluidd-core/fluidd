@@ -44,9 +44,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import type { Fan } from '@/store/printer/types'
-import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
+import type { Fan } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})

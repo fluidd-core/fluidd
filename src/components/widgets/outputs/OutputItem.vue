@@ -23,8 +23,8 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import OutputFan from '@/components/widgets/outputs/OutputFan.vue'
-import OutputPin from '@/components/widgets/outputs/OutputPin.vue'
 import OutputLed from '@/components/widgets/outputs/OutputLed.vue'
+import OutputPin from '@/components/widgets/outputs/OutputPin.vue'
 import type { Fan, Led, OutputPin as IOutputPin } from '@/store/printer/types'
 
 @Component({

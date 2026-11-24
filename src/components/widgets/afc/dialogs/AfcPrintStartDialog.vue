@@ -74,15 +74,15 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { SocketActions } from '@/api/socketActions'
+import { EventBus } from '@/eventBus'
 import AfcMixin from '@/mixins/afc'
 import FilesMixin from '@/mixins/files'
-import { SocketActions } from '@/api/socketActions'
-import getFilePaths from '@/util/get-file-paths'
+import StateMixin from '@/mixins/state'
 import type { AppFileWithMeta } from '@/store/files/types'
-import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import { autoMap, type AutoMapLane, type AutoMapTool } from '@/util/afc-auto-map'
-import { EventBus } from '@/eventBus'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import getFilePaths from '@/util/get-file-paths'
 
 @Component({
   components: {

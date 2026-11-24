@@ -265,8 +265,8 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 import type { AppFileWithMeta } from '@/store/files/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 

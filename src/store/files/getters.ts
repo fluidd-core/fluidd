@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
+import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
+import type { HistoryItem } from '../history/types'
+import type { RootState } from '../types'
 import type {
   AppDirectory,
   AppDiskUsage,
@@ -10,9 +13,6 @@ import type {
   FilesState,
   RootProperties
 } from './types'
-import type { RootState } from '../types'
-import type { HistoryItem } from '../history/types'
-import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 
 const toAppFileMetaWithHistory = (
   file: Moonraker.Files.File | Moonraker.Files.FileWithMeta,

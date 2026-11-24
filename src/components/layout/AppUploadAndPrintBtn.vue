@@ -27,9 +27,9 @@
 </template>
 
 <script lang="ts">
-import type { RootProperties } from '@/store/files/types'
 import { Component, Ref, Prop, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
+import type { RootProperties } from '@/store/files/types'
 
 @Component({})
 export default class AppUploadAndPrintBtn extends Mixins(BrowserMixin) {

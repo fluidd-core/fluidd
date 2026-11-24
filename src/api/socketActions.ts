@@ -1,7 +1,7 @@
+import { consola } from 'consola'
 import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
 import type { EmitOptions, RequestOptions } from '@/plugins/socketClient'
-import { consola } from 'consola'
 
 const baseEmit = async <
   M extends Moonraker.Method,

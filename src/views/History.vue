@@ -10,8 +10,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
 import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vue'
+import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
 
 @Component({
   components: {

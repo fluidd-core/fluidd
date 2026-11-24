@@ -1,9 +1,9 @@
-import type { ActionTree } from 'vuex'
 import { consola } from 'consola'
-import type { VersionState } from './types'
-import type { RootState } from '../types'
+import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import i18n from '@/plugins/i18n'
+import type { RootState } from '../types'
+import type { VersionState } from './types'
 
 export const actions = {
   /**

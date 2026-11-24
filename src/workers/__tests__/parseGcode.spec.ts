@@ -1,5 +1,5 @@
-import parseGcode from '../parseGcode'
 import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
+import parseGcode from '../parseGcode'
 
 // a trailing newline is required; the reader only emits complete lines
 const encode = (lines: readonly string[]) => new TextEncoder().encode(`${lines.join('\n')}\n`)

@@ -64,12 +64,12 @@
 </template>
 
 <script lang="ts">
+import { Debounce } from 'vue-debounce-decorator'
 import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import StateMixin from '@/mixins/state'
-import { Debounce } from 'vue-debounce-decorator'
-import webSocketWrapper from '@/util/web-socket-wrapper'
 import diagnoseHttpEndpoint from '@/util/http-endpoint-diagnostics'
+import webSocketWrapper from '@/util/web-socket-wrapper'
 
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {

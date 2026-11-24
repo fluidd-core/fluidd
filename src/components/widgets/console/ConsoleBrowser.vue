@@ -42,12 +42,12 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Ref } from 'vue-property-decorator'
+import { SocketActions } from '@/api/socketActions'
+import type AppAutoScrollContainer from '@/components/ui/AppAutoScrollContainer.vue'
 import StateMixin from '@/mixins/state'
+import type { ConsoleEntry, ConsoleLogEntry } from '@/store/console/types'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
-import { SocketActions } from '@/api/socketActions'
-import type { ConsoleEntry, ConsoleLogEntry } from '@/store/console/types'
-import type AppAutoScrollContainer from '@/components/ui/AppAutoScrollContainer.vue'
 
 @Component({
   components: {

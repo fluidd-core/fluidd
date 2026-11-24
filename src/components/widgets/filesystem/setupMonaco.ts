@@ -8,8 +8,8 @@ import 'monaco-editor/languages/definitions/css/register.js'
 import 'monaco-editor/languages/definitions/markdown/register.js'
 
 import EditorWorker from 'monaco-editor/editor/editor.worker?worker'
-import JsonWorker from 'monaco-editor/language/json/json.worker?worker'
 import CssWorker from 'monaco-editor/language/css/css.worker?worker'
+import JsonWorker from 'monaco-editor/language/json/json.worker?worker'
 
 import * as monaco from 'monaco-editor/editor/editor.api'
 
@@ -19,8 +19,8 @@ import type { KlippyApp } from '@/store/printer/types'
 
 import * as gcodeMonarchLanguage from '@/monaco/language/gcode.monarch'
 import * as klipperConfigMonarchLanguage from '@/monaco/language/klipper-config.monarch'
-import * as moonrakerConfigMonarchLanguage from '@/monaco/language/moonraker-config.monarch'
 import logMonarchLanguage from '@/monaco/language/log.monarch'
+import * as moonrakerConfigMonarchLanguage from '@/monaco/language/moonraker-config.monarch'
 import {
   type CodeLensSupportedService,
   MonacoCodeLensProvider,

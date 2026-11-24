@@ -1,5 +1,5 @@
-import isUserAgentDataMobileSupported from '@/util/is-user-agent-data-mobile-supported'
 import { Vue, Component } from 'vue-property-decorator'
+import isUserAgentDataMobileSupported from '@/util/is-user-agent-data-mobile-supported'
 
 @Component
 export default class BrowserMixin extends Vue {

@@ -1,5 +1,5 @@
-import mjpegStream from './mjpegStream'
 import { consola } from 'consola'
+import mjpegStream from './mjpegStream'
 
 export type MjpegWorkerRequestMessage = {
   action: 'start'

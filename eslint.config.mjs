@@ -1,5 +1,5 @@
-import pluginVue from 'eslint-plugin-vue'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import pluginVue from 'eslint-plugin-vue'
 
 // ESLint only lints `.vue` files, for the template rules oxlint cannot run; everything else is
 // linted by oxlint (`oxlint.config.ts`) and formatted by oxfmt (`oxfmt.config.ts`)

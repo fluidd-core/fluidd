@@ -154,9 +154,9 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import { Waits } from '@/globals'
 import StateMixin from '@/mixins/state'
 import FirmwareStatus from './FirmwareStatus.vue'
-import { Waits } from '@/globals'
 
 @Component({
   components: {

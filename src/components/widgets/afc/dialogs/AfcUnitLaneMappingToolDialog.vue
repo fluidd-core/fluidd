@@ -31,8 +31,8 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})

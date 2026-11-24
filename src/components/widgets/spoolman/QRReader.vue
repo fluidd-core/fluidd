@@ -24,12 +24,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref, VModel } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import QrScanner from 'qr-scanner'
+import { Component, Mixins, Ref, VModel } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
-import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
+import type { Spool } from '@/store/spoolman/types'
 
 const spoomanDataPatterns = [/web\+spoolman:s-(\d+)/i, /\/spool\/show\/(\d+)\/?/i]
 

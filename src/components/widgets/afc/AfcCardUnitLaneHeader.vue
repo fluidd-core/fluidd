@@ -18,9 +18,9 @@
 </template>
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import AfcMixin from '@/mixins/afc'
 import AfcUnitLaneMappingToolDialog from '@/components/widgets/afc/dialogs/AfcUnitLaneMappingToolDialog.vue'
+import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {

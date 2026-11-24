@@ -35,8 +35,8 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import { Icons } from '@/globals'
+import StateMixin from '@/mixins/state'
 import type { ExcludeObjectPart } from '@/store/printer/types'
 
 @Component({})

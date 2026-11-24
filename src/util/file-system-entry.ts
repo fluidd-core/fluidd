@@ -1,5 +1,5 @@
-import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
+import type { FileWithPath } from '@/types'
 
 type FileSystemEntryWithPath = {
   entry: FileSystemEntry

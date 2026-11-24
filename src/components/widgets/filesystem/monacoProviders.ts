@@ -1,6 +1,6 @@
 import type Vue from 'vue'
-import getVueApp from '@/util/get-vue-app'
 import type { KlippyApp, SupportedKlipperServices } from '@/store/printer/types'
+import getVueApp from '@/util/get-vue-app'
 
 import * as monaco from 'monaco-editor/editor/editor.api'
 import type {

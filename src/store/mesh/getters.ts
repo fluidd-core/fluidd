@@ -1,7 +1,7 @@
 import type { GetterTree } from 'vuex'
-import type { MeshState, AppMeshes, BedMeshProfileListEntry } from './types'
-import type { RootState } from '../types'
 import { transformMesh } from '@/util/transform-mesh'
+import type { RootState } from '../types'
+import type { MeshState, AppMeshes, BedMeshProfileListEntry } from './types'
 
 export const getters = {
   /**

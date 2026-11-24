@@ -37,9 +37,9 @@
 </template>
 
 <script lang="ts">
-import StateMixin from '@/mixins/state'
 import { Component, Mixins, VModel } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class RolloverLogsDialog extends Mixins(StateMixin) {

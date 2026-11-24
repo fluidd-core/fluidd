@@ -1,7 +1,7 @@
 import type { GetterTree } from 'vuex'
-import type { Filament, Spool, SpoolmanState, Vendor } from './types'
-import type { RootState } from '../types'
 import isLoopback from '@/util/is-loopback'
+import type { RootState } from '../types'
+import type { Filament, Spool, SpoolmanState, Vendor } from './types'
 
 const filamentWeightToLength = (
   weight: number,

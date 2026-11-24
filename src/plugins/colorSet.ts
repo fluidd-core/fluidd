@@ -1,5 +1,5 @@
-import type _Vue from 'vue'
 import { TinyColor } from '@ctrl/tinycolor'
+import type _Vue from 'vue'
 import { DefaultPalettes, type PaletteOption } from '@/globals'
 
 const FALLBACK_COLOR = '#2196F3'

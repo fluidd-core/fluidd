@@ -1,7 +1,7 @@
 import type { MutationTree } from 'vuex'
-import type { FirmwareState } from './types'
-import { createState } from './state'
 import { endLostRun } from './helpers'
+import { createState } from './state'
+import type { FirmwareState } from './types'
 
 export const mutations = {
   setReset(state) {

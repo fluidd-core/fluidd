@@ -50,9 +50,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import type { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
 import ExtruderStepperSync from './ExtruderStepperSync.vue'
 import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
-import type { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
 
 @Component({
   components: {

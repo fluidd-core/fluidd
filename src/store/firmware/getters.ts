@@ -1,9 +1,9 @@
 import type { GetterTree } from 'vuex'
-import type { FirmwareState } from './types'
+import { Globals, Waits } from '@/globals'
 import type { ConsoleLogEntry } from '@/store/console/types'
 import type { RootState } from '../types'
-import { Globals, Waits } from '@/globals'
 import { SUPPORTED_API_VERSION, finishedRunOf, formatResponse, updatableMcus } from './helpers'
+import type { FirmwareState } from './types'
 
 export const getters = {
   isSupported: (_, __, rootState): boolean => {

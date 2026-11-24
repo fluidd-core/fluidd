@@ -71,13 +71,13 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import type { TimelapseLastFrame } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
+import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import FilesMixin from '@/mixins/files'
+import StateMixin from '@/mixins/state'
 import { defaultWritableSettings } from '@/store/timelapse/state'
+import type { TimelapseLastFrame } from '@/store/timelapse/types'
 
 @Component({
   components: {

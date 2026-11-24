@@ -43,11 +43,11 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
+import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import BedMeshControls from '@/components/widgets/bedmesh/BedMeshControls.vue'
 import EndStopsCard from '@/components/widgets/endstops/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
-import BeaconCard from '@/components/widgets/beacon/BeaconCard.vue'
 
 @Component({
   components: {

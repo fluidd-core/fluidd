@@ -82,10 +82,10 @@
 </template>
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import AfcMixin from '@/mixins/afc'
 import AfcCardSettingsExtruder from '@/components/widgets/afc/AfcCardSettingsExtruder.vue'
 import AfcCardSettingsUnit from '@/components/widgets/afc/AfcCardSettingsUnit.vue'
+import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {

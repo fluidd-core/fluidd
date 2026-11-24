@@ -1,5 +1,9 @@
+import { TinyColor } from '@ctrl/tinycolor'
+import { takeRightWhile } from 'lodash-es'
 import type { ActionTree } from 'vuex'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
+import type { RootState } from '../types'
 import type {
   ConsoleEntry,
   ConsoleFilter,
@@ -8,10 +12,6 @@ import type {
   PromptDialogItemButton,
   PromptDialogItemText
 } from './types'
-import type { RootState } from '../types'
-import { SocketActions } from '@/api/socketActions'
-import { takeRightWhile } from 'lodash-es'
-import { TinyColor } from '@ctrl/tinycolor'
 
 // Any color TinyColor can parse is used as such, anything else is kept as a theme color name
 const parsePromptButtonColor = (color?: string) => {

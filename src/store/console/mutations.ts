@@ -1,8 +1,9 @@
-import Vue from 'vue'
+import { escapeRegExp } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
+import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import { createState } from './state'
 import { Globals } from '@/globals'
+import { createState } from './state'
 import type {
   ConsoleEntry,
   ConsoleFilter,
@@ -11,7 +12,6 @@ import type {
   PromptDialogItem,
   PromptDialogItemButtonGroup
 } from './types'
-import { escapeRegExp } from 'lodash-es'
 
 const compileExpression = (filter: ConsoleFilter): RegExp => {
   switch (filter.type) {

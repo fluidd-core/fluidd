@@ -110,15 +110,15 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
 
-import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
 import TemperatureTargets from '@/components/widgets/thermals/TemperatureTargets.vue'
-import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
-import type { TemperaturePreset } from '@/store/config/types'
+import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
 import type { ChartSelectedLegends } from '@/store/charts/types'
+import type { TemperaturePreset } from '@/store/config/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 
 @Component({
   components: {

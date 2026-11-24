@@ -58,8 +58,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
 import { get } from 'lodash-es'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import type { DataTableHeader } from 'vuetify'
 
 export type GetterFunction = (

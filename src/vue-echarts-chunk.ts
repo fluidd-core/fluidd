@@ -1,9 +1,7 @@
 // Import ECharts, loaded asynchronously from main.ts
-import ECharts from 'vue-echarts'
-import { use } from 'echarts/core'
-import { LineChart } from 'echarts/charts'
-import { Grid3DComponent } from 'echarts-gl/components'
 import { SurfaceChart } from 'echarts-gl/charts'
+import { Grid3DComponent } from 'echarts-gl/components'
+import { LineChart } from 'echarts/charts'
 import {
   DatasetComponent,
   TooltipComponent,
@@ -13,7 +11,9 @@ import {
   VisualMapComponent,
   GraphicComponent
 } from 'echarts/components'
+import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
+import ECharts from 'vue-echarts'
 
 // Configure echarts
 use([

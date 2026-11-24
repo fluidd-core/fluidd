@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { EChartsOption } from 'echarts'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { ChartDataSource } from '@/store/charts/types'
 
 export type AppInlineChartLabel = {

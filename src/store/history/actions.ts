@@ -1,11 +1,11 @@
 import type { ActionTree } from 'vuex'
-import type { HistoryState } from './types'
-import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import getFilePaths from '@/util/get-file-paths'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
+import getFilePaths from '@/util/get-file-paths'
 import { isMoonrakerNotFoundError, isSocketError } from '@/util/is-socket-error'
+import type { RootState } from '../types'
+import type { HistoryState } from './types'
 
 export const actions = {
   /**

@@ -143,16 +143,16 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, VModel, PropSync } from 'vue-property-decorator'
-import type { AppDirectory, FileBrowserEntry, RootProperties } from '@/store/files/types'
 import FilesMixin from '@/mixins/files'
+import type { AppDirectory, FileBrowserEntry, RootProperties } from '@/store/files/types'
 
+import { get } from 'lodash-es'
+import type { DataTableHeader } from 'vuetify'
+import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import { SupportedImageFormats, SupportedMarkdownFormats, SupportedVideoFormats } from '@/globals'
 import type { TextSortOrder } from '@/store/config/types'
-import type { DataTableHeader } from 'vuetify'
 import versionStringCompare from '@/util/version-string-compare'
-import { get } from 'lodash-es'
-import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
 
 @Component({
   components: {

@@ -32,15 +32,15 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
+import StateMixin from '@/mixins/state'
 
-import SystemOverviewCard from '@/components/widgets/system/SystemOverviewCard.vue'
-import McuCard from '@/components/widgets/system/McuCard.vue'
-import SystemUsageCard from '@/components/widgets/system/SystemUsageCard.vue'
 import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
-import SdInfoCard from '@/components/widgets/system/SdInfoCard.vue'
+import McuCard from '@/components/widgets/system/McuCard.vue'
 import MoonrakerDatabaseCard from '@/components/widgets/system/MoonrakerDatabaseCard.vue'
+import SdInfoCard from '@/components/widgets/system/SdInfoCard.vue'
+import SystemOverviewCard from '@/components/widgets/system/SystemOverviewCard.vue'
+import SystemUsageCard from '@/components/widgets/system/SystemUsageCard.vue'
 import type { MCU } from '@/store/printer/types'
 
 @Component({

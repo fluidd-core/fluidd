@@ -140,15 +140,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
-import type { QueuedJobWithAppFile } from '@/store/jobQueue/types'
-import { SocketActions } from '@/api/socketActions'
-import StateMixin from '@/mixins/state'
-import type { DataTableHeader } from 'vuetify'
-import FilesMixin from '@/mixins/files'
-import getFilePaths from '@/util/get-file-paths'
-import type { TimeEstimates } from '@/store/printer/types'
 import type Sortable from 'sortablejs'
+import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
+import type { DataTableHeader } from 'vuetify'
+import { SocketActions } from '@/api/socketActions'
+import FilesMixin from '@/mixins/files'
+import StateMixin from '@/mixins/state'
+import type { QueuedJobWithAppFile } from '@/store/jobQueue/types'
+import type { TimeEstimates } from '@/store/printer/types'
+import getFilePaths from '@/util/get-file-paths'
 
 type JobTotals = {
   filamentLength: number

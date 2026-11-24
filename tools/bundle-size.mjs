@@ -10,8 +10,8 @@
 // matters for what a browser actually downloads.
 
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { gzipSync } from 'node:zlib'
 import { join, relative, sep } from 'node:path'
+import { gzipSync } from 'node:zlib'
 
 // Vite/rolldown content hashes are always 8 chars of [A-Za-z0-9_-], immediately
 // before the extension (e.g. `setupMonaco-BGNH_NaM.js` -> `setupMonaco-*.js`).

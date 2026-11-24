@@ -78,13 +78,13 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { Macro } from '@/store/macros/types'
-import gcodeMacroParams from '@/util/gcode-macro-params'
+import type { KlippyApp } from '@/store/printer/types'
 import {
   gcodeCommandBuilder,
   isBasicGcodeCommand,
   getParamNameForRawGcodeCommand
 } from '@/util/gcode-helpers'
-import type { KlippyApp } from '@/store/printer/types'
+import gcodeMacroParams from '@/util/gcode-macro-params'
 
 type MacroParameter = {
   value: string | number

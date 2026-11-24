@@ -338,12 +338,12 @@
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins, VModel, Prop, Watch } from 'vue-property-decorator'
-import BrowserMixin from '@/mixins/browser'
-import StateMixin from '@/mixins/state'
-import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/types'
-import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
+import BrowserMixin from '@/mixins/browser'
+import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
+import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
+import type { MmuGateDetails } from '@/types'
 
 @Component({
   components: { MmuMachine }

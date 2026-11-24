@@ -1,5 +1,5 @@
-import dateTimeFormatters from '../date-time-formatters'
 import { timeTravel } from '@/../tests/unit/utils'
+import dateTimeFormatters from '../date-time-formatters'
 
 const buildTestDateTimeFormatters = (dateFormatName: string = '', timeFormatName: string = '') =>
   dateTimeFormatters(

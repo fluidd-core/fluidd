@@ -94,12 +94,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch, VModel } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import AfcMixin from '@/mixins/afc'
 import { Debounce } from 'vue-debounce-decorator'
-import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import { Component, Mixins, Prop, Watch, VModel } from 'vue-property-decorator'
+import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 import type { GcodeCommands } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class AfcUnitLaneFilamentDialog extends Mixins(StateMixin, AfcMixin) {

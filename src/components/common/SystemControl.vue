@@ -104,10 +104,10 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import FilesMixin from '@/mixins/files'
-import StateMixin from '@/mixins/state'
-import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
+import FilesMixin from '@/mixins/files'
+import ServicesMixin from '@/mixins/services'
+import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class SystemControl extends Mixins(StateMixin, FilesMixin, ServicesMixin) {

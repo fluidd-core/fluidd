@@ -171,11 +171,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import VersionStatus from './VersionStatus.vue'
-import VersionCommitHistoryDialog from './VersionInformationDialog.vue'
-import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 import type { VersionInfo } from '@/store/version/types'
+import VersionCommitHistoryDialog from './VersionInformationDialog.vue'
+import VersionStatus from './VersionStatus.vue'
 
 @Component({
   components: {

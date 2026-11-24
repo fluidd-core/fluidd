@@ -1,5 +1,5 @@
-import { isSocketError } from '@/util/is-socket-error'
 import type { ConsoleLogEntry } from '@/store/console/types'
+import { isSocketError } from '@/util/is-socket-error'
 import type { FirmwareState } from './types'
 
 export const SUPPORTED_API_VERSION = 1

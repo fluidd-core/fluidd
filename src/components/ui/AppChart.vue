@@ -17,8 +17,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import type { DatasetComponentOption, ECharts, EChartsInitOpts, EChartsOption } from 'echarts'
+import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import type { ChartDataSource } from '@/store/charts/types'
 
 @Component({})

@@ -56,8 +56,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import { Icons } from '@/globals'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 
 @Component({})
 export default class CardConfigStep extends Vue {

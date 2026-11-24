@@ -1,7 +1,7 @@
 import type { ActionTree } from 'vuex'
-import type { DevicePowerState } from './types'
-import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
+import type { RootState } from '../types'
+import type { DevicePowerState } from './types'
 
 export const actions = {
   /**

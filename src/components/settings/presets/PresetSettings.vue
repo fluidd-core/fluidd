@@ -72,10 +72,10 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import PresetDialog from './PresetDialog.vue'
+import StateMixin from '@/mixins/state'
 import type { TemperaturePreset } from '@/store/config/types'
 import type { Fan, Heater } from '@/store/printer/types'
-import StateMixin from '@/mixins/state'
+import PresetDialog from './PresetDialog.vue'
 
 @Component({
   components: {

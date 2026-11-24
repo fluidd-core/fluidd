@@ -16,12 +16,12 @@
 </template>
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import AfcMixin from '@/mixins/afc'
+import AfcCardUnitLaneActions from '@/components/widgets/afc/AfcCardUnitLaneActions.vue'
+import AfcCardUnitLaneBody from '@/components/widgets/afc/AfcCardUnitLaneBody.vue'
 import AfcCardUnitLaneEmpty from '@/components/widgets/afc/AfcCardUnitLaneEmpty.vue'
 import AfcCardUnitLaneHeader from '@/components/widgets/afc/AfcCardUnitLaneHeader.vue'
-import AfcCardUnitLaneBody from '@/components/widgets/afc/AfcCardUnitLaneBody.vue'
-import AfcCardUnitLaneActions from '@/components/widgets/afc/AfcCardUnitLaneActions.vue'
+import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {

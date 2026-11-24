@@ -136,8 +136,15 @@
 </template>
 
 <script lang="ts">
+import { consola } from 'consola'
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
+import type { DataTableHeader } from 'vuetify'
 import { SocketActions } from '@/api/socketActions'
+import AfcMixin from '@/mixins/afc'
+import FilesMixin from '@/mixins/files'
+import ServicesMixin from '@/mixins/services'
+import StateMixin from '@/mixins/state'
+import type { KlipperSaveAndRestartAction } from '@/store/config/types'
 import type {
   AppDirectory,
   AppFile,
@@ -147,28 +154,21 @@ import type {
   RootProperties,
   MoonrakerPathContent
 } from '@/store/files/types'
-import StateMixin from '@/mixins/state'
-import FilesMixin from '@/mixins/files'
-import ServicesMixin from '@/mixins/services'
-import FileSystemToolbar from './FileSystemToolbar.vue'
-import FileSystemBulkActions from './FileSystemBulkActions.vue'
-import FileSystemBrowser from './FileSystemBrowser.vue'
-import FileSystemContextMenu from './FileSystemContextMenu.vue'
-import FileEditorDialog from './FileEditorDialog.vue'
-import FileNameDialog from './FileNameDialog.vue'
-import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
-import FilePreviewDialog from './FilePreviewDialog.vue'
-import AfcMixin from '@/mixins/afc'
 import type { AppDataTableHeader, FileWithPath } from '@/types'
-import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 import {
   getFileDataTransferDataFromDataTransfer,
   hasFileDataTransferTypeInDataTransfer,
   setFileDataTransferDataInDataTransfer
 } from '@/util/file-data-transfer'
-import { consola } from 'consola'
-import type { DataTableHeader } from 'vuetify'
-import type { KlipperSaveAndRestartAction } from '@/store/config/types'
+import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
+import FileEditorDialog from './FileEditorDialog.vue'
+import FileNameDialog from './FileNameDialog.vue'
+import FilePreviewDialog from './FilePreviewDialog.vue'
+import FileSystemBrowser from './FileSystemBrowser.vue'
+import FileSystemBulkActions from './FileSystemBulkActions.vue'
+import FileSystemContextMenu from './FileSystemContextMenu.vue'
+import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
+import FileSystemToolbar from './FileSystemToolbar.vue'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.

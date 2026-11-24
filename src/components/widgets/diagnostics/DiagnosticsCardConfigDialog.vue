@@ -79,11 +79,11 @@
 
 <script lang="ts">
 import { Component, Prop, VModel, Mixins } from 'vue-property-decorator'
-import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
-import CardConfigStep from './config/CardConfigStep.vue'
-import AxesConfigStep from './config/AxesConfigStep.vue'
-import MetricsConfigStep from './config/MetricsConfigStep.vue'
 import BrowserMixin from '@/mixins/browser'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import AxesConfigStep from './config/AxesConfigStep.vue'
+import CardConfigStep from './config/CardConfigStep.vue'
+import MetricsConfigStep from './config/MetricsConfigStep.vue'
 
 @Component({})
 export default class DiagnosticsCardConfigDialog extends Mixins(BrowserMixin) {

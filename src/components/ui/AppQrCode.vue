@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
 import QrcodeVue from 'qrcode.vue'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({
   components: {

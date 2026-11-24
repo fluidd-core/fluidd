@@ -113,10 +113,10 @@
 </template>
 
 <script lang="ts">
+import { Component, Mixins } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import BrowserMixin from '@/mixins/browser'
 import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
-import { Component, Mixins } from 'vue-property-decorator'
 
 @Component({})
 export default class KeyboardShortcutsDialog extends Mixins(BrowserMixin) {

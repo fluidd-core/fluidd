@@ -1,5 +1,5 @@
-import { createChartBuffer } from '@/util/chart-buffer'
 import { Globals } from '@/globals'
+import { createChartBuffer } from '@/util/chart-buffer'
 import type { ChartState } from './types'
 
 // Fixed-shape buckets pre-create columns so their dimension names exist from

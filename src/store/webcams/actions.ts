@@ -1,14 +1,14 @@
 import type { ActionTree } from 'vuex'
+import { SocketActions } from '@/api/socketActions'
+import { Globals } from '@/globals'
+import setUrlQueryParam from '@/util/set-url-query-param'
+import type { RootState } from '../types'
 import type {
   WebcamsState,
   LegacyCamerasState,
   LegacyCameraType,
   DatabaseWebcamConfig
 } from './types'
-import type { RootState } from '../types'
-import { SocketActions } from '@/api/socketActions'
-import setUrlQueryParam from '@/util/set-url-query-param'
-import { Globals } from '@/globals'
 
 const legacyCameraTypeToWebcamService: Record<LegacyCameraType, Moonraker.Webcam.Service> = {
   mjpgstream: 'mjpegstreamer',

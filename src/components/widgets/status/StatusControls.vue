@@ -88,11 +88,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
-import PauseResumeBtn from './PauseResumeBtn.vue'
+import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
+import StateMixin from '@/mixins/state'
 import PauseAtLayerDialog from './PauseAtLayerDialog.vue'
+import PauseResumeBtn from './PauseResumeBtn.vue'
 
 @Component({
   components: {

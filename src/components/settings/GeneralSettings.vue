@@ -282,23 +282,23 @@
 </template>
 
 <script lang="ts">
+import { consola } from 'consola'
 import { Component, Mixins, Ref } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import BrowserMixin from '@/mixins/browser'
+import { SocketActions } from '@/api/socketActions'
+import { EventBus } from '@/eventBus'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
-import type { OutputPin } from '@/store/printer/types'
+import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
+import { getAllLocales } from '@/plugins/i18n'
 import type {
   PrintEtaCalculation,
   PrintInProgressLayout,
   PrintProgressCalculation
 } from '@/store/config/types'
-import { SocketActions } from '@/api/socketActions'
-import { consola } from 'consola'
-import { readFileAsTextAsync } from '@/util/file-system-entry'
-import { EventBus } from '@/eventBus'
-import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
-import { getAllLocales } from '@/plugins/i18n'
+import type { OutputPin } from '@/store/printer/types'
 import downloadUrl from '@/util/download-url'
+import { readFileAsTextAsync } from '@/util/file-system-entry'
+import { isFluiddContent, toFluiddContent } from '@/util/fluidd-content'
 
 @Component({})
 export default class GeneralSettings extends Mixins(StateMixin, BrowserMixin) {

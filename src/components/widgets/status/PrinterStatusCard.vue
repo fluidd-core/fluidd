@@ -65,13 +65,13 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
-import StatusControls from './StatusControls.vue'
-import StatusTab from './StatusTab.vue'
-import ReprintTab from './ReprintTab.vue'
+import StateMixin from '@/mixins/state'
 import type { TimeEstimates } from '@/store/printer/types'
 import getFilePaths from '@/util/get-file-paths'
+import ReprintTab from './ReprintTab.vue'
+import StatusControls from './StatusControls.vue'
+import StatusTab from './StatusTab.vue'
 
 @Component({
   components: {

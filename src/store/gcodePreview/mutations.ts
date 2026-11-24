@@ -1,5 +1,6 @@
 import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import { createState } from './state'
 import type {
   BBox,
@@ -10,7 +11,6 @@ import type {
   Part,
   ValueRange
 } from './types'
-import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 export const mutations = {
   /**

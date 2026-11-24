@@ -1,5 +1,5 @@
-import { defineConfig } from 'oxlint'
 import pluginRegexp from 'eslint-plugin-regexp'
+import { defineConfig } from 'oxlint'
 
 // Ported from the previous ESLint config (neostandard + typescript-eslint recommended +
 // eslint-plugin-regexp): oxlint's `correctness` category covers most of it, the rules below are

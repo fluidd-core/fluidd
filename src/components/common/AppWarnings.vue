@@ -73,8 +73,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import { Globals } from '@/globals'
+import StateMixin from '@/mixins/state'
 import { linkExternalUrls } from '@/util/html-helpers'
 
 @Component({

@@ -1,10 +1,9 @@
 import type { ActionTree } from 'vuex'
-import type { FirmwareState } from './types'
-import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 import { isAgentConnectedEvent, isAgentDisconnectedEvent } from '@/util/is-agent-event'
+import type { RootState } from '../types'
 import {
   SUPPORTED_API_VERSION,
   agentErrorMessage,
@@ -16,6 +15,7 @@ import {
   reconcileRun,
   unsupportedStatus
 } from './helpers'
+import type { FirmwareState } from './types'
 
 const NOTIFICATION_ID = 'firmware-updates-available'
 

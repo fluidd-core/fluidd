@@ -1,5 +1,5 @@
-import type { AppFileMeta } from './types.metadata'
 import type { HistoryItem } from '@/store/history/types'
+import type { AppFileMeta } from './types.metadata'
 
 export type { AppFileMeta }
 
