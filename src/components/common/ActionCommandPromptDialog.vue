@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { PromptDialog, PromptDialogButton } from '@/store/console/types'
 
@@ -66,12 +66,23 @@ export default class ActionCommandPromptDialog extends Mixins(StateMixin) {
   }
 
   get open(): boolean {
-    return this.dialog.open
+    return this.dialog.open && this.klippyConnected
   }
 
   set open(value: boolean) {
     if (!value) {
-      this.sendGcode('RESPOND TYPE=command MSG="action:prompt_end"')
+      this.$store.commit('console/setPromptDialogOpen', false)
+
+      if (this.klippyConnected) {
+        this.sendGcode('RESPOND TYPE=command MSG="action:prompt_end"')
+      }
+    }
+  }
+
+  @Watch('klippyConnected')
+  onKlippyConnected(value: boolean) {
+    if (!value) {
+      this.$store.commit('console/setPromptDialogOpen', false)
     }
   }
 
