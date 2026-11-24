@@ -1,6 +1,6 @@
-import child_process from 'child_process'
-import fs from 'fs'
-import path from 'path'
+import child_process from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
 import packageJson from './package.json' with { type: 'json' }
 
 import type { Plugin } from 'vite'

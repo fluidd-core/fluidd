@@ -100,6 +100,7 @@ export default defineConfig({
     'unicorn/require-post-message-target-origin': 'off',
     // Vuex getters must return new objects rather than mutate state
     'oxc/no-map-spread': 'off',
+    'unicorn/prefer-node-protocol': 'error',
 
     // Follows `@/` aliases and `.vue` imports; type-only and dynamic imports are not followed
     'import/no-cycle': 'error',

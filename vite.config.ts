@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import content from '@originjs/vite-plugin-content'
 import vue from '@pedrolamas/plugin-vue2'
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
