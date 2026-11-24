@@ -11,7 +11,7 @@
     </template>
 
     <v-select
-      v-model="inputValue"
+      :value="inputValue"
       class="mt-0"
       :disabled="disabled || loading"
       dense

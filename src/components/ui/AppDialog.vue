@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="open"
+    :value="open"
     :scrollable="scrollable"
     :persistent="persistent"
     :fullscreen="isMobileViewport"

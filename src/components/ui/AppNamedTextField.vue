@@ -11,7 +11,7 @@
     </template>
 
     <app-text-field
-      v-model="inputValue"
+      :value="inputValue"
       :disabled="disabled || loading"
       class="v-input--text-right"
       dense
