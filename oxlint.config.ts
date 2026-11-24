@@ -83,6 +83,8 @@ export default defineConfig({
     'no-await-in-loop': 'off',
     'no-promise-executor-return': 'error',
     radix: 'error',
+    // Log through `consola`, which `setupConsola.ts` filters by build mode
+    'no-console': 'error',
 
     'node/handle-callback-err': ['error', '^(err|error)$'],
     'node/no-exports-assign': 'error',
@@ -128,6 +130,13 @@ export default defineConfig({
         // Typing a `fetch` mock as `typeof fetch` would force casting every partial `Response`
         'vitest/require-mock-type-parameters': 'off',
         'vitest/require-to-throw-message': 'off'
+      }
+    },
+    {
+      // CLI scripts print their output
+      files: ['tools/**'],
+      rules: {
+        'no-console': 'off'
       }
     }
   ]
