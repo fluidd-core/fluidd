@@ -33,6 +33,8 @@ Read before changing `package.json`, `pnpm-workspace.yaml`, `vite.config.ts`, `v
   Strict never adds or removes template whitespace, so text-node rendering is unchanged — the
   cost is `>`-hugging output. SVG `<text>` content is still padded (`>H<` → `> H <`); SVG's
   default `xml:space` strips it
+- oxfmt sorts imports (`sortImports`) only within the groups a blank line or comment marks off,
+  so hand-made groups (`main.ts`) keep their order. Side-effect imports (`import 'x'`) never move
 - `curly` is `multi-line`: when oxfmt wraps a long braceless `if` body onto its own line, oxlint
   then wants braces — `oxlint --fix` adds them
 - `oxlint` and `oxfmt` are pinned to exact versions — oxfmt is pre-1.0 and its output still
