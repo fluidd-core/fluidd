@@ -110,6 +110,7 @@ app:
     msg:
       not_found: Ni najdenih datotek
       processing: Procesiram
+      upload_failed: Datoteke {filepath} ni mogoče naložiti
     overlay:
       drag_files_folders_upload: <strong>Povlecite</strong> mape in datoteke 
         sem, da jih naložite
@@ -159,6 +160,7 @@ app:
       color_by_feature: Vrsta vsebine
       color_by_speed: Hitrost (mm/s)
       color_by_tool: Orodje
+      color_by_temp: Temperatura (°C)
     msg:
       confirm: >-
         Datoteka "%{filename}" je velika %{size}. To lahko povzroči dodatno obremenitev
@@ -1469,6 +1471,10 @@ app:
       SpoolId: ID št. {id}
       SpoolWeightRemaining: 'Preostalo: {remaining} g (porabljeno: {used} g)'
       LaneWeightRemaining: Preostala masa {weight} g
+      AutoMap: Samodejno preslikaj
+      AutoMapNoLanes: Ni proge z naloženim filamentom
+      AutoMapUnchanged: Proge se že ujemajo z datoteko
+      AutoMapUnmapped: Za {tools} ni ostala noben naložena proga
     Initialized: Inicializirano
     SelectTool: Izberi orodje
     ToolSwap: Menjava orodne glave
@@ -1481,3 +1487,41 @@ app:
     ExtruderTemp: Temp. ekstruderja
     ExtruderTempSubtitle: Temperatura ekstruderja za ta filament v °C.
     ManualEntry: Ročni vnos
+  firmware:
+    btn:
+      refresh: Osveži
+      update: Posodobi
+      update_all: Posodobi vse
+      view: Ogled strojne programske opreme
+    label:
+      enable_notifications: Omogoči obvestila
+      host: Storitev Klipper
+      host_hint: Strojna programska oprema MKE se primerja s to različico
+      loading: Preverjanje strojne programske opreme ...
+      malformed_status: Agent strojne programske opreme je poslal stanje, ki ga 
+        Fluidd ni mogel prebrati.
+      not_running: Agent strojne programske opreme aldis ne deluje. Zaženite 
+        storitev aldis s seznama storitev v meniju gostitelja.
+      restart_pending_hint: Znova zaženite Klipper s seznama storitev v meniju 
+        gostitelja.
+      status_error: 'Stanja strojne programske opreme ni bilo mogoče prebrati: %{message}.
+        Osvežite za ponovni poskus.'
+      unknown_version: neznano
+      unsupported_api: Ta različica Fluidda ne podpira različice API-ja aldis 
+        %{version}.
+      updates_available: Na voljo so posodobitve strojne programske opreme
+    state:
+      current: POSODOBLJENO
+      externally_managed: ZUNANJE
+      indeterminate: NEDOLOČENO
+      not_identified: NI PREPOZNANO
+      not_responding: SE NE ODZIVA
+      unsupported_legacy: ZASTARELO
+      unsupported_mcu: NEPODPRTO
+      update_available: NA VOLJO JE POSODOBITEV
+    status:
+      finished: Posodobitve strojne programske opreme so končane
+      lost_run: Sledenje izvajanju je bilo izgubljeno; preverite dnevnik 
+        izvajanja v logs/aldis.
+      updating: Posodabljanje strojne programske opreme ...
+    title: Posodobitve strojne programske opreme
