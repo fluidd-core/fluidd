@@ -35,8 +35,7 @@
     "release:rc": "pnpm run release --prerelease rc",
     "test": "pnpm run test:unit",
     "test:unit": "vitest",
-    "type-check": "vue-tsc --build --noEmit",
-    "circular-check": "skott --displayMode=file-tree --showCircularDependencies --no-trackTypeOnlyDependencies --tsconfig=./tsconfig.app.json"
+    "type-check": "vue-tsc --build --noEmit"
   },
   "dependencies": {
     "@ctrl/tinycolor": "^4.3.2",
@@ -103,7 +102,6 @@
     "oxfmt": "0.79.0",
     "oxlint": "1.94.0",
     "sass-embedded": "^1.108.2",
-    "skott": "^0.35.12",
     "svgo": "^4.1.0",
     "typescript": "catalog:",
     "unplugin-vue-components": "^30.0.0",

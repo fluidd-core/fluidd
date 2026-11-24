@@ -49,11 +49,6 @@ jobs:
         run: |
           pnpm run test:unit
 
-      - name: Run circular references check
-        if: ${{ !cancelled() }}
-        run: |
-          pnpm run circular-check
-
       - name: Build
         run: |
           pnpm run build

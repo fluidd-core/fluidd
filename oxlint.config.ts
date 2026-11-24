@@ -6,7 +6,7 @@ import pluginRegexp from 'eslint-plugin-regexp'
 // the rest. Stylistic rules are left to oxfmt, and `vue/*` rules to ESLint, as oxlint cannot parse
 // templates
 export default defineConfig({
-  plugins: ['typescript', 'node', 'promise'],
+  plugins: ['typescript', 'node', 'promise', 'import'],
   jsPlugins: ['eslint-plugin-regexp'],
   categories: {
     correctness: 'error'
@@ -77,6 +77,11 @@ export default defineConfig({
     'node/no-path-concat': 'error',
 
     'promise/param-names': 'error',
+
+    // Follows `@/` aliases and `.vue` imports; type-only and dynamic imports are not followed
+    'import/no-cycle': 'error',
+    // Misreads Vite's `?worker` imports; TypeScript already checks default imports
+    'import/default': 'off',
 
     'typescript/ban-ts-comment': 'error',
     'typescript/no-namespace': 'error',

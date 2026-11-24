@@ -98,10 +98,9 @@ pnpm run prepare        # Install git hooks (runs automatically on `pnpm i`)
 pnpm run dev            # Start development server (port 8080)
 pnpm run build          # Production build
 pnpm run type-check     # TypeScript validation (vue-tsc)
-pnpm run lint           # oxlint, then ESLint (Vue templates only)
+pnpm run lint           # oxlint (incl. circular imports), then ESLint (Vue templates only)
 pnpm run format         # oxfmt (`--check` in CI)
 pnpm run test           # Vitest unit tests
-pnpm run circular-check # Check for circular dependencies
 ```
 
 ### File Organization

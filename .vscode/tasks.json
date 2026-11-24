@@ -21,12 +21,6 @@
       "problemMatcher": []
     },
     {
-      "label": "Circular reference check",
-      "type": "shell",
-      "command": "pnpm run circular-check",
-      "problemMatcher": []
-    },
-    {
       "label": "Lint",
       "type": "shell",
       "command": "pnpm run lint",
