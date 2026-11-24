@@ -143,7 +143,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
         const spoolId = match[1]
         if (spoolId && !Number.isNaN(+spoolId)) {
           // valid spool ID
-          const id = parseInt(spoolId)
+          const id = parseInt(spoolId, 10)
 
           if (this.availableSpools.some(spool => spool.id === id)) {
             // spool exists in spoolman

@@ -17,10 +17,10 @@ const legacyCameraTypeToWebcamService: Record<LegacyCameraType, Moonraker.Webcam
   ipstream: 'ipstream'
 }
 
-const mjpegstreamerServices: Moonraker.Webcam.Service[] = [
+const mjpegstreamerServices = new Set<Moonraker.Webcam.Service>([
   'mjpegstreamer',
   'mjpegstreamer-adaptive'
-]
+])
 
 export const actions = {
   async reset({ commit }) {
@@ -39,7 +39,7 @@ export const actions = {
     if (payload.cameras) {
       for (const legacyCamera of payload.cameras) {
         const service = legacyCameraTypeToWebcamService[legacyCamera.type]
-        const isMjpegStreamer = mjpegstreamerServices.includes(service)
+        const isMjpegStreamer = mjpegstreamerServices.has(service)
 
         const webcam: DatabaseWebcamConfig = {
           name: legacyCamera.name,

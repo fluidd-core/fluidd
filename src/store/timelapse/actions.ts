@@ -37,7 +37,7 @@ export const actions = {
           // open snackbar
           EventBus.$emit(i18n.tc('app.timelapse.error.newframe'), { type: 'error' })
         } else {
-          const count = parseInt(payload.frame)
+          const count = parseInt(payload.frame, 10)
           commit('setLastFrame', {
             framecount: count,
             lastframefile: payload.framefile

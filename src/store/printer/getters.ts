@@ -668,7 +668,7 @@ export const getters = {
       const leds = ['led', 'neopixel', 'dotstar', 'pca9533', 'pca9632']
 
       // Are they controllable?
-      const controllable = [
+      const controllable = new Set([
         'fan',
         'fan_generic',
         'output_pin',
@@ -679,13 +679,13 @@ export const getters = {
         'dotstar',
         'pca9533',
         'pca9632'
-      ]
+      ])
 
       // Should we apply a color?
-      const applyColor = ['temperature_fan']
+      const applyColor = new Set(['temperature_fan'])
 
       // Should we filter visiblity based on the _ prefix?
-      const filterByPrefix = [
+      const filterByPrefix = new Set([
         'output_pin',
         'pwm_tool',
         'pwm_cycle_time',
@@ -699,7 +699,7 @@ export const getters = {
         'pca9533',
         'pca9632',
         'nevermore'
-      ]
+      ])
 
       const supportedTypes = filter && filter.length ? filter : [...fans, ...outputPins, ...leds]
 
@@ -711,18 +711,13 @@ export const getters = {
         const [type, nameFromSplit] = key.trim().split(/\s+/, 2)
         const name = nameFromSplit ?? key
 
-        if (
-          supportedTypes.includes(type) &&
-          (!filterByPrefix.includes(type) || !name.startsWith('_'))
-        ) {
+        if (supportedTypes.includes(type) && (!filterByPrefix.has(type) || !name.startsWith('_'))) {
           const prettyName =
             name === 'fan'
               ? 'Part Fan' // If we know its the part fan.
               : Vue.$filters.prettyCase(name)
 
-          const color = applyColor.includes(type)
-            ? resolveSensorColor(sensorColors, key)
-            : undefined
+          const color = applyColor.has(type) ? resolveSensorColor(sensorColors, key) : undefined
 
           const config = state.printer.configfile.settings[key.toLowerCase()]
 
@@ -737,7 +732,7 @@ export const getters = {
             key,
             color,
             type,
-            controllable: controllable.includes(type),
+            controllable: controllable.has(type),
             disconnected
           }
 
@@ -755,7 +750,7 @@ export const getters = {
               pwm: config?.pwm ?? false,
               scale: config?.scale ?? 1,
               resetValue: config?.value ?? 0,
-              controllable: config?.static_value ? false : controllable.includes(type)
+              controllable: config?.static_value ? false : controllable.has(type)
             }
           }
 

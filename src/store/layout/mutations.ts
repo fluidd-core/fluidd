@@ -43,22 +43,26 @@ export const mutations = {
 
         if (migratableLayoutKey) {
           const defaultLayout = defaultLayouts[migratableLayoutKey]
-          const defaultComponentIds = Object.values(defaultLayout)
-            .flat()
-            .map(card => card.id)
-          const currentComponentIds = Object.values(currentLayout)
-            .flat()
-            .map(card => card.id)
+          const defaultComponentIds = new Set(
+            Object.values(defaultLayout)
+              .flat()
+              .map(card => card.id)
+          )
+          const currentComponentIds = new Set(
+            Object.values(currentLayout)
+              .flat()
+              .map(card => card.id)
+          )
 
           for (const [containerKey, defaultContainerComponents] of Object.entries(defaultLayout)) {
             const currentContainerComponents = currentLayout[containerKey] || []
 
             currentLayout[containerKey] = [
               ...currentContainerComponents.filter(component =>
-                defaultComponentIds.includes(component.id)
+                defaultComponentIds.has(component.id)
               ),
               ...defaultContainerComponents.filter(
-                component => !currentComponentIds.includes(component.id)
+                component => !currentComponentIds.has(component.id)
               )
             ]
           }

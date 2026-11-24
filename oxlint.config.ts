@@ -6,7 +6,8 @@ import pluginRegexp from 'eslint-plugin-regexp'
 // the rest. Stylistic rules are left to oxfmt, and `vue/*` rules to ESLint, as oxlint cannot parse
 // templates
 export default defineConfig({
-  plugins: ['typescript', 'node', 'promise', 'import'],
+  // Listing plugins replaces oxlint's defaults, so `unicorn` and `oxc` are named explicitly
+  plugins: ['typescript', 'unicorn', 'oxc', 'node', 'promise', 'import'],
   jsPlugins: ['eslint-plugin-regexp'],
   categories: {
     correctness: 'error',
@@ -80,6 +81,8 @@ export default defineConfig({
     'no-underscore-dangle': 'off',
     // Stream reads, cancellable uploads and ordered database writes must run one at a time
     'no-await-in-loop': 'off',
+    'no-promise-executor-return': 'error',
+    radix: 'error',
 
     'node/handle-callback-err': ['error', '^(err|error)$'],
     'node/no-exports-assign': 'error',
@@ -87,6 +90,16 @@ export default defineConfig({
     'node/no-path-concat': 'error',
 
     'promise/param-names': 'error',
+
+    // `toSorted()` and `toReversed()` are ES2023, beyond the ES2022 lib and Vite's targets
+    'unicorn/no-array-reverse': 'off',
+    'unicorn/no-array-sort': 'off',
+    'unicorn/consistent-function-scoping': 'off',
+    'unicorn/prefer-add-event-listener': 'off',
+    // Flags worker and `MessagePort` `postMessage` calls, which take no target origin
+    'unicorn/require-post-message-target-origin': 'off',
+    // Vuex getters must return new objects rather than mutate state
+    'oxc/no-map-spread': 'off',
 
     // Follows `@/` aliases and `.vue` imports; type-only and dynamic imports are not followed
     'import/no-cycle': 'error',

@@ -22,18 +22,16 @@ export const actions = {
     // This needs two commits. One for a merge, one for not.
     // Then we can emit the toast if it was a merge or not.
 
-    // Define the base notification.
-    const n: AppNotification = {
-      ...{
-        // snackbar: true,
-        id: uuidv4(),
-        type: 'info',
-        timestamp: Date.now() / 1000,
-        clear: true,
-        merge: false
-      },
-      ...payload
-    }
+    // Define the base notification, which the payload can override.
+    const defaults = {
+      id: uuidv4(),
+      type: 'info',
+      timestamp: Date.now() / 1000,
+      clear: true,
+      merge: false
+    } satisfies Partial<AppNotification>
+
+    const n: AppNotification = { ...defaults, ...payload }
 
     // Sanity check...
     if (n.title && n.title !== '?' && n.id) {

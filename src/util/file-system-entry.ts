@@ -12,7 +12,9 @@ const isDirectory = (item: FileSystemEntry): item is FileSystemDirectoryEntry =>
 
 const getFileAsync = async (fileEntry: FileSystemFileEntry) => {
   try {
-    return new Promise<File>((resolve, reject) => fileEntry.file(resolve, reject))
+    return new Promise<File>((resolve, reject) => {
+      fileEntry.file(resolve, reject)
+    })
   } catch (e) {
     consola.error('[FileSystemFileEntry] file', e)
   }
@@ -20,9 +22,9 @@ const getFileAsync = async (fileEntry: FileSystemFileEntry) => {
 
 const readEntriesAsync = async (directoryReader: FileSystemDirectoryReader) => {
   try {
-    return new Promise<FileSystemEntry[]>((resolve, reject) =>
+    return new Promise<FileSystemEntry[]>((resolve, reject) => {
       directoryReader.readEntries(resolve, reject)
-    )
+    })
   } catch (e) {
     consola.error('[FileSystemDirectoryReader] readEntries', e)
   }

@@ -195,7 +195,7 @@ const klipperConfigFoldingRanges = (
   const saveConfigBlocks = includeSaveConfigBlocks
     ? lines.reduce<ReduceState<MonacoFoldingRange>>(
         (state, lineContent, index) => {
-          const isSaveConfigComment = /^#\*#/.test(lineContent)
+          const isSaveConfigComment = lineContent.startsWith('#*#')
 
           if (isSaveConfigComment) {
             if (state.current) {

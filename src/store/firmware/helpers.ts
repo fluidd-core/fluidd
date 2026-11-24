@@ -4,7 +4,7 @@ import type { FirmwareState } from './types'
 
 export const SUPPORTED_API_VERSION = 1
 
-const KNOWN_UPDATABLE_STATES: readonly string[] = ['update_available']
+const KNOWN_UPDATABLE_STATES: ReadonlySet<string> = new Set(['update_available'])
 
 export const formatResponse = (payload: Aldis.UpdateResponse, id: number): ConsoleLogEntry => ({
   id,
@@ -12,7 +12,7 @@ export const formatResponse = (payload: Aldis.UpdateResponse, id: number): Conso
 })
 
 export const isUpdatable = (mcu: Pick<Aldis.Mcu, 'state' | 'actions'>): boolean =>
-  KNOWN_UPDATABLE_STATES.includes(mcu.state) && mcu.actions.includes('update')
+  KNOWN_UPDATABLE_STATES.has(mcu.state) && mcu.actions.includes('update')
 
 export const applyEvent = (run: Aldis.Run | null, payload: Aldis.UpdateResponse): Aldis.Run => {
   const messages = run?.run_id === payload.run_id ? [...run.messages, payload] : [payload]

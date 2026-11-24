@@ -328,7 +328,7 @@ export default class MmuMixin extends Vue {
           c2 = file.filament_colors ?? []
           break
       }
-      const colors = c1.length === 0 || c1.every((c: string) => c === '') ? c2 : c1
+      const colors = c1.every((c: string) => c === '') ? c2 : c1
       td.color =
         colors.length > toolIndex
           ? this.fromColorString(colors[toolIndex])

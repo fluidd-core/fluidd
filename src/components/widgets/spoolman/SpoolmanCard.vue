@@ -251,9 +251,9 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     const fields = this.$typedState.config.uiSettings.spoolman.selectedCardFields
     const columnCount = fields.length > 1 ? 2 : 1
     const elementsPerColumn = Math.ceil(fields.length / columnCount)
-    return new Array(columnCount)
-      .fill(undefined)
-      .map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
+    return Array.from({ length: columnCount }, (_, i) =>
+      fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn)
+    )
   }
 
   get activeSpool(): Spool | undefined {
