@@ -1,6 +1,6 @@
 <template>
   <v-text-field
-    v-model="inputValue"
+    :value="inputValue"
     class="app-text-field-with-copy"
     v-bind="$attrs"
     v-on="$listeners"
