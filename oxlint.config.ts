@@ -10,7 +10,8 @@ export default defineConfig({
   jsPlugins: ['eslint-plugin-regexp'],
   categories: {
     correctness: 'error',
-    suspicious: 'error'
+    suspicious: 'error',
+    perf: 'error'
   },
   env: {
     builtin: true,
@@ -77,6 +78,8 @@ export default defineConfig({
     // private names
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
+    // Stream reads, cancellable uploads and ordered database writes must run one at a time
+    'no-await-in-loop': 'off',
 
     'node/handle-callback-err': ['error', '^(err|error)$'],
     'node/no-exports-assign': 'error',
