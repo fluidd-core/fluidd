@@ -88,7 +88,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 
 - **Node.js 26** + **pnpm**, both pinned via `devEngines` in `package.json` (no Corepack)
 - **Vite 8**, **vitest v5**, **`typescript-native-bridge`** (tsgo) as `typescript`
-- **ES2020 lib target** (`tsconfig.app.json`) — no ES2021+ built-ins without polyfills
+- **ES2022 lib** (inherited from `@vue/tsconfig`), matching Vite's default `baseline-widely-available` build target — no ES2023+ built-ins (`toSorted`, `findLast`, …) without polyfills
 - Details: `.agents/toolchain.md`
 
 ### Essential Commands
