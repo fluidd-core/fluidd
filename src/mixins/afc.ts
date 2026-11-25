@@ -207,8 +207,8 @@ export default class AfcMixin extends Vue {
     if (this.afc == null) return false
     // File not in store yet (e.g. reprint): open anyway, the dialog fetches metadata
     if (fileWithMeta == null) return true
-    const hasMetadata = fileWithMeta != null && 'filament_weights' in fileWithMeta
-    const usedTools = hasMetadata ? (fileWithMeta!.filament_weights ?? []).filter(w => w > 0) : []
-    return usedTools.length > 0
+    return (
+      'filament_weights' in fileWithMeta && (fileWithMeta.filament_weights ?? []).some(w => w > 0)
+    )
   }
 }

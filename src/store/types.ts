@@ -121,7 +121,7 @@ type ActionsOf<TModule, K> = TModule extends { actions: infer M }
 // The root store's own getters, mutations and actions are reached unprefixed.
 type ModuleKey<TModule, K, U> = TModule extends { namespaced: true }
   ? `${string & K}/${string & U}`
-  : `${string & U}`
+  : string & U
 
 type DispatchArgs<P extends any[]> = P extends []
   ? [payload?: undefined, options?: DispatchOptions]

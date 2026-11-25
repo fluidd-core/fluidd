@@ -49,6 +49,8 @@ export const actions = {
   async dismissAll({ state }) {
     const entries = [...state.entries]
 
-    entries.forEach(async entry => await SocketActions.serverAnnouncementsDismiss(entry.entry_id))
+    await Promise.all(
+      entries.map(entry => SocketActions.serverAnnouncementsDismiss(entry.entry_id))
+    )
   }
 } satisfies ActionTree<AnnouncementsState, RootState>

@@ -179,7 +179,7 @@ export default class FilesMixin extends Vue {
    * @returns The url for the requested file
    */
   createFileUrl(filename: string, path: string, date?: number) {
-    const filepath = path ? `${path}/${filename}` : `${filename}`
+    const filepath = path ? `${path}/${filename}` : filename
 
     const encodedFilepath = filepath.replace(/[^/]+/g, match => encodeURIComponent(match))
 

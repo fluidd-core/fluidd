@@ -77,7 +77,7 @@ export const getters = {
     // say so.
     const serverInfo = rootState.server.info
 
-    if (serverInfo.klippy_connected === false) {
+    if (!serverInfo.klippy_connected) {
       return 'Klippy not connected.'
     }
 

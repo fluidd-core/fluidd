@@ -58,7 +58,7 @@ export const getters = {
     const history: HistoryItem[] = getters.getHistory
 
     return history.find(
-      job => job.filename === filename && job.status === 'completed' && job.exists === true
+      job => job.filename === filename && job.status === 'completed' && job.exists
     )
   },
 
