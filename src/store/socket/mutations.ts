@@ -1,6 +1,6 @@
 import type { MutationTree } from 'vuex'
-import type { SocketRetry, SocketState, SocketStatus } from './types'
 import { createState } from './state'
+import type { SocketRetry, SocketState, SocketStatus } from './types'
 
 export const mutations = {
   setReset(state) {

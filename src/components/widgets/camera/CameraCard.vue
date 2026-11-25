@@ -38,8 +38,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
-import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
+import CameraMenu from './CameraMenu.vue'
 
 @Component({
   components: {

@@ -1,3 +1,4 @@
+import { consola } from 'consola'
 import type {
   BBox,
   ExtrusionRole,
@@ -7,7 +8,6 @@ import type {
   ValueRange
 } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
-import { consola } from 'consola'
 
 export type ParseGcodeWorkerRequestMessage = {
   action: 'parse'

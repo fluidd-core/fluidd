@@ -1,5 +1,5 @@
-import { parseArgs } from 'node:util'
 import { readFile, writeFile, glob } from 'node:fs/promises'
+import { parseArgs } from 'node:util'
 import { optimize as svgoOptimize } from 'svgo'
 import svgoConfig from '../svgo.config.mjs'
 

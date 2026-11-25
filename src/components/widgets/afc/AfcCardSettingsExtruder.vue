@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 
 @Component
 export default class AfcCardSettingsExtruder extends Mixins(StateMixin, AfcMixin) {

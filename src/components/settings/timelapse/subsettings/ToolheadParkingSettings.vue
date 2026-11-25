@@ -108,11 +108,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
-import CustomParkPositionSettings from './CustomParkPositionSettings.vue'
+import StateMixin from '@/mixins/state'
 import { defaultWritableSettings } from '@/store/timelapse/state'
+import CustomParkPositionSettings from './CustomParkPositionSettings.vue'
+import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 
 @Component({
   components: {

@@ -338,12 +338,12 @@
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins, VModel, Prop, Watch } from 'vue-property-decorator'
-import BrowserMixin from '@/mixins/browser'
-import StateMixin from '@/mixins/state'
-import MmuMixin from '@/mixins/mmu'
-import type { MmuGateDetails } from '@/types'
-import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
+import BrowserMixin from '@/mixins/browser'
+import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
+import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
+import type { MmuGateDetails } from '@/types'
 
 @Component({
   components: { MmuMachine }
@@ -425,7 +425,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   set spoolId(newSpoolIdStr: string | null) {
-    const newSpoolId = newSpoolIdStr ? parseInt(newSpoolIdStr) : null
+    const newSpoolId = newSpoolIdStr ? parseInt(newSpoolIdStr, 10) : null
     this.editGateMap[this.editGateSelected].spoolId =
       newSpoolId !== null && !Number.isNaN(newSpoolId) ? newSpoolId : null
   }
@@ -471,7 +471,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   }
 
   set temperature(newTemperatureStr: string) {
-    const newTemperature = newTemperatureStr ? parseInt(newTemperatureStr) : -1
+    const newTemperature = newTemperatureStr ? parseInt(newTemperatureStr, 10) : -1
     this.editGateMap[this.editGateSelected].temperature = Number.isNaN(newTemperature)
       ? -1
       : newTemperature

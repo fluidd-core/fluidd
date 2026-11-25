@@ -42,11 +42,11 @@
 </template>
 
 <script lang="ts">
+import { escapeRegExp } from 'lodash-es'
 import { Component, Mixins, Prop, VModel, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import getFilePaths from '@/util/get-file-paths'
 import StateMixin from '@/mixins/state'
-import { escapeRegExp } from 'lodash-es'
+import getFilePaths from '@/util/get-file-paths'
 
 type File = Moonraker.Files.RootFile & {
   filename: string

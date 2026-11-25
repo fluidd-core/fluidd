@@ -1,9 +1,9 @@
 import type { Commit } from 'vuex'
-import type { RootState } from './types'
 import { chartBufferLastTime, chartBufferLastValue } from '@/util/chart-buffer'
-import { thermalColumn } from './charts/thermal-columns'
-import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
 import decimalRound from '@/util/decimal-round'
+import getMcusFromConfig from '@/util/get-klipper-mcus-from-config'
+import { thermalColumn } from './charts/thermal-columns'
+import type { RootState } from './types'
 
 export const handleMcuStatsChange = (
   payload: Partial<Klipper.PrinterState>,

@@ -6,6 +6,7 @@ export default defineConfig({
   printWidth: 100,
   trailingComma: 'none',
   arrowParens: 'avoid',
+  sortImports: { newlinesBetween: false, partitionByNewline: true, partitionByComment: true },
   ignorePatterns: [
     // Managed by Weblate
     'src/locales/**',

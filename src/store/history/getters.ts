@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
-import type { HistoryItem, HistoryState } from './types'
 import type { RootState } from '../types'
+import type { HistoryItem, HistoryState } from './types'
 
 export const getters = {
   /**

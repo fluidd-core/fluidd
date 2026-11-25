@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
 import { markRaw } from 'vue'
+import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
 
 @Component({
   inheritAttrs: false

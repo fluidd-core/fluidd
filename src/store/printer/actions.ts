@@ -1,23 +1,23 @@
+import { consola } from 'consola'
+import { gte, valid } from 'semver'
 import type { ActionTree } from 'vuex'
-import type { KlippyApp, PrinterState } from './types'
-import type { RootState } from '../types'
-import {
-  handlePrintStateChange,
-  handleCurrentFileChange,
-  handleTrinamicDriversChange
-} from '../helpers'
+import { SocketActions } from '@/api/socketActions'
+import i18n from '@/plugins/i18n'
+import sandboxedEval from '@/plugins/sandboxedEval'
+import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import {
   handleAddChartEntry,
   handleAddSensorChartEntry,
   handleSystemStatsChange,
   handleMcuStatsChange
 } from '../chart_helpers'
-import { SocketActions } from '@/api/socketActions'
-import { consola } from 'consola'
-import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
-import sandboxedEval from '@/plugins/sandboxedEval'
-import { gte, valid } from 'semver'
-import i18n from '@/plugins/i18n'
+import {
+  handlePrintStateChange,
+  handleCurrentFileChange,
+  handleTrinamicDriversChange
+} from '../helpers'
+import type { RootState } from '../types'
+import type { KlippyApp, PrinterState } from './types'
 
 const evalCollectors = async (
   printer: Klipper.PrinterState,

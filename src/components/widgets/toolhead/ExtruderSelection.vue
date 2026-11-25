@@ -17,8 +17,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import type { KnownExtruder } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class ExtruderSelection extends Mixins(StateMixin) {

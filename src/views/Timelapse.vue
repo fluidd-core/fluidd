@@ -42,11 +42,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import TimelapseStatusCard from '@/components/widgets/timelapse/TimelapseStatusCard.vue'
-import TimelapseSettingsCard from '@/components/widgets/timelapse/TimelapseSettingsCard.vue'
 import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
+import TimelapseSettingsCard from '@/components/widgets/timelapse/TimelapseSettingsCard.vue'
+import TimelapseStatusCard from '@/components/widgets/timelapse/TimelapseStatusCard.vue'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {

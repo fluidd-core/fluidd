@@ -20,7 +20,6 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
 import type {
   ECharts,
   EChartsInitOpts,
@@ -29,6 +28,7 @@ import type {
   SetOptionOpts
 } from 'echarts'
 import { merge, cloneDeepWith } from 'lodash-es'
+import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import type { BedSize } from '@/store/printer/types'
 import downloadUrl from '@/util/download-url'

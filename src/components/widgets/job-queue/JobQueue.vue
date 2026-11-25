@@ -57,20 +57,20 @@
 </template>
 
 <script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import type { DataTableHeader } from 'vuetify'
 import { SocketActions } from '@/api/socketActions'
 import type { QueuedJobWithAppFile } from '@/store/jobQueue/types'
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import JobQueueToolbar from './JobQueueToolbar.vue'
-import JobQueueBulkActions from './JobQueueBulkActions.vue'
-import JobQueueBrowser from './JobQueueBrowser.vue'
-import JobQueueContextMenu from './JobQueueContextMenu.vue'
-import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
 import type { AppDataTableHeader } from '@/types'
 import {
   getFileDataTransferDataFromDataTransfer,
   hasFileDataTransferTypeInDataTransfer
 } from '@/util/file-data-transfer'
-import type { DataTableHeader } from 'vuetify'
+import JobQueueBrowser from './JobQueueBrowser.vue'
+import JobQueueBulkActions from './JobQueueBulkActions.vue'
+import JobQueueContextMenu from './JobQueueContextMenu.vue'
+import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
+import JobQueueToolbar from './JobQueueToolbar.vue'
 
 @Component({
   components: {

@@ -61,10 +61,10 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
-import type { Metric } from '@/store/diagnostics/types'
-import sandboxedEval from '@/plugins/sandboxedEval'
-import StateExplorer from '@/components/widgets/diagnostics/StateExplorer.vue'
 import type { VTextarea } from 'vuetify/lib'
+import StateExplorer from '@/components/widgets/diagnostics/StateExplorer.vue'
+import sandboxedEval from '@/plugins/sandboxedEval'
+import type { Metric } from '@/store/diagnostics/types'
 
 @Component({
   components: {

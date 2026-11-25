@@ -17,6 +17,13 @@ Read before changing `package.json`, `pnpm-workspace.yaml`, `vite.config.ts`, `v
   `categories.correctness: 'off'` so nothing beyond it is enabled. `eslint-plugin-regexp` runs
   inside oxlint as a `jsPlugins` entry. Both oxc configs are `.ts` and type-checked through
   `tsconfig.config.json`
+- Specs (`src/**/__tests__/**`) also get oxlint's `vitest` plugin (its `correctness` rules:
+  focused/disabled tests, missing or conditional `expect`, un-awaited async assertions).
+  `require-mock-type-parameters` is off — typing a `fetch` mock as `typeof fetch` would force
+  casting every partial `Response`
+- Circular imports are caught by oxlint's `import/no-cycle` (it replaced `skott`). It follows `@/`
+  aliases and `.vue` imports — skott never followed `.vue` — but not type-only or dynamic
+  `import()` ones. `import/default` is off: it misreads Vite's `?worker` imports
 - oxlint **skips `no-unused-vars` in `.vue` files** (the template may use them), so ESLint keeps
   `@typescript-eslint/no-unused-vars` for `.vue` — a disable comment for it there must be an
   `eslint-disable` one; everything oxlint reports uses `oxlint-disable`
@@ -26,6 +33,8 @@ Read before changing `package.json`, `pnpm-workspace.yaml`, `vite.config.ts`, `v
   Strict never adds or removes template whitespace, so text-node rendering is unchanged — the
   cost is `>`-hugging output. SVG `<text>` content is still padded (`>H<` → `> H <`); SVG's
   default `xml:space` strips it
+- oxfmt sorts imports (`sortImports`) only within the groups a blank line or comment marks off,
+  so hand-made groups (`main.ts`) keep their order. Side-effect imports (`import 'x'`) never move
 - `curly` is `multi-line`: when oxfmt wraps a long braceless `if` body onto its own line, oxlint
   then wants braces — `oxlint --fix` adds them
 - `oxlint` and `oxfmt` are pinned to exact versions — oxfmt is pre-1.0 and its output still

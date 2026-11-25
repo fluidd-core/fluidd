@@ -45,9 +45,9 @@
 
 <script lang="ts">
 import { Component, Vue, VModel } from 'vue-property-decorator'
+import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import type { AppUser } from '@/store/auth/types'
-import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class UserPasswordDialog extends Vue {

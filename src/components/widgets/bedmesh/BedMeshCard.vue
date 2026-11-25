@@ -60,11 +60,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
-import BedMeshChart from './BedMeshChart.vue'
+import BrowserMixin from '@/mixins/browser'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import BrowserMixin from '@/mixins/browser'
 import type { AppMeshes, MatrixType } from '@/store/mesh/types'
+import BedMeshChart from './BedMeshChart.vue'
 
 @Component({
   components: {

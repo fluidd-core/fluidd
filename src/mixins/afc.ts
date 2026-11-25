@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import type { Spool } from '@/store/spoolman/types'
 import type { AppFile, AppFileWithMeta } from '@/store/files/types'
+import type { Spool } from '@/store/spoolman/types'
 
 // AFC's default full-spool weight (g) when no initial_weight is tracked (e.g. no Spoolman spool)
 const AFC_DEFAULT_SPOOL_WEIGHT = 1000

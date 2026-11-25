@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
 import { markRaw } from 'vue'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
   inheritAttrs: false

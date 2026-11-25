@@ -108,11 +108,11 @@
 </template>
 
 <script lang="ts">
-import StateMixin from '@/mixins/state'
+import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
 import type { RootProperties } from '@/store/files/types'
 import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
-import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 
 @Component({})
 export default class FileSystemAddMenu extends Mixins(StateMixin, BrowserMixin) {

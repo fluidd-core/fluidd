@@ -37,9 +37,9 @@
 </template>
 
 <script lang="ts">
+import { Component, Vue, VModel, Prop } from 'vue-property-decorator'
 import type { Heater } from '@/store/printer/types'
 import type { NullableOrEmpty } from '@/util/is-null-or-empty'
-import { Component, Vue, VModel, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class HeaterMpcCalibrateDialog extends Vue {

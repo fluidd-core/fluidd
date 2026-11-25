@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Ref, Watch, VModel } from 'vue-property-decorator'
-import { markRaw } from 'vue'
-import iro from '@jaames/iro'
 import type { IroColor } from '@irojs/iro-core'
+import iro from '@jaames/iro'
 import type { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPicker'
+import { markRaw } from 'vue'
+import { Component, Vue, Prop, Ref, Watch, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class AppColorPicker extends Vue {

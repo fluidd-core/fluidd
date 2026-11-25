@@ -1,6 +1,6 @@
 import type { GetterTree } from 'vuex'
-import type { Macro, MacroCategory, MacrosState } from './types'
 import type { RootState } from '../types'
+import type { Macro, MacroCategory, MacrosState } from './types'
 
 export const MACRO_DEFAULTS = {
   alias: '',

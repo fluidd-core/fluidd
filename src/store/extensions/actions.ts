@@ -1,10 +1,10 @@
+import { consola } from 'consola'
 import type { ActionTree, Dispatch } from 'vuex'
-import type { ExtensionsState } from './types'
-import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import { consola } from 'consola'
 import { isAgentConnectedEvent, isAgentDisconnectedEvent } from '@/util/is-agent-event'
+import type { RootState } from '../types'
+import type { ExtensionsState } from './types'
 
 const findAgent = (name: string) =>
   Object.values<{ name: string; eventDispatch: string; klippyDispatch?: string }>(

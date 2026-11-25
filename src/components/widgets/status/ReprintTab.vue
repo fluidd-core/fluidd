@@ -91,11 +91,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
-import getFilePaths from '@/util/get-file-paths'
-import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import type { HistoryItem } from '@/store/history/types'
+import getFilePaths from '@/util/get-file-paths'
 
 @Component({
   components: {

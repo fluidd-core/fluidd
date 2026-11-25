@@ -97,8 +97,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import CameraConfigDialog from './CameraConfigDialog.vue'
 import { Globals } from '@/globals'
+import CameraConfigDialog from './CameraConfigDialog.vue'
 
 @Component({
   components: {

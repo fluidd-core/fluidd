@@ -33,15 +33,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
-import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Globals } from '@/globals'
 import BrowserMixin from '@/mixins/browser'
 import type { ChartDataSource } from '@/store/charts/types'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import { chartBufferSource } from '@/util/chart-buffer'
 import { tooltipValue } from '@/util/chart-tooltip'
 import decimalRound from '@/util/decimal-round'
-import { Globals } from '@/globals'
 
 type LineSeriesOptionExtended = LineSeriesOption & {
   unit?: string

@@ -1,11 +1,11 @@
-import { defineConfig } from 'vite'
-import vue from '@pedrolamas/plugin-vue2'
-import { VitePWA } from 'vite-plugin-pwa'
-import Components from 'unplugin-vue-components/rolldown'
-import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
-import path from 'path'
+import path from 'node:path'
 import content from '@originjs/vite-plugin-content'
+import vue from '@pedrolamas/plugin-vue2'
+import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/rolldown'
+import { defineConfig } from 'vite'
 import checker from 'vite-plugin-checker'
+import { VitePWA } from 'vite-plugin-pwa'
 import version from './vite.config.inject-version.ts'
 
 export default defineConfig({

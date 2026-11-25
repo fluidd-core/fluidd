@@ -74,8 +74,8 @@
 </template>
 
 <script lang="ts">
-import type { Macro, MacroCategory } from '@/store/macros/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
+import type { Macro, MacroCategory } from '@/store/macros/types'
 
 @Component({})
 export default class MacroMoveDialog extends Vue {

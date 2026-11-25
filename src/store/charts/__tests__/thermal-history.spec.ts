@@ -1,5 +1,5 @@
-import { buildThermalHistoryBuffer } from '../thermal-history'
 import { chartBufferSource } from '@/util/chart-buffer'
+import { buildThermalHistoryBuffer } from '../thermal-history'
 
 const END = 1_000_000
 

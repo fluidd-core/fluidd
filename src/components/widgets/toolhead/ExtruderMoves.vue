@@ -92,9 +92,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
+import type { VForm } from 'vuetify/lib'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import type { VForm } from 'vuetify/lib'
 
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {

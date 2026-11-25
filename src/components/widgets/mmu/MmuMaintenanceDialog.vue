@@ -435,8 +435,8 @@
 import Component from 'vue-class-component'
 import { Mixins, VModel, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
-import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
 import isKeyOf from '@/util/is-key-of'
 
 @Component({})

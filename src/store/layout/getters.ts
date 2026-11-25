@@ -1,9 +1,9 @@
-import type { GetterTree } from 'vuex'
-import type { LayoutState, LayoutContainer, LayoutConfig } from './types'
-import type { RootState } from '../types'
 import { cloneDeep } from 'lodash-es'
+import type { GetterTree } from 'vuex'
 import vuetify from '@/plugins/vuetify'
 import type { AppUser } from '../auth/types'
+import type { RootState } from '../types'
+import type { LayoutState, LayoutContainer, LayoutConfig } from './types'
 
 export const getters = {
   /**

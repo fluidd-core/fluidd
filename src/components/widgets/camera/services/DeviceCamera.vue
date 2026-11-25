@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts">
+import { consola } from 'consola'
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
-import { consola } from 'consola'
 import type { CameraNameMenuItem } from '@/types'
 
 @Component({})

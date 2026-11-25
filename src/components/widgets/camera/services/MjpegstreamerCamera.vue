@@ -10,10 +10,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
-import { markRaw } from 'vue'
-import CameraMixin from '@/mixins/camera'
 import { consola } from 'consola'
+import { markRaw } from 'vue'
+import { Component, Mixins, Ref } from 'vue-property-decorator'
+import CameraMixin from '@/mixins/camera'
 
 import type {
   MjpegWorkerResponseMessage,

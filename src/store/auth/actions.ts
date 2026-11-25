@@ -1,9 +1,9 @@
-import type { ActionTree } from 'vuex'
-import type { AuthState } from './types'
-import type { RootState } from '../types'
 import { consola } from 'consola'
+import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import type { TokenKeys } from '../config/types'
+import type { RootState } from '../types'
+import type { AuthState } from './types'
 
 export const actions = {
   /**

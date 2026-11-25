@@ -1,9 +1,9 @@
+import { TinyColor } from '@ctrl/tinycolor'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import type { Spool } from '@/store/spoolman/types'
 import type { AppFileWithMeta } from '@/store/files/types'
+import type { Spool } from '@/store/spoolman/types'
 import type { MmuGateDetails, SlicerToolDetails, MmuUnitDetails } from '@/types'
-import { TinyColor } from '@ctrl/tinycolor'
 
 @Component({})
 export default class MmuMixin extends Vue {
@@ -328,7 +328,7 @@ export default class MmuMixin extends Vue {
           c2 = file.filament_colors ?? []
           break
       }
-      const colors = c1.length === 0 || c1.every((c: string) => c === '') ? c2 : c1
+      const colors = c1.every((c: string) => c === '') ? c2 : c1
       td.color =
         colors.length > toolIndex
           ? this.fromColorString(colors[toolIndex])

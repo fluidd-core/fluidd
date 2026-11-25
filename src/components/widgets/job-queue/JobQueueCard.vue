@@ -64,8 +64,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import JobQueue from '@/components/widgets/job-queue/JobQueue.vue'
 import { SocketActions } from '@/api/socketActions'
+import JobQueue from '@/components/widgets/job-queue/JobQueue.vue'
 
 @Component({
   components: {

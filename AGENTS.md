@@ -88,7 +88,7 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 
 - **Node.js 26** + **pnpm**, both pinned via `devEngines` in `package.json` (no Corepack)
 - **Vite 8**, **vitest v5**, **`typescript-native-bridge`** (tsgo) as `typescript`
-- **ES2020 lib target** (`tsconfig.app.json`) — no ES2021+ built-ins without polyfills
+- **ES2022 lib** (inherited from `@vue/tsconfig`), matching Vite's default `baseline-widely-available` build target — no ES2023+ built-ins (`toSorted`, `findLast`, …) without polyfills
 - Details: `.agents/toolchain.md`
 
 ### Essential Commands
@@ -98,10 +98,9 @@ pnpm run prepare        # Install git hooks (runs automatically on `pnpm i`)
 pnpm run dev            # Start development server (port 8080)
 pnpm run build          # Production build
 pnpm run type-check     # TypeScript validation (vue-tsc)
-pnpm run lint           # oxlint, then ESLint (Vue templates only)
+pnpm run lint           # oxlint (incl. circular imports), then ESLint (Vue templates only)
 pnpm run format         # oxfmt (`--check` in CI)
 pnpm run test           # Vitest unit tests
-pnpm run circular-check # Check for circular dependencies
 ```
 
 ### File Organization

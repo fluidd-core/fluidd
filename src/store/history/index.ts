@@ -1,10 +1,10 @@
 import type { Module } from 'vuex'
-import { createState } from './state'
-import { getters } from './getters'
-import { actions } from './actions'
-import { mutations } from './mutations'
-import type { HistoryState } from './types'
 import type { RootState } from '../types'
+import { actions } from './actions'
+import { getters } from './getters'
+import { mutations } from './mutations'
+import { createState } from './state'
+import type { HistoryState } from './types'
 
 export const history = {
   namespaced: true,

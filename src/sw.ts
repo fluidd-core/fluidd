@@ -5,9 +5,9 @@ import {
   createHandlerBoundToURL,
   precacheAndRoute
 } from 'workbox-precaching'
+import { warmStrategyCache } from 'workbox-recipes'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { StaleWhileRevalidate } from 'workbox-strategies'
-import { warmStrategyCache } from 'workbox-recipes'
 
 declare let self: ServiceWorkerGlobalScope
 

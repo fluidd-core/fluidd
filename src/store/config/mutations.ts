@@ -1,5 +1,11 @@
+import { consola } from 'consola'
+import { cloneDeep, mergeWith, set } from 'lodash-es'
+import { v4 as uuidv4 } from 'uuid'
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
+import { Globals } from '@/globals'
+import type { FileFilterType } from '../files/types'
+import { createState } from './state'
 import type {
   ConfigState,
   UiSettings,
@@ -10,12 +16,6 @@ import type {
   HostConfig,
   ApiConfig
 } from './types'
-import { createState } from './state'
-import { Globals } from '@/globals'
-import { cloneDeep, mergeWith, set } from 'lodash-es'
-import { v4 as uuidv4 } from 'uuid'
-import type { FileFilterType } from '../files/types'
-import { consola } from 'consola'
 
 export const mutations = {
   /**

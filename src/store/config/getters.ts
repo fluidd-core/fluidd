@@ -1,9 +1,9 @@
-import type { GetterTree } from 'vuex'
-import type { ConfigState, TemperaturePreset, TokenKeys } from './types'
-import type { RootState } from '../types'
-import type { Heater, Fan } from '../printer/types'
-import type { AppDataTableHeader } from '@/types'
 import md5 from 'md5'
+import type { GetterTree } from 'vuex'
+import type { AppDataTableHeader } from '@/types'
+import type { Heater, Fan } from '../printer/types'
+import type { RootState } from '../types'
+import type { ConfigState, TemperaturePreset, TokenKeys } from './types'
 
 export const getters = {
   getCurrentInstance: state => {

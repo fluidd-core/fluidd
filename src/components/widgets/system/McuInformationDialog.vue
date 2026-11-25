@@ -53,8 +53,8 @@
 </template>
 
 <script lang="ts">
-import type { MCU } from '@/store/printer/types'
 import { Component, Prop, VModel, Vue } from 'vue-property-decorator'
+import type { MCU } from '@/store/printer/types'
 
 @Component({})
 export default class McuInformationDialog extends Vue {

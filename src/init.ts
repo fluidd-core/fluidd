@@ -1,12 +1,12 @@
-import Vue from 'vue'
-import store from './store'
 import { consola } from 'consola'
+import md5 from 'md5'
+import Vue from 'vue'
 import { Globals } from './globals'
+import store from './store'
 import type { ApiConfig, HostConfig, InstanceConfig } from './store/config/types'
+import promiseAny from './util/promise-any'
 import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
-import promiseAny from './util/promise-any'
-import md5 from 'md5'
 
 // Load API configuration
 /**

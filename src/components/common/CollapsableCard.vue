@@ -110,8 +110,8 @@
 </template>
 
 <script lang="ts">
-import type { LayoutConfig } from '@/store/layout/types'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import type { LayoutConfig } from '@/store/layout/types'
 
 @Component({})
 export default class CollapsableCard extends Vue {

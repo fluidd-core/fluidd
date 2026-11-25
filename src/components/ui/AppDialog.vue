@@ -107,9 +107,9 @@
 </template>
 
 <script lang="ts">
-import BrowserMixin from '@/mixins/browser'
-import type { VForm } from 'vuetify/lib'
 import { Component, Prop, VModel, Ref, PropSync, Mixins } from 'vue-property-decorator'
+import type { VForm } from 'vuetify/lib'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({
   inheritAttrs: false

@@ -1,14 +1,14 @@
-import type { AppFile, FileUpload, AppFileThumbnail, FileDownload } from '@/store/files/types'
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
 import axios, { type AxiosRequestConfig, type AxiosProgressEvent } from 'axios'
-import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
 import { v4 as uuidv4 } from 'uuid'
-import type { AppUser } from '@/store/auth/types'
-import downloadUrl from '@/util/download-url'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
+import type { AppUser } from '@/store/auth/types'
+import type { AppFile, FileUpload, AppFileThumbnail, FileDownload } from '@/store/files/types'
+import type { FileWithPath } from '@/types'
+import downloadUrl from '@/util/download-url'
 
 type AxiosRequestConfigForReturnType<T = unknown, D = unknown> = AxiosRequestConfig<D> &
   (T extends string

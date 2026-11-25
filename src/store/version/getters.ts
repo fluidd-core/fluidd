@@ -1,7 +1,7 @@
-import type { GetterTree } from 'vuex'
-import type { VersionInfo, VersionState } from './types'
-import type { RootState } from '../types'
 import { valid, gt } from 'semver'
+import type { GetterTree } from 'vuex'
+import type { RootState } from '../types'
+import type { VersionInfo, VersionState } from './types'
 
 export const getters = {
   /**

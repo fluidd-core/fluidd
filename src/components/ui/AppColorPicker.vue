@@ -141,10 +141,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Ref, VModel, PropSync, Watch } from 'vue-property-decorator'
-import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
+import iro from '@jaames/iro'
 import type { ColorPickerProps } from '@jaames/iro/dist/ColorPicker'
+import { Component, Vue, Prop, Ref, VModel, PropSync, Watch } from 'vue-property-decorator'
 import type { ColorPickerValueRange } from '@/store/config/types'
 
 interface PointerPosition {

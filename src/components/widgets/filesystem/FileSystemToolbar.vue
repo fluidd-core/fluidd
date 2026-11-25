@@ -152,11 +152,11 @@
 <script lang="ts">
 import { Component, Prop, Mixins, PropSync } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
+import type { RootProperties } from '@/store/files/types'
+import type { AppDataTableHeader } from '@/types'
 import FileSystemAddMenu from './FileSystemAddMenu.vue'
 import FileSystemBreadcrumbs from './FileSystemBreadcrumbs.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
-import type { AppDataTableHeader } from '@/types'
-import type { RootProperties } from '@/store/files/types'
 
 @Component({
   components: {

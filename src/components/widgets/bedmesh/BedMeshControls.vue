@@ -279,11 +279,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { MeshState, MatrixType, BedMeshProfileListEntry } from '@/store/mesh/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import SaveMeshDialog from './SaveMeshDialog.vue'
 
 @Component({
   components: {

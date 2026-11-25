@@ -1,6 +1,6 @@
 import type { GetterTree } from 'vuex'
-import type { AppNotification, NotificationsState } from './types'
 import type { RootState } from '../types'
+import type { AppNotification, NotificationsState } from './types'
 
 export const getters = {
   getNotifications: (state, getters) => {

@@ -108,8 +108,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
 import { consola } from 'consola'
+import { Component, Mixins } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
 

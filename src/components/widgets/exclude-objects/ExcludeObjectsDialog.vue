@@ -45,8 +45,8 @@
 <script lang="ts">
 import { Component, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 import type { ExcludeObjectPart } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
 
 @Component({})
 export default class ExcludeObjectDialog extends Mixins(StateMixin) {

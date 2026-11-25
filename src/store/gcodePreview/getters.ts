@@ -1,4 +1,7 @@
 import type { GetterTree } from 'vuex'
+import decimalRound from '@/util/decimal-round'
+import { binarySearch, buildLayerPaths, rangeColors } from '@/util/gcode-preview'
+import type { RootState } from '../types'
 import type {
   BBox,
   BuildLayerPathsOptions,
@@ -11,9 +14,6 @@ import type {
   ValueRange
 } from './types'
 import { ExtrusionRole, MoveFlags } from './types'
-import type { RootState } from '../types'
-import { binarySearch, buildLayerPaths, rangeColors } from '@/util/gcode-preview'
-import decimalRound from '@/util/decimal-round'
 
 const defaultColors = [
   '#1fb0ff',

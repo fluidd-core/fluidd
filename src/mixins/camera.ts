@@ -1,6 +1,6 @@
+import { consola } from 'consola'
 import Vue from 'vue'
 import { Component, Emit, Prop, Ref, Watch } from 'vue-property-decorator'
-import { consola } from 'consola'
 import type { CameraConnectionStatus, CameraNameMenuItem } from '@/types'
 
 @Component

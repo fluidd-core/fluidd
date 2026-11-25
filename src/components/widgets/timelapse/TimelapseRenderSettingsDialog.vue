@@ -185,10 +185,10 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import type { TimelapseLastFrame } from '@/store/timelapse/types'
+import StateMixin from '@/mixins/state'
 import { defaultWritableSettings } from '@/store/timelapse/state'
+import type { TimelapseLastFrame } from '@/store/timelapse/types'
 
 @Component({})
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {

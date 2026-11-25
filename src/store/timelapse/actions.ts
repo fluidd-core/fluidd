@@ -1,10 +1,10 @@
-import type { ActionTree } from 'vuex'
-import type { TimelapseState } from './types'
-import type { RootState } from '../types'
-import { SocketActions } from '@/api/socketActions'
 import { consola } from 'consola'
+import type { ActionTree } from 'vuex'
+import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import i18n from '@/plugins/i18n'
+import type { RootState } from '../types'
+import type { TimelapseState } from './types'
 
 export const actions = {
   /**
@@ -37,7 +37,7 @@ export const actions = {
           // open snackbar
           EventBus.$emit(i18n.tc('app.timelapse.error.newframe'), { type: 'error' })
         } else {
-          const count = parseInt(payload.frame)
+          const count = parseInt(payload.frame, 10)
           commit('setLastFrame', {
             framecount: count,
             lastframefile: payload.framefile

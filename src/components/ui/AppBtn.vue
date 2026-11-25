@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
 import { TinyColor } from '@ctrl/tinycolor'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
   inheritAttrs: false

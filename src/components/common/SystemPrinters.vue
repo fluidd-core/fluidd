@@ -49,9 +49,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import type { InstanceConfig } from '@/store/config/types'
-import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
+import StateMixin from '@/mixins/state'
+import type { InstanceConfig } from '@/store/config/types'
 
 @Component({})
 export default class SystemPrinters extends Mixins(StateMixin) {

@@ -44,9 +44,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import ConsoleBrowser from '@/components/widgets/console/ConsoleBrowser.vue'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
 import type { ConsoleLogEntry } from '@/store/console/types'
 
 @Component({

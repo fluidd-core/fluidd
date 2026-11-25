@@ -1,6 +1,6 @@
-import type { LayoutState } from './types'
 import { v4 as uuidv4 } from 'uuid'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import type { LayoutState } from './types'
 
 export const createDiagnosticsCardState = (): DiagnosticsCardConfig => {
   return {

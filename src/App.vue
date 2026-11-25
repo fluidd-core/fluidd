@@ -105,25 +105,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { EventBus } from '@/eventBus'
-import StateMixin from '@/mixins/state'
-import FilesMixin from '@/mixins/files'
-import BrowserMixin from '@/mixins/browser'
 import type { LinkPropertyHref, MetaPropertyName } from 'vue-meta'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
+import ActionCommandPromptDialog from '@/components/common/ActionCommandPromptDialog.vue'
+import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog.vue'
 import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from '@/components/widgets/filesystem/FileSystemUploadDialog.vue'
 import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
-import type { FlashMessage } from '@/types'
-import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
+import { EventBus } from '@/eventBus'
+import BrowserMixin from '@/mixins/browser'
+import FilesMixin from '@/mixins/files'
+import StateMixin from '@/mixins/state'
 import type { ThemeConfig } from '@/store/config/types'
-import ActionCommandPromptDialog from '@/components/common/ActionCommandPromptDialog.vue'
-import KeyboardShortcutsDialog from '@/components/common/KeyboardShortcutsDialog.vue'
-import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
-import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
-import AfcPrintStartDialog from './components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
-import type { UpdateResponse } from '@/store/version/types'
 import type { ConsoleLogEntry } from '@/store/console/types'
+import type { UpdateResponse } from '@/store/version/types'
+import type { FlashMessage } from '@/types'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
+import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
+import AfcPrintStartDialog from './components/widgets/afc/dialogs/AfcPrintStartDialog.vue'
+import MmuEditTtgMapDialog from './components/widgets/mmu/MmuEditTtgMapDialog.vue'
 
 @Component<App>({
   metaInfo() {

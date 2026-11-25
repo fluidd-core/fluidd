@@ -1,12 +1,12 @@
+import { isEqual } from 'lodash-es'
 import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import type { ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
-import { buildThermalHistoryBuffer } from './thermal-history'
-import { moonrakerChartSamples } from './moonraker-history'
 import { chartBufferLastTime } from '@/util/chart-buffer'
 import type { RootState } from '../types'
-import { isEqual } from 'lodash-es'
+import { moonrakerChartSamples } from './moonraker-history'
+import { buildThermalHistoryBuffer } from './thermal-history'
+import type { ChartsDbDocument, ChartSelectedLegends, ChartState } from './types'
 
 export const actions = {
   /**

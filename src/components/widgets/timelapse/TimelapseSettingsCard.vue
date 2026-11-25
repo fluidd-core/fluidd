@@ -52,10 +52,10 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import type { TimelapseLastFrame } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 import { defaultWritableSettings } from '@/store/timelapse/state'
+import type { TimelapseLastFrame } from '@/store/timelapse/types'
 
 @Component({})
 export default class TimelapseSettingsCard extends Mixins(StateMixin) {

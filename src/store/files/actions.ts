@@ -1,10 +1,10 @@
 import type { ActionTree } from 'vuex'
-import type { FilesState, FilePaths, FileUpload, FileDownload } from './types'
-import type { RootState } from '../types'
-import getFilePaths from '@/util/get-file-paths'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
+import getFilePaths from '@/util/get-file-paths'
+import type { RootState } from '../types'
+import type { FilesState, FilePaths, FileUpload, FileDownload } from './types'
 
 const itemAsMoonrakerFile = (
   item: Moonraker.Files.ChangeItem,

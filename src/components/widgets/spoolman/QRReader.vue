@@ -24,12 +24,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref, VModel } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import QrScanner from 'qr-scanner'
+import { Component, Mixins, Ref, VModel } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
-import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
+import type { Spool } from '@/store/spoolman/types'
 
 const spoomanDataPatterns = [/web\+spoolman:s-(\d+)/i, /\/spool\/show\/(\d+)\/?/i]
 
@@ -140,14 +140,12 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
 
       if (match) {
         // code matches one of known patterns
-        const spoolId = match[1]
-        if (spoolId && !Number.isNaN(+spoolId)) {
+        const spoolId = +match[1]
+        if (!Number.isNaN(spoolId)) {
           // valid spool ID
-          const id = parseInt(spoolId)
-
-          if (this.availableSpools.some(spool => spool.id === id)) {
+          if (this.availableSpools.some(spool => spool.id === spoolId)) {
             // spool exists in spoolman
-            this.$emit('detected', id)
+            this.$emit('detected', spoolId)
           } else {
             // spool doesn't exist
             this.statusMessage = 'error.spool_not_existant'

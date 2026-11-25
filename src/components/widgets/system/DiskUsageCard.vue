@@ -75,9 +75,9 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import type { AppDiskUsage } from '@/store/files/types'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
+import type { AppDiskUsage } from '@/store/files/types'
 
 @Component({})
 export default class DiskUsageCard extends Mixins(StateMixin) {

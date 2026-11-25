@@ -37,8 +37,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
-import { Globals } from '@/globals'
 import type { VTextarea } from 'vuetify/lib'
+import { Globals } from '@/globals'
 import type { GcodeCommands } from '@/store/printer/types'
 
 @Component({})

@@ -1,6 +1,6 @@
 import type { MutationTree } from 'vuex'
-import type { DevicePowerState } from './types'
 import { createState } from './state'
+import type { DevicePowerState } from './types'
 
 export const mutations = {
   /**

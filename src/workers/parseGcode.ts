@@ -1,8 +1,8 @@
+import { split } from 'shlex'
 import type { BBox, Layer, MoveStore, Part, ValueRange } from '@/store/gcodePreview/types'
 import { ExtrusionRole, MoveFlags } from '@/store/gcodePreview/types'
 import decimalRound from '@/util/decimal-round'
 import { parseExtrusionRoleComment } from './gcode-extrusion-roles'
-import { split } from 'shlex'
 
 type PositioningMode = 'relative' | 'absolute'
 

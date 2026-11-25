@@ -102,8 +102,8 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
-import FileSystemBreadcrumbs from './FileSystemBreadcrumbs.vue'
 import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
+import FileSystemBreadcrumbs from './FileSystemBreadcrumbs.vue'
 
 @Component({
   components: {

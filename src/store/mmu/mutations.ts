@@ -1,6 +1,6 @@
 import type { MutationTree } from 'vuex'
-import type { MmuDialogState, MmuState } from './types'
 import { createState } from './state'
+import type { MmuDialogState, MmuState } from './types'
 
 export const mutations = {
   /**

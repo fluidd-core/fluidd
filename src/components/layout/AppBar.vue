@@ -228,20 +228,20 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import { SocketActions } from '@/api/socketActions'
 import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
 import PendingChangesDialog from '@/components/settings/PendingChangesDialog.vue'
-import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
-import AppUploadAndPrintBtn from './AppUploadAndPrintBtn.vue'
-import { createState } from '@/store/layout/state'
-import StateMixin from '@/mixins/state'
-import ServicesMixin from '@/mixins/services'
-import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
-import { SocketActions } from '@/api/socketActions'
-import type { OutputPin } from '@/store/printer/types'
-import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import FilesMixin from '@/mixins/files'
+import ServicesMixin from '@/mixins/services'
+import StateMixin from '@/mixins/state'
 import vuetify from '@/plugins/vuetify'
 import type { AppUser } from '@/store/auth/types'
+import { createState } from '@/store/layout/state'
+import type { OutputPin } from '@/store/printer/types'
+import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
+import AppUploadAndPrintBtn from './AppUploadAndPrintBtn.vue'
 
 @Component({
   components: {

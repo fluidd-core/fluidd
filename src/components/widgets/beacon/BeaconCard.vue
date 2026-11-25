@@ -127,11 +127,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import SaveModelDialog from './SaveModelDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { BeaconModel } from '@/store/printer/types'
 import { encodeGcodeParamValue } from '@/util/gcode-helpers'
+import SaveModelDialog from './SaveModelDialog.vue'
 
 @Component({
   components: {

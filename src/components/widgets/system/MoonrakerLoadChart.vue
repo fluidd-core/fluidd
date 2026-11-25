@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
 import type { EChartsOption, LineSeriesOption } from 'echarts'
+import { Component, Vue } from 'vue-property-decorator'
 import type { AppInlineChartLabel } from '@/components/ui/AppInlineChart.vue'
 import type { ChartDataSource } from '@/store/charts/types'
 import { chartBufferSource } from '@/util/chart-buffer'

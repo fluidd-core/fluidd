@@ -1,8 +1,8 @@
 import type { ActionTree } from 'vuex'
-import type { AnalysisState } from './types'
-import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
+import type { RootState } from '../types'
+import type { AnalysisState } from './types'
 
 export const actions = {
   async reset({ commit }) {

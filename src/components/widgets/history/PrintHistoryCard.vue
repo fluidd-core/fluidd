@@ -42,8 +42,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import JobHistory from '@/components/widgets/history/JobHistory.vue'
 import { SocketActions } from '@/api/socketActions'
+import JobHistory from '@/components/widgets/history/JobHistory.vue'
 
 @Component({
   components: {

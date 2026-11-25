@@ -103,12 +103,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
 import type Sortable from 'sortablejs'
-import MacroSettingsDialog from './MacroSettingsDialog.vue'
-import type { Macro, MacroCategory } from '@/store/macros/types'
-import store from '@/store'
+import { Component, Vue } from 'vue-property-decorator'
 import type { NavigationGuardNext, Route, Location } from 'vue-router'
+import store from '@/store'
+import type { Macro, MacroCategory } from '@/store/macros/types'
+import MacroSettingsDialog from './MacroSettingsDialog.vue'
 
 const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
   // No need to translate here, these are just used for the route.

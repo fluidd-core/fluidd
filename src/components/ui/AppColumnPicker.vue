@@ -54,10 +54,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
-import type { AppDataTableHeader } from '@/types'
-import type { ConfiguredTableHeader } from '@/store/config/types'
 import type Sortable from 'sortablejs'
+import { Component, Vue, Prop } from 'vue-property-decorator'
+import type { ConfiguredTableHeader } from '@/store/config/types'
+import type { AppDataTableHeader } from '@/types'
 
 @Component({})
 export default class AppColumnPicker extends Vue {

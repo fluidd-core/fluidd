@@ -35,10 +35,10 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 
-import StateMixin from '@/mixins/state'
-import BrowserMixin from '@/mixins/browser'
-import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import { Globals } from '@/globals'
+import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
+import { eventTargetIsContentEditable, keyboardEventToKeyboardShortcut } from '@/util/event-helpers'
 import isKeyOf from '@/util/is-key-of'
 
 @Component({})

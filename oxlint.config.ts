@@ -1,15 +1,18 @@
-import { defineConfig } from 'oxlint'
 import pluginRegexp from 'eslint-plugin-regexp'
+import { defineConfig } from 'oxlint'
 
 // Ported from the previous ESLint config (neostandard + typescript-eslint recommended +
 // eslint-plugin-regexp): oxlint's `correctness` category covers most of it, the rules below are
 // the rest. Stylistic rules are left to oxfmt, and `vue/*` rules to ESLint, as oxlint cannot parse
 // templates
 export default defineConfig({
-  plugins: ['typescript', 'node', 'promise'],
+  // Listing plugins replaces oxlint's defaults, so `unicorn` and `oxc` are named explicitly
+  plugins: ['typescript', 'unicorn', 'oxc', 'node', 'promise', 'import'],
   jsPlugins: ['eslint-plugin-regexp'],
   categories: {
-    correctness: 'error'
+    correctness: 'error',
+    suspicious: 'error',
+    perf: 'error'
   },
   env: {
     builtin: true,
@@ -71,6 +74,18 @@ export default defineConfig({
     'valid-typeof': ['error', { requireStringLiterals: true }],
     yoda: 'error',
 
+    // `suspicious` rules that only flag house style: Vuex getters take a `getters` argument
+    // and callbacks reuse the outer name (`files.find(file => …)`); `_` marks unused and
+    // private names
+    'no-shadow': 'off',
+    'no-underscore-dangle': 'off',
+    // Stream reads, cancellable uploads and ordered database writes must run one at a time
+    'no-await-in-loop': 'off',
+    'no-promise-executor-return': 'error',
+    radix: 'error',
+    // Log through `consola`, which `setupConsola.ts` filters by build mode
+    'no-console': 'error',
+
     'node/handle-callback-err': ['error', '^(err|error)$'],
     'node/no-exports-assign': 'error',
     'node/no-new-require': 'error',
@@ -78,10 +93,51 @@ export default defineConfig({
 
     'promise/param-names': 'error',
 
+    // `toSorted()` and `toReversed()` are ES2023, beyond the ES2022 lib and Vite's targets
+    'unicorn/no-array-reverse': 'off',
+    'unicorn/no-array-sort': 'off',
+    'unicorn/consistent-function-scoping': 'off',
+    'unicorn/prefer-add-event-listener': 'off',
+    // Flags worker and `MessagePort` `postMessage` calls, which take no target origin
+    'unicorn/require-post-message-target-origin': 'off',
+    // Vuex getters must return new objects rather than mutate state
+    'oxc/no-map-spread': 'off',
+    'unicorn/prefer-node-protocol': 'error',
+
+    // Follows `@/` aliases and `.vue` imports; type-only and dynamic imports are not followed
+    'import/no-cycle': 'error',
+    // Misreads Vite's `?worker` imports; TypeScript already checks default imports
+    'import/default': 'off',
+    // `Vue.set`, `Vuex.Store` and `import consola from 'consola'` are how these libraries are
+    // documented; side-effect imports (`import './setupConsola'`) are intentional
+    'import/no-named-as-default': 'off',
+    'import/no-named-as-default-member': 'off',
+    'import/no-unassigned-import': 'off',
+
     'typescript/ban-ts-comment': 'error',
     'typescript/no-namespace': 'error',
     'typescript/no-require-imports': 'error',
     'typescript/no-unnecessary-type-constraint': 'error',
     'typescript/no-unsafe-function-type': 'error'
-  }
+  },
+  overrides: [
+    {
+      files: ['src/**/__tests__/**'],
+      plugins: ['vitest'],
+      rules: {
+        // `expect` takes an optional message as its second argument
+        'vitest/valid-expect': ['error', { maxArgs: 2 }],
+        // Typing a `fetch` mock as `typeof fetch` would force casting every partial `Response`
+        'vitest/require-mock-type-parameters': 'off',
+        'vitest/require-to-throw-message': 'off'
+      }
+    },
+    {
+      // CLI scripts print their output
+      files: ['tools/**'],
+      rules: {
+        'no-console': 'off'
+      }
+    }
+  ]
 })

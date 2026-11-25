@@ -361,8 +361,8 @@
 
 <script lang="ts">
 import { Component, VModel, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 import type { Peripherals } from '@/store/server/types'
 
 type PeripheralType = 'serial' | 'usb' | 'video' | 'can'

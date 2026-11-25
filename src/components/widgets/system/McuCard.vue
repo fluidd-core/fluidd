@@ -64,9 +64,9 @@
 </template>
 
 <script lang="ts">
-import McuInformationDialog from './McuInformationDialog.vue'
-import type { KlippyApp, MCU } from '@/store/printer/types'
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import type { KlippyApp, MCU } from '@/store/printer/types'
+import McuInformationDialog from './McuInformationDialog.vue'
 
 @Component({
   components: {

@@ -54,11 +54,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import ToolheadControlBarsAxis from './ToolheadControlBarsAxis.vue'
-import ToolheadControlBarsStepper from './ToolheadControlBarsStepper.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { Stepper } from '@/store/printer/types'
+import ToolheadControlBarsAxis from './ToolheadControlBarsAxis.vue'
+import ToolheadControlBarsStepper from './ToolheadControlBarsStepper.vue'
 
 @Component({
   components: {

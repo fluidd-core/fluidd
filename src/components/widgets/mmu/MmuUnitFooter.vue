@@ -85,8 +85,8 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
-import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
 import type { Sensor } from '@/store/printer/types'
 
 @Component

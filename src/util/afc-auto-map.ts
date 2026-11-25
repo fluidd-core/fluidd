@@ -96,9 +96,14 @@ export const autoMap = (tools: AutoMapTool[], lanes: AutoMapLane[]): Map<number,
 
   // best[t][mask]: minimal cost for tools t.. with lanes in mask already taken
   const size = 1 << lanes.length
-  const best: Cost[][] = Array.from({ length: tools.length + 1 }, () => new Array<Cost>(size))
-  const choice: number[][] = Array.from({ length: tools.length }, () => new Array<number>(size))
-  best[tools.length].fill([0, 0, 0, 0])
+  const best: Cost[][] = Array.from({ length: tools.length + 1 }, (_, t) =>
+    t === tools.length
+      ? Array.from({ length: size }, (): Cost => [0, 0, 0, 0])
+      : Array.from<Cost>({ length: size })
+  )
+  const choice: number[][] = Array.from({ length: tools.length }, () =>
+    Array.from<number>({ length: size })
+  )
 
   for (let t = tools.length - 1; t >= 0; t--) {
     for (let mask = 0; mask < size; mask++) {

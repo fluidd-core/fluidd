@@ -224,11 +224,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import type { Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
-import type { Macro } from '@/store/macros/types'
+import StateMixin from '@/mixins/state'
 import type { SpoolmanRemainingFilamentUnit } from '@/store/config/types'
+import type { Macro } from '@/store/macros/types'
+import type { Spool } from '@/store/spoolman/types'
 
 type MacroWithSpoolId = Macro & {
   variables: Record<string, unknown> & {
@@ -251,9 +251,9 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     const fields = this.$typedState.config.uiSettings.spoolman.selectedCardFields
     const columnCount = fields.length > 1 ? 2 : 1
     const elementsPerColumn = Math.ceil(fields.length / columnCount)
-    return new Array(columnCount)
-      .fill(undefined)
-      .map((_, i) => fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn))
+    return Array.from({ length: columnCount }, (_, i) =>
+      fields.slice(i * elementsPerColumn, (i + 1) * elementsPerColumn)
+    )
   }
 
   get activeSpool(): Spool | undefined {

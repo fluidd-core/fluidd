@@ -12,19 +12,19 @@ import router from './router'
 import store from './store'
 
 // 3rd party.
-import vuetify from './plugins/vuetify'
-import VueMeta from 'vue-meta'
-import VuetifyConfirm from 'vuetify-confirm'
-import Vue2TouchEvents from 'vue2-touch-events'
 import { InlineSvgPlugin } from 'vue-inline-svg'
+import VueMeta from 'vue-meta'
+import Vue2TouchEvents from 'vue2-touch-events'
+import VuetifyConfirm from 'vuetify-confirm'
+import vuetify from './plugins/vuetify'
 
 // Init.
 import { appInit } from './init'
 
 // Import plugins
+import { ColorSetPlugin } from './plugins/colorSet'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
-import { ColorSetPlugin } from './plugins/colorSet'
 
 // Main App component
 import App from './App.vue'

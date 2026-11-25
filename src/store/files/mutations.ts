@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { FilesState, MoonrakerPathContent, FilePaths, FileUpload, FileDownload } from './types'
-import { createState } from './state'
 import { Globals } from '@/globals'
+import { createState } from './state'
+import type { FilesState, MoonrakerPathContent, FilePaths, FileUpload, FileDownload } from './types'
 
 export const mutations = {
   /**

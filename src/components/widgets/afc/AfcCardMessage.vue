@@ -23,10 +23,10 @@
   </v-alert>
 </template>
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import AfcMixin from '@/mixins/afc'
 import { consola } from 'consola'
+import { Component, Mixins } from 'vue-property-decorator'
+import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 
 @Component
 export default class AfcCardMessage extends Mixins(StateMixin, AfcMixin) {

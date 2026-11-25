@@ -1,14 +1,14 @@
 import type { ActionTree } from 'vuex'
+import { SocketActions } from '@/api/socketActions'
+import { Globals } from '@/globals'
+import setUrlQueryParam from '@/util/set-url-query-param'
+import type { RootState } from '../types'
 import type {
   WebcamsState,
   LegacyCamerasState,
   LegacyCameraType,
   DatabaseWebcamConfig
 } from './types'
-import type { RootState } from '../types'
-import { SocketActions } from '@/api/socketActions'
-import setUrlQueryParam from '@/util/set-url-query-param'
-import { Globals } from '@/globals'
 
 const legacyCameraTypeToWebcamService: Record<LegacyCameraType, Moonraker.Webcam.Service> = {
   mjpgstream: 'mjpegstreamer',
@@ -17,10 +17,10 @@ const legacyCameraTypeToWebcamService: Record<LegacyCameraType, Moonraker.Webcam
   ipstream: 'ipstream'
 }
 
-const mjpegstreamerServices: Moonraker.Webcam.Service[] = [
+const mjpegstreamerServices = new Set<Moonraker.Webcam.Service>([
   'mjpegstreamer',
   'mjpegstreamer-adaptive'
-]
+])
 
 export const actions = {
   async reset({ commit }) {
@@ -39,7 +39,7 @@ export const actions = {
     if (payload.cameras) {
       for (const legacyCamera of payload.cameras) {
         const service = legacyCameraTypeToWebcamService[legacyCamera.type]
-        const isMjpegStreamer = mjpegstreamerServices.includes(service)
+        const isMjpegStreamer = mjpegstreamerServices.has(service)
 
         const webcam: DatabaseWebcamConfig = {
           name: legacyCamera.name,

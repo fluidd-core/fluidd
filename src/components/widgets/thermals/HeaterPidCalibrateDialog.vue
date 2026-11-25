@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import type { Heater } from '@/store/printer/types'
 import { Component, Vue, VModel, Prop } from 'vue-property-decorator'
+import type { Heater } from '@/store/printer/types'
 
 @Component({})
 export default class HeaterPidCalibrateDialog extends Vue {

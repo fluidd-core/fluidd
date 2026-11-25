@@ -152,8 +152,8 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
-import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
 import { createDiagnosticsCardState } from '@/store/layout/state'
+import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
 
 @Component({
   components: {

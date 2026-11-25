@@ -40,12 +40,12 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
+import StateMixin from '@/mixins/state'
 
+import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
 import SystemOverviewCard from '@/components/widgets/system/SystemOverviewCard.vue'
 import SystemUsageCard from '@/components/widgets/system/SystemUsageCard.vue'
-import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
 
 @Component({
   components: {
@@ -66,13 +66,13 @@ export default class Configure extends Mixins(StateMixin) {
 
   get roots() {
     const roots = ['logs', 'docs', 'config_examples']
-    const excludeRoots = ['gcodes', 'config', 'timelapse', 'timelapse_frames']
+    const excludeRoots = new Set(['gcodes', 'config', 'timelapse', 'timelapse_frames'])
 
     const registeredDirectories: string[] =
       this.$typedState.server.info.registered_directories || []
 
     for (const root of registeredDirectories) {
-      if (!excludeRoots.includes(root) && !roots.includes(root)) {
+      if (!excludeRoots.has(root) && !roots.includes(root)) {
         roots.push(root)
       }
     }

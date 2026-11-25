@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { MutationTree } from 'vuex'
-import type { WebcamsState } from './types'
 import { createState } from './state'
+import type { WebcamsState } from './types'
 
 export const mutations = {
   setReset(state) {

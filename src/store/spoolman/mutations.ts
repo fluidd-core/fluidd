@@ -1,8 +1,8 @@
 import { markRaw } from 'vue'
 import type { MutationTree } from 'vuex'
-import { createState } from './state'
 import type { SpoolmanState, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import type { HttpDiagnosticResult } from '@/util/http-endpoint-diagnostics'
+import { createState } from './state'
 
 export const mutations = {
   /**

@@ -375,11 +375,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
-import { markRaw } from 'vue'
-import StateMixin from '@/mixins/state'
-import BrowserMixin from '@/mixins/browser'
+import { snakeCase } from 'lodash-es'
 import panzoom, { type PanZoom } from 'panzoom'
+import { markRaw } from 'vue'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
+import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
+import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
+import BrowserMixin from '@/mixins/browser'
+import StateMixin from '@/mixins/state'
+import type { AppFile, AppFileWithMeta } from '@/store/files/types'
 import type {
   BBox,
   BuildLayerPathsOptions,
@@ -390,14 +394,10 @@ import type {
   Tool
 } from '@/store/gcodePreview/types'
 import { ExtrusionRole } from '@/store/gcodePreview/types'
-import { snakeCase } from 'lodash-es'
-import type AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
-import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
+import type { BedSize } from '@/store/printer/types'
 import GcodePreviewButton from './GcodePreviewButton.vue'
 import GcodePreviewSelect from './GcodePreviewSelect.vue'
 import GcodePreviewTool from './GcodePreviewTool.vue'
-import type { AppFile, AppFileWithMeta } from '@/store/files/types'
-import type { BedSize } from '@/store/printer/types'
 
 const roleNames = Object.entries(ExtrusionRole).reduce<Record<number, string>>(
   (names, [name, role]) => {

@@ -1,7 +1,7 @@
 import type { MutationTree } from 'vuex'
+import getFilePaths from '@/util/get-file-paths'
 import { createState } from './state'
 import type { DatabaseInfo, DatabaseState } from './types'
-import getFilePaths from '@/util/get-file-paths'
 
 export const mutations = {
   setReset(state) {

@@ -33,10 +33,10 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import AfcMixin from '@/mixins/afc'
 import AfcCardUnitHub from '@/components/widgets/afc/AfcCardUnitHub.vue'
 import AfcCardUnitLane from '@/components/widgets/afc/AfcCardUnitLane.vue'
+import AfcMixin from '@/mixins/afc'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {

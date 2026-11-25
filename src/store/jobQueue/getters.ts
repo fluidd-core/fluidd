@@ -1,7 +1,7 @@
 import type { GetterTree } from 'vuex'
-import type { JobQueueState, QueuedJobWithAppFile } from './types'
-import type { RootState } from '../types'
 import getFilePaths from '@/util/get-file-paths'
+import type { RootState } from '../types'
+import type { JobQueueState, QueuedJobWithAppFile } from './types'
 
 export const getters = {
   getQueuedJobsWithFiles: (state, getters, rootState, rootGetters) => {

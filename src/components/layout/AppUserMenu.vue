@@ -86,8 +86,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
 import { startCase, capitalize } from 'lodash-es'
+import { Component, Vue } from 'vue-property-decorator'
 import type { AppUser } from '@/store/auth/types'
 
 @Component({})

@@ -1,4 +1,5 @@
 import { consola } from 'consola'
+import type { IRange } from 'monaco-editor/editor/editor.api'
 import {
   getFirstNonWhitespaceColumn,
   getLastNonWhitespaceColumn,
@@ -6,7 +7,6 @@ import {
   type MonacoLanguageWorkerResponseMessage,
   type ReduceState
 } from './monacoWorkerHelpers'
-import type { IRange } from 'monaco-editor/editor/editor.api'
 
 export type MonacoDocumentSymbolsWorkerResponseMessage = MonacoLanguageWorkerResponseMessage<
   MonacoSymbol[]

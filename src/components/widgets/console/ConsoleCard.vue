@@ -42,9 +42,9 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import type { ConsoleEntry } from '@/store/console/types'
 import ConsoleBrowser from './ConsoleBrowser.vue'
 import ConsoleToolbar from './ConsoleToolbar.vue'
-import type { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {

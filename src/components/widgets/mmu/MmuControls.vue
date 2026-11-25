@@ -182,11 +182,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
+import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
 import type { VBtn } from 'vuetify/lib'
-import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class MmuControls extends Mixins(StateMixin, MmuMixin) {

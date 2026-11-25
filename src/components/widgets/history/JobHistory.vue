@@ -166,21 +166,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
-import StateMixin from '@/mixins/state'
-import FilesMixin from '@/mixins/files'
-import getFilePaths from '@/util/get-file-paths'
-import type { HistoryItem } from '@/store/history/types'
-import { SocketActions } from '@/api/socketActions'
-import type { AppDataTableHeader } from '@/types'
-import type { DataTableHeader } from 'vuetify'
-import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
 import { consola } from 'consola'
 import { get } from 'lodash-es'
+import { Component, Mixins } from 'vue-property-decorator'
+import type { DataTableHeader } from 'vuetify'
+import { SocketActions } from '@/api/socketActions'
+import type { DefaultGetterFunction } from '@/components/ui/AppDataTableRow.vue'
 import { EventBus } from '@/eventBus'
+import FilesMixin from '@/mixins/files'
+import StateMixin from '@/mixins/state'
+import type { HistoryItem } from '@/store/history/types'
+import type { AppDataTableHeader } from '@/types'
 import toCsv from '@/util/csv'
 import downloadUrl from '@/util/download-url'
+import getFilePaths from '@/util/get-file-paths'
+import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 
 @Component({
   components: {

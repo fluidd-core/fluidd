@@ -1,6 +1,6 @@
 import type { GetterTree } from 'vuex'
-import type { SocketState } from './types'
 import type { RootState } from '../types'
+import type { SocketState } from './types'
 
 export const getters = {
   getIsInitializing: (state): boolean => state.status === 'initializing',

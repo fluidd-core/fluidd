@@ -15,17 +15,7 @@ describe('naturalStringCompare', () => {
     [{ a: 'a10a1', b: 'a10a10' }, -1],
     [{ a: 'a1a', b: 'a2' }, -1]
   ])('Expects natural comparison of "%s" to be %d', ({ a, b }, expected) => {
-    switch (expected) {
-      case -1:
-        expect(versionStringCompare(a, b)).toBeLessThan(0)
-        break
-      case 1:
-        expect(versionStringCompare(a, b)).toBeGreaterThan(0)
-        break
-      default:
-        expect(versionStringCompare(a, b)).toBe(0)
-        break
-    }
+    expect(Math.sign(versionStringCompare(a, b))).toBe(expected)
   })
 
   it('Can version sort files correctly', () => {

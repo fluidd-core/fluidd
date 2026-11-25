@@ -25,8 +25,8 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
 import MmuMixin from '@/mixins/mmu'
+import StateMixin from '@/mixins/state'
 import type { MmuGateDetails } from '@/types'
 
 @Component({})
@@ -83,7 +83,7 @@ export default class MmuGateSummary extends Mixins(StateMixin, MmuMixin) {
 
   get temperatureText(): string | null {
     if (this.details.temperature <= 0) return null
-    return this.details.temperature + '\u00B0' + 'C'
+    return this.details.temperature + '\u00B0C'
   }
 
   get spoolIdText(): string | null {

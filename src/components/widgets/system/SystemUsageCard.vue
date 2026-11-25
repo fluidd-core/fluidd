@@ -21,12 +21,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import type { MCU } from '@/store/printer/types'
+import KlipperLoadChart from './KlipperLoadChart.vue'
+import McuLoadChart from './McuLoadChart.vue'
+import MoonrakerLoadChart from './MoonrakerLoadChart.vue'
 import SystemLoadChart from './SystemLoadChart.vue'
 import SystemMemoryChart from './SystemMemoryChart.vue'
-import KlipperLoadChart from './KlipperLoadChart.vue'
-import MoonrakerLoadChart from './MoonrakerLoadChart.vue'
-import McuLoadChart from './McuLoadChart.vue'
-import type { MCU } from '@/store/printer/types'
 
 @Component({
   components: {

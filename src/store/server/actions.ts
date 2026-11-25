@@ -1,14 +1,14 @@
+import { gte, valid } from 'semver'
 import Vue from 'vue'
 import type { ActionTree } from 'vuex'
-import type { Peripherals, ServerState } from './types'
-import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import { Globals } from '@/globals'
-import type { AppPushNotification } from '../notifications/types'
 import { EventBus } from '@/eventBus'
+import { Globals } from '@/globals'
 import i18n from '@/plugins/i18n'
-import { gte, valid } from 'semver'
 import type { ObjectWithRequest } from '@/plugins/socketClient'
+import type { AppPushNotification } from '../notifications/types'
+import type { RootState } from '../types'
+import type { Peripherals, ServerState } from './types'
 
 let retryTimeout: ReturnType<typeof setTimeout>
 
