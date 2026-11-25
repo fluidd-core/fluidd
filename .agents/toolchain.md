@@ -23,7 +23,9 @@ Read before changing `package.json`, `pnpm-workspace.yaml`, `vite.config.ts`, `v
   casting every partial `Response`
 - Circular imports are caught by oxlint's `import/no-cycle` (it replaced `skott`). It follows `@/`
   aliases and `.vue` imports — skott never followed `.vue` — but not type-only or dynamic
-  `import()` ones. `import/default` is off: it misreads Vite's `?worker` imports
+  `import()` ones. skott did report cycles closed by a dynamic `import()`; dropping those is
+  deliberate, as a lazy import is how a cycle gets broken. `import/default` is off: it misreads
+  Vite's `?worker` imports
 - oxlint **skips `no-unused-vars` in `.vue` files** (the template may use them), so ESLint keeps
   `@typescript-eslint/no-unused-vars` for `.vue` — a disable comment for it there must be an
   `eslint-disable` one; everything oxlint reports uses `oxlint-disable`
