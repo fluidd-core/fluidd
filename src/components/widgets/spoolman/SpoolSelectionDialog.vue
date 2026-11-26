@@ -133,16 +133,7 @@
                   color="primary"
                   class="mr-4 flex-column"
                 >
-                  <v-icon
-                    v-if="item.id === selectedSpoolId"
-                    :color="getSpoolColor(item)"
-                    size="42"
-                    class="spool-icon"
-                  >
-                    $markedCircle
-                  </v-icon>
                   <app-spool-icon
-                    v-else
                     :colors="getSpoolColors(item)"
                     :multi-color-direction="item.filament.multi_color_direction"
                     :size="42"
