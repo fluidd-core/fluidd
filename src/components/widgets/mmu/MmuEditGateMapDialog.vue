@@ -297,12 +297,18 @@
                       :class="!spoolIdExists ? 'no-spool' : ''"
                       style="align-items: center"
                     >
-                      <app-spool-icon
-                        :colors="spoolmanColors"
-                        :multi-color-direction="spoolmanMultiColorDirection"
-                        :size="120"
+                      <button
+                        type="button"
+                        class="spool-select-btn"
+                        :aria-label="$t('app.mmu.label.choose_spool').toString()"
                         @click="handleSelectSpool()"
-                      />
+                      >
+                        <app-spool-icon
+                          :colors="spoolmanColors"
+                          :multi-color-direction="spoolmanMultiColorDirection"
+                          :size="120"
+                        />
+                      </button>
                       <div class="pt-4">
                         {{ spoolmanLastUsed }}
                       </div>
@@ -546,7 +552,7 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
   get spoolmanColor(): string {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     const spool = this.spoolmanSpool(spoolId)
-    return spool?.filament.color_hex ?? '#000'
+    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 
   get spoolmanColors(): string[] {
@@ -713,6 +719,15 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
 
 .no-spool {
     opacity: 0.3;
+}
+
+.spool-select-btn {
+    display: inline-flex;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
 }
 
 .fixed-area {

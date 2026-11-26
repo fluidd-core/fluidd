@@ -6,6 +6,7 @@
     :width="size"
     :height="size"
     role="img"
+    v-bind="$attrs"
     v-on="$listeners"
   >
     <defs v-if="isMultiColor">
@@ -21,8 +22,8 @@
         y2="100%"
       >
         <stop
-          v-for="(stop, index) in gradientStops"
-          :key="index"
+          v-for="stop in gradientStops"
+          :key="`stop:${stop.offset}`"
           :offset="stop.offset"
           :stop-color="stop.color"
         />
@@ -34,8 +35,8 @@
       :clip-path="`url(#${clipId})`"
     >
       <path
-        v-for="(segment, index) in coaxialSegments"
-        :key="index"
+        v-for="segment in coaxialSegments"
+        :key="`segment:${segment.d}`"
         :d="segment.d"
         :fill="segment.color"
       />
@@ -160,5 +161,11 @@ export default class AppSpoolIcon extends Vue {
 
 .theme--dark .app-spool-icon__filament {
   stroke: rgba(0, 0, 0, 0.5);
+}
+
+// v-icon gets greyed out inside disabled buttons by Vuetify; mirror that here
+.v-btn--disabled .app-spool-icon {
+  filter: grayscale(1);
+  opacity: 0.4;
 }
 </style>
