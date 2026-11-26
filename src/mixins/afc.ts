@@ -171,7 +171,7 @@ export default class AfcMixin extends Vue {
     }
 
     // Multi-color: a TD-1 reading is one measured color, so it replaces the filament colors
-    let colors: string[] = []
+    let colors: string[] = [color]
     let colorDirection: Moonraker.Spoolman.FilamentMultiColorDirection | undefined
     if (!(this.afc?.td1_present && laneObj?.td1_color && this.afcShowTd1Color)) {
       const spoolmanColors = spool?.filament?.multi_color_hexes ?? []

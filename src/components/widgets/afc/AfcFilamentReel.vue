@@ -81,13 +81,11 @@ type GradientStop = {
 
 @Component
 export default class AfcFilamentReel extends Mixins(StateMixin) {
-  @Prop({ type: String, default: '#ff0' })
-  readonly color!: string
-
   @Prop({ type: Number, default: 100 })
   readonly percent!: number
 
-  @Prop({ type: Array, default: () => [] })
+  // a single-color spool is a one-entry array
+  @Prop({ type: Array, default: () => ['#ff0'] })
   readonly colors!: string[]
 
   @Prop({ type: String })
@@ -141,7 +139,7 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
   get filamentFill(): string {
     if (this.isMultiColor) return `url(#${this.gradientId})`
 
-    return this.color
+    return this.colors[0] ?? '#ff0'
   }
 
   get styleReel() {
