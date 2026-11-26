@@ -52,12 +52,10 @@
             </v-list-item-content>
 
             <v-list-item-icon v-if="activeSpool">
-              <v-icon
-                :color="getSpoolColor(activeSpool)"
-                class="spool-icon"
-              >
-                $filament
-              </v-icon>
+              <app-spool-icon
+                :colors="getSpoolColors(activeSpool)"
+                :multi-color-direction="activeSpool.filament.multi_color_direction"
+              />
             </v-list-item-icon>
           </v-list-item>
 
@@ -78,12 +76,12 @@
               </v-list-item-content>
 
               <v-list-item-icon v-if="macro.variables.spool_id">
-                <v-icon
-                  :color="getSpoolColor(getSpoolById(macro.variables.spool_id))"
-                  class="spool-icon"
-                >
-                  $filament
-                </v-icon>
+                <app-spool-icon
+                  :colors="getSpoolColors(getSpoolById(macro.variables.spool_id))"
+                  :multi-color-direction="
+                    getSpoolById(macro.variables.spool_id)?.filament.multi_color_direction
+                  "
+                />
               </v-list-item-icon>
             </v-list-item>
           </template>
@@ -176,13 +174,11 @@
             color="primary"
             class="mr-4 flex-column"
           >
-            <v-icon
-              :color="getSpoolColor(activeSpool)"
-              size="100"
-              class="spool-icon"
-            >
-              $filament
-            </v-icon>
+            <app-spool-icon
+              :colors="getSpoolColors(activeSpool)"
+              :multi-color-direction="activeSpool.filament.multi_color_direction"
+              :size="100"
+            />
           </v-progress-circular>
         </v-col>
       </v-row>
@@ -313,6 +309,10 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
 
   getSpoolColor(spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  getSpoolColors(spool?: Spool): string[] {
+    return spool?.filament.colors ?? [this.getSpoolColor(spool)]
   }
 
   getFieldLabel(field: string) {

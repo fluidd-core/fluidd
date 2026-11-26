@@ -26,13 +26,12 @@
               v-on="on"
               @click="sendGcode(macro.name)"
             >
-              <v-icon
+              <app-spool-icon
                 v-if="macro.spoolId && getSpoolById(macro.spoolId)"
-                class="mr-1 spool-icon"
-                :color="getSpoolColor(getSpoolById(macro.spoolId))"
-              >
-                $filament
-              </v-icon>
+                class="mr-1"
+                :colors="getSpoolColors(getSpoolById(macro.spoolId))"
+                :multi-color-direction="getSpoolById(macro.spoolId)?.filament.multi_color_direction"
+              />
               <span
                 v-else-if="macro.color"
                 class="extruder-color mr-1"
@@ -115,6 +114,10 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
 
   getSpoolColor(spool: Spool | undefined) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  getSpoolColors(spool: Spool | undefined): string[] {
+    return spool?.filament.colors ?? [this.getSpoolColor(spool)]
   }
 }
 </script>

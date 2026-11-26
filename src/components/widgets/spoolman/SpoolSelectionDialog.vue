@@ -134,12 +134,19 @@
                   class="mr-4 flex-column"
                 >
                   <v-icon
+                    v-if="item.id === selectedSpoolId"
                     :color="getSpoolColor(item)"
                     size="42"
                     class="spool-icon"
                   >
-                    {{ item.id === selectedSpoolId ? '$markedCircle' : '$filament' }}
+                    $markedCircle
                   </v-icon>
+                  <app-spool-icon
+                    v-else
+                    :colors="getSpoolColors(item)"
+                    :multi-color-direction="item.filament.multi_color_direction"
+                    :size="42"
+                  />
                 </v-progress-circular>
 
                 <div class="flex-column">
@@ -831,6 +838,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   getSpoolColor(spool?: Spool) {
     return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+  }
+
+  getSpoolColors(spool?: Spool): string[] {
+    return spool?.filament.colors ?? [this.getSpoolColor(spool)]
   }
 }
 </script>

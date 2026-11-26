@@ -297,14 +297,12 @@
                       :class="!spoolIdExists ? 'no-spool' : ''"
                       style="align-items: center"
                     >
-                      <v-icon
-                        :color="spoolmanColor"
-                        size="120px"
-                        class="spool-icon"
+                      <app-spool-icon
+                        :colors="spoolmanColors"
+                        :multi-color-direction="spoolmanMultiColorDirection"
+                        :size="120"
                         @click="handleSelectSpool()"
-                      >
-                        $filament
-                      </v-icon>
+                      />
                       <div class="pt-4">
                         {{ spoolmanLastUsed }}
                       </div>
@@ -549,6 +547,17 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
     const spool = this.spoolmanSpool(spoolId)
     return spool?.filament.color_hex ?? '#000'
+  }
+
+  get spoolmanColors(): string[] {
+    const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
+    const spool = this.spoolmanSpool(spoolId)
+    return spool?.filament.colors ?? [this.spoolmanColor]
+  }
+
+  get spoolmanMultiColorDirection(): Moonraker.Spoolman.FilamentMultiColorDirection | undefined {
+    const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
+    return this.spoolmanSpool(spoolId)?.filament.multi_color_direction
   }
 
   get spoolmanRemainingWeight() {
