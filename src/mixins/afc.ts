@@ -170,6 +170,21 @@ export default class AfcMixin extends Vue {
       color = laneObj?.color || ''
     }
 
+    // Multi-color: a TD-1 reading is one measured color, so it replaces the filament colors
+    let colors: string[] = []
+    let colorDirection: Moonraker.Spoolman.FilamentMultiColorDirection | undefined
+    if (!(this.afc?.td1_present && laneObj?.td1_color && this.afcShowTd1Color)) {
+      const spoolmanColors = spool?.filament?.multi_color_hexes ?? []
+      if (spoolmanColors.length > 1) {
+        colors = spoolmanColors
+        colorDirection = spool?.filament?.multi_color_direction
+      } else if ((laneObj?.multi_color_hexes?.length ?? 0) > 1) {
+        colors = (laneObj?.multi_color_hexes ?? []).map(x => `#${x.replace(/^#/, '')}`)
+        // AFC reports the lane's color mode as 'gradient' or 'coaxial'
+        colorDirection = laneObj?.color_mode === 'coaxial' ? 'coaxial' : 'longitudinal'
+      }
+    }
+
     const material = spool?.filament?.material || laneObj?.material || ''
     const remainingWeight = spool?.remaining_weight ?? laneObj?.weight
     const fullWeight = spool?.initial_weight ?? laneObj?.initial_weight ?? AFC_DEFAULT_SPOOL_WEIGHT
@@ -189,6 +204,8 @@ export default class AfcMixin extends Vue {
       spoolId,
       spool,
       color,
+      colors,
+      colorDirection,
       material,
       filamentVendor: spool?.filament?.vendor?.name ?? undefined,
       filamentName: spool?.filament?.name || laneObj?.filament_name || undefined,

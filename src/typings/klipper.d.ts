@@ -863,6 +863,8 @@ declare namespace Klipper {
     initial_weight?: number
     spool_id: number | null
     color: string | null
+    multi_color_hexes?: string[]
+    color_mode?: 'gradient' | 'coaxial' | ''
     weight: number
     filament_name?: string
     extruder_temp: number | null
@@ -1877,6 +1879,8 @@ declare namespace Klipper {
     spoolId: number | undefined
     spool: import('@/store/spoolman/types').Spool | null
     color: string
+    colors: string[]
+    colorDirection: Moonraker.Spoolman.FilamentMultiColorDirection | undefined
     material: string
     filamentVendor: string | undefined
     filamentName: string | undefined

@@ -15,6 +15,8 @@
               <afc-filament-reel
                 :percent="spoolPercent"
                 :color="spoolColor"
+                :colors="laneInfo.colors"
+                :color-direction="laneInfo.colorDirection"
                 class="filamentSpool"
                 @click-spool="onFilamentClick"
               />
