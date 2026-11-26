@@ -29,7 +29,7 @@
               <app-spool-icon
                 v-if="macro.spoolId && getSpoolById(macro.spoolId)"
                 class="mr-1"
-                :colors="getSpoolColors(getSpoolById(macro.spoolId))"
+                :colors="getSpoolById(macro.spoolId)?.filament.colors"
                 :multi-color-direction="getSpoolById(macro.spoolId)?.filament.multi_color_direction"
               />
               <span
@@ -110,14 +110,6 @@ export default class ToolChangeCommands extends Mixins(StateMixin) {
 
   getSpoolById(id: number): Spool | undefined {
     return this.$typedGetters['spoolman/getSpoolById'](id)
-  }
-
-  getSpoolColor(spool: Spool | undefined) {
-    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
-  }
-
-  getSpoolColors(spool: Spool | undefined): string[] {
-    return spool?.filament.colors ?? [this.getSpoolColor(spool)]
   }
 }
 </script>

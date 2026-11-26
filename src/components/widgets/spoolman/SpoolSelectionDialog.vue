@@ -134,7 +134,7 @@
                   class="mr-4 flex-column"
                 >
                   <app-spool-icon
-                    :colors="getSpoolColors(item)"
+                    :colors="item.filament.colors"
                     :multi-color-direction="item.filament.multi_color_direction"
                     :size="42"
                   />
@@ -825,14 +825,6 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       show: false,
       switchToManualEntry: true
     })
-  }
-
-  getSpoolColor(spool?: Spool) {
-    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
-  }
-
-  getSpoolColors(spool?: Spool): string[] {
-    return spool?.filament.colors ?? [this.getSpoolColor(spool)]
   }
 }
 </script>

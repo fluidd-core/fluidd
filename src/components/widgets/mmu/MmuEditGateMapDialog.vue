@@ -304,8 +304,8 @@
                         @click="handleSelectSpool()"
                       >
                         <app-spool-icon
-                          :colors="spoolmanColors"
-                          :multi-color-direction="spoolmanMultiColorDirection"
+                          :colors="spoolmanFilament?.colors"
+                          :multi-color-direction="spoolmanFilament?.multi_color_direction"
                           :size="120"
                         />
                       </button>
@@ -346,7 +346,7 @@ import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
 import BrowserMixin from '@/mixins/browser'
 import MmuMixin from '@/mixins/mmu'
 import StateMixin from '@/mixins/state'
-import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
+import type { Filament, Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import type { MmuGateDetails } from '@/types'
 
 @Component({
@@ -549,21 +549,9 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     }
   }
 
-  get spoolmanColor(): string {
+  get spoolmanFilament(): Filament | undefined {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
-    const spool = this.spoolmanSpool(spoolId)
-    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
-  }
-
-  get spoolmanColors(): string[] {
-    const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
-    const spool = this.spoolmanSpool(spoolId)
-    return spool?.filament.colors ?? [this.spoolmanColor]
-  }
-
-  get spoolmanMultiColorDirection(): Moonraker.Spoolman.FilamentMultiColorDirection | undefined {
-    const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
-    return this.spoolmanSpool(spoolId)?.filament.multi_color_direction
+    return this.spoolmanSpool(spoolId)?.filament
   }
 
   get spoolmanRemainingWeight() {

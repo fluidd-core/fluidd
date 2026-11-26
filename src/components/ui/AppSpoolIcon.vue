@@ -6,15 +6,16 @@
     :width="size"
     :height="size"
     role="img"
-    v-bind="$attrs"
-    v-on="$listeners"
   >
     <defs v-if="isMultiColor">
-      <clipPath :id="clipId">
+      <clipPath
+        v-if="isCoaxial"
+        :id="clipId"
+      >
         <path :d="iconPath" />
       </clipPath>
       <linearGradient
-        v-if="!isCoaxial"
+        v-else
         :id="gradientId"
         x1="0%"
         y1="0%"
@@ -71,11 +72,10 @@ const RADIUS = 12
 
 let instanceCount = 0
 
-@Component({
-  inheritAttrs: false
-})
+@Component
 export default class AppSpoolIcon extends Vue {
-  @Prop({ type: Array, required: true })
+  // when empty, falls back to white (dark theme) or black (light theme)
+  @Prop({ type: Array, default: () => [] })
   readonly colors!: string[]
 
   @Prop({ type: String })
@@ -87,15 +87,11 @@ export default class AppSpoolIcon extends Vue {
   // clip path and gradient ids must be unique document-wide, not just within the svg
   readonly instanceId = ++instanceCount
 
+  readonly clipId = `app-spool-icon-clip-${this.instanceId}`
+
+  readonly gradientId = `app-spool-icon-gradient-${this.instanceId}`
+
   readonly iconPath = Icons.filament
-
-  get clipId(): string {
-    return `app-spool-icon-clip-${this.instanceId}`
-  }
-
-  get gradientId(): string {
-    return `app-spool-icon-gradient-${this.instanceId}`
-  }
 
   get isMultiColor(): boolean {
     return this.colors.length > 1
@@ -106,7 +102,7 @@ export default class AppSpoolIcon extends Vue {
   }
 
   get fill(): string {
-    if (!this.isMultiColor) return this.colors[0] ?? 'currentColor'
+    if (!this.isMultiColor) return this.colors[0] ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
 
     // coaxial colors are drawn by the clipped wedges; the icon path only keeps the outline
     if (this.isCoaxial) return 'none'
@@ -119,6 +115,7 @@ export default class AppSpoolIcon extends Vue {
     const anglePerSegment = (2 * Math.PI) / count
     // start with the first border between two colors at 12 o'clock
     const rotate = -Math.PI / 2
+    const largeArc = anglePerSegment > Math.PI ? 1 : 0
 
     return this.colors.map((color, index) => {
       const start = index * anglePerSegment + rotate
@@ -127,7 +124,6 @@ export default class AppSpoolIcon extends Vue {
       const y1 = CENTER + RADIUS * Math.sin(start)
       const x2 = CENTER + RADIUS * Math.cos(end)
       const y2 = CENTER + RADIUS * Math.sin(end)
-      const largeArc = anglePerSegment > Math.PI ? 1 : 0
 
       return {
         color,
