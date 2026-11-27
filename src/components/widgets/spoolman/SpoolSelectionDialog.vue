@@ -98,6 +98,7 @@
 
     <div class="file-system">
       <v-data-table
+        v-model="selectedSpools"
         :items="availableSpools"
         :headers="headers"
         :search="search"
@@ -112,17 +113,28 @@
         hide-default-footer
         disable-pagination
         fixed-header
+        single-select
+        :show-select="$vuetify.breakpoint.mdAndUp"
         @update:sort-by="handleSortOrderKeyChange"
         @update:sort-desc="handleSortOrderDescChange"
       >
-        <template #item="{ headers, item }">
+        <template #item="{ headers, item, isSelected, select }">
           <app-data-table-row
             :key="item.id"
             :headers="headers"
             :item="item"
-            :is-selected="item.id === selectedSpoolId"
-            @click.prevent="selectedSpoolId = selectedSpoolId === item.id ? null : item.id"
+            :is-selected="isSelected"
+            @click.prevent="select(!isSelected)"
           >
+            <template #[`item.data-table-select`]>
+              <v-simple-checkbox
+                :value="isSelected"
+                on-icon="$radioOn"
+                off-icon="$radioOff"
+                @click.stop="select(!isSelected)"
+              />
+            </template>
+
             <template #[`item.filament_name`]>
               <div class="d-flex my-1">
                 <v-progress-circular
@@ -386,6 +398,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       ...this.$typedState.spoolman.dialog,
       show: val
     })
+  }
+
+  get selectedSpools(): SpoolWithAfcLoadedLane[] {
+    const spool = this.availableSpools.find(spool => spool.id === this.selectedSpoolId)
+    return spool ? [spool] : []
+  }
+
+  set selectedSpools(value: SpoolWithAfcLoadedLane[]) {
+    this.selectedSpoolId = value[0]?.id ?? null
   }
 
   get availableSpools(): SpoolWithAfcLoadedLane[] {
