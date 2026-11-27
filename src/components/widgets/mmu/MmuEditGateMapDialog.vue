@@ -297,14 +297,18 @@
                       :class="!spoolIdExists ? 'no-spool' : ''"
                       style="align-items: center"
                     >
-                      <v-icon
-                        :color="spoolmanColor"
-                        size="120px"
-                        class="spool-icon"
+                      <button
+                        type="button"
+                        class="spool-select-btn"
+                        :aria-label="$t('app.mmu.label.choose_spool').toString()"
                         @click="handleSelectSpool()"
                       >
-                        $filament
-                      </v-icon>
+                        <app-spool-icon
+                          :colors="spoolmanFilament?.colors"
+                          :multi-color-direction="spoolmanFilament?.multi_color_direction"
+                          :size="120"
+                        />
+                      </button>
                       <div class="pt-4">
                         {{ spoolmanLastUsed }}
                       </div>
@@ -342,7 +346,7 @@ import MmuMachine from '@/components/widgets/mmu/MmuMachine.vue'
 import BrowserMixin from '@/mixins/browser'
 import MmuMixin from '@/mixins/mmu'
 import StateMixin from '@/mixins/state'
-import type { Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
+import type { Filament, Spool, SpoolSelectionDialogState } from '@/store/spoolman/types'
 import type { MmuGateDetails } from '@/types'
 
 @Component({
@@ -545,10 +549,9 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
     }
   }
 
-  get spoolmanColor(): string {
+  get spoolmanFilament(): Filament | undefined {
     const spoolId = this.editGateMap[this.editGateSelected].spoolId ?? -1
-    const spool = this.spoolmanSpool(spoolId)
-    return spool?.filament.color_hex ?? '#000'
+    return this.spoolmanSpool(spoolId)?.filament
   }
 
   get spoolmanRemainingWeight() {
@@ -704,6 +707,15 @@ export default class MmuEditGateMapDialog extends Mixins(BrowserMixin, StateMixi
 
 .no-spool {
     opacity: 0.3;
+}
+
+.spool-select-btn {
+    display: inline-flex;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
 }
 
 .fixed-area {

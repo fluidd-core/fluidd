@@ -52,6 +52,7 @@ declare module 'vue' {
     AppSaveConfigAndRestartBtn: typeof import('./src/components/layout/AppSaveConfigAndRestartBtn.vue')['default']
     AppSetting: typeof import('./src/components/ui/AppSetting.vue')['default']
     AppSettingsNav: typeof import('./src/components/layout/AppSettingsNav.vue')['default']
+    AppSpoolIcon: typeof import('./src/components/ui/AppSpoolIcon.vue')['default']
     AppTextField: typeof import('./src/components/ui/AppTextField.vue')['default']
     AppTextFieldWithCopy: typeof import('./src/components/ui/AppTextFieldWithCopy.vue')['default']
     AppThumbnailSize: typeof import('./src/components/ui/AppThumbnailSize.vue')['default']
