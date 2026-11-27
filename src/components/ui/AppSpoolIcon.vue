@@ -5,7 +5,7 @@
     viewBox="0 0 24 24"
     :width="size"
     :height="size"
-    role="img"
+    aria-hidden="true"
   >
     <defs v-if="isMultiColor">
       <clipPath

@@ -53,7 +53,7 @@
 
             <v-list-item-icon v-if="activeSpool">
               <app-spool-icon
-                :colors="activeSpool?.filament.colors"
+                :colors="activeSpool.filament.colors"
                 :multi-color-direction="activeSpool.filament.multi_color_direction"
               />
             </v-list-item-icon>
@@ -175,7 +175,7 @@
             class="mr-4 flex-column"
           >
             <app-spool-icon
-              :colors="activeSpool?.filament.colors"
+              :colors="activeSpool.filament.colors"
               :multi-color-direction="activeSpool.filament.multi_color_direction"
               :size="100"
             />
@@ -308,7 +308,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   }
 
   getSpoolColor(spool?: Spool) {
-    return spool?.filament.color_hex ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
+    return spool?.filament.colors?.[0] ?? (this.$vuetify.theme.dark ? '#fff' : '#000')
   }
 
   getFieldLabel(field: string) {
