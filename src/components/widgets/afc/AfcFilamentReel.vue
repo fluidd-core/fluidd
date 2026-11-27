@@ -91,11 +91,11 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
   readonly percent!: number
 
   // a single-color spool is a one-entry array
-  @Prop({ type: Array, default: () => ['#ff0'] })
+  @Prop({ type: Array, default: () => [] })
   readonly colors!: string[]
 
   @Prop({ type: String })
-  readonly colorDirection?: Moonraker.Spoolman.FilamentMultiColorDirection
+  readonly multiColorDirection?: Moonraker.Spoolman.FilamentMultiColorDirection
 
   // gradient ids need to be unique document-wide, not just within the scope of the svg
   readonly instanceId = ++instanceCount
@@ -112,7 +112,7 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
   }
 
   get isCoaxial(): boolean {
-    return this.colorDirection === 'coaxial'
+    return this.multiColorDirection === 'coaxial'
   }
 
   get gradientVector(): GradientVector {
@@ -127,7 +127,6 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
   get gradientStops(): GradientStop[] {
     const colors = this.colors
     const count = colors.length
-    if (count < 2) return []
 
     // coaxial: each color solid at the center of its band, blending into the next
     if (this.isCoaxial) {

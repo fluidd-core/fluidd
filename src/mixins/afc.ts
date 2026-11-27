@@ -161,11 +161,11 @@ export default class AfcMixin extends Vue {
       : null
 
     // Color: td1_color (when enabled) → spoolman color_hex → lane color
-    const useTd1Color = !!(this.afc?.td1_present && laneObj?.td1_color && this.afcShowTd1Color)
+    const td1Color = this.afc?.td1_present && this.afcShowTd1Color ? laneObj?.td1_color : undefined
 
     let color: string
-    if (useTd1Color && laneObj?.td1_color != null) {
-      color = `#${laneObj.td1_color}`
+    if (td1Color) {
+      color = `#${td1Color}`
     } else if (spool?.filament?.color_hex) {
       color = `#${spool.filament.color_hex.replace(/^#/, '')}`
     } else {
@@ -175,7 +175,7 @@ export default class AfcMixin extends Vue {
     // Multi-color: a TD-1 reading is one measured color, so it replaces the filament colors
     let colors: string[] = [color]
     let colorDirection: Moonraker.Spoolman.FilamentMultiColorDirection | undefined
-    if (!useTd1Color) {
+    if (!td1Color) {
       const spoolColors = spool?.filament?.colors ?? []
       const laneColors = laneObj?.multi_color_hexes ?? []
       if (spoolColors.length > 1) {
