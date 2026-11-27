@@ -17,8 +17,8 @@
         v-bind="gradientVector"
       >
         <stop
-          v-for="(stop, i) in gradientStops"
-          :key="`stop-${i}`"
+          v-for="stop in gradientStops"
+          :key="`stop:${stop.offset}`"
           :offset="stop.offset"
           :stop-color="stop.color"
         />
@@ -79,6 +79,12 @@ type GradientStop = {
   color: string
 }
 
+type GradientVector =
+  | { gradientUnits: 'userSpaceOnUse'; x1: number; y1: number; x2: number; y2: number }
+  | { x1: string; y1: string; x2: string; y2: string }
+
+let instanceCount = 0
+
 @Component
 export default class AfcFilamentReel extends Mixins(StateMixin) {
   @Prop({ type: Number, default: 100 })
@@ -92,7 +98,9 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
   readonly colorDirection?: Moonraker.Spoolman.FilamentMultiColorDirection
 
   // gradient ids need to be unique document-wide, not just within the scope of the svg
-  gradientId = `afcReelGradient-${Math.random().toString(36).slice(2)}`
+  readonly instanceId = ++instanceCount
+
+  readonly gradientId = `afc-filament-reel-gradient-${this.instanceId}`
 
   spoolColor = '#c08f4f'
   spoolHoleColor = '#231a0f'
@@ -107,7 +115,7 @@ export default class AfcFilamentReel extends Mixins(StateMixin) {
     return this.colorDirection === 'coaxial'
   }
 
-  get gradientVector() {
+  get gradientVector(): GradientVector {
     // coaxial: colors side by side; the bands span only the visible filament
     // (x 75 to 197), because the spool sides hide the rest
     if (this.isCoaxial) return { gradientUnits: 'userSpaceOnUse', x1: 75, y1: 0, x2: 197, y2: 0 }
