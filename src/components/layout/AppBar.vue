@@ -82,13 +82,19 @@
             <app-btn
               icon
               text
-              :disabled="topNavPowerDeviceDisabled"
+              :disabled="topNavPowerDeviceDisabled || topNavPowerDeviceToggling"
               v-bind="attrs"
               v-on="on"
               @click="handlePowerToggle()"
             >
-              <v-icon>
-                {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
+              <v-icon :class="{ spin: topNavPowerDeviceToggling }">
+                {{
+                  topNavPowerDeviceToggling
+                    ? '$loading'
+                    : topNavPowerDeviceOn
+                      ? '$powerOn'
+                      : '$powerOff'
+                }}
               </v-icon>
             </app-btn>
           </template>
@@ -356,6 +362,14 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     }
 
     return false
+  }
+
+  get topNavPowerDeviceToggling(): boolean {
+    const { type, device } = this.topNavPowerToggle || {}
+
+    if (type !== 'moonraker' || !device) return false
+
+    return this.hasWait(`${this.$waits.onDevicePowerToggle}/${device.device}`)
   }
 
   get topNavPowerDeviceDisabled(): boolean {
