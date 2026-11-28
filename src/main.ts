@@ -24,6 +24,7 @@ import { appInit } from './init'
 // Import plugins
 import { ColorSetPlugin } from './plugins/colorSet'
 import { FiltersPlugin } from './plugins/filters'
+import { installSliderDragGuard } from './plugins/sliderDragGuard'
 import { SocketPlugin } from './plugins/socketClient'
 
 // Main App component
@@ -53,6 +54,8 @@ Vue.use(SocketPlugin, {
 })
 
 Vue.config.productionTip = false
+
+installSliderDragGuard()
 
 new Vue({
   i18n,
