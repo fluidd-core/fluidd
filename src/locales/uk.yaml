@@ -30,7 +30,7 @@ app:
       power: Потужність
       target: Ціль
       rate_of_change: Зміни
-      fan_breakpoints: Точки зупинки вентилятора
+      fan_breakpoints: Ступені вентилятора
       target_temperature: Цільова температура
       turn_off: Вимкнути
     tooltip:
@@ -42,7 +42,7 @@ app:
       pid_calibrate: Калібрування PID {name}
   console:
     label:
-      hide_temp_waits: Приховати тимчасові очікування
+      hide_temp_waits: Ховати очік. температури
     tooltip:
       help: Введіть "help" для команд<br />Використовуйте <kbd>Tab</kbd> для 
         автозаповнення<br />Використовуйте <kbd>&uarr;</kbd> і <kbd>&darr;</kbd>
@@ -336,7 +336,7 @@ app:
       turn_device_off: Вимкнути %{device}
       uncategorized: Без категорії
       unretract_extra_length: Додаткова довжина екструзії
-      unretract_speed: Швидкість втягування
+      unretract_speed: Швдк. поверн. ретракту
       upload_and_print: Завантажити та надрукувати
       used: використано
       username: Імʼя користувача
@@ -357,10 +357,10 @@ app:
       pause_at_layer: Пауза на шарі
       pause_at_next_layer: Зупиніться на наступному шарі
       unknown: Невідомий
-      user_facing: Обличчя користувача
+      user_facing: Фронтальна
       all: Всі
       cross: Хрестик
-      minimum_cruise_ratio: Мінімальна ставка круїзу
+      minimum_cruise_ratio: Мін. частка рівномірного руху
       z_hop_height: Висота Z-Hop
       stepper_driver: '%{name} Драйвер'
       bars: Бари
@@ -479,7 +479,7 @@ app:
         status: Статус
         total_duration: Загальна тривалість
         referenced_tools: Інструменти, на які посилаються
-        filament_temps: Час нитки
+        filament_temps: Температури філаменту
         filament_change_count: Зміни нитки
         filament_colors: Кольори ниток
         extruder_colors: Кольори екструдера
@@ -522,7 +522,7 @@ app:
       tool: Інструмент
       tune: Тонке налаштування
       beacon: Маяк
-      rollover_logs: Перекидні колоди
+      rollover_logs: Ротація журналів
       login: Логін
       macro_category_settings: Налаштування категорії макросів
     tooltip:
@@ -560,11 +560,11 @@ app:
     label:
       number_of_copies: Кількість примірників
       print_time: Час друку
-      filament: Нитка розжарення
+      filament: Філамент
       eta: ETA
-      unknown_jobs: Невідомі вакансії
+      unknown_jobs: Невідомі завдання
     title:
-      multiply_job: Помножити роботу | Розмножте робочі місця
+      multiply_job: Копія завдання | Копії завдань
     tooltip:
       help: Поставте завдання в чергу, перетягнувши файли з завдань і опустивши 
         їх сюди<br>Налаштуйте порядок завдань у черзі, перетягнувши їх угору або
@@ -745,12 +745,12 @@ app:
       show_chart: Показати діаграму
       toolhead_xy_move_distances: Значення відстані XY головки
       toolhead_z_move_distances: Значення відстані Z інструментальної головки
-      draw_origin: Намалювати походження
+      draw_origin: Показати початок
       toolhead_control_style: Стиль керування насадкою
       show_screws_tilt_adjust_dialog_automatically: Автоматично показувати 
         діалогове вікно налаштування нахилу гвинтів
       camera_url_stream: Потік URL-адрес камери
-      print_eta_calculation: Роздрукувати розрахунок ETA
+      print_eta_calculation: Розрахунок часу завершення
       printer_power_device: Пристрій живлення принтера
       drag_and_drop_functionality_for_files_and_folders: Функція перетягування 
         файлів і папок
@@ -763,7 +763,7 @@ app:
         двигуна перегрівається
     timer_options:
       duration: Тільки тривалість
-      filament: Нитка розжарення
+      filament: Філамент
       file: Файл
       slicer: Слайсер
       absolute_file_position: Абсолютна позиція файлу
@@ -1006,7 +1006,7 @@ app:
       first_used: Перше використання
       material: Матеріал
       active_spool: Активна шпуля
-      change_spool: Зміна золотника
+      change_spool: Заміна котушки
       last_used: Останнє використання
       comment: Коментар
       device_camera: Пристрій
@@ -1016,7 +1016,7 @@ app:
       lot_nr: Лот №
       price: Ціна
       used_weight: Використана вага
-      filament_name: Нитка розжарення
+      filament_name: Філамент
       colors: Кольори
       diameter: Діаметр
       initial_weight: Початкова вага
@@ -1225,7 +1225,7 @@ app:
       multi_color: Це виглядає як багатоматеріальний друк одним екструдером за 
         допомогою %{numTools} інструментів. Ймовірно, вам слід переглянути 
         відображення інструментів
-      filament_empty: Нитка розжарення недоступна
+      filament_empty: Філамент відсутній
       filament_unknown: Невідомий стан нитки (будь ласка, встановіть)
     title:
       headline: Мму
@@ -1242,12 +1242,12 @@ app:
       show_ttg_map: Показати карту ТТГ
       show_clog_detection: Показати виявлення засмічення/заплутування
       show_logos: Показати логотипи
-      large_filament_status: Статус великої нитки
+      large_filament_status: Збільшений статус філаменту
       show_unavailable_spool_color: Показати недоступні спули
       show_name: Показати назву одиниці
   database:
     btn:
-      compact_database: Компактна база даних
+      compact_database: Стиснути базу даних
       create_backup: Створити резервну копію
     label:
       moonraker_database: База даних Moonraker
@@ -1258,7 +1258,7 @@ app:
       not_found: Не знайдено жодних існуючих резервних копій бази даних.
   afc:
     AfcSettings: Налаштування AFC
-    BrushNozzle: Щітка-насадка
+    BrushNozzle: Очистка сопла
     BufferDisabled: Буфер неактивний
     BypassActive: Зміни інструменту байпасу, завантаженого з нитки, 
       деактивовано!
@@ -1275,7 +1275,7 @@ app:
     Functions: Функції
     Headline: AFC
     Hub: Хаб
-    HubLoad: Навантаження на маточину
+    HubLoad: Філамент у вузлі подачі
     Idle: Холостий хід
     InfiniteSpoolDescription: Наступна смуга для завантаження, якщо {name} 
       закінчиться
@@ -1283,7 +1283,7 @@ app:
     LaneControls: Контроль смуги руху
     LaneLoaded: Завантажена лінія
     LaneLoadedNone: НІЧОГО
-    LaneMapping: Картографування смуг руху
+    LaneMapping: Призначити команду каналу
     LaneMappingToCommand: Перепризначення {name} команді інструмента
     LedOff: Світлодіоди вимкнено
     LedOn: Світлодіоди увімкнено

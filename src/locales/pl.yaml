@@ -102,6 +102,7 @@ app:
     msg:
       not_found: Brak plików
       processing: Przetwarzanie
+      upload_failed: Nie można wgrać {filepath}
     title:
       add_dir: Dodaj katalog
       add_file: Dodaj plik
@@ -564,6 +565,7 @@ app:
       color_by_feature: Typ funkcji
       color_by_speed: Prędkość (mm/s)
       color_by_tool: Narzędzie
+      color_by_temp: Temperatura (°C)
     btn:
       load_current_file: Wczytaj aktualny plik
     msg:
