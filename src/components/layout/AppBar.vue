@@ -82,20 +82,14 @@
             <app-btn
               icon
               text
-              :disabled="topNavPowerDeviceDisabled || topNavPowerDeviceToggling"
+              :disabled="topNavPowerDeviceDisabled"
               v-bind="attrs"
               v-on="on"
               @click="handlePowerToggle()"
             >
-              <v-icon :class="{ spin: topNavPowerDeviceToggling }">
-                {{
-                  topNavPowerDeviceToggling
-                    ? '$loading'
-                    : topNavPowerDeviceOn
-                      ? '$powerOn'
-                      : '$powerOff'
-                }}
-              </v-icon>
+              <app-icon :loading="topNavPowerDeviceToggling">
+                {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
+              </app-icon>
             </app-btn>
           </template>
           <span>{{

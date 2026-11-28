@@ -53,8 +53,7 @@
         :disabled="
           device.status === 'error' ||
           device.status === 'init' ||
-          (printerPrinting && device.locked_while_printing) ||
-          isPowerDeviceToggling(device)
+          (printerPrinting && device.locked_while_printing)
         "
         @click="togglePowerDevice(device)"
       >
@@ -62,9 +61,9 @@
           <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-icon>
-          <v-icon :class="{ spin: isPowerDeviceToggling(device) }">
-            {{ isPowerDeviceToggling(device) ? '$loading' : getPowerIcon(device) }}
-          </v-icon>
+          <app-icon :loading="hasWait(`${$waits.onDevicePowerToggle}/${device.device}`)">
+            {{ getPowerIcon(device) }}
+          </app-icon>
         </v-list-item-icon>
       </v-list-item>
     </v-list-group>
@@ -243,10 +242,6 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
       const state = device.status === 'on' ? 'off' : 'on'
       SocketActions.machineDevicePowerSetDevice(device.device, state)
     }
-  }
-
-  isPowerDeviceToggling(device: Moonraker.Power.Device): boolean {
-    return this.hasWait(`${this.$waits.onDevicePowerToggle}/${device.device}`)
   }
 
   getPowerIcon(device: Moonraker.Power.Device) {

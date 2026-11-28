@@ -90,12 +90,14 @@
 
           <v-divider />
 
-          <v-list-item
-            :loading="hasWait($waits.onMmuStats)"
-            @click="sendGcode('MMU_STATS SHOWCOUNTS=1', $waits.onMmuStats)"
-          >
+          <v-list-item @click="sendGcode('MMU_STATS SHOWCOUNTS=1', $waits.onMmuStats)">
             <v-list-item-icon>
-              <v-icon left> $mmuPrintStats </v-icon>
+              <app-icon
+                left
+                :loading="hasWait($waits.onMmuStats)"
+              >
+                $mmuPrintStats
+              </app-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -106,11 +108,15 @@
 
           <v-list-item
             :disabled="spoolmanSupport === 'off'"
-            :loading="hasWait($waits.onMmuSpoolman)"
             @click="handleSyncSpoolman()"
           >
             <v-list-item-icon>
-              <v-icon left> $mmuSyncSpoolman </v-icon>
+              <app-icon
+                left
+                :loading="hasWait($waits.onMmuSpoolman)"
+              >
+                $mmuSyncSpoolman
+              </app-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
@@ -121,11 +127,15 @@
 
           <v-list-item
             :disabled="!canSend"
-            :loading="hasWait($waits.onMmuCheckGates)"
             @click="sendGcode('MMU_CHECK_GATES', $waits.onMmuCheckGates)"
           >
             <v-list-item-icon>
-              <v-icon left> $mmuCheckAllGates </v-icon>
+              <app-icon
+                left
+                :loading="hasWait($waits.onMmuCheckGates)"
+              >
+                $mmuCheckAllGates
+              </app-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>
