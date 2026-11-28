@@ -161,13 +161,33 @@ export default class AfcMixin extends Vue {
       : null
 
     // Color: td1_color (when enabled) → spoolman color_hex → lane color
+    const td1Color = this.afc?.td1_present && this.afcShowTd1Color ? laneObj?.td1_color : undefined
+
     let color: string
-    if (this.afc?.td1_present && laneObj?.td1_color && this.afcShowTd1Color) {
-      color = `#${laneObj.td1_color}`
+    if (td1Color) {
+      color = `#${td1Color}`
     } else if (spool?.filament?.color_hex) {
       color = `#${spool.filament.color_hex.replace(/^#/, '')}`
     } else {
       color = laneObj?.color || ''
+    }
+
+    // Multi-color: a TD-1 reading is one measured color, so it replaces the filament colors.
+    // A linked spool wins over the lane, as for the single color: the lane's colors
+    // only count when no spool is linked
+    let colors: string[] = [color]
+    let colorDirection: Moonraker.Spoolman.FilamentMultiColorDirection | undefined
+    if (!td1Color) {
+      const spoolColors = spool?.filament?.colors ?? []
+      const laneColors = laneObj?.multi_color_hexes ?? []
+      if (spoolColors.length > 1) {
+        colors = spoolColors
+        colorDirection = spool?.filament?.multi_color_direction
+      } else if (!spool && laneColors.length > 1) {
+        colors = laneColors.map(x => `#${x.replace(/^#/, '')}`)
+        // AFC reports the lane's color mode as 'gradient' or 'coaxial'
+        colorDirection = laneObj?.color_mode === 'coaxial' ? 'coaxial' : 'longitudinal'
+      }
     }
 
     const material = spool?.filament?.material || laneObj?.material || ''
@@ -189,6 +209,8 @@ export default class AfcMixin extends Vue {
       spoolId,
       spool,
       color,
+      colors,
+      colorDirection,
       material,
       filamentVendor: spool?.filament?.vendor?.name ?? undefined,
       filamentName: spool?.filament?.name || laneObj?.filament_name || undefined,

@@ -14,7 +14,8 @@
             >
               <afc-filament-reel
                 :percent="spoolPercent"
-                :color="spoolColor"
+                :colors="laneInfo.colors"
+                :multi-color-direction="laneInfo.colorDirection"
                 class="filamentSpool"
                 @click-spool="onFilamentClick"
               />
@@ -160,10 +161,6 @@ export default class AfcCardUnitLaneBody extends Mixins(StateMixin, AfcMixin) {
 
   get spool() {
     return this.laneInfo.spool
-  }
-
-  get spoolColor(): string {
-    return this.laneInfo.color
   }
 
   get spoolRemainingWeight(): number | undefined {
