@@ -55,14 +55,15 @@
           device.status === 'init' ||
           (printerPrinting && device.locked_while_printing)
         "
-        :loading="hasWait(`${$waits.onDevicePowerToggle}/${device.device}`)"
         @click="togglePowerDevice(device)"
       >
         <v-list-item-content>
           <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-icon>
-          <v-icon>{{ getPowerIcon(device) }}</v-icon>
+          <app-icon :loading="hasWait(`${$waits.onDevicePowerToggle}/${device.device}`)">
+            {{ getPowerIcon(device) }}
+          </app-icon>
         </v-list-item-icon>
       </v-list-item>
     </v-list-group>

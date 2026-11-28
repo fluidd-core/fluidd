@@ -83,6 +83,7 @@
               icon
               text
               :disabled="topNavPowerDeviceDisabled"
+              :loading="topNavPowerDeviceLoading"
               v-bind="attrs"
               v-on="on"
               @click="handlePowerToggle()"
@@ -356,6 +357,14 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     }
 
     return false
+  }
+
+  get topNavPowerDeviceLoading(): boolean {
+    const { type, device } = this.topNavPowerToggle || {}
+
+    if (type !== 'moonraker' || !device) return false
+
+    return this.hasWait(`${this.$waits.onDevicePowerToggle}/${device.device}`)
   }
 
   get topNavPowerDeviceDisabled(): boolean {
