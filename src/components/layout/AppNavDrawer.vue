@@ -20,10 +20,10 @@
         <div
           v-if="isMobileViewport"
           :style="`height: ${$globals.HEADER_HEIGHT}px;`"
-          class="app-icon"
+          class="app-logo-container"
         >
           <router-link :to="{ name: 'home' }">
-            <app-icon />
+            <app-logo />
           </router-link>
         </div>
 
@@ -192,7 +192,7 @@ export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
 </script>
 
 <style lang="scss" scoped>
-.app-icon {
+.app-logo-container {
   display: flex;
   justify-content: center;
   align-items: center;
