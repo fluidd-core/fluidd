@@ -11,7 +11,7 @@
       :to="{ name: 'home' }"
       class="toolbar-logo"
     >
-      <app-icon />
+      <app-logo />
     </router-link>
 
     <div class="toolbar-title">
